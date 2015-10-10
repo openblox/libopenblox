@@ -1,0 +1,12 @@
+.settings/
+.cproject
+.project
+debug/
+release/
+/QtMakefile
+/QtMakefile.Debug
+/QtMakefile.Release
+/object_script.OpenBlox.Debug
+/object_script.OpenBlox.Release
+/openblox
+/docs/
