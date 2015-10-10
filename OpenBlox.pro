@@ -10,7 +10,7 @@ LIBS += -lopenal -lalut -lcrypto -lssl -lz -lOgreMain -llua
 
 CONFIG += dll
 
-HEADERS += raknet/*.h src/ob_lua/*.h src/openblox/instance/*.h
+HEADERS += raknet/*.h src/ob_lua/*.h src/openblox/*.h src/openblox/instance/*.h
 SOURCES += raknet/*.cpp src/ob_lua/*.cpp src/openblox/*.cpp src/openblox/instance/*.cpp
 CONFIG += c++11
 DEFINES += GXX_EXPERIMENTAL_CXX0X

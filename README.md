@@ -16,8 +16,6 @@ Before OpenBlox can be compiled, these dependencies must be installed:
 * Qt 5 Network (Optional)
 * Qt 5 WebSockets (Optional)
 * SDL 2 (Optional for server builds)
-* OpenGL (Optional for server builds)
-* GLU (Optional for server builds)
 * OGRE 1.9 (Optional for server builds)
 * OpenAL (Optional)
 * ALUT (Optional; required if OpenAL is used)
