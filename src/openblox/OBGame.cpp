@@ -137,10 +137,11 @@ namespace OpenBlox{
 				break;
 			}
 			case SDL_KEYDOWN: {
-				SDL_KeyboardEvent keyEvt = event.key;
-				SDL_Keysym key = keyEvt.keysym;
+				//SDL_KeyboardEvent keyEvt = event.key;
+				//SDL_Keysym key = keyEvt.keysym;
 
-				#if !defined(OB_STUDIO) && !defined(OB_EMBEDDED)
+				/*
+				#ifndef OB_STUDIO
 				if(key.sym == SDLK_F11){
 					if((SDL_GetWindowFlags(mw) & SDL_WINDOW_FULLSCREEN) == SDL_WINDOW_FULLSCREEN){
 						SDL_SetWindowFullscreen(mw, 0);
@@ -153,6 +154,7 @@ namespace OpenBlox{
 					}
 				}
 				#endif
+				*/
 				break;
 			}
 			case SDL_KEYUP: {
@@ -172,7 +174,7 @@ namespace OpenBlox{
 			}
 			#endif
 			case SDL_QUIT: {
-				shouldQuit = true;
+				//shouldQuit = true;
 				break;
 			}
 		}

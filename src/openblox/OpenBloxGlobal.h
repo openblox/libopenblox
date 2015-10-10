@@ -41,17 +41,6 @@
 #ifndef OB_NO_GRAPHICS
 	//OGRE
 	#include <OGRE/Ogre.h>
-
-	namespace OpenBlox{
-		extern Ogre::Root* root;
-		extern Ogre::RenderWindow* renderWindow;
-		extern Ogre::SceneManager* sceneMgr;
-		extern Ogre::Camera* cam;
-		extern Ogre::Viewport* vp;
-
-		extern SDL_Window* mw;
-		extern SDL_GLContext maincontext;
-	}
 #endif
 
 namespace OpenBlox{

@@ -6,22 +6,20 @@ else
 	QMAKE = qmake
 endif
 
-all: lib
-
 clean:
-	rm -fr QtMakefile QtMakefile.Debug QtMakefile.Release debug release openblox
+	rm -fr QtMakefile QtMakefile.Debug QtMakefile.Release debug release libopenblox.so libopenblox.so.*
 QtMakefile_Lib:
 	$(QMAKE) -o QtMakefile $(PRO_Lib) CONFIG+=debug_and_release
 
-lib-debug:	QtMakefile_Lib
+debug:	QtMakefile_Lib
 	$(MAKE) -j 2 -f QtMakefile debug
 
-lib-release:	QtMakefile_Lib
+release:	QtMakefile_Lib
 	$(MAKE) -j 2 -f QtMakefile release
 
-lib:	QtMakefile_Lib
+all:	QtMakefile_Lib
 	$(MAKE) -j 2 -f QtMakefile
 
 docs: doxygen
 
-.PHONY: all clean lib-debug lib-release lib QtMakefile_Lib docs
+.PHONY: all clean debug release lib QtMakefile_Lib docs
