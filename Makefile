@@ -1,3 +1,5 @@
+.DEFAULT_GOAL := all
+
 PRO = OpenBlox.pro
 
 ifeq ($(OS),Windows_NT)
