@@ -27,17 +27,9 @@
 
 #include "OBGame.h"
 
-#include "AssetLocator.h"
-#include "ClassFactory.h"
-#include "TaskScheduler.h"
-
 namespace OpenBlox{
 	OBGame::OBGame(OBEngine* _engine){
 		engine = _engine;
-
-		new ClassFactory();
-		new TaskScheduler();
-		new AssetLocator();
 	}
 
 	OBGame::~OBGame(){}
