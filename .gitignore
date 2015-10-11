@@ -10,3 +10,5 @@ release/
 /object_script.OpenBlox.Release
 /openblox
 /docs/
+/libopenblox.so
+/libopenblox.so.*
