@@ -21,6 +21,10 @@
 
 #include "OBException.h"
 
+#include "AssetLocator.h"
+#include "ClassFactory.h"
+#include "TaskScheduler.h"
+
 namespace OpenBlox{
 	OBEngine* OBEngine::inst = NULL;
 
@@ -48,6 +52,10 @@ namespace OpenBlox{
 		mainLuaState = NULL;
 
 		startTime = QDateTime::currentMSecsSinceEpoch();
+
+		new ClassFactory();
+		new TaskScheduler();
+		new AssetLocator();
 	}
 
 	OBEngine::~OBEngine(){
