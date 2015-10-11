@@ -27,7 +27,37 @@ extern "C"{
 }
 
 namespace ob_lua{
-	lua_State* init();
+	#define OB_G_FUNC(L, funcName) lua_register(L, #funcName, lua_##funcName)
+
+	struct LuaState{
+		lua_State* L;
+		int ref;
+	};
+
+	extern lua_State* init();
+	extern LuaState* newState();
+	extern LuaState* newthread(lua_State* L);
+
+	//extern int lua_require(lua_State* L);
+
+	extern int lua_print(lua_State* L);
+	extern int lua_warn(lua_State* L);
+
+	extern int lua_wait(lua_State* L);
+	extern int lua_delay(lua_State* L);
+	extern int lua_spawn(lua_State* L);
+
+	extern int lua_elapsedTime(lua_State* L);
+	extern int lua_tick(lua_State* L);
+
+	extern int lua_LoadLibrary(lua_State* L);
+
+	extern int lua_newInstance(lua_State* L);
+
+	extern LuaState* getStateInfo(lua_State* L);
+	extern void killState(lua_State* L);
+
+	extern void handle_lua_errors(lua_State* L);
 }
 
 #endif

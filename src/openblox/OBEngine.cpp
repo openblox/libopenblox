@@ -21,10 +21,15 @@
 
 #include "OBException.h"
 
-#include <QtCore>
-
 namespace OpenBlox{
+	OBEngine* OBEngine::inst = NULL;
+
 	OBEngine::OBEngine(){
+		if(inst != NULL){
+			throw new OBException("Only one instance of OBEngine can exist, at one time.");
+		}
+		inst = this;
+
 		if(!QCoreApplication::instance()){
 			throw new OBException("You must have an instance of QCoreApplication (Or QGuiApplication/QApplication) before creating OpenBlox::OBEngine.");
 		}
@@ -40,10 +45,17 @@ namespace OpenBlox{
 		vp = NULL;
 
 		game = NULL;
+		mainLuaState = NULL;
+
+		startTime = QDateTime::currentMSecsSinceEpoch();
 	}
 
 	OBEngine::~OBEngine(){
 		delete game;
+	}
+
+	OBEngine* OBEngine::getInstance(){
+		return inst;
 	}
 
 	#ifndef OB_NO_GRAPHICS
@@ -126,18 +138,17 @@ namespace OpenBlox{
 
 		static_init::execute(false);
 
-		game = new OBGame();
+		game = new OBGame(this);
+
+		//Init Lua
+		mainLuaState = ob_lua::init();
 
 		static_init::execute(true);
 	}
 
-	OBGame* OBEngine::getGame(){
-		return game;
-	}
-
 	void OBEngine::tick(){
 		if(game){
-			game->tick();
+			//TODO: Update DataModel, then physics, then handle resized GUIs (if applicable)
 		}
 	}
 
@@ -147,5 +158,58 @@ namespace OpenBlox{
 			root->renderOneFrame();
 		}
 		#endif
+	}
+
+	void OBEngine::resized(unsigned int width, unsigned int height){
+
+	}
+
+	//Input Injection Methods
+	void OBEngine::mousePress(uint8_t btn, QPoint pos){
+
+	}
+
+	void OBEngine::mouseRelease(uint8_t btn, QPoint pos){
+
+	}
+
+	void OBEngine::mouseMove(QPoint pos){
+
+	}
+
+	void OBEngine::mouseWheel(int delta, QPoint pos){
+
+	}
+
+	void OBEngine::keyDown(int32_t key, uint16_t mods){
+
+	}
+
+	void OBEngine::keyUp(int32_t key, uint16_t mods){
+
+	}
+
+	lua_State* OBEngine::getLuaState(){
+		return mainLuaState;
+	}
+
+	qint64 OBEngine::getStartTime(){
+		return startTime;
+	}
+
+	void OBEngine::info(QString output){
+		std::cout << "[INFO] " << output.toStdString() << std::endl;
+	}
+
+	void OBEngine::print(QString output){
+		std::cout << output.toStdString() << std::endl;
+	}
+
+	void OBEngine::warn(QString output){
+		std::cout << "[WARN] " << output.toStdString() << std::endl;
+	}
+
+	void OBEngine::print_error(QString output){
+		std::cerr << output.toStdString() << std::endl;
 	}
 }

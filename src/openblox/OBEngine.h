@@ -30,11 +30,20 @@
 
 #include "OpenBlox.h"
 
+#include "OBGame.h"
+
 namespace OpenBlox{
 	class OBEngine{
 		public:
 			OBEngine();
 			virtual ~OBEngine();
+
+			/**
+			 * Returns the global instance of OBEngine
+			 * @returns OBEngine* engine
+			 * @author John M. Harris, Jr.
+			 */
+			static OBEngine* getInstance();
 
 			#ifndef OB_NO_GRAPHICS
 
@@ -155,6 +164,30 @@ namespace OpenBlox{
 			 * @author John M. Harris, Jr.
 			 */
 			void render();
+
+			/**
+			 * Called when the window is resized.
+			 * @author John M. Harris, Jr.
+			 */
+			void resized(unsigned int width, unsigned int height);
+
+			//Input Injection Methods
+			void mousePress(uint8_t btn, QPoint pos);
+			void mouseRelease(uint8_t btn, QPoint pos);
+			void mouseMove(QPoint pos);
+			void mouseWheel(int delta, QPoint pos);
+			void keyDown(int32_t key, uint16_t mods);
+			void keyUp(int32_t key, uint16_t mods);
+
+			lua_State* getLuaState();
+
+			qint64 getStartTime();
+
+			void info(QString output);
+			void print(QString output);
+			void warn(QString output);
+			void print_error(QString output);
+
 		private:
 			bool started;
 			bool is_Server;
@@ -168,7 +201,13 @@ namespace OpenBlox{
 			Ogre::Viewport* vp;
 			#endif
 
+			qint64 startTime;
+
+			lua_State* mainLuaState;
+
 			OBGame* game;
+
+			static OBEngine* inst;
 	};
 }
 

@@ -35,7 +35,7 @@
 #define OB_VERSION_MINOR 1
 #define OB_VERSION_PATCH 1
 
-//Global defines go here. What is considered global? Things like OB_SERVER, OB_CLIENT, OB_NO_QT and that sort.
+//Global defines go here. What is considered global? Things like OB_SERVER, OB_NO_GRAPHICS and that sort.
 //If OB_SERVER is defined, server-only classes and functionality will be available.
 //#define OB_SERVER
 

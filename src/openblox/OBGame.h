@@ -22,7 +22,7 @@
  * @author John M. Harris, Jr.
  * @date July 2015
  *
- * This file is defines the OBGame singleton.
+ * This file is defines the OBGame singleton, which is used internally.
  */
 
 #include "OpenBlox.h"
@@ -33,28 +33,18 @@
 #define OPENBLOX_OBGAME_H_
 
 namespace OpenBlox{
+	class OBEngine;
+
 	class OBGame{
 		public:
-			OBGame();
+			OBGame(OBEngine* engine);
 			virtual ~OBGame();
 
-			static OBGame* getInstance();
+			OBEngine* _getEngine();
+			lua_State* _getLuaState();
 
-			bool tick();
-
-			void resized();
-
-			//Input Injection Methods
-			void mousePress(Uint8 btn, QPoint pos);
-			void mouseRelease(Uint8 btn, QPoint pos);
-			void mouseMove(QPoint pos);
-			void mouseWheel(int delta, QPoint pos);
-
-			void processEvent(SDL_Event event);
 		private:
-			lua_State* mainLuaState;
-
-			static OBGame* inst;
+			OBEngine* engine;
 	};
 }
 

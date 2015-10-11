@@ -32,6 +32,9 @@
 #include <string>
 #include <vector>
 
+//Qt
+#include <QtCore>
+
 //SDL
 #ifndef __ANDROID__
 	#define SDL_MAIN_HANDLED
@@ -50,11 +53,30 @@ namespace OpenBlox{
 
 #define OB_UNUSED(any_thing) (void)any_thing
 
+#ifdef __ANDROID__
+	#include <android/log.h>
+
+	#define ANDROID_LOG_TAG "OB"
+	#define LOGI(...) __android_log_write(ANDROID_LOG_INFO, ANDROID_LOG_TAG, QString().sprintf(__VA_ARGS__).toStdString().c_str())
+	#define LOGW(...) __android_log_write(ANDROID_LOG_WARN, ANDROID_LOG_TAG, QString().sprintf(__VA_ARGS__).toStdString().c_str())
+	#define LOGE(...) __android_log_write(ANDROID_LOG_ERROR, ANDROID_LOG_TAG, QString().sprintf(__VA_ARGS__).toStdString().c_str())
+	#define ILOG(out) __android_log_write(ANDROID_LOG_ERROR, ANDROID_LOG_TAG, out)
+	#define WLOG(out) __android_log_write(ANDROID_LOG_ERROR, ANDROID_LOG_TAG, out)
+	#define ELOG(out) __android_log_write(ANDROID_LOG_ERROR, ANDROID_LOG_TAG, out)
+#else
+	#define LOGI(...) OpenBlox::OBEngine::getInstance()->info(QString().sprintf(__VA_ARGS__))
+	#define LOGW(...) OpenBlox::OBEngine::getInstance()->warn(QString().sprintf(__VA_ARGS__))
+	#define LOGE(...) OpenBlox::OBEngine::getInstance()->print_error(QString().sprintf(__VA_ARGS__))
+	#define ILOG(out) OpenBlox::OBEngine::getInstance()->info(out)
+	#define WLOG(out) OpenBlox::OBEngine::getInstance()->warn(out)
+	#define ELOG(out) OpenBlox::OBEngine::getInstance()->print_error(out)
+#endif
+
 #include <ob_lua.h>
 
 #include "static_init.h"
 
 #include "OBException.h"
-#include "OBGame.h"
+#include "OBEngine.h"
 
 #endif

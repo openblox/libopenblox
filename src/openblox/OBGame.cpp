@@ -27,156 +27,22 @@
 
 #include "OBGame.h"
 
+#include "AssetLocator.h"
+#include "ClassFactory.h"
+#include "TaskScheduler.h"
+
 namespace OpenBlox{
-	OBGame* OBGame::inst = NULL;
+	OBGame::OBGame(OBEngine* _engine){
+		engine = _engine;
 
-	OBGame::OBGame(){
-		if(inst != NULL){
-			throw new OBException("Only one instance of OBGame can be created.");
-		}
-		inst = this;
-
-		//Init Lua
-		mainLuaState = ob_lua::init();
+		new ClassFactory();
+		new TaskScheduler();
+		new AssetLocator();
 	}
 
 	OBGame::~OBGame(){}
 
-	/**
-	 * Returns the OBGame instance.
-	 * @return OBGame*, NULL if there is no instance yet.
-	 * @author John M. Harris, Jr.
-	 */
-	OBGame* OBGame::getInstance(){
-		return inst;
-	}
-
-	/**
-	 * Called from the task thread, handles game logic.
-	 * @return true on success, otherwise false
-	 * @author John M. Harris, Jr.
-	 */
-	bool OBGame::tick(){
-		return true;
-	}
-
-	/**
-	 * Called when the window is resized.
-	 * @author John M. Harris, Jr.
-	 */
-	void OBGame::resized(){
-	}
-
-	/**
-	 * Injects a mouse press event at a specific position.
-	 * @param Uint8 button
-	 * @param QPoint position
-	 * @author John M. Harris, Jr.
-	 */
-	void OBGame::mousePress(Uint8 btn, QPoint pos){
-		/*
-		ob_instance::GuiBase2d* gb2d = dm->pickGUI(pos);
-		if(ob_instance::GuiObject* go = dynamic_cast<ob_instance::GuiObject*>(gb2d)){
-			if(ob_instance::GuiButton* gb = dynamic_cast<ob_instance::GuiButton*>(go)){
-				gb->mouseDown(btn, pos);
-			}
-		}
-		*/
-	}
-
-	/**
-	 * Injects a mouse release event at a specific position.
-	 * @param Uint8 button
-	 * @param QPoint position
-	 * @author John M. Harris, Jr.
-	 */
-	void OBGame::mouseRelease(Uint8 btn, QPoint pos){
-		/*
-		ob_instance::GuiBase2d* gb2d = dm->pickGUI(pos);
-		if(ob_instance::GuiObject* go = dynamic_cast<ob_instance::GuiObject*>(gb2d)){
-			if(ob_instance::GuiButton* gb = dynamic_cast<ob_instance::GuiButton*>(go)){
-				gb->mouseUp(btn, pos);
-			}
-		}
-		*/
-	}
-
-	/**
-	 * Injects a mouse movement event at a specific position.
-	 * @param QPoint position
-	 * @author John M. Harris, Jr.
-	 */
-	void OBGame::mouseMove(QPoint pos){
-		//dm->mouseMoved(pos);
-	}
-
-	/**
-	 * Injects a mouse wheel event at a specific position.
-	 * @param int delta
-	 * @param QPoint position
-	 * @author John M. Harris, Jr.
-	 */
-	void OBGame::mouseWheel(int delta, QPoint pos){
-		OB_UNUSED(delta);
-		OB_UNUSED(pos);
-	}
-
-	void OBGame::processEvent(SDL_Event event){
-		switch(event.type){
-			#ifndef OB_NO_GRAPHICS
-			case SDL_MOUSEMOTION: {
-				SDL_MouseMotionEvent motion = event.motion;
-
-				mouseMove(QPoint(motion.x, motion.y));
-				break;
-			}
-			case SDL_MOUSEBUTTONDOWN: {
-				SDL_MouseButtonEvent btn = event.button;
-
-				mousePress(btn.button, QPoint(btn.x, btn.y));
-				break;
-			}
-			case SDL_KEYDOWN: {
-				//SDL_KeyboardEvent keyEvt = event.key;
-				//SDL_Keysym key = keyEvt.keysym;
-
-				/*
-				#ifndef OB_STUDIO
-				if(key.sym == SDLK_F11){
-					if((SDL_GetWindowFlags(mw) & SDL_WINDOW_FULLSCREEN) == SDL_WINDOW_FULLSCREEN){
-						SDL_SetWindowFullscreen(mw, 0);
-					}else{
-						SDL_DisplayMode dm;
-						if(SDL_GetDesktopDisplayMode(SDL_GetWindowDisplayIndex(mw), &dm) == 0){
-							SDL_SetWindowDisplayMode(mw, &dm);
-						}
-						SDL_SetWindowFullscreen(mw, SDL_WINDOW_FULLSCREEN);
-					}
-				}
-				#endif
-				*/
-				break;
-			}
-			case SDL_KEYUP: {
-				SDL_KeyboardEvent keyEvt = event.key;
-				SDL_Keysym key = keyEvt.keysym;
-				Q_UNUSED(key)
-				break;
-			}
-			case SDL_WINDOWEVENT: {
-				SDL_WindowEvent wevt = event.window;
-				switch(wevt.event){
-					case SDL_WINDOWEVENT_RESIZED: {
-						resized();
-					}
-				}
-				break;
-			}
-			#endif
-			case SDL_QUIT: {
-				//shouldQuit = true;
-				break;
-			}
-		}
+	OBEngine* OBGame::_getEngine(){
+		return engine;
 	}
 }
