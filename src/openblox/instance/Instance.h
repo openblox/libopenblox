@@ -63,7 +63,7 @@ BEGIN_INSTANCE
 	virtual Instance* cloneImpl(Instance* newOne); \
 	virtual QString getClassName(); \
 	virtual int wrap_lua(lua_State* L); \
-	DECLARE_STATIC_INIT(Class_Name); \
+	DECLARE_GAME_STATIC_INIT(Class_Name); \
 	protected: \
 		static QString ClassName; \
 		static QString LuaClassName
@@ -100,7 +100,7 @@ BEGIN_INSTANCE
 			return #ParentClass; \
 		} \
 	}; \
-	STATIC_INIT(Class_Name){ \
+	STATIC_GAME_INIT(Class_Name){ \
 		OpenBlox::ClassFactory::getInstance()->addClass(ClassName, new Class_Name##ClassMaker()); \
 		registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events); \
 	} \
@@ -136,7 +136,7 @@ BEGIN_INSTANCE
 			return #ParentClass; \
 		} \
 	}; \
-	STATIC_INIT(Class_Name){ \
+	STATIC_GAME_INIT(Class_Name){ \
 		OpenBlox::ClassFactory::getInstance()->addClass(ClassName, new Class_Name##ClassMaker()); \
 		registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events); \
 	} \
@@ -176,7 +176,7 @@ BEGIN_INSTANCE
 			return #ParentClass; \
 		} \
 	}; \
-	STATIC_INIT(Class_Name){ \
+	STATIC_GAME_INIT(Class_Name){ \
 		OpenBlox::ClassFactory::getInstance()->addClass(ClassName, new Class_Name##ClassMaker()); \
 		registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events); \
 	} \
@@ -313,7 +313,7 @@ class Instance
 		OpenBlox::Type::Event* DescendantAdded;
 		OpenBlox::Type::Event* DescendantRemoving;
 
-		DECLARE_STATIC_INIT(Instance);
+		DECLARE_GAME_STATIC_INIT(Instance);
 	protected:
 		bool Archivable;
 		static QString ClassName;

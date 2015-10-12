@@ -44,7 +44,7 @@ struct InstanceClassMaker: public OpenBlox::ClassMaker{
 	}
 };
 
-STATIC_INIT(Instance){
+STATIC_GAME_INIT(Instance){
 	OpenBlox::ClassFactory::getInstance()->addClass(ClassName, new InstanceClassMaker());
 
 	registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
