@@ -161,7 +161,7 @@ class EventConnection{
 
 		void disconnect(lua_State* L);
 
-		DECLARE_STATIC_INIT(EventConnection);
+		DECLARE_GAME_STATIC_INIT(EventConnection);
 
 		int wrap_lua(lua_State* L);
 
@@ -204,7 +204,7 @@ class Event{
 		void disconnect(int ref);
 		bool isConnected(int ref);
 
-		DECLARE_STATIC_INIT(Event);
+		DECLARE_GAME_STATIC_INIT(Event);
 
 		int wrap_lua(lua_State* L);
 
