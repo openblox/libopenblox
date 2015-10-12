@@ -111,7 +111,7 @@ VarWrapper::~VarWrapper(){}
 
 #define lua_evt_con_name "luaL_Type_EventConnection"
 
-STATIC_INIT(EventConnection){
+STATIC_GAME_INIT(EventConnection){
 	lua_State* L = OpenBlox::OBEngine::getInstance()->getLuaState();
 
 	luaL_newmetatable(L, lua_evt_con_name);
@@ -304,7 +304,7 @@ EventConnection* checkEventConnection(lua_State* L, int n){
 
 #define lua_evt_name "luaL_Type_Event"
 
-STATIC_INIT(Event){
+STATIC_GAME_INIT(Event){
 	lua_State* L = OpenBlox::OBEngine::getInstance()->getLuaState();
 
 	luaL_newmetatable(L, lua_evt_name);
