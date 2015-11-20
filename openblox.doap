@@ -16,7 +16,7 @@
 
 	<homepage rdf:resource="https://gitlab.com/openblox/openblox" />
 	<license rdf:resource="http://www.gnu.org/licenses/gpl-3.0.html"/>
-	<bug-database rdf:resource="https://myzillawr.tk/bugzilla/" />
+	<bug-database rdf:resource="https://gitlab.com/openblox/openblox/issues" />
 
 	<category rdf:resource="http://api.gnome.org/doap-extensions#apps" />
 	<programming-language>C++</programming-language>
