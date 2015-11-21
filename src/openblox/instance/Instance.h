@@ -78,6 +78,17 @@ BEGIN_INSTANCE
 	DECLARE_CLASS(Class_Name)
 
 /**
+ * Used to make services harder to screw up.
+ * @author John M. Harris, Jr.
+ */
+#define DEFINE_SERVICE(Class_Name) \
+	void Class_Name::Destroy(){} \
+	void Class_Name::Remove(){} \
+	Instance* Class_Name::cloneImpl(Instance* newGuy){ \
+		return newGuy; \
+	}
+
+/**
  * Used to define a class of the specified name.
  * @author John M. Harris, Jr.
  */

@@ -35,9 +35,7 @@ BEGIN_INSTANCE
 		delete Loaded;
 	}
 
-	Instance* DataModel::cloneImpl(Instance* newOne){
-		return newOne;
-	}
+	DEFINE_SERVICE(DataModel);
 
 	Instance* DataModel::GetService(QString className){
 		Instance* foundService = FindService(className);
@@ -59,9 +57,16 @@ BEGIN_INSTANCE
 	 */
 	void DataModel::SetTitle(QString title){
 		this->title = title;
+
 		#ifndef OB_NO_GRAPHICS
 		{
+			OBEngine* eng = OpenBlox::OBEngine::getInstance();
+			if(eng){
+				Ogre::RenderWindow* rw = eng->getRenderWindow();
+				if(rw){
 
+				}
+			}
 		}
 		#endif
 	}
