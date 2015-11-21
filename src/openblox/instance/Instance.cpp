@@ -183,21 +183,28 @@ void Instance::ClearAllChildren(){
 	}
 }
 
+Instance* Instance::cloneImpl(Instance* newOne){
+	if(newOne == NULL){
+		return NULL;
+	}
+	newOne->Name = Name;
+}
+
 /**
  * Clones an Instance, if possible. This also clones children of the Instance.
  * @returns Instance*, NULL if not able to clone.
- * @param Instance* cloneTo
  * @author John M. Harris, Jr.
  */
-Instance* Instance::Clone(Instance* cloneTo){
+Instance* Instance::Clone(){
 	if(Archivable){
+		Instance* cloneTo = cloneImpl(NULL);
 		if(!cloneTo){
 			return NULL;//This would, in any instantiatable, clonable, class create a new Instance
 		}
 		for(std::vector<Instance*>::size_type i = 0; i != children.size(); i++){
 			Instance* kid = children[i];
 			if(kid){
-				Instance* kidClone = kid->Clone(NULL);
+				Instance* kidClone = kid->Clone();
 				if(kidClone){
 					kidClone->setParent(cloneTo, true);
 				}
@@ -1104,7 +1111,7 @@ int Instance::lua_ClearAllChildren(lua_State* L){
 int Instance::lua_Clone(lua_State* L){
 	Instance* inst = checkInstance(L, 1);
 	if(inst){
-		Instance* newGuy = inst->Clone(NULL);
+		Instance* newGuy = inst->Clone();
 		if(newGuy){
 			return newGuy->wrap_lua(L);
 		}
