@@ -93,7 +93,7 @@ BEGIN_INSTANCE
 			return isInstable; \
 		} \
 		bool isService(bool isDataModel){ \
-			OB_UNUSED(isDataModel) \
+			OB_UNUSED(isDataModel); \
 			return isAService; \
 		} \
 		QString getParentClassName(){ \
@@ -129,7 +129,7 @@ BEGIN_INSTANCE
 			return false; \
 		} \
 		bool isService(bool isDataModel){ \
-			OB_UNUSED(isDataModel) \
+			OB_UNUSED(isDataModel); \
 			return false; \
 		} \
 		QString getParentClassName(){ \
@@ -169,7 +169,7 @@ BEGIN_INSTANCE
 			return false; \
 		} \
 		bool isService(bool isDataModel){ \
-			OB_UNUSED(isDataModel) \
+			OB_UNUSED(isDataModel); \
 			return false; \
 		} \
 		QString getParentClassName(){ \
