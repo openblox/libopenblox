@@ -236,8 +236,10 @@ class Instance
 		static RakNet::NetworkIDManager* getNetworkIDManager();
 		#endif
 
+		virtual Instance* cloneImpl(Instance* newOne);
+
 		virtual void ClearAllChildren();
-		virtual Instance* Clone(Instance* cloneTo);
+		virtual Instance* Clone();
 		virtual void Destroy();
 		virtual void Remove();
 		virtual Instance* FindFirstChild(QString name, bool recursive = false);
