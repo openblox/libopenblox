@@ -11,7 +11,13 @@ BEGIN_INSTANCE
 	DEFINE_CLASS(TestInstance, true, false, Instance);
 
 	TestInstance::TestInstance(){}
-
 	TestInstance::~TestInstance(){}
+
+	Instance* TestInstance::cloneImpl(Instance* newOne){
+		if(newOne == NULL){
+			newOne = new TestInstance();
+		}
+		return newOne;
+	}
 
 END_INSTANCE
