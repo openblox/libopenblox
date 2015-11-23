@@ -18,5 +18,5 @@ INCLUDEPATH += src/ob_lua src/openblox src/openblox/instance
 
 freebsd{
 	#We need to include headers installed by ports
-	INCLUDEPATH+=
+	INCLUDEPATH += /usr/local/include
 }
