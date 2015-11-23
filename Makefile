@@ -5,7 +5,12 @@ PRO = OpenBlox.pro
 ifeq ($(OS),Windows_NT)
 	QMAKE = C:\Qt\5.4\mingw491_32\bin\qmake.exe
 else
-	QMAKE = qmake
+	UNAME_S := $(shell uname -s)
+	ifeq ($(UNAME_S),FreeBSD)
+		QMAKE = /usr/local/lib/qt5/bin/qmake
+	else
+		QMAKE = qmake
+	endif
 endif
 
 clean:

@@ -15,3 +15,8 @@ SOURCES += raknet/*.cpp src/ob_lua/*.cpp src/openblox/*.cpp src/openblox/instanc
 CONFIG += c++11
 DEFINES += GXX_EXPERIMENTAL_CXX0X
 INCLUDEPATH += src/ob_lua src/openblox src/openblox/instance
+
+freebsd{
+	#We need to include headers installed by ports
+	INCLUDEPATH+=
+}
