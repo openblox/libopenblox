@@ -172,6 +172,14 @@ namespace OpenBlox{
 
 	}
 
+	void(*OBEngine::getShutdownHook())(){
+		return shutdown_hook;
+	}
+
+	void OBEngine::setShutdownHook(void(*shutdown_hook)()){
+		this->shutdown_hook = shutdown_hook;
+	}
+
 	//Input Injection Methods
 	void OBEngine::mousePress(uint8_t btn, QPoint pos){
 
