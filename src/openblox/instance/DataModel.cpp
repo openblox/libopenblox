@@ -145,7 +145,19 @@ BEGIN_INSTANCE
 		}
 		*/
 
-		//TODO: Call OnClose callback, then gracefully exit with an exit code of EXIT_SUCCESS
+		//TODO: Call OnClose callback, before calling the shutdown hook, which actually does the work.
+
+		OBEngine* eng = OpenBlox::OBEngine::getInstance();
+		if(eng){ //Should be true... Certainly here.. But it's always nice to prevent segfaults.....
+			void(*down_hook)() = eng->getShutdownHook();
+			if(down_hook){
+				down_hook();
+				//If we're still around here, die.
+				exit(EXIT_SUCCESS);
+			}else{
+				exit(EXIT_SUCCESS);
+			}
+		}
 	}
 
 	/**

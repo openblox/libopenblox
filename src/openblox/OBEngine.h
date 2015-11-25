@@ -171,6 +171,20 @@ namespace OpenBlox{
 			 */
 			void resized(unsigned int width, unsigned int height);
 
+			/**
+			 * Returns the current shutdown hook.
+			 * @returns void(*shutdown_hook)()
+			 * @author John M. Harris, Jr.
+			 */
+			void(*getShutdownHook())();
+
+			/**
+			 * Sets the current shutdown hook.
+			 * @param void(*shutdown_hook)()
+			 * @author John M. Harris, Jr.
+			 */
+			void setShutdownHook(void(*shutdown_hook)());
+
 			//Input Injection Methods
 			void mousePress(uint8_t btn, QPoint pos);
 			void mouseRelease(uint8_t btn, QPoint pos);
@@ -200,6 +214,8 @@ namespace OpenBlox{
 			Ogre::Camera* cam;
 			Ogre::Viewport* vp;
 			#endif
+
+			void(*shutdown_hook)();
 
 			qint64 startTime;
 

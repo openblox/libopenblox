@@ -1,0 +1,38 @@
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:foaf="http://xmlns.com/foaf/0.1/"
+	xmlns:gnome="http://api.gnome.org/doap-extensions#"
+	xmlns="http://usefulinc.com/ns/doap#">
+
+	<name xml:lang="en">OpenBlox Server</name>
+
+	<shortdesc xml:lang="en">
+	OpenBlox server
+	</shortdesc>
+
+	<description xml:lang="en">
+	Reference server implementation for the OpenBlox game engine.
+	</description>
+
+	<homepage rdf:resource="https://gitlab.com/openblox/openblox-server" />
+	<license rdf:resource="http://www.gnu.org/licenses/gpl-3.0.html"/>
+	<bug-database rdf:resource="https://gitlab.com/openblox/openblox-server/issues" />
+
+	<category rdf:resource="http://api.gnome.org/doap-extensions#apps" />
+	<programming-language>C++</programming-language>
+
+	<maintainer>
+		<foaf:Person>
+			<foaf:name>John M. Harris, Jr.</foaf:name>
+			<foaf:mbox rdf:resource="mailto:johnmh@openmailbox.org" />
+			<foaf:homepage rdf:resource="https://johnmh.me/" />
+		</foaf:Person>
+	</maintainer>
+
+	<repository>
+		<GitRepository>
+			<location rdf:resource="https://gitlab.com/openblox/openblox-server.git"/>
+			<browse rdf:resource="https://gitlab.com/openblox/openblox-server"/>
+		</GitRepository>
+	</repository>
+</Project>
