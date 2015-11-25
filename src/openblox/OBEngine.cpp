@@ -154,6 +154,10 @@ namespace OpenBlox{
 		static_init::execute(true);
 	}
 
+	OBGame* OBEngine::getGame(){
+		return game;
+	}
+
 	void OBEngine::tick(){
 		if(game){
 			//TODO: Update DataModel, then physics, then handle resized GUIs (if applicable)
