@@ -33,6 +33,10 @@
 #define OPENBLOX_OBGAME_H_
 
 namespace OpenBlox{
+	namespace Instance{
+		class DataModel;
+	}
+
 	class OBEngine;
 
 	class OBGame{
@@ -43,8 +47,11 @@ namespace OpenBlox{
 			OBEngine* _getEngine();
 			lua_State* _getLuaState();
 
+			Instance::DataModel* getDataModel();
+
 		private:
 			OBEngine* engine;
+			Instance::DataModel* dm;
 	};
 }
 

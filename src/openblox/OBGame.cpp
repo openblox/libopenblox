@@ -27,14 +27,22 @@
 
 #include "OBGame.h"
 
+#include <DataModel.h>
+
 namespace OpenBlox{
 	OBGame::OBGame(OBEngine* _engine){
 		engine = _engine;
+
+		dm = new Instance::DataModel();
 	}
 
 	OBGame::~OBGame(){}
 
 	OBEngine* OBGame::_getEngine(){
 		return engine;
+	}
+
+	Instance::DataModel* OBGame::getDataModel(){
+		return dm;
 	}
 }

@@ -29,7 +29,9 @@
 #include "obbaselib.h"
 #include "oboslib.h"
 
-//#include <DataModel.h>
+#include <OBGame.h>
+
+#include <DataModel.h>
 //#include <ModuleScript.h>
 
 #include <curl/curl.h>
@@ -116,6 +118,11 @@ namespace ob_lua{
 			return NULL;
 		}
 
+		OpenBlox::OBGame* game = engine->getGame();
+		if(!game){
+			return NULL;
+		}
+
 		lua_State* gL = engine->getLuaState();
 
 		lua_State* L = lua_newthread(gL);
@@ -170,6 +177,14 @@ namespace ob_lua{
 		};
 		luaL_setfuncs(L, instancelib, 0);
 		lua_setglobal(L, "Instance");
+
+		OpenBlox::Instance::DataModel* dm = game->getDataModel();
+		int gm = dm->wrap_lua(L);
+		lua_pushvalue(L, -gm);
+		lua_setglobal(L, "game");
+
+		lua_pushvalue(L, -gm);
+		lua_setglobal(L, "Game");
 
 		lua_pop(L, 1);
 
