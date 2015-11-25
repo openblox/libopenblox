@@ -152,8 +152,6 @@ BEGIN_INSTANCE
 			void(*down_hook)() = eng->getShutdownHook();
 			if(down_hook){
 				down_hook();
-				//If we're still around here, die.
-				exit(EXIT_SUCCESS);
 			}else{
 				exit(EXIT_SUCCESS);
 			}
