@@ -37,8 +37,8 @@ BEGIN_INSTANCE
 #ifndef OB_NO_NETWORKING
 	#define NO_REPLICATE() \
 	virtual inline void replicate(RakNet::RakPeerInterface* peer, RakNet::SystemAddress addr){ \
-		OB_UNUSED(peer) \
-		OB_UNUSED(addr) \
+		OB_UNUSED(peer); \
+		OB_UNUSED(addr); \
 	}
 
 	/*
