@@ -27,6 +27,7 @@ BEGIN_INSTANCE
 	Folder::~Folder(){}
 
 	Instance* Folder::cloneImpl(Instance* newGuy){
+		Instance::cloneImpl(newGuy);
 		return newGuy;
 	}
 END_INSTANCE

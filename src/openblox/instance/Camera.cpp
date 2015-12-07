@@ -27,6 +27,7 @@ BEGIN_INSTANCE
 	Camera::~Camera(){}
 
 	Instance* Camera::cloneImpl(Instance* newGuy){
+		Instance::cloneImpl(newGuy);
 		return newGuy;
 	}
 END_INSTANCE
