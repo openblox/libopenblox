@@ -147,6 +147,8 @@ class VarWrapper{
 		VarWrapper(bool var);
 		VarWrapper(QString var);
 		VarWrapper(OpenBlox::Instance::Instance* var);
+		VarWrapper(OpenBlox::Enum::LuaEnumItem* var);
+		VarWrapper(OpenBlox::Enum::LuaEnum* var);
 		~VarWrapper();
 
 		void* wrapped;

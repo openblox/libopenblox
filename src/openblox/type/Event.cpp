@@ -105,6 +105,16 @@ VarWrapper::VarWrapper(OpenBlox::Instance::Instance* var){
 	wrapped = var;
 }
 
+VarWrapper::VarWrapper(OpenBlox::Enum::LuaEnumItem* var){
+	type = TYPE_ENUMITEM;
+	wrapped = var;
+}
+
+VarWrapper::VarWrapper(OpenBlox::Enum::LuaEnum* var){
+	type = TYPE_ENUM;
+	wrapped = var;
+}
+
 VarWrapper::~VarWrapper(){}
 
 //End nasty type wrappers.
@@ -488,6 +498,16 @@ int Event::pushWrappersToLua(lua_State* L, std::vector<VarWrapper> argList){
 			case TYPE_INSTANCE: {
 				nargs++;
 				reinterpret_cast<OpenBlox::Instance::Instance*>(wrap.wrapped)->wrap_lua(L);
+				break;
+			}
+			case TYPE_ENUMITEM: {
+				nargs++;
+				reinterpret_cast<OpenBlox::Enum::LuaEnumItem*>(wrap.wrapped)->wrap_lua(L);
+				break;
+			}
+			case TYPE_ENUM: {
+				nargs++;
+				reinterpret_cast<OpenBlox::Enum::LuaEnum*>(wrap.wrapped)->wrap_lua(L);
 				break;
 			}
 			default: {
