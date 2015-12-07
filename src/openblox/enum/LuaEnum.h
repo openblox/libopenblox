@@ -47,7 +47,7 @@ namespace OpenBlox{ namespace Enum{
 
 			static std::map<QString, LuaEnum*>* enums;
 
-			DECLARE_STATIC_INIT(LuaEnum);
+			DECLARE_GAME_STATIC_INIT(LuaEnum);
 	};
 
 	LuaEnum* checkEnum(lua_State* L, int idx);
