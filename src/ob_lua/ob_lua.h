@@ -53,6 +53,7 @@ namespace ob_lua{
 	extern int lua_LoadLibrary(lua_State* L);
 
 	extern int lua_newInstance(lua_State* L);
+	extern int lua_newVector2(lua_State* L);
 
 	extern LuaState* getStateInfo(lua_State* L);
 	extern void killState(lua_State* L);
