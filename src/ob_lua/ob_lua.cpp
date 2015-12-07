@@ -178,6 +178,16 @@ namespace ob_lua{
 		luaL_setfuncs(L, instancelib, 0);
 		lua_setglobal(L, "Instance");
 
+		lua_newtable(L);
+		luaL_Reg vector2lib[]{
+			{"new", lua_newVector2},
+			{NULL, NULL}
+		};
+		luaL_setfuncs(L, vector2lib, 0);
+		lua_setglobal(L, "Vector2");
+
+		OpenBlox::Enum::registerLuaEnums(L);
+
 		OpenBlox::Instance::DataModel* dm = game->getDataModel();
 		int gm = dm->wrap_lua(L);
 		lua_pushvalue(L, -gm);
@@ -189,6 +199,14 @@ namespace ob_lua{
 		lua_pop(L, 1);
 
 		return LState;
+	}
+
+	int lua_newVector2(lua_State* L){
+		double x = luaL_checknumber(L, 1);
+		double y = luaL_checknumber(L, 2);
+
+		OpenBlox::Type::Vector2* newGuy = new OpenBlox::Type::Vector2(x, y);
+		return newGuy->wrap_lua(L);
 	}
 
 	/*
