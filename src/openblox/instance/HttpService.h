@@ -22,8 +22,6 @@
 
 #include "Instance.h"
 
-#include <enum/Enums.h>
-
 BEGIN_INSTANCE
 
 class HttpService: public Instance{

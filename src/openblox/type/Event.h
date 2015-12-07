@@ -24,6 +24,8 @@
 
 #include "OBType.h"
 
+#include <enum/Enums.h>
+
 //C++11
 #include <functional>
 #include <initializer_list>

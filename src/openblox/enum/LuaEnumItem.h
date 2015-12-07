@@ -46,7 +46,7 @@ namespace OpenBlox{ namespace Enum{
 			static int lua_index(lua_State* L);
 			static int lua_toString(lua_State* L);
 
-			DECLARE_STATIC_INIT(LuaEnumItem);
+			DECLARE_GAME_STATIC_INIT(LuaEnumItem);
 	};
 
 	class LuaEnum;

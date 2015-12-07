@@ -26,7 +26,7 @@ namespace OpenBlox{ namespace Enum{
 	 */
 	std::map<QString, LuaEnum*>* LuaEnum::enums = NULL;
 
-	STATIC_INIT(LuaEnum){
+	STATIC_GAME_INIT(LuaEnum){
 		lua_State* L = OpenBlox::OBEngine::getInstance()->getLuaState();
 
 		luaL_newmetatable(L, lua_enum_name);

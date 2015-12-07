@@ -22,7 +22,7 @@
 #include "LuaEnum.h"
 
 namespace OpenBlox{ namespace Enum{
-	STATIC_INIT(LuaEnumItem){
+	STATIC_GAME_INIT(LuaEnumItem){
 		lua_State* L = OpenBlox::OBEngine::getInstance()->getLuaState();
 
 		luaL_newmetatable(L, lua_enumitem_name);
