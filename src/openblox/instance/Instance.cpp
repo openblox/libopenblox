@@ -72,6 +72,8 @@ Instance::Instance(){
 	DescendantAdded = new OpenBlox::Type::Event("DescendantAdded");
 	DescendantRemoving = new OpenBlox::Type::Event("DescendantRemoving");
 
+	ogreNode = NULL;
+
 	#ifndef OB_NO_NETWORKING
 	if(!networkIDManager){
 		networkIDManager = RakNet::NetworkIDManager::GetInstance();
@@ -87,6 +89,27 @@ Instance::~Instance(){
 	delete ChildRemoved;
 	delete DescendantAdded;
 	delete DescendantRemoving;
+}
+
+/**
+ * Returns the OGRE3D Node associated with this Instance. This will be NULL, where we don't use OGRE.
+ * @returns Ogre::Node*
+ * @author John M. Harris, Jr.
+ */
+Ogre::Node* Instance::getOgreNode(){
+	return ogreNode;
+}
+
+/**
+ * Sets the OGRE3D Node associated with this Instance, returns the old one or NULL.
+ * @param Ogre::Node* newNode
+ * @returns Ogre::Node* oldNode
+ * @author John M. Harris, Jr.
+ */
+Ogre::Node* Instance::setOgreNode(Ogre::Node* newNode){
+	Ogre::Node* oNode = ogreNode;
+	ogreNode = newNode;
+	return oNode;
 }
 
 #ifndef OB_NO_NETWORKING
@@ -644,12 +667,16 @@ Instance* Instance::getParent(){
 
 /**
  * Called internally during reparenting of children.
- * @param Instane* kid
+ * @param Instance* kid
  * @author John M. Harris, Jr.
  */
 void Instance::removeChild(Instance* kid){
 	if(kid){
 		children.erase(std::remove(children.begin(), children.end(), kid));
+
+		if(ogreNode && kid->getOgreNode()){
+			ogreNode->removeChild(kid->getOgreNode());
+		}
 
 		std::vector<OpenBlox::Type::VarWrapper>* args = new std::vector<OpenBlox::Type::VarWrapper>({OpenBlox::Type::VarWrapper(kid)});
 		ChildRemoved->Fire(args);
@@ -659,12 +686,16 @@ void Instance::removeChild(Instance* kid){
 
 /**
  * Called internally during reparenting of children.
- * @param Instane* New kid
+ * @param Instance* New kid
  * @author John M. Harris, Jr.
  */
 void Instance::addChild(Instance* kid){
 	if(kid){
 		children.push_back(kid);
+
+		if(ogreNode && kid->getOgreNode()){
+			ogreNode->addChild(kid->getOgreNode());
+		}
 
 		std::vector<OpenBlox::Type::VarWrapper>* args = new std::vector<OpenBlox::Type::VarWrapper>({OpenBlox::Type::VarWrapper(kid)});
 		ChildAdded->Fire(args);

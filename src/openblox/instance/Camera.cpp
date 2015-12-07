@@ -17,33 +17,16 @@
  * along with OpenBlox.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OPENBLOX_ENUM_ENUMS_H_
-#define OPENBLOX_ENUM_ENUMS_H_
+#include "Camera.h"
 
-#include "LuaEnum.h"
+BEGIN_INSTANCE
+	DEFINE_CLASS(Camera, true, false, Instance);
 
-namespace OpenBlox{ namespace Enum{
-	#define LENUM(name, ...) \
-	extern LuaEnum* Lua##name; \
-	enum class name{__VA_ARGS__, __COUNT}
+	Camera::Camera() : Instance(){}
 
-	#define DENUM(name, ...) \
-		LuaEnum* Lua##name = new LuaEnum(#name, \
-			__VA_ARGS__, \
-			NULL \
-	); \
+	Camera::~Camera(){}
 
-	void registerLuaEnums(lua_State* L);
-
-	//Start Enum definitions
-
-	LENUM(HttpContentType,
-		ApplicationJson,
-		ApplicationXml,
-		ApplicationUrlEncoded,
-		TextPlain,
-		TextXml
-	);
-}}
-
-#endif
+	Instance* Camera::cloneImpl(Instance* newGuy){
+		return newGuy;
+	}
+END_INSTANCE

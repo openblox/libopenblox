@@ -243,6 +243,9 @@ class Instance
 		Instance();
 		virtual ~Instance();
 
+		Ogre::Node* getOgreNode();
+		Ogre::Node* setOgreNode(Ogre::Node* newNode);
+
 		#ifndef OB_NO_NETWORKING
 		static RakNet::NetworkIDManager* getNetworkIDManager();
 		#endif
@@ -333,6 +336,8 @@ class Instance
 		static QString LuaClassName;
 		QString Name;
 		Instance* Parent;
+
+		Ogre::Node* ogreNode;
 
 		#ifndef OB_NO_NETWORKING
 		static RakNet::NetworkIDManager* networkIDManager;
