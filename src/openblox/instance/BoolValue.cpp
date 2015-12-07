@@ -32,6 +32,7 @@ BEGIN_INSTANCE
 		if(BoolValue* bvNew = dynamic_cast<BoolValue*>(newGuy)){
 			bvNew->Value = Value;
 		}
+		Instance::cloneImpl(newGuy);
 		return newGuy;
 	}
 
