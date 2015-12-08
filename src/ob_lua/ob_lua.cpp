@@ -36,6 +36,7 @@
 
 #include <type/Vector2.h>
 #include <type/Vector3.h>
+#include <type/Color3.h>
 
 #include <curl/curl.h>
 
@@ -197,6 +198,14 @@ namespace ob_lua{
 		luaL_setfuncs(L, vector3lib, 0);
 		lua_setglobal(L, "Vector3");
 
+		lua_newtable(L);
+		luaL_Reg color3lib[]{
+			{"new", lua_newColor3},
+			{NULL, NULL}
+		};
+		luaL_setfuncs(L, color3lib, 0);
+		lua_setglobal(L, "Color3");
+
 		OpenBlox::Enum::registerLuaEnums(L);
 
 		OpenBlox::Instance::DataModel* dm = game->getDataModel();
@@ -226,6 +235,15 @@ namespace ob_lua{
 		double z = luaL_checknumber(L, 3);
 
 		OpenBlox::Type::Vector3* newGuy = new OpenBlox::Type::Vector3(x, y, z);
+		return newGuy->wrap_lua(L);
+	}
+
+	int lua_newColor3(lua_State* L){
+		double x = luaL_checknumber(L, 1);
+		double y = luaL_checknumber(L, 2);
+		double z = luaL_checknumber(L, 3);
+
+		OpenBlox::Type::Color3* newGuy = new OpenBlox::Type::Color3(x, y, z);
 		return newGuy->wrap_lua(L);
 	}
 

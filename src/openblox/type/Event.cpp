@@ -125,6 +125,11 @@ VarWrapper::VarWrapper(Vector3* var){
 	wrapped = var;
 }
 
+VarWrapper::VarWrapper(Color3* var){
+	type = TYPE_COLOR3;
+	wrapped = var;
+}
+
 VarWrapper::~VarWrapper(){}
 
 //End nasty type wrappers.
@@ -528,6 +533,11 @@ int Event::pushWrappersToLua(lua_State* L, std::vector<VarWrapper> argList){
 			case TYPE_VECTOR3: {
 				nargs++;
 				reinterpret_cast<Vector3*>(wrap.wrapped)->wrap_lua(L);
+				break;
+			}
+			case TYPE_COLOR3: {
+				nargs++;
+				reinterpret_cast<Color3*>(wrap.wrapped)->wrap_lua(L);
 				break;
 			}
 			default: {

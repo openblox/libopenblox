@@ -28,6 +28,7 @@
 
 #include "Vector2.h"
 #include "Vector3.h"
+#include "Color3.h"
 
 //C++11
 #include <functional>
@@ -156,6 +157,7 @@ class VarWrapper{
 		VarWrapper(OpenBlox::Enum::LuaEnum* var);
 		VarWrapper(Vector2* var);
 		VarWrapper(Vector3* var);
+		VarWrapper(Color3* var);
 		~VarWrapper();
 
 		void* wrapped;
