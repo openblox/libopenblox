@@ -26,6 +26,9 @@
 
 #include <enum/Enums.h>
 
+#include "Vector2.h"
+#include "Vector3.h"
+
 //C++11
 #include <functional>
 #include <initializer_list>
@@ -151,6 +154,8 @@ class VarWrapper{
 		VarWrapper(OpenBlox::Instance::Instance* var);
 		VarWrapper(OpenBlox::Enum::LuaEnumItem* var);
 		VarWrapper(OpenBlox::Enum::LuaEnum* var);
+		VarWrapper(Vector2* var);
+		VarWrapper(Vector3* var);
 		~VarWrapper();
 
 		void* wrapped;
