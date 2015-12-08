@@ -8,7 +8,7 @@ win32{
 }
 LIBS += -lopenal -lalut -lcrypto -lssl -lz -lOgreMain -llua
 
-CONFIG += dll
+CONFIG += dll warn_off
 
 HEADERS += raknet/*.h src/ob_lua/*.h src/openblox/*.h src/openblox/instance/*.h src/openblox/type/*.h src/openblox/enum/*.h
 SOURCES += raknet/*.cpp src/ob_lua/*.cpp src/openblox/*.cpp src/openblox/instance/*.cpp src/openblox/type/*.cpp src/openblox/enum/*.cpp

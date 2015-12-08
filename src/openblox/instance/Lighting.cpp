@@ -22,9 +22,65 @@
 BEGIN_INSTANCE
 	DEFINE_CLASS(Lighting, false, isDataModel, Instance);
 
-	Lighting::Lighting() : Instance(){}
+	Lighting::Lighting() : Instance(){
+
+	}
 
 	Lighting::~Lighting(){}
 
 	DEFINE_SERVICE(Lighting);
+
+	int Lighting::lua_getAmbient(lua_State* L){
+		Instance* inst = Instance::checkInstance(L, 1);
+		if(Lighting* li = dynamic_cast<Lighting*>(inst)){
+			return li->Ambient->wrap_lua(L);
+		}
+		return 0;
+	}
+
+	int Lighting::lua_setAmbient(lua_State* L){
+		Instance* inst = Instance::checkInstance(L, 1);
+		if(Lighting* li = dynamic_cast<Lighting*>(inst)){
+			OpenBlox::Type::Color3* newV = OpenBlox::Type::checkColor3(L, 2);
+			if(newV == NULL){
+				newV = new OpenBlox::Type::Color3(0, 0, 0);
+			}
+			if(!li->Ambient->equals(newV)){
+				li->Ambient = newV;
+
+				OpenBlox::OBEngine* eng = OpenBlox::OBEngine::getInstance();
+				if(eng){
+					Ogre::SceneManager* sceneMgr = eng->getSceneManager();
+					if(sceneMgr){
+						sceneMgr->setAmbientLight(Ogre::ColourValue(newV->r, newV->g, newV->b));
+					}
+				}
+
+				REPLICATE_PROPERTY_CHANGE(li, "Ambient", newV);
+
+				propertyChanged("Ambient", li);
+			}
+		}
+		return 0;
+	}
+
+	void Lighting::register_lua_property_getters(lua_State* L){
+		Instance::register_lua_property_getters(L);
+
+		luaL_Reg props[]{
+			{"Ambient", lua_getAmbient},
+			{NULL, NULL}
+		};
+		luaL_setfuncs(L, props, 0);
+	}
+
+	void Lighting::register_lua_property_setters(lua_State* L){
+		Instance::register_lua_property_setters(L);
+
+		luaL_Reg props[]{
+			{"Ambient", lua_setAmbient},
+			{NULL, NULL}
+		};
+		luaL_setfuncs(L, props, 0);
+	}
 END_INSTANCE
