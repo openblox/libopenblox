@@ -50,6 +50,8 @@ BEGIN_INSTANCE
 		if(BoolValue* bv = dynamic_cast<BoolValue*>(inst)){
 			bool newV = lua_toboolean(L, 2);
 			if(newV != bv->Value){
+				bv->Value = newV;
+
 				REPLICATE_PROPERTY_CHANGE(bv, "Value", newV);
 
 				propertyChanged("Value", bv);
