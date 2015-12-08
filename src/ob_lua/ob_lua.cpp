@@ -34,6 +34,9 @@
 #include <DataModel.h>
 //#include <ModuleScript.h>
 
+#include <type/Vector2.h>
+#include <type/Vector3.h>
+
 #include <curl/curl.h>
 
 namespace ob_lua{
@@ -186,6 +189,14 @@ namespace ob_lua{
 		luaL_setfuncs(L, vector2lib, 0);
 		lua_setglobal(L, "Vector2");
 
+		lua_newtable(L);
+		luaL_Reg vector3lib[]{
+			{"new", lua_newVector3},
+			{NULL, NULL}
+		};
+		luaL_setfuncs(L, vector3lib, 0);
+		lua_setglobal(L, "Vector3");
+
 		OpenBlox::Enum::registerLuaEnums(L);
 
 		OpenBlox::Instance::DataModel* dm = game->getDataModel();
@@ -206,6 +217,15 @@ namespace ob_lua{
 		double y = luaL_checknumber(L, 2);
 
 		OpenBlox::Type::Vector2* newGuy = new OpenBlox::Type::Vector2(x, y);
+		return newGuy->wrap_lua(L);
+	}
+
+	int lua_newVector3(lua_State* L){
+		double x = luaL_checknumber(L, 1);
+		double y = luaL_checknumber(L, 2);
+		double z = luaL_checknumber(L, 3);
+
+		OpenBlox::Type::Vector3* newGuy = new OpenBlox::Type::Vector3(x, y, z);
 		return newGuy->wrap_lua(L);
 	}
 

@@ -115,6 +115,16 @@ VarWrapper::VarWrapper(OpenBlox::Enum::LuaEnum* var){
 	wrapped = var;
 }
 
+VarWrapper::VarWrapper(Vector2* var){
+	type = TYPE_VECTOR2;
+	wrapped = var;
+}
+
+VarWrapper::VarWrapper(Vector3* var){
+	type = TYPE_VECTOR3;
+	wrapped = var;
+}
+
 VarWrapper::~VarWrapper(){}
 
 //End nasty type wrappers.
@@ -508,6 +518,16 @@ int Event::pushWrappersToLua(lua_State* L, std::vector<VarWrapper> argList){
 			case TYPE_ENUM: {
 				nargs++;
 				reinterpret_cast<OpenBlox::Enum::LuaEnum*>(wrap.wrapped)->wrap_lua(L);
+				break;
+			}
+			case TYPE_VECTOR2: {
+				nargs++;
+				reinterpret_cast<Vector2*>(wrap.wrapped)->wrap_lua(L);
+				break;
+			}
+			case TYPE_VECTOR3: {
+				nargs++;
+				reinterpret_cast<Vector3*>(wrap.wrapped)->wrap_lua(L);
 				break;
 			}
 			default: {
