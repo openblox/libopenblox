@@ -24,7 +24,9 @@
 BEGIN_INSTANCE
 	DEFINE_CLASS(ContentProvider, false, isDataModel, Instance);
 
-	ContentProvider::ContentProvider() : Instance(){}
+	ContentProvider::ContentProvider() : Instance(){
+		Name = ClassName;
+	}
 
 	ContentProvider::~ContentProvider(){}
 

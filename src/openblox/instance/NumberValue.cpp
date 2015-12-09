@@ -23,6 +23,7 @@ BEGIN_INSTANCE
 	DEFINE_CLASS(NumberValue, true, false, Instance);
 
 	NumberValue::NumberValue() : Instance(){
+		Name = ClassName;
 		Value = 0;
 	}
 

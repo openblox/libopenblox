@@ -22,7 +22,9 @@
 BEGIN_INSTANCE
 	DEFINE_CLASS(Camera, true, false, Instance);
 
-	Camera::Camera() : Instance(){}
+	Camera::Camera() : Instance(){
+		Name = ClassName;
+	}
 
 	Camera::~Camera(){}
 

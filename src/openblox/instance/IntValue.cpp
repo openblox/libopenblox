@@ -23,6 +23,7 @@ BEGIN_INSTANCE
 	DEFINE_CLASS(IntValue, true, false, Instance);
 
 	IntValue::IntValue() : Instance(){
+		Name = ClassName;
 		Value = 0;
 	}
 

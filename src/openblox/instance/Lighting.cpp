@@ -23,7 +23,7 @@ BEGIN_INSTANCE
 	DEFINE_CLASS(Lighting, false, isDataModel, Instance);
 
 	Lighting::Lighting() : Instance(){
-
+		Name = ClassName;
 	}
 
 	Lighting::~Lighting(){}
