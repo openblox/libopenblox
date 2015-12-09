@@ -22,7 +22,9 @@
 BEGIN_INSTANCE
 	DEFINE_CLASS(Folder, true, false, Instance);
 
-	Folder::Folder() : Instance(){}
+	Folder::Folder() : Instance(){
+		Name = ClassName;
+	}
 
 	Folder::~Folder(){}
 

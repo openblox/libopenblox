@@ -59,7 +59,7 @@ QString Instance::LuaClassName = "luaL_Instance_Instance";
 
 Instance::Instance(){
 	Archivable = true;
-	Name = ClassName;
+	Name = getClassName();
 	Parent = NULL;
 	ParentLocked = false;
 

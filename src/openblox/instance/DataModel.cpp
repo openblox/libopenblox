@@ -23,6 +23,8 @@ BEGIN_INSTANCE
 	DEFINE_CLASS(DataModel, false, false, Instance);
 
 	DataModel::DataModel() : ServiceProvider(){
+		Name = ClassName;
+
 		ParentLocked = true;
 
 		Loaded = new OpenBlox::Type::Event("Loaded");
