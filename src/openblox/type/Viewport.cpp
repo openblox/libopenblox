@@ -73,7 +73,7 @@ STATIC_GAME_INIT(Viewport){
 			{"OrientationMode", lua_setOrientationMode},
 		{NULL, NULL}
 	};
-	luaL_setfuncs(L, propsget, 0);
+	luaL_setfuncs(L, propsset, 0);
 	lua_rawset(L, -3);
 
 	lua_pushstring(L, "__tostring");
