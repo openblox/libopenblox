@@ -175,7 +175,7 @@ int Viewport::lua_toString(lua_State* L){
 	return 1;
 }
 
-int lua_getBackgroundColor(lua_State* L){
+int Viewport::lua_getBackgroundColor(lua_State* L){
 	Viewport* LuaViewport = checkViewport(L, 1);
 	if(LuaViewport){
 		Ogre::ColourValue bgCol = LuaViewport->realVP->getBackgroundColour();
@@ -184,7 +184,7 @@ int lua_getBackgroundColor(lua_State* L){
 	return 0;
 }
 
-int lua_setBackgroundColor(lua_State* L){
+int Viewport::lua_setBackgroundColor(lua_State* L){
 	Viewport* LuaViewport = checkViewport(L, 1);
 	if(LuaViewport){
 		Color3* bgCol = checkColor3(L, 2);
@@ -197,7 +197,7 @@ int lua_setBackgroundColor(lua_State* L){
 	return 0;
 }
 
-int lua_getWidth(lua_State* L){
+int Viewport::lua_getWidth(lua_State* L){
 	Viewport* LuaViewport = checkViewport(L, 1);
 	if(LuaViewport){
 		lua_pushnumber(L, LuaViewport->realVP->getWidth());
@@ -206,7 +206,7 @@ int lua_getWidth(lua_State* L){
 	return 0;
 }
 
-int lua_getHeight(lua_State* L){
+int Viewport::lua_getHeight(lua_State* L){
 	Viewport* LuaViewport = checkViewport(L, 1);
 	if(LuaViewport){
 		lua_pushnumber(L, LuaViewport->realVP->getHeight());
@@ -215,7 +215,7 @@ int lua_getHeight(lua_State* L){
 	return 0;
 }
 
-int lua_getLeft(lua_State* L){
+int Viewport::lua_getLeft(lua_State* L){
 	Viewport* LuaViewport = checkViewport(L, 1);
 	if(LuaViewport){
 		lua_pushnumber(L, LuaViewport->realVP->getLeft());
@@ -224,7 +224,7 @@ int lua_getLeft(lua_State* L){
 	return 0;
 }
 
-int lua_getTop(lua_State* L){
+int Viewport::lua_getTop(lua_State* L){
 	Viewport* LuaViewport = checkViewport(L, 1);
 	if(LuaViewport){
 		lua_pushnumber(L, LuaViewport->realVP->getTop());
@@ -233,7 +233,7 @@ int lua_getTop(lua_State* L){
 	return 0;
 }
 
-int lua_getActualWidth(lua_State* L){
+int Viewport::lua_getActualWidth(lua_State* L){
 	Viewport* LuaViewport = checkViewport(L, 1);
 	if(LuaViewport){
 		lua_pushinteger(L, LuaViewport->realVP->getActualWidth());
@@ -242,7 +242,7 @@ int lua_getActualWidth(lua_State* L){
 	return 0;
 }
 
-int lua_getActualHeight(lua_State* L){
+int Viewport::lua_getActualHeight(lua_State* L){
 	Viewport* LuaViewport = checkViewport(L, 1);
 	if(LuaViewport){
 		lua_pushinteger(L, LuaViewport->realVP->getActualHeight());
@@ -251,7 +251,7 @@ int lua_getActualHeight(lua_State* L){
 	return 0;
 }
 
-int lua_getActualLeft(lua_State* L){
+int Viewport::lua_getActualLeft(lua_State* L){
 	Viewport* LuaViewport = checkViewport(L, 1);
 	if(LuaViewport){
 		lua_pushinteger(L, LuaViewport->realVP->getActualLeft());
@@ -260,7 +260,7 @@ int lua_getActualLeft(lua_State* L){
 	return 0;
 }
 
-int lua_getActualTop(lua_State* L){
+int Viewport::lua_getActualTop(lua_State* L){
 	Viewport* LuaViewport = checkViewport(L, 1);
 	if(LuaViewport){
 		lua_pushinteger(L, LuaViewport->realVP->getActualTop());
@@ -269,7 +269,7 @@ int lua_getActualTop(lua_State* L){
 	return 0;
 }
 
-int lua_getShadowsEnabled(lua_State* L){
+int Viewport::lua_getShadowsEnabled(lua_State* L){
 	Viewport* LuaViewport = checkViewport(L, 1);
 	if(LuaViewport){
 		lua_pushboolean(L, LuaViewport->realVP->getShadowsEnabled());
@@ -278,7 +278,7 @@ int lua_getShadowsEnabled(lua_State* L){
 	return 0;
 }
 
-int lua_getSkiesEnabled(lua_State* L){
+int Viewport::lua_getSkiesEnabled(lua_State* L){
 	Viewport* LuaViewport = checkViewport(L, 1);
 	if(LuaViewport){
 		lua_pushboolean(L, LuaViewport->realVP->getSkiesEnabled());
@@ -287,7 +287,7 @@ int lua_getSkiesEnabled(lua_State* L){
 	return 0;
 }
 
-int lua_setShadowsEnabled(lua_State* L){
+int Viewport::lua_setShadowsEnabled(lua_State* L){
 	Viewport* LuaViewport = checkViewport(L, 1);
 	if(LuaViewport){
 		//Following ROBLOX's ways....
@@ -304,7 +304,7 @@ int lua_setShadowsEnabled(lua_State* L){
 	return 0;
 }
 
-int lua_setSkiesEnabled(lua_State* L){
+int Viewport::lua_setSkiesEnabled(lua_State* L){
 	Viewport* LuaViewport = checkViewport(L, 1);
 	if(LuaViewport){
 		//Following ROBLOX's ways....
@@ -321,7 +321,7 @@ int lua_setSkiesEnabled(lua_State* L){
 	return 0;
 }
 
-int lua_getOrientationMode(lua_State* L){
+int Viewport::lua_getOrientationMode(lua_State* L){
 	Viewport* LuaViewport = checkViewport(L, 1);
 	if(LuaViewport){
 		int orient = LuaViewport->realVP->getOrientationMode();
@@ -350,7 +350,7 @@ int lua_getOrientationMode(lua_State* L){
 	return 0;
 }
 
-int lua_setOrientationMode(lua_State* L){
+int Viewport::lua_setOrientationMode(lua_State* L){
 	Viewport* LuaViewport = checkViewport(L, 1);
 	if(LuaViewport){
 		OpenBlox::Enum::LuaEnumItem* val = OpenBlox::Enum::checkEnumItem(L, 2, OpenBlox::Enum::LuaOrientationMode);
