@@ -227,7 +227,7 @@ bool Vector3::isClose(Vector3* other, double epsilon){
 
 int Vector3::lua_index(lua_State* L){
 	Vector3* LuaVec3 = checkVector3(L, 1);
-	if(LuaVec3 != NULL){
+	if(LuaVec3){
 		const char* name = luaL_checkstring(L, 2);
 
 		lua_getmetatable(L, 1);

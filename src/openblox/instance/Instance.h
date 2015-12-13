@@ -128,6 +128,46 @@ BEGIN_INSTANCE
 		return ClassName; \
 	} \
 
+/**
+ * Used to define a class of the specified name, that cannot be created normally.
+ * @author John M. Harris, Jr.
+ */
+#define DEFINE_NOINSTCLASS(Class_Name, isAService, ParentClass) \
+	struct Class_Name##ClassMaker: public OpenBlox::ClassMaker{ \
+		OpenBlox::Instance::Instance* getInstance() const{ \
+			return NULL; \
+		} \
+		bool isA(const OpenBlox::Instance::Instance* obj){ \
+			return (dynamic_cast<const Class_Name*>(obj)) != 0; \
+		} \
+		bool isInstantiatable(){ \
+			return false; \
+		} \
+		bool isService(bool isDataModel){ \
+			OB_UNUSED(isDataModel); \
+			return isAService; \
+		} \
+		QString getParentClassName(){ \
+			return #ParentClass; \
+		} \
+	}; \
+	STATIC_GAME_INIT(Class_Name){ \
+		OpenBlox::ClassFactory::getInstance()->addClass(ClassName, new Class_Name##ClassMaker()); \
+		registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events); \
+	} \
+	QString Class_Name::ClassName = #Class_Name; \
+	QString Class_Name::LuaClassName = "luaL_Instance_" + ClassName; \
+	int Class_Name::wrap_lua(lua_State* L){ \
+		Class_Name** udata = (Class_Name**)lua_newuserdata(L, sizeof(*this)); \
+		*udata = this; \
+		luaL_getmetatable(L, LuaClassName.toStdString().c_str()); \
+		lua_setmetatable(L, -2); \
+		return 1; \
+	} \
+	QString Class_Name::getClassName(){ \
+		return ClassName; \
+	} \
+
 #define DEFINE_NONCREATE_CLASS(Class_Name, ParentClass) \
 	struct Class_Name##ClassMaker: public OpenBlox::ClassMaker{ \
 		OpenBlox::Instance::Instance* getInstance() const{ \

@@ -24,6 +24,27 @@ BEGIN_INSTANCE
 
 	Lighting::Lighting() : Instance(){
 		Name = ClassName;
+		Ambient = new OpenBlox::Type::Color3(0, 0, 0);
+		FogColor = new OpenBlox::Type::Color3(0, 0, 0);
+		FogStart = 0;
+		FogEnd = 0;
+
+		OpenBlox::OBEngine* eng = OpenBlox::OBEngine::getInstance();
+		if(eng){
+			Ogre::SceneManager* sceneMgr = eng->getSceneManager();
+			if(sceneMgr){
+				Ogre::ColourValue ambCol = sceneMgr->getAmbientLight();
+				delete Ambient;
+				Ambient = new OpenBlox::Type::Color3(ambCol.r, ambCol.g, ambCol.b);
+
+				Ogre::ColourValue fogCol = sceneMgr->getFogColour();
+				delete FogColor;
+				FogColor = new OpenBlox::Type::Color3(fogCol.r, fogCol.g, fogCol.b);
+
+				FogStart = sceneMgr->getFogStart();
+				FogEnd = sceneMgr->getFogEnd();
+			}
+		}
 	}
 
 	Lighting::~Lighting(){}

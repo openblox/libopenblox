@@ -26,8 +26,14 @@ BEGIN_INSTANCE
 
 class Camera: public Instance{
 	public:
-		Camera();
+		Camera(Ogre::Camera* realCam);
 		virtual ~Camera();
+
+		Ogre::Camera* realCam;
+
+		static int lua_getViewport(lua_State* L);
+
+		static void register_lua_property_getters(lua_State* L);
 
 		DECLARE_CLASS(Camera);
 };

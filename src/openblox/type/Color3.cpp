@@ -107,7 +107,7 @@ Color3* Color3::clone(){
 
 int Color3::lua_index(lua_State* L){
 	Color3* LuaColor3 = checkColor3(L, 1);
-	if(LuaColor3 != NULL){
+	if(LuaColor3){
 		const char* name = luaL_checkstring(L, 2);
 
 		lua_getmetatable(L, 1);
