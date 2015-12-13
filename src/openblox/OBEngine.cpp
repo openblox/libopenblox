@@ -159,7 +159,7 @@ namespace OpenBlox{
 			Instance::Camera* instCam = new Instance::Camera(cam);
 			instCam->setName("CurrentCamera");
 
-			instCam->setParent(game->getDataModel(), false);
+			instCam->setParent((Instance::Instance*)game->getDataModel(), false);
 			instCam->parentLock();
 		}
 	}
