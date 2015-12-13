@@ -159,8 +159,12 @@ int Viewport::lua_newindex(lua_State* L){
 			lua_remove(L, -2);
 
 			lua_pushvalue(L, 1);
-			lua_call(L, 1, 1);
-			return 1;
+			lua_pushvalue(L, 3);
+			lua_call(L, 2, 0);
+
+			return 0;
+		}else{
+			lua_pop(L, 3);
 		}
 		return luaL_error(L, "%s cannot be assigned to", name);
 	}

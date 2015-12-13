@@ -841,7 +841,7 @@ int Instance::lua_newindex(lua_State* L){
 		lua_getmetatable(L, 1);//-3
 		lua_getfield(L, -1, "__propertysetters");//-2
 		lua_getfield(L, -1, name);//-1
-		if (lua_iscfunction(L, -1)){
+		if(lua_iscfunction(L, -1)){
 			lua_remove(L, -2);
 			lua_remove(L, -2);
 
