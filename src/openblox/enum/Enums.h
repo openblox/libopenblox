@@ -44,6 +44,13 @@ namespace OpenBlox{ namespace Enum{
 		TextPlain,
 		TextXml
 	);
+
+	LENUM(OrientationMode,
+		Degree_180,
+		Portrait,
+		LandscapeRight,
+		LandscapeLeft
+	);
 }}
 
 #endif

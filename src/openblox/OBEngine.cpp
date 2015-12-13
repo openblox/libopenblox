@@ -25,6 +25,8 @@
 #include "ClassFactory.h"
 #include "TaskScheduler.h"
 
+#include "instance/Camera.h"
+
 namespace OpenBlox{
 	OBEngine* OBEngine::inst = NULL;
 
@@ -152,6 +154,14 @@ namespace OpenBlox{
 		mainLuaState = ob_lua::init();
 
 		static_init::execute(true);
+
+		if(root){
+			Instance::Camera* instCam = new Instance::Camera(cam);
+			instCam->setName("CurrentCamera");
+
+			instCam->SetParent(game->getDataModel());
+			instCam->parentLock();
+		}
 	}
 
 	OBGame* OBEngine::getGame(){

@@ -29,6 +29,7 @@
 #include "Vector2.h"
 #include "Vector3.h"
 #include "Color3.h"
+#include "Viewport.h"
 
 //C++11
 #include <functional>
@@ -64,7 +65,8 @@ enum VarType{
 	TYPE_VECTOR2,//11
 	TYPE_VECTOR3,//12
 	TYPE_COLOR3,//13
-	TYPE_UNKNOWN//14
+	TYPE_VIEWPORT,//14
+	TYPE_UNKNOWN//15
 };
 
 /**
@@ -158,6 +160,7 @@ class VarWrapper{
 		VarWrapper(Vector2* var);
 		VarWrapper(Vector3* var);
 		VarWrapper(Color3* var);
+		VarWrapper(Viewport* var);
 		~VarWrapper();
 
 		void* wrapped;

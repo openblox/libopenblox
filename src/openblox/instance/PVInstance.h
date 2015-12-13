@@ -17,35 +17,21 @@
  * along with OpenBlox.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Enums.h"
+#ifndef OPENBLOX_INSTANCE_PVINSTANCE_H_
+#define OPENBLOX_INSTANCE_PVINSTANCE_H_
 
-namespace OpenBlox{ namespace Enum{
-	DENUM(HttpContentType,
-		"ApplicationJson",
-		"ApplicationXml",
-		"ApplicationUrlEncoded",
-		"TextPlain",
-		"TextXml"
-	);
+#include "Instance.h"
 
-	DENUM(OrientationMode,
-		"Degree_180",
-		"Portrait",
-		"LandscapeRight",
-		"LandscapeLeft"
-	);
+BEGIN_INSTANCE
 
-	void registerLuaEnums(lua_State* L){
-		lua_newtable(L);
+class PVInstance: public Instance{
+	public:
+		PVInstance();
+		virtual ~PVInstance();
 
-		for(std::map<QString, LuaEnum*>::iterator it = LuaEnum::enums->begin(); it != LuaEnum::enums->end(); ++it){
-			LuaEnum* en = it->second;
+		DECLARE_CLASS(PVInstance);
+};
 
-			lua_pushstring(L, en->type.toStdString().c_str());
-			en->wrap_lua(L);
-			lua_rawset(L, -3);
-		}
+END_INSTANCE
 
-		lua_setglobal(L, "Enum");
-	}
-}}
+#endif

@@ -20,10 +20,12 @@
 #include "Camera.h"
 
 BEGIN_INSTANCE
-	DEFINE_CLASS(Camera, true, false, Instance);
+	DEFINE_NOINSTCLASS(Camera, false, Instance);
 
-	Camera::Camera() : Instance(){
+	Camera::Camera(Ogre::Camera* realCam) : Instance(){
 		Name = ClassName;
+
+		this->realCam = realCam;
 	}
 
 	Camera::~Camera(){}
@@ -31,5 +33,23 @@ BEGIN_INSTANCE
 	Instance* Camera::cloneImpl(Instance* newGuy){
 		Instance::cloneImpl(newGuy);
 		return newGuy;
+	}
+
+	int Camera::lua_getViewport(lua_State* L){
+		Instance* inst = Instance::checkInstance(L, 1);
+		if(Camera* cam = dynamic_cast<Camera*>(inst)){
+			return (new OpenBlox::Type::Viewport(cam->realCam->getViewport()))->wrap_lua(L);
+		}
+		return 0;
+	}
+
+	void Camera::register_lua_property_getters(lua_State* L){
+		Instance::register_lua_property_getters(L);
+
+		luaL_Reg props[]{
+			{"Viewport", lua_getViewport},
+			{NULL, NULL}
+		};
+		luaL_setfuncs(L, props, 0);
 	}
 END_INSTANCE
