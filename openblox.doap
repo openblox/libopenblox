@@ -14,7 +14,7 @@
 	An open source game engine, with a Lua API similar to that of ROBLOX.
 	</description>
 
-	<homepage rdf:resource="https://gitlab.com/openblox/openblox" />
+	<homepage rdf:resource="https://wiki.openblox.org" />
 	<license rdf:resource="http://www.gnu.org/licenses/gpl-3.0.html"/>
 	<bug-database rdf:resource="https://gitlab.com/openblox/openblox/issues" />
 
@@ -27,12 +27,17 @@
 			<foaf:mbox rdf:resource="mailto:johnmh@openmailbox.org" />
 			<foaf:homepage rdf:resource="https://johnmh.me/" />
 		</foaf:Person>
+		<foaf:Person>
+			<foaf:name>Mark Otaris</foaf:name>
+			<foaf:mbox rdf:resource="mailto:mark@openblox.org" />
+			<foaf:homepage rdf:resource="https://zero-one.tk/~mark/" />
+		</foaf:Person>
 	</maintainer>
 
 	<repository>
 		<GitRepository>
-			<location rdf:resource="https://gitlab.com/openblox/openblox.git"/>
-			<browse rdf:resource="https://gitlab.com/openblox/openblox"/>
+			<location rdf:resource="https://git.openblox.org/libopenblox"/>
+			<browse rdf:resource="https://git.openblox.org/libopenblox/"/>
 		</GitRepository>
 	</repository>
 </Project>
