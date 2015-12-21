@@ -31,7 +31,7 @@ STATIC_GAME_INIT(Color3){
 	luaL_newmetatable(L, lua_color3_name);
 
 	lua_pushstring(L, "__metatable");
-	lua_pushstring(L, "This metatable is locked");
+	lua_pushstring(L, OB_TRANSLATE("LuaType", "This metatable is locked"));
 	lua_rawset(L, -3);
 
 	lua_pushstring(L, "__methods");

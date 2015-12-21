@@ -32,7 +32,7 @@ namespace OpenBlox{ namespace Enum{
 		luaL_newmetatable(L, lua_enum_name);
 
 		lua_pushstring(L, "__metatable");
-		lua_pushstring(L, "This metatable is locked");
+		lua_pushstring(L, OB_TRANSLATE("LuaType", "This metatable is locked"));
 		lua_rawset(L, -3);
 
 		lua_pushstring(L, "__index");

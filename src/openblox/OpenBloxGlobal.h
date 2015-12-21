@@ -34,6 +34,7 @@
 
 //Qt
 #include <QtCore>
+#include <QtGlobal>
 
 //SDL
 #ifndef __ANDROID__
@@ -52,6 +53,8 @@ namespace OpenBlox{
 }
 
 #define OB_UNUSED(any_thing) (void)any_thing
+//TODO: Have OB_TRANSLATE call QCoreApplication::translate with the given context
+#define OB_TRANSLATE(context, src) src
 
 #ifdef __ANDROID__
 	#include <android/log.h>

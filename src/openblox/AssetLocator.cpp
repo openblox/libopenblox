@@ -26,7 +26,7 @@ namespace OpenBlox{
 
 	AssetLocator::AssetLocator(){
 		if(inst != NULL){
-			throw new OBException("Only one instance of AssetLocator can be created.");
+			throw new OBException(OB_TRANSLATE("AssetLocator", "Only one instance of AssetLocator can be created."));
 		}
 		inst = this;
 
@@ -85,7 +85,7 @@ namespace OpenBlox{
 			if(data->data){
 				delete[] data->data;
 			}
-			LOGE("[AssetLocator] Failed to allocate memory.");
+			LOGE("[AssetLocator] " OB_TRANSLATE("AssetLocator", "Failed to allocate memory."));
 			return 0;
 		}
 
@@ -119,7 +119,7 @@ namespace OpenBlox{
 		body->data = new char[4096];
 
 		if(body->data == NULL){
-			LOGE("[AssetLocator] Failed to allocate memory.");
+			LOGE("[AssetLocator] " OB_TRANSLATE("AssetLocator", "Failed to allocate memory."));
 			return NULL;
 		}
 

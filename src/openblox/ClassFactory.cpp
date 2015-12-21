@@ -25,7 +25,7 @@ namespace OpenBlox{
 
 	ClassFactory::ClassFactory(){
 		if(inst != NULL){
-			throw new OBException("Only one instance of ClassFactory can be created.");
+			throw new OBException(OB_TRANSLATE("ClassFactory", "Only one instance of ClassFactory can be created."));
 		}
 		inst = this;
 	}
@@ -49,7 +49,7 @@ namespace OpenBlox{
 	 */
 	void ClassFactory::addClass(QString className, ClassMaker* const classMaker){
 		if(!classMaker){
-			throw new OBException("classMaker cannot be NULL.");
+			throw new OBException(OB_TRANSLATE("ClassFactory", "classMaker cannot be NULL."));
 		}
 		lookupTable[className] = classMaker;
 	}
