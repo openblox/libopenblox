@@ -453,7 +453,7 @@ namespace ob_lua{
 			body.size = 0;
 			body.data = new char[4096];
 			if(body.data == NULL){
-				LOGE("[LoadLibrary] Failed to allocate memory.");
+				LOGE("[LoadLibrary] " OB_TRANSLATE("AssetLocator", "Failed to allocate memory."));
 				return luaL_error(L, "Error loading library %s", libName.c_str());
 			}
 
@@ -511,11 +511,7 @@ namespace ob_lua{
 					}
 				}
 				return newGuy->wrap_lua(L);
-			}else{
-				//LOGI("newGuy is NULL");
 			}
-		}else{
-			LOGI("ClassFactory is NULL!");
 		}
 		lua_pushnil(L);
 		return 1;

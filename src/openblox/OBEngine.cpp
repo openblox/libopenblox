@@ -32,12 +32,12 @@ namespace OpenBlox{
 
 	OBEngine::OBEngine(){
 		if(inst != NULL){
-			throw new OBException("Only one instance of OBEngine can exist, at one time.");
+			throw new OBException(OB_TRANSLATE("OBEngine", "Only one instance of OBEngine can exist, at one time."));
 		}
 		inst = this;
 
 		if(!QCoreApplication::instance()){
-			throw new OBException("You must have an instance of QCoreApplication (Or QGuiApplication/QApplication) before creating OpenBlox::OBEngine.");
+			throw new OBException(OB_TRANSLATE("OBEngine", "Only one instance of OBEngine can exist, at one time."));
 		}
 
 		started = false;
@@ -72,7 +72,7 @@ namespace OpenBlox{
 
 	void OBEngine::setOgreRoot(Ogre::Root* _root){
 		if(started){
-			throw new OBException("This OBEngine is already initialized.");
+			throw new OBException(OB_TRANSLATE("OBEngine", "This OBEngine is already initialized."));
 		}
 		root = _root;
 	}
@@ -83,7 +83,7 @@ namespace OpenBlox{
 
 	void OBEngine::setRenderWindow(Ogre::RenderWindow* _renderWindow){
 		if(started){
-			throw new OBException("This OBEngine is already initialized.");
+			throw new OBException(OB_TRANSLATE("OBEngine", "This OBEngine is already initialized."));
 		}
 		renderWindow = _renderWindow;
 	}
@@ -108,7 +108,7 @@ namespace OpenBlox{
 
 	void OBEngine::setServer(bool isServer){
 		if(started){
-			throw new OBException("This OBEngine is already initialized.");
+			throw new OBException(OB_TRANSLATE("OBEngine", "This OBEngine is already initialized."));
 		}
 		is_Server = isServer;
 	}
@@ -125,13 +125,13 @@ namespace OpenBlox{
 
 	void OBEngine::init(){
 		if(started){
-			throw new OBException("This OBEngine is already initialized.");
+			throw new OBException(OB_TRANSLATE("OBEngine", "This OBEngine is already initialized."));
 		}
 		started = true;
 
 		#ifndef OB_NO_GRAPHICS
 		if(root && !renderWindow){
-			throw new OBException("If you set an Ogre::Root*, you must also set an Ogre::RenderWindow* before initializing OBEngine.");
+			throw new OBException(OB_TRANSLATE("OBEngine", "If you set an Ogre::Root*, you must also set an Ogre::RenderWindow* before initializing OBEngine."));
 		}
 		if(root){
 			sceneMgr = root->createSceneManager(Ogre::ST_GENERIC);
@@ -228,7 +228,7 @@ namespace OpenBlox{
 	}
 
 	void OBEngine::info(QString output){
-		std::cout << "[INFO] " << output.toStdString() << std::endl;
+		std::cout << "[" << OB_TRANSLATE("OBEngine", "INFO") << "] " << output.toStdString() << std::endl;
 	}
 
 	void OBEngine::print(QString output){
@@ -236,7 +236,7 @@ namespace OpenBlox{
 	}
 
 	void OBEngine::warn(QString output){
-		std::cout << "[WARN] " << output.toStdString() << std::endl;
+		std::cout << "[" << OB_TRANSLATE("OBEngine", "WARN") << "] " << output.toStdString() << std::endl;
 	}
 
 	void OBEngine::print_error(QString output){

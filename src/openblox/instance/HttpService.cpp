@@ -47,7 +47,7 @@ BEGIN_INSTANCE
 		body.size = 0;
 		body.data = new char[4096];
 		if(body.data == NULL){
-			LOGE("[HttpService] Failed to allocate memory.");
+			LOGE("[HttpService] " OB_TRANSLATE("AssetLocator", "Failed to allocate memory."));
 			return NULL;
 		}
 
@@ -94,7 +94,7 @@ BEGIN_INSTANCE
 		body.size = 0;
 		body.data = new char[4096];
 		if(body.data == NULL){
-			LOGE("[HttpService] Failed to allocate memory.");
+			LOGE("[HttpService] " OB_TRANSLATE("AssetLocator", "Failed to allocate memory."));
 			return NULL;
 		}
 
@@ -233,7 +233,7 @@ BEGIN_INSTANCE
 					QString url = QString(luaL_checkstring(L, 2));
 
 					if(!url.startsWith("http://") && !url.startsWith("https://")){
-						return luaL_error(L, "trust check failed");
+						return luaL_error(L, OB_TRANSLATE("HttpService", "Trust check failed."));
 					}
 
 					bool nocache = false;
@@ -272,7 +272,7 @@ BEGIN_INSTANCE
 					}
 
 					if(!url.startsWith("http://") && !url.startsWith("https://")){
-						return luaL_error(L, "trust check failed");
+						return luaL_error(L, OB_TRANSLATE("HttpService", "Trust check failed."));
 					}
 
 					QString body = hs->PostAsync(url, data, cont_type);

@@ -550,7 +550,7 @@ void Instance::registerLuaClass(QString className, luaRegisterFunc register_meta
 	register_metamethods(L);
 
 	lua_pushstring(L, "__metatable");
-	lua_pushstring(L, "This metatable is locked");
+	lua_pushstring(L, OB_TRANSLATE("LuaType", "This metatable is locked"));
 	lua_rawset(L, -3);
 
 	//Methods
@@ -1065,7 +1065,7 @@ int Instance::lua_setParent(lua_State* L){
 			}
 			return 0;
 		}else{
-			return luaL_argerror(L, 2, "Instance expected");
+			return luaL_argerror(L, 2, OB_TRANSLATE("Instance", "Instance expected"));
 		}
 		return 0;
 	}
@@ -1196,7 +1196,7 @@ int Instance::lua_FindFirstChild(lua_State* L){
 			if(lua_isboolean(L, 3)){
 				recursive = lua_toboolean(L, 3);
 			}else{
-				luaL_argerror(L, 3, "boolean expected");
+				luaL_argerror(L, 3, OB_TRANSLATE("Instance", "Instance expected"));
 			}
 		}
 		Instance* foundStuff = inst->FindFirstChild(kidName, recursive);
@@ -1292,7 +1292,7 @@ int Instance::lua_IsAncestorOf(lua_State* L){
 			lua_pushboolean(L, isIt);
 			return 1;
 		}else{
-			return luaL_argerror(L, 2, "Instance expected");
+			return luaL_argerror(L, 2, OB_TRANSLATE("Instance", "Instance expected"));
 		}
 		return 0;
 	}
@@ -1320,7 +1320,7 @@ int Instance::lua_IsDescendantOf(lua_State* L){
 			lua_pushboolean(L, isIt);
 			return 1;
 		}else{
-			return luaL_argerror(L, 2, "Instance expected");
+			return luaL_argerror(L, 2, OB_TRANSLATE("Instance", "Instance expected"));
 		}
 		return 0;
 	}

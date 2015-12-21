@@ -249,6 +249,6 @@ class Event{
 
 Event* checkEvent(lua_State* L, int n);
 
-END_OB_TYPE
+}}
 
 #endif
