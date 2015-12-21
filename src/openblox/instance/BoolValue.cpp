@@ -23,6 +23,7 @@ BEGIN_INSTANCE
 	DEFINE_CLASS(BoolValue, true, false, Instance);
 
 	BoolValue::BoolValue() : Instance(){
+		Name = ClassName;
 		Value = false;
 	}
 
