@@ -1,12 +1,12 @@
 TEMPLATE = lib
-QT = core gui websockets
+QT = core gui
 TARGET = openblox
 win32{
 	LIBS += -lws2_32 -lcurldll -lidn
 }else{
 	LIBS += -lcurl -lboost_system
 }
-LIBS += -lopenal -lalut -lcrypto -lssl -lz -lOgreMain -llua
+LIBS += -lopenal -lalut -lcrypto -lssl -lz -lOgreMain -llua -lSDL2
 
 CONFIG += dll warn_off
 
