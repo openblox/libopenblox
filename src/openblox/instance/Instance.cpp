@@ -1332,7 +1332,7 @@ int Instance::lua_GetNetworkID(lua_State* L){
 	if(inst){
 		#ifndef OB_NO_NETWORKING
 		lua_pushnumber(L, inst->GetNetworkID());
-		#elif
+		#else
 		lua_pushnumber(L, 0);
 		#endif
 		return 1;
