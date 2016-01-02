@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 John M. Harris, Jr.
+ * Copyright 2016 John M. Harris, Jr.
  *
  * This file is part of OpenBlox.
  *
