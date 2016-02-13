@@ -1,4 +1,4 @@
-AC_INIT(openblox-server, vesion-0.1.1)
+AC_INIT(libopenblox, vesion-0.1.1)
 AC_PROG_CC
 AC_PROG_CXX
 
