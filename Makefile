@@ -30,20 +30,20 @@ all:	QtMakefile
 	$(MAKE) -j 2 -f QtMakefile
 
 install:
-	mkdir -p $DESTDIR$man3dir
-	cp -f libopenblox.3.gz $DESTDIR$man3dir
-	mkdir -p $DESTDIR$libdir
-	cp -f libopenblox.so $DESTDIR$libdir
-	mkdir -p $DESTDIR$includedir/libopenblox/ob_lua
-	cp -f src/ob_lua/*.h $DESTDIR$includedir/libopenblox/ob_lua
-	mkdir -p $DESTDIR$includedir/libopenblox/openblox
-	cp -f src/openblox/*.h $includedir/libopenblox/openblox
-	mkdir -p $DESTDIR$includedir/libopenblox/openblox/enum
-	cp -f src/openblox/enum/*.h $DESTDIR$includedir/libopenblox/openblox/enum
-	mkdir -p $DESTDIR$includedir/libopenblox/openblox/instance
-	cp -f src/openblox/instance/*.h $DESTDIR$includedir/libopenblox/openblox/instance
-	mkdir -p $DESTDIR$includedir/libopenblox/openblox/type
-	cp -f src/openblox/type/*.h $DESTDIR$includedir/libopenblox/openblox/type
+	mkdir -p $(DESTDIR)$(man3dir)
+	cp -f libopenblox.3.gz $(DESTDIR)$(man3dir)
+	mkdir -p $(DESTDIR)$(libdir)
+	cp -f libopenblox.so $(DESTDIR)$(libdir)
+	mkdir -p $(DESTDIR)$(includedir)/libopenblox/ob_lua
+	cp -f src/ob_lua/*.h $(DESTDIR)$(includedir)/libopenblox/ob_lua
+	mkdir -p $(DESTDIR)$(includedir)/libopenblox/openblox
+	cp -f src/openblox/*.h $(DESTDIR)$(includedir)/libopenblox/openblox
+	mkdir -p $(DESTDIR)$(includedir)/libopenblox/openblox/enum
+	cp -f src/openblox/enum/*.h $(DESTDIR)$(includedir)/libopenblox/openblox/enum
+	mkdir -p $(DESTDIR)$(includedir)/libopenblox/openblox/instance
+	cp -f src/openblox/instance/*.h $(DESTDIR)$(includedir)/libopenblox/openblox/instance
+	mkdir -p $(DESTDIR)$(includedir)/libopenblox/openblox/type
+	cp -f src/openblox/type/*.h $(DESTDIR)$(includedir)/libopenblox/openblox/type
 
 docs: doxygen
 
