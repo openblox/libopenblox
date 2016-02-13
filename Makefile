@@ -41,9 +41,9 @@ install:
 	mkdir -p $DESTDIR$includedir/libopenblox/openblox/enum
 	cp -f src/openblox/enum/*.h $DESTDIR$includedir/libopenblox/openblox/enum
 	mkdir -p $DESTDIR$includedir/libopenblox/openblox/instance
-	cp -f src/openblox/instance $DESTDIR$includedir/libopenblox/openblox/instance
+	cp -f src/openblox/instance/*.h $DESTDIR$includedir/libopenblox/openblox/instance
 	mkdir -p $DESTDIR$includedir/libopenblox/openblox/type
-	cp -f src/openblox/type $DESTDIR$includedir/libopenblox/openblox/type
+	cp -f src/openblox/type/*.h $DESTDIR$includedir/libopenblox/openblox/type
 
 docs: doxygen
 
