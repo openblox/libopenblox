@@ -6,7 +6,7 @@ win32{
 }else{
 	LIBS += -lcurl -lboost_system
 }
-LIBS += -lopenal -lalut -lcrypto -lssl -lz -lOgreMain -llua -lSDL2
+LIBS += -lopenal -lalut -lOgreMain -llua -lSDL2
 
 CONFIG += dll warn_off
 

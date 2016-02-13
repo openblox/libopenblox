@@ -12,3 +12,7 @@ release/
 /docs/
 /libopenblox.so
 /libopenblox.so.*
+/autom4te.cache
+/Makefile
+/config.log
+/config.status

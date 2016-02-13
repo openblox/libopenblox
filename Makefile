@@ -2,16 +2,19 @@
 
 PRO = OpenBlox.pro
 
-ifeq ($(OS),Windows_NT)
-	QMAKE = C:\Qt\5.4\mingw491_32\bin\qmake.exe
-else
-	UNAME_S := $(shell uname -s)
-	ifeq ($(UNAME_S),FreeBSD)
-		QMAKE = /usr/local/lib/qt5/bin/qmake
-	else
-		QMAKE = qmake
-	endif
-endif
+PACKAGE_TARNAME = libopenblox
+
+QMAKE = /usr/bin/qmake
+
+prefix = /usr/local
+exec_prefix = ${prefix}
+
+bindir = ${exec_prefix}/bin
+datadir = ${prefix}/share/libopenblox
+includedir = ${prefix}/include
+docdir = ${prefix}/share/doc/${PACKAGE_TARNAME}
+libdir = ${exec_prefix}/lib
+man3dir = ${prefix}/share/man/man3
 
 clean:
 	rm -fr QtMakefile QtMakefile.Debug QtMakefile.Release debug release libopenblox.so libopenblox.so.*
@@ -28,6 +31,9 @@ release:	QtMakefile
 all:	QtMakefile
 	$(MAKE) -j 2 -f QtMakefile
 
+install:
+	echo ${exec_prefix}/lib
+
 docs: doxygen
 
-.PHONY: all clean debug release QtMakefile docs
+.PHONY: all clean debug release QtMakefile install docs

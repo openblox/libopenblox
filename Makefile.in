@@ -1,0 +1,49 @@
+.DEFAULT_GOAL := all
+
+PRO = OpenBlox.pro
+
+PACKAGE_TARNAME = libopenblox
+
+QMAKE = @QMAKEVAR@
+
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+includedir = @includedir@
+docdir = @docdir@
+libdir = @libdir@
+man3dir = @mandir@/man3
+
+clean:
+	rm -fr QtMakefile QtMakefile.Debug QtMakefile.Release debug release libopenblox.so libopenblox.so.*
+
+QtMakefile:
+	$(QMAKE) -o QtMakefile $(PRO) CONFIG+=debug_and_release
+
+debug:	QtMakefile
+	$(MAKE) -j 2 -f QtMakefile debug
+
+release:	QtMakefile
+	$(MAKE) -j 2 -f QtMakefile release
+
+all:	QtMakefile
+	$(MAKE) -j 2 -f QtMakefile
+
+install:
+	cp -f libopenblox.3.gz $man3dir
+	cp -f libopenblox.so $libdir
+	mkdir -p $includedir/libopenblox
+	mkdir -p $includedir/libopenblox/ob_lua
+	cp -f src/ob_lua/*.h $includedir/libopenblox/ob_lua
+	mkdir -p $includedir/libopenblox/openblox
+	cp -f src/openblox/*.h $includedir/libopenblox/openblox
+	mkdir -p $includedir/libopenblox/openblox/enum
+	cp -f src/openblox/enum/*.h $includedir/libopenblox/openblox/enum
+	mkdir -p $includedir/libopenblox/openblox/instance
+	cp -f src/openblox/instance $includedir/libopenblox/openblox/instance
+	mkdir -p $includedir/libopenblox/openblox/type
+	cp -f src/openblox/type $includedir/libopenblox/openblox/type
+
+docs: doxygen
+
+.PHONY: all clean debug release QtMakefile install docs
