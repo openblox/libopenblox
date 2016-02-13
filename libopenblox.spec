@@ -5,7 +5,7 @@ Summary:        The core of the OpenBlox game engine.
 
 License:        LGPLv3+
 URL:            https://git.openblox.org/libopenblox.git/
-Source0:        https://openblox.org/~johnmh/libopenblox/libopenblox-0.1.1.tar.gz
+Source0:        https://openblox.org/~johnmh/libopenblox/libopenblox-master.tar.gz
 
 BuildRequires:  qt5-qtbase-devel SDL2-devel libcurl-devel openal-soft-devel freealut-devel ogre-devel lua-devel
 Requires:       qt5-qtbase SDL2 libcurl boost-system openal-soft freealut ogre lua
