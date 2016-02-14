@@ -41,7 +41,6 @@ namespace OpenBlox{
 			virtual char* getName() = 0;
 			virtual char* getAuthor() = 0;
 			virtual char* getVersion() = 0;
-			std::vector<char*> getDependencies();
 
 			virtual bool init() = 0;
 			virtual void shutdown() = 0;

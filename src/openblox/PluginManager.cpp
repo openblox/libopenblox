@@ -87,13 +87,6 @@ namespace OpenBlox{
 		}
 	}
 
-	std::vector<char*> Plugin::getDependencies(){
-		if(isValid()){
-			return plug->getDependencies();
-		}
-		return std::vector<char*>();
-	}
-
 	PluginManager* PluginManager::inst = NULL;
 
 	PluginManager::PluginManager(){

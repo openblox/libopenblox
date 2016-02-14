@@ -45,8 +45,6 @@ namespace OpenBlox{
 			bool init();
 			bool initAfterGame();
 			void shutdown();
-
-			std::vector<char*> getDependencies();
 		private:
 			char* fileName;
 			IOBPlugin* plug;
