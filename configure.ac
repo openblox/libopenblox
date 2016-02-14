@@ -51,3 +51,4 @@ AC_PATH_PROGS(QMAKEVAR, [qmake qmake-qt5])
 
 #makefile
 AC_OUTPUT(Makefile)
+AC_OUTPUT(OpenBlox.pro)

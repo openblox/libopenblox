@@ -16,3 +16,5 @@ release/
 /Makefile
 /config.log
 /config.status
+/OpenBlox.pro
+/OpenBloxTest.pro
