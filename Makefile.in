@@ -38,7 +38,6 @@ install:
 	cp -f libopenblox.3.gz $(DESTDIR)$(man3dir)
 	mkdir -p $(DESTDIR)$(libdir)
 	cp -f libopenblox.so $(DESTDIR)$(libdir)
-	ln -s $(DESTDIR)$(libdir)/libopenblox.so $(DESTDIR)$(libdir)/libopenblox.so.1
 	mkdir -p $(DESTDIR)$(includedir)/libopenblox/raknet
 	cp -f raknet/*.h $(DESTDIR)$(includedir)/libopenblox/raknet
 	mkdir -p $(DESTDIR)$(includedir)/libopenblox/ob_lua
