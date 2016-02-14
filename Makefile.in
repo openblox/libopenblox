@@ -32,6 +32,7 @@ all:	QtMakefile
 
 install:
 	mkdir -p $(DESTDIR)$(man3dir)
+	gzip libopenblox.3
 	cp -f libopenblox.3.gz $(DESTDIR)$(man3dir)
 	mkdir -p $(DESTDIR)$(libdir)
 	cp -f libopenblox.so $(DESTDIR)$(libdir)
