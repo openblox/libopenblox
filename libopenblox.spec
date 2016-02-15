@@ -47,5 +47,5 @@ find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 %{_includedir}/*
 
 %changelog
-* Sat Feb 13 2016 John M. Harris, Jr. <johnmh@openmailbox.org> - 0.1.1
+* Sat Feb 13 2016 - 0.1.1
 - Initial packaging of libopenblox.
