@@ -23,7 +23,6 @@ Requires:       %{name}%{?_isa} = %{version}-%{release}
 The %{name}-devel package contains header files for
 developing applications that use %{name}.
 
-
 %prep
 %setup -q -n libopenblox-master
 
@@ -36,21 +35,17 @@ rm -rf $RPM_BUILD_ROOT
 %make_install
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 
-
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig
 
-
 %files
-%doc
 %{_libdir}/*
 %{_mandir}/man3/*
 
 %files devel
-%doc
 %{_includedir}/*
 
 %changelog
-* Sat Feb 13 2016 John M. Harris, Jr. <johnmh@openblox.org> - 0.1.1
+* Sat Feb 13 2016 John M. Harris, Jr. <johnmh@openmailbox.org> - 0.1.1
 - Initial packaging of libopenblox.
