@@ -11,7 +11,7 @@
 	</shortdesc>
 
 	<description xml:lang="en">
-	An open source game engine, with a Lua API similar to that of ROBLOX.
+	An open source game engine, providing a Lua API similar to that of ROBLOX.
 	</description>
 
 	<homepage rdf:resource="https://wiki.openblox.org" />
