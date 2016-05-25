@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT([libopenblox], [version-0.1.1], [johnmh@openblox.org])
+AC_INIT([libopenblox], [0.1.1], [johnmh@openblox.org])
 AC_PROG_CXX
 
 AC_CANONICAL_SYSTEM
