@@ -67,7 +67,7 @@ change's author.
 COMMIT MESSAGE GUIDELINES
 
 - Start with a single unindented summary line explaining the change;
-  do not end this line with a peroid.
+  do not end this line with a period.
 
 - After the summary line, there should be an empty line, followed by a
   more in depth summary of your changes.
