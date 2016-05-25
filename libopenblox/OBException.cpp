@@ -20,40 +20,18 @@
 #include "OBException.h"
 
 namespace OB{
-	/**
-	 * Creates an OBException with no message.
-	 *
-	 * @author John M. Harris, Jr.
-	 */
 	OBException::OBException(){}
 
-	/**
-	 * Creates an OBException with the message defined by the parameter "what"
-	 *
-	 * @param std::string what
-	 * @author John M. Harris, Jr.
-	 */
 	OBException::OBException(std::string what){
 		this->what = what;
 	}
 
 	OBException::~OBException(){}
 
-	/**
-	 * Returns the message of this OBException.
-	 *
-	 * @returns std::string message
-	 * @author John M. Harris, Jr.
-	 */
 	std::string OBException::getMessage(){
 		return what;
 	}
 
-	/**
-	 * Convenience function to throw this exception.
-	 *
-	 * @author John M. Harris, Jr.
-	 */
 	void OBException::raise(){
 		throw *this;
 	}

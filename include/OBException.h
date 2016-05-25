@@ -39,13 +39,36 @@ namespace OB{
 	 */
 	class OBException{
 		public:
+			/**
+			 * Creates an OBException with no message.
+			 *
+			 * @author John M. Harris, Jr.
+			 */
 			OBException();
+
+			/**
+			 * Creates an OBException with the message defined by the parameter "what"
+			 *
+			 * @param std::string what
+			 * @author John M. Harris, Jr.
+			 */
 			OBException(std::string string);
 			virtual ~OBException();
 
+			/**
+			 * Returns the message of this OBException.
+			 *
+			 * @returns std::string message
+			 * @author John M. Harris, Jr.
+			 */
 			std::string getMessage();
 			std::string toString();
 
+			/**
+			 * Convenience function to throw this exception.
+			 *
+			 * @author John M. Harris, Jr.
+			 */
 			void raise();
 
 			operator std::string() const{
@@ -59,3 +82,6 @@ namespace OB{
 
 #endif // OB_OBEXCEPTION
 
+// Local Variables:
+// mode: c++
+// End:
