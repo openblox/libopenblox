@@ -1,7 +1,7 @@
 This document describes the process of contributing to OpenBlox as a
 developer. This file should be considered a more in-depth version of
 the "Contributing" page of the OpenBlox wiki, located at
-https://wiki.openblox.org/wiki/Contributing
+https://wiki.openblox.org/wiki/Contributing.
 
 
 INTRODUCTION
@@ -28,7 +28,7 @@ You can subscribe to the announce@lists.openblox.org and
 devel@lists.openblox.org mailing lists. The announce list is low
 traffic, and is only used to announce important events such as feature
 freezes before a release. You will find more information and archives
-at https://lists.openblox.org/cgi-bin/mailman/listinfo
+at https://lists.openblox.org/cgi-bin/mailman/listinfo.
 
 You can develop and commit changes in your own copy of the repository,
 and discuss proposed changes on the devel mailing list. Frequent
