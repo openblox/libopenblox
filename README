@@ -1,0 +1,40 @@
+OpenBlox
+
+This directory tree contains libopenblox, the core of the OpenBlox
+game engine.
+
+The file INSTALL in this directory tells you how to build and install
+OpenBlox on various systems.
+
+The file CONTRIBUTE contains information on contributing to OpenBlox
+as a developer.
+
+You may encounter bugs in OpenBlox. If you do, please report them. Bug
+reports are very valuable to the OpenBlox project, since they allow us
+to notice and fix problems we don't have on our machines, or in code
+we don't use often. Please submit them on https://bugs.openblox.org/
+
+If nobody notices quickly, you may also find it useful to discuss the
+issue on one of the OpenBlox mailing lists, best suited to your
+issue. You can find a list of all OpenBlox mailing lists at
+https://lists.openblox.org/cgi-bin/mailman/listinfo
+
+NOTE ON COPYRIGHT YEARS
+
+In all copyright notices, unless otherwise stated, when a range of
+years appears, this is an inclusive range that applies to every year
+in the range. For example: 2015-2018 represents the years 2015, 2016,
+2017, and 2018.
+
+OpenBlox is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+OpenBlox is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the Lesser GNU General Public License
+along with OpenBlox.  If not, see <https://www.gnu.org/licenses/>.
