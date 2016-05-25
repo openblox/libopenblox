@@ -6,7 +6,7 @@ game engine.
 The file INSTALL in this directory tells you how to build and install
 OpenBlox on various systems.
 
-The file CONTRIBUTE contains information on contributing to OpenBlox
+The file HACKING contains information on contributing to OpenBlox
 as a developer.
 
 You may encounter bugs in OpenBlox. If you do, please report them. Bug
@@ -25,6 +25,8 @@ In all copyright notices, unless otherwise stated, when a range of
 years appears, this is an inclusive range that applies to every year
 in the range. For example: 2015-2018 represents the years 2015, 2016,
 2017, and 2018.
+
+This file is part of OpenBlox.
 
 OpenBlox is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by

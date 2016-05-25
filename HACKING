@@ -1,0 +1,104 @@
+This document describes the process of contributing to OpenBlox as a
+developer. This file should be considered a more in-depth version of
+the "Contributing" page of the OpenBlox wiki, located at
+https://wiki.openblox.org/wiki/Contributing
+
+
+INTRODUCTION
+
+OpenBlox uses the Git version control system, with its main repository
+hosted on git.openblox.org.
+
+The following shell commands would set up a clone of the libopenblox
+repository in the directory "libopenblox.git" under your current
+directory:
+
+	git config --global user.name 'Your Name'
+	git config --global user.email 'your.name@example.com'
+	git clone https://git.openblox.org/libopenblox.git
+
+OpenBlox uses GNU Autotools to prepare OpenBlox to be built. In
+particular, libopenblox uses libtool in addition to autoconf and
+automake.
+
+
+GETTING INVOLVED
+
+You can subscribe to the announce@lists.openblox.org and
+devel@lists.openblox.org mailing lists. The announce list is low
+traffic, and is only used to announce important events such as feature
+freezes before a release. You will find more information and archives
+at https://lists.openblox.org/cgi-bin/mailman/listinfo
+
+You can develop and commit changes in your own copy of the repository,
+and discuss proposed changes on the devel mailing list. Frequent
+contributors may request write access on the same list.
+
+
+SUBMITTING YOUR CHANGES
+
+To submit a potential change to OpenBlox, send a patch containing your
+changes to the devel mailing list. You will need to subscribe to the
+list before you can do this.
+
+To email a patch, you can use a shell command like `git format-patch
+commit` to create a file, and then attach the file to your email. In
+this case, commit may be a commit's hash, HEAD~1 for the previous
+commit, HEAD~2 for the one before that and so on. This packages the
+patch's commit messages and changes. To send a patch without
+additional remarks, you can use a command like
+`git send-email --to=devel@lists.openblox.org 0001-DESCRIPTION.patch`.
+
+
+COMMITTING CHANGES BY OTHERS
+
+If committing changes written by somebody else, commit in their name,
+not yours. You can use `git commit --author="AUTHOR"` to specify a
+change's author.
+
+
+COMMIT MESSAGE GUIDELINES
+
+- Start with a single unindented summary line explaining the change;
+  do not end this line with a peroid.
+
+- After the summary line, there should be an empty line, followed by a
+  more in depth summary of your changes.
+
+- Limit lines in commit messages to 71 characters, unless they consist
+  of a single word of at most 140 characters.
+
+- If the commit has more than one author, the commit message should
+  contain separate lines to mention the other authors, like the
+  following:
+
+	Co-authored-by: John M. Harris, Jr. <johnmh@openblox.org>
+
+- Commit messages should only contain printable UTF-8 characters.
+
+- If a commit is related directly to a bug on the OpenBlox bug
+  tracker, the commit message should contain "Bug#NNNN" on the first
+  line. This can be enclosed in parenthesis, for example: "(Bug#123)"
+
+- Use present tense: Describe "what the change does", not "what the
+  change did".
+
+
+BRANCHES
+
+Development normally takes place on the master branch. Specialized
+features and tasks that are expected to take a while are developed on
+other branches before being possibly merged into master.
+
+
+BUG TRACKER
+
+The OpenBlox project uses a Bugzilla installation at
+https://bugs.openblox.org/ to track bugs and enhancement ideas.
+
+DOCUMENT YOUR CHANGES
+
+When you make a change to OpenBlox sources, you should update the
+relevant wiki pages. When documenting Instance classes, we often refer
+to lines of code. These references need to be updated when their
+source document changes.
