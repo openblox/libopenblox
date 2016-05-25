@@ -49,6 +49,13 @@ patch's commit messages and changes. To send a patch without
 additional remarks, you can use a command like
 `git send-email --to=devel@lists.openblox.org 0001-DESCRIPTION.patch`.
 
+It is important that any nontrivial changes (you can consider as
+trivial anything that changes less than twenty lines), you need to add
+a signed-off-by line to the commit message with the `--signoff` option
+of the `git commit` command. This indicates that you certify the
+Developer's Certificate of Origin
+(https://wiki.openblox.org/wiki/Developer%27s_Certificate_of_Origin).
+
 
 COMMITTING CHANGES BY OTHERS
 
