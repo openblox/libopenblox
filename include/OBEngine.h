@@ -33,6 +33,12 @@
 #ifndef OB_OBENGINE
 #define OB_OBENGINE
 
+#ifndef __I_IRRLICHT_DEVICE_H_INCLUDED__
+namespace irr{
+	class IrrlichtDevice;
+}
+#endif
+
 namespace OB{
 	class OBEngine{
 		public:
@@ -93,9 +99,30 @@ namespace OB{
 			 * @author John M. Harris, Jr.
 			 */
 			ob_int64 getStartTime();
+
+			/**
+			 * Returns true if OBEngine is meant to create its
+			 * own window on initialization.
+			 *
+			 * @returns bool
+			 * @author John M. Harris, Jr.
+			 */
+			bool getCreateOwnWindow();
+
+			/*
+			 * Sets whether or not OBEngine is meant to create
+			 * its own window on initialization.
+			 *
+			 * @param bool createOwnWindow
+			 * @author John M. Harris, Jr.
+			 */
+			void setCreateOwnWindow(bool cow);
 			
 		private:
 			bool initialized;
+
+			bool createOwnWindow;
+			
 			ob_int64 startTime;
 			lua_State* globalState;
 
@@ -105,3 +132,6 @@ namespace OB{
 
 #endif // OB_OBENGINE
 
+// Local Variables:
+// mode: c++
+// End:

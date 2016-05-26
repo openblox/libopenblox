@@ -32,6 +32,9 @@ namespace OB{
 		inst = this;
 
 		initialized = false;
+
+		createOwnWindow = true;
+		
 		startTime = currentTimeMillis();
 
 		globalState = NULL;
@@ -61,5 +64,9 @@ namespace OB{
 
 	ob_int64 OBEngine::getStartTime(){
 		return startTime;
+	}
+
+	bool OBEngine::getCreateOwnWindow(){
+		return createOwnWindow;
 	}
 }
