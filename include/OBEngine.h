@@ -26,12 +26,12 @@
  * OpenBlox game engine.
  */
 
+#ifndef OB_OBENGINE
+#define OB_OBENGINE
+
 #include "obtype.h"
 
 #include <lua.h>
-
-#ifndef OB_OBENGINE
-#define OB_OBENGINE
 
 #ifndef __I_IRRLICHT_DEVICE_H_INCLUDED__
 namespace irr{
@@ -40,6 +40,14 @@ namespace irr{
 #endif
 
 namespace OB{
+	/**
+	 * This is the main class of the OpenBlox engine. This class is
+	 * the hierarchical parent of everything else in the engine,
+	 * including the DataModel, InputManager and SoundManager.
+	 *
+	 * author John M. Harris, Jr.
+	 * @date May 2016
+	 */
 	class OBEngine{
 		public:
 			OBEngine();
@@ -119,11 +127,15 @@ namespace OB{
 			void setCreateOwnWindow(bool cow);
 			
 		private:
+			//State helpers
 			bool initialized;
-
-			bool createOwnWindow;
-			
 			ob_int64 startTime;
+
+			//Init options
+			bool createOwnWindow;
+			int startWidth;
+			int startHeight;
+		
 			lua_State* globalState;
 
 			static OBEngine* inst;
