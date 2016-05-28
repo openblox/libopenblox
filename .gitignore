@@ -17,6 +17,7 @@
 /missing
 /include/Makefile
 /include/Makefile.in
+/include/config.h.in
 /libopenblox/.deps/
 /libopenblox/*.la
 /libopenblox/*.lo
