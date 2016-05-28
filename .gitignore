@@ -1,6 +1,7 @@
 /aclocal.m4
 /autom4te.cache/
 /.autotools
+/autogen.sh
 /compile
 /config.guess
 /config.log
