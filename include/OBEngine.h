@@ -71,6 +71,20 @@ namespace OB{
 			 */
 			void init();
 
+			/* @brief Returns true if OpenBlox is still running.
+			 *
+			 * When running with rendering enabled, the return
+			 * value of this is the same as irrDev->run() &&
+			 * isRunning.
+			 *
+			 * When rendering is not enabled, this is just
+			 * the value of isRunning.
+			 *
+			 * @returns bool isRunning
+			 * @author John M. Harris, Jr.
+			 */
+			bool isRunning();
+
 			/**
 			 * @brief Runs the logic of the OpenBlox engine.
 			 *
@@ -109,34 +123,115 @@ namespace OB{
 			ob_int64 getStartTime();
 
 			/**
-			 * Returns true if OBEngine is meant to create its
-			 * own window on initialization.
+			 * Returns true if OBEngine is meant to handle
+			 * rendering.
 			 *
 			 * @returns bool
 			 * @author John M. Harris, Jr.
 			 */
-			bool getCreateOwnWindow();
+			bool doesRendering();
 
 			/*
-			 * Sets whether or not OBEngine is meant to create
-			 * its own window on initialization.
+			 * Sets whether or not OBEngine is meant to handle
+			 * rendering.
 			 *
-			 * @param bool createOwnWindow
+			 * @param bool doesRender
 			 * @author John M. Harris, Jr.
 			 */
-			void setCreateOwnWindow(bool cow);
-			
+			void setRendering(bool renders);
+
+			/* 
+			 * Gets the initial width of the render window.
+			 * Defaults to 640.
+			 * 
+			 * @returns int width
+			 * @author John M. Harris, Jr.
+			 */
+			int getInitWidth();
+
+			/*
+			 * Sets the initial width of the render window.
+			 *
+			 * @param int width
+			 * @author John M. Harris, Jr.
+			 */
+			void setInitWidth(int w);
+
+			/*
+			 * Gets the initial height of the render window.
+			 * Defaults to 480.
+			 *
+			 * @returns int height
+			 * @author John M. Harris, Jr.
+			 */
+			int getInitHeight();
+
+			/*
+			 * Sets the initial height of the render window.
+			 *
+			 * @param int height
+			 * @author John M. Harris, Jr.
+			 */
+			void setInitHeight(int h);
+
+			/*
+			 * Returns true if the OpenBlox engine will use
+			 * vertical synchronization, otherwise false.
+			 *
+			 * @returns bool useVsync
+			 * @author John M. Harris, Jr.
+			 */
+			bool getUseVsync();
+
+			/*
+			 * Sets whether or not the OpenBlox engine will
+			 * use vertical synchronization.
+			 *
+			 * @param bool useVsync
+			 * @author John M. Harris, Jr.
+			 */
+			void setUseVsync(bool useVsync);
+
+			/*
+			 * Gets the current underlying window ID. With X
+			 * this is a Window handle (A.K.A. XID A.K.A.
+			 * unsigned long int), on Windows this is an
+			 * HWND, their equivalent of a window handle.
+			 * 
+			 * Defaults to NULL.
+			 *
+			 * @returns void* window ID
+			 * @author John M. Harris, Jr.
+			 */
+			void* getWindowId();
+
+			/*
+			 * Sets the current underlying window ID. The
+			 * same types apply as used with OBEngine::getWindowId
+			 *
+			 * Setting this to NULL will mean that the
+			 * engine will create a window for itself.
+			 *
+			 * @param void* window ID
+			 * @author John M. Harris, Jr.
+			 */
+			void setWindowId(void* wId);
+		
 		private:
 			//State helpers
 			bool initialized;
 			ob_int64 startTime;
+			bool _isRunning;
 
 			//Init options
-			bool createOwnWindow;
+			bool doRendering;
 			int startWidth;
 			int startHeight;
+			bool vsync;
+			void* windowId;
 		
 			lua_State* globalState;
+			irr::IrrlichtDevice* irrDev;
 
 			static OBEngine* inst;
 	};

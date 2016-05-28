@@ -22,6 +22,8 @@
 #include "OBException.h"
 #include "utility.h"
 
+#include <irrlicht/irrlicht.h>
+
 namespace OB{
     OBEngine* OBEngine::inst = NULL;
 
@@ -32,10 +34,13 @@ namespace OB{
 		inst = this;
 
 		initialized = false;
-
-		createOwnWindow = true;
-		
 		startTime = currentTimeMillis();
+		_isRunning = true;
+
+		doRendering = true;
+		startWidth = 640;
+		startHeight = 480;
+		vsync = false;
 
 		globalState = NULL;
 	}
@@ -47,11 +52,33 @@ namespace OB{
 	}
 
 	void OBEngine::init(){
-		//TODO: stub
+	    if(doRendering){
+			irr::SIrrlichtCreationParameters p;
+			p.DriverType = irr::video::EDT_OPENGL;
+
+			p.WindowSize = irr::core::dimension2d<irr::u32>(startWidth,
+															startHeight);
+			p.Vsync = vsync;
+			p.WindowId = windowId;
+
+			irrDev = irr::createDeviceEx(p);
+
+			if(!irrDev){
+				throw new OBException("Failed to create Irrlicht Device");
+			}
+		}
+	}
+
+	bool OBEngine::isRunning(){
+		if(doRendering){
+			return irrDev->run() && _isRunning;
+		}else{
+			return _isRunning;
+		}
 	}
 
 	void OBEngine::tick(){
-		//TODO: stub
+	    
 	}
 
 	void OBEngine::render(){
@@ -66,7 +93,58 @@ namespace OB{
 		return startTime;
 	}
 
-	bool OBEngine::getCreateOwnWindow(){
-		return createOwnWindow;
+    bool OBEngine::doesRendering(){
+		return doRendering;
+	}
+
+	void OBEngine::setRendering(bool renders){
+		if(initialized){
+			throw new OBException("You can't setRendering after init is called.");
+		}
+		doRendering = renders;
+	}
+
+	int OBEngine::getInitWidth(){
+		return startWidth;
+	}
+
+	void OBEngine::setInitWidth(int w){
+		if(initialized){
+			throw new OBException("You can't setRendering after init is called.");
+		}
+		startWidth = w;
+	}
+
+	int OBEngine::getInitHeight(){
+		return startHeight;
+	}
+
+	void OBEngine::setInitHeight(int h){
+		if(initialized){
+			throw new OBException("You can't setRendering after init is called.");
+		}
+		startHeight = h;
+	}
+
+	bool OBEngine::getUseVsync(){
+		return vsync;
+	}
+
+	void OBEngine::setUseVsync(bool useVsync){
+		if(initialized){
+			throw new OBException("You can't setRendering after init is called.");
+		}
+		vsync = useVsync;
+	}
+
+	void* OBEngine::getWindowId(){
+		return windowId;
+	}
+
+	void OBEngine::setWindowId(void* wId){
+		if(initialized){
+			throw new OBException("You can't setRendering after init is called.");
+		}
+		windowId = wId;
 	}
 }
