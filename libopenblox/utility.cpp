@@ -19,6 +19,7 @@
 
 #include "utility.h"
 
+#include <stddef.h>
 #include <sys/time.h>
 
 namespace OB{
