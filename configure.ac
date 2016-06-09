@@ -24,7 +24,7 @@ AS_IF([test "x$with_irrlicht" != "xno"],
 
 AS_IF([test "x$have_irrlicht" = "xyes"],
       [LIRRLICHT_CFLAGS="-lIrrlicht"] [AC_DEFINE_UNQUOTED(HAVE_IRRLICHT, 1, [Define to 1 if you have the `Irrlicht' library (-lIrrlicht).],
-	  [LIRRLICHT_CLAGS=""])])
+	  [LIRRLICHT_CFLAGS=""])])
 
 AC_CHECK_LIB(curl, curl_easy_init,, AC_MSG_ERROR([curl_easy_init was not found in libcurl (curl not installed?)]))
 AC_CHECK_LIB(lua, lua_newstate,, AC_MSG_ERROR([lua_newstate was not found in liblua (lua not installed?)]))
@@ -32,6 +32,6 @@ AC_CHECK_LIB(lua, lua_newstate,, AC_MSG_ERROR([lua_newstate was not found in lib
 LT_INIT
 
 AC_CONFIG_FILES(Makefile
-                libopenblox/Makefile
+                src/Makefile
                 include/Makefile)
 AC_OUTPUT
