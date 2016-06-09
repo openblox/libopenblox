@@ -36,6 +36,14 @@
 #ifndef __I_IRRLICHT_DEVICE_H_INCLUDED__
 namespace irr{
 	class IrrlichtDevice;
+
+	namespace video{
+		class IVideoDriver;
+	}
+
+	namespace scene{
+		class ISceneManager;
+	}
 }
 #endif
 

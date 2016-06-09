@@ -81,7 +81,7 @@ namespace OB{
 	void OBEngine::tick(){
 	    if(doRendering){
 			if(!irrDev->run()){
-				isRunning = false;
+				_isRunning = false;
 				return;//Early return, we're not running anymore!
 			}
 		}
