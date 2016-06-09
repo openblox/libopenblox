@@ -43,6 +43,11 @@ namespace OB{
 		vsync = false;
 
 		globalState = NULL;
+
+		windowId = NULL;
+		irrDev = NULL;
+		irrDriv = NULL;
+		irrSceneMgr = NULL;
 	}
 
 	OBEngine::~OBEngine(){}
