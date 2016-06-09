@@ -232,6 +232,8 @@ namespace OB{
 		
 			lua_State* globalState;
 			irr::IrrlichtDevice* irrDev;
+			irr::video::IVideoDriver* irrDriv;
+			irr::scene::ISceneManager* irrSceneMgr;
 
 			static OBEngine* inst;
 	};

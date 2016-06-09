@@ -68,6 +68,9 @@ namespace OB{
 			}
 
 			irrDev->setWindowCaption(L"OpenBlox");
+
+			irrDriv = irrDev->getVideoDriver();
+			irrSceneMgr = irrDev->getSceneManager();
 		}
 	}
 
@@ -86,8 +89,12 @@ namespace OB{
 	}
 
 	void OBEngine::render(){
-		
-	}
+		if(doRendering){
+			irrDriv->beginScene(true, true, irr::video::SColor(255, 0, 0, 255));
+			irrSceneMgr->drawAll();
+			irrDriv->endScene();
+		}
+   	}
 
 	lua_State* OBEngine::getGlobalLuaState(){
 		return globalState;
