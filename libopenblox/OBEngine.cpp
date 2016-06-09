@@ -66,23 +66,27 @@ namespace OB{
 			if(!irrDev){
 				throw new OBException("Failed to create Irrlicht Device");
 			}
+
+			irrDev->setWindowCaption(L"OpenBlox");
 		}
 	}
 
 	bool OBEngine::isRunning(){
-		if(doRendering){
-			return irrDev->run() && _isRunning;
-		}else{
-			return _isRunning;
-		}
+		return _isRunning;
 	}
 
 	void OBEngine::tick(){
-	    
+	    if(doRendering){
+			if(!irrDev->run()){
+				isRunning = false;
+				return;//Early return, we're not running anymore!
+			}
+		}
+		//TODO: stub
 	}
 
 	void OBEngine::render(){
-		//TODO: stub
+		
 	}
 
 	lua_State* OBEngine::getGlobalLuaState(){
