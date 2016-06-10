@@ -10,11 +10,11 @@
  *
  * OpenBlox is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the Lesser GNU General Public License
- * along with OpenBlox.  If not, see <https://www.gnu.org/licenses/>.
+ * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "OBEngine.h"
@@ -25,7 +25,7 @@
 #include <irrlicht/irrlicht.h>
 
 namespace OB{
-    OBEngine* OBEngine::inst = NULL;
+	OBEngine* OBEngine::inst = NULL;
 
 	OBEngine::OBEngine(){
 		if(inst != NULL){
@@ -59,7 +59,7 @@ namespace OB{
 	}
 
 	void OBEngine::init(){
-	    if(doRendering){
+		if(doRendering){
 			irr::SIrrlichtCreationParameters p;
 			p.DriverType = irr::video::EDT_OPENGL;
 
@@ -88,7 +88,7 @@ namespace OB{
 	}
 
 	void OBEngine::tick(){
-	    if(doRendering){
+		if(doRendering){
 			if(!irrDev->run()){
 				_isRunning = false;
 				return;//Early return, we're not running anymore!
@@ -103,7 +103,7 @@ namespace OB{
 			irrSceneMgr->drawAll();
 			irrDriv->endScene();
 		}
-   	}
+	}
 
 	lua_State* OBEngine::getGlobalLuaState(){
 		return globalState;
@@ -113,7 +113,7 @@ namespace OB{
 		return startTime;
 	}
 
-    bool OBEngine::doesRendering(){
+	bool OBEngine::doesRendering(){
 		return doRendering;
 	}
 

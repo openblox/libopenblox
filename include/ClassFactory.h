@@ -17,16 +17,41 @@
  * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "utility.h"
+#include <string>
 
-#include <stddef.h>
-#include <sys/time.h>
+#ifndef OB_CLASSFACTORY
+#define OB_CLASSFACTORY
 
 namespace OB{
-	ob_int64 currentTimeMillis(){
-		struct timeval tp;
-		gettimeofday(&tp, NULL);
+	/**
+	 * The "factory" used to create Instance classes by name.
+	 *
+	 * @author John M. Harris, Jr.
+	 */
+	class ClassFactory{
+		public:
+			/**
+			 * Constructor for the ClassFactory singleton.
+			 *
+			 * @author John M. Harris, Jr.
+			 */
+			ClassFactory();
 
-		return (ob_int64)(tp.tv_sec * 1000 + tp.tv_usec / 1000);
-	}
+			virtual ~ClassFactory();
+
+			/**
+			 * Returns the global instance of the ClassFactory
+			 * singleton.
+			 *
+			 * @returns ClassFactory* global instance
+			 * @author John M. Harris, Jr.
+			 */
+			static ClassFactory* getInstance();
+	};
 }
+
+#endif // OB_CLASSFACTORY
+
+// Local Variables:
+// mode: c++
+// End:
