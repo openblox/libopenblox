@@ -31,6 +31,8 @@
 /**
  * This type is used for 64 bit integers, specifically for use with
  * time.
+ *
+ * @author John M. Harris, Jr.
  */
 typedef long long int ob_int64;
 

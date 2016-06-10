@@ -20,7 +20,19 @@
 #ifndef OPENBLOX_H
 #define OPENBLOX_H
 
+/**
+ * @file openblox.h
+ * @author John M. Harris, Jr.
+ * @date June 2016
+ *
+ * This file is provided as a convenience for software using the
+ * OpenBlox game engine. If it won't hurt your compile time too much,
+ * including this file will include every class of the OpenBlox engine,
+ * other than those used only internally.
+ */
+
 #include "OBEngine.h"
+#include "OBException.h"
 
 #endif
 

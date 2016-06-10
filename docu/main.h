@@ -1,0 +1,54 @@
+/**
+ * \mainpage OpenBlox API documentation
+ * 
+ * \section intro Introduction
+ * 
+ * Welcome to the OpenBlox game engine API documentation. Here you will
+ * find documentation for the C++ side of the OpenBlox engine. If
+ * you're looking for documentation for the Lua API, please consult
+ * our <a href="https://wiki.openblox.org/">wiki</a>.
+ * 
+ * The OpenBlox engine is meant to be an easy to use game engine, so
+ * having good documentation is important to us. If you have any
+ * questions or comments, feel free to contact us on one of the
+ * relevant <a href="https://lists.openblox.org/">mailing lists</a>.
+ * 
+ * \section obexample Example
+ * 
+ * The following is the most basic usage of the OpenBlox engine. You
+ * are free to use the following code in your work, when interfacing
+ * with the OpenBlox game engine.
+ * 
+ * \code
+ * #include <openblox.h>
+ *
+ * using namespace OB;
+ * 
+ * int main(){
+ * 	OBEngine* engine = new OBEngine();
+ * 	engine->init();
+ * 
+ * 	while(engine->isRunning()){
+ * 		engine->tick();
+ * 		engine->render();
+ * 	}
+ * 
+ * 	delete engine;
+ * 
+ * 	return 0;
+ * }
+ * \endcode
+ *
+ * \section obnames Namespaces
+ *
+ * The OpenBlox engine makes heavy use of namespaces. Everything that
+ * is part of the OpenBlox engine is under the namespace 'OB'.
+ * Instances are under the sub namespace 'OB::Instance' and generic
+ * types used by the Lua API are under the sub namespace 'OB::Type'.
+ * 
+ * Normally, you won't be working with anything other than the OBEngine
+ * class, but some advanced programs have their own Instance classes
+ * or types, and will need to use those namespaces. Unless it is
+ * used very heavily, we do not suggest 'using' a namespace, as we have
+ * done in our short example.
+ */

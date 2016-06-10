@@ -31,6 +31,8 @@
 
 #include "obtype.h"
 
+#include "OBLogger.h"
+
 #include <lua.h>
 
 #ifndef __I_IRRLICHT_DEVICE_H_INCLUDED__
@@ -79,7 +81,7 @@ namespace OB{
 			 */
 			void init();
 
-			/* @brief Returns true if OpenBlox is still running.
+			/** @brief Returns true if OpenBlox is still running.
 			 *
 			 * When running with rendering enabled, the return
 			 * value of this is the same as irrDev->run() &&
@@ -134,12 +136,12 @@ namespace OB{
 			 * Returns true if OBEngine is meant to handle
 			 * rendering.
 			 *
-			 * @returns bool
+			 * @returns bool does rendering
 			 * @author John M. Harris, Jr.
 			 */
 			bool doesRendering();
 
-			/*
+			/**
 			 * Sets whether or not OBEngine is meant to handle
 			 * rendering.
 			 *
@@ -148,7 +150,7 @@ namespace OB{
 			 */
 			void setRendering(bool renders);
 
-			/* 
+			/**
 			 * Gets the initial width of the render window.
 			 * Defaults to 640.
 			 * 
@@ -165,7 +167,7 @@ namespace OB{
 			 */
 			void setInitWidth(int w);
 
-			/*
+			/**
 			 * Gets the initial height of the render window.
 			 * Defaults to 480.
 			 *
@@ -182,7 +184,7 @@ namespace OB{
 			 */
 			void setInitHeight(int h);
 
-			/*
+			/**
 			 * Returns true if the OpenBlox engine will use
 			 * vertical synchronization, otherwise false.
 			 *
@@ -191,7 +193,7 @@ namespace OB{
 			 */
 			bool getUseVsync();
 
-			/*
+			/**
 			 * Sets whether or not the OpenBlox engine will
 			 * use vertical synchronization.
 			 *
@@ -200,7 +202,7 @@ namespace OB{
 			 */
 			void setUseVsync(bool useVsync);
 
-			/*
+			/**
 			 * Gets the current underlying window ID. With X
 			 * this is a Window handle (A.K.A. XID A.K.A.
 			 * unsigned long int), on Windows this is an
@@ -213,7 +215,7 @@ namespace OB{
 			 */
 			void* getWindowId();
 
-			/*
+			/**
 			 * Sets the current underlying window ID. The
 			 * same types apply as used with OBEngine::getWindowId
 			 *
@@ -237,8 +239,11 @@ namespace OB{
 			int startHeight;
 			bool vsync;
 			void* windowId;
+
+			OBLogger* logger;
 		
 			lua_State* globalState;
+			
 			irr::IrrlichtDevice* irrDev;
 			irr::video::IVideoDriver* irrDriv;
 			irr::scene::ISceneManager* irrSceneMgr;

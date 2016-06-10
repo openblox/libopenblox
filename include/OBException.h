@@ -49,10 +49,11 @@ namespace OB{
 			/**
 			 * Creates an OBException with the message defined by the parameter "what"
 			 *
-			 * @param std::string what
+			 * @param string The message to be associated with this exception.
 			 * @author John M. Harris, Jr.
 			 */
 			OBException(std::string string);
+			
 			virtual ~OBException();
 
 			/**
@@ -62,6 +63,13 @@ namespace OB{
 			 * @author John M. Harris, Jr.
 			 */
 			std::string getMessage();
+
+			/**
+			 * Convenience function, same as getMessage.
+			 *
+			 * @returns std::string message
+			 * @author John M. Harris, Jr.
+			 */
 			std::string toString();
 
 			/**
@@ -71,6 +79,12 @@ namespace OB{
 			 */
 			void raise();
 
+			/**
+			 * Attempts to cast this to a string return the same
+			 * as getMessage.
+			 *
+			 * @author John M. Harris, Jr.
+			 */
 			operator std::string() const{
 				return what;
 			}
