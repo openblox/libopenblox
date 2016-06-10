@@ -94,6 +94,9 @@ namespace OB{
 			 * This runs a single "tick" of the logic thread,
 			 * including running physics and the Lua task scheduler.
 			 *
+			 * When running with rendering enabled, this also processes
+			 * messages from the operating system and input.
+			 *
 			 * @author John M. Harris, Jr.
 			 */
 			void tick();
