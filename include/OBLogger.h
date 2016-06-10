@@ -58,7 +58,7 @@ namespace OB{
 		 */
 		OLL_None
 	};
-	
+
 	/**
 	 * Logging utility class for the OpenBlox engine.
 	 *

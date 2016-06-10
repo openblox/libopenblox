@@ -20,16 +20,16 @@
 #include "ClassFactory.h"
 
 namespace OB{
-    ClassFactory::ClassFactory(){
+	ClassFactory::ClassFactory(){
 		if(inst != NULL){
 			throw new OBException("Only one instance of ClassFactory can exist.");
 		}
 		inst = this;
 	}
 
-    ClassFactory::~ClassFactory(){}
+	ClassFactory::~ClassFactory(){}
 
-    ClassFactory* ClassFactory::getInstance(){
+	ClassFactory* ClassFactory::getInstance(){
 		return inst;
 	}
 }

@@ -25,7 +25,7 @@ namespace OB{
 	OBLogger::OBLogger(){
 		logLevel = OLL_Information;
 	}
-	
+
 	OBLogger::~OBLogger(){}
 
 	OBLogLevel OBLogger::getLogLevel(){
@@ -61,7 +61,7 @@ namespace OB{
 				break;
 			}
 		}
-		
+
 		if(logLevel >= this->logLevel){
 			if(logLevel == OLL_Error){
 				if(extra.length() > 0){

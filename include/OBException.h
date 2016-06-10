@@ -53,7 +53,7 @@ namespace OB{
 			 * @author John M. Harris, Jr.
 			 */
 			OBException(std::string string);
-			
+
 			virtual ~OBException();
 
 			/**

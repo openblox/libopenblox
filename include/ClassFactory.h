@@ -47,7 +47,7 @@ namespace OB{
 			 * @author John M. Harris, Jr.
 			 */
 			static ClassFactory* getInstance();
-			
+
 		private:
 			ClassFactory* inst;
 	};

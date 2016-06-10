@@ -237,9 +237,9 @@ namespace OB{
 			void* windowId;
 
 			OBLogger* logger;
-		
+
 			lua_State* globalState;
-			
+
 			irr::IrrlichtDevice* irrDev;
 			irr::video::IVideoDriver* irrDriv;
 			irr::scene::ISceneManager* irrSceneMgr;
