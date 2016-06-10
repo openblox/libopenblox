@@ -155,7 +155,7 @@ namespace OB{
 			 */
 			int getInitWidth();
 
-			/*
+			/**
 			 * Sets the initial width of the render window.
 			 *
 			 * @param int width
@@ -172,7 +172,7 @@ namespace OB{
 			 */
 			int getInitHeight();
 
-			/*
+			/**
 			 * Sets the initial height of the render window.
 			 *
 			 * @param int height
