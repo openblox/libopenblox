@@ -22,43 +22,43 @@
 #ifndef OB_OBLOGGER
 #define OB_OBLOGGER
 
-/**
- * All possible log levels. OLL_Debug means to log everything, OLL_None
- * means to log (just about) nothing. When used to print messages,
- * messages marked OLL_Debug have the lowest priority, while OLL_None
- * has the highest. Messages marked OLL_None will always be printed,
- * regardless of log level.
- *
- * @author John M. Harris, Jr.
- */
-enum OBLogLevel{
-	/**
-	 * Used for printing information used for debugging
-	 */
-	OLL_Debug,
-	/**
-	 * Used for printing useful information such as hardware
-	 * information
-	 */
-	OLL_Information,
-	/**
-	 * Used to print warnings, such as something unexpected occurring
-	 */
-	OLL_Warning,
-	/**
-	 * Used to print critical errors
-	 */
-	OLL_Error,
-	/**
-	 * Messages with this log level will always be printed.
-	 * 
-	 * When used as a filter, nothing other than messages with the
-	 * level 'OLL_None' will be logged.
-	 */
-	OLL_None
-};
-
 namespace OB{
+	/**
+	 * All possible log levels. OLL_Debug means to log everything, OLL_None
+	 * means to log (just about) nothing. When used to print messages,
+	 * messages marked OLL_Debug have the lowest priority, while OLL_None
+	 * has the highest. Messages marked OLL_None will always be printed,
+	 * regardless of log level.
+	 *
+	 * @author John M. Harris, Jr.
+	 */
+	enum OBLogLevel{
+		/**
+		 * Used for printing information used for debugging
+		 */
+		OLL_Debug,
+		/**
+		 * Used for printing useful information such as hardware
+		 * information
+		 */
+		OLL_Information,
+		/**
+		 * Used to print warnings, such as something unexpected occurring
+		 */
+		OLL_Warning,
+		/**
+		 * Used to print critical errors
+		 */
+		OLL_Error,
+		/**
+		 * Messages with this log level will always be printed.
+		 * 
+		 * When used as a filter, nothing other than messages with the
+		 * level 'OLL_None' will be logged.
+		 */
+		OLL_None
+	};
+	
 	/**
 	 * Logging utility class for the OpenBlox engine.
 	 *
