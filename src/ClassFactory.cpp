@@ -17,44 +17,19 @@
  * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <string>
-
-#ifndef OB_CLASSFACTORY
-#define OB_CLASSFACTORY
+#include "ClassFactory.h"
 
 namespace OB{
-	/**
-	 * The "factory" used to create Instance classes by name.
-	 *
-	 * @author John M. Harris, Jr.
-	 */
-	class ClassFactory{
-		public:
-			/**
-			 * Constructor for the ClassFactory singleton.
-			 *
-			 * @author John M. Harris, Jr.
-			 */
-			ClassFactory();
+    ClassFactory::ClassFactory(){
+		if(inst != NULL){
+			throw new OBException("Only one instance of ClassFactory can exist.");
+		}
+		inst = this;
+	}
 
-			virtual ~ClassFactory();
+    ClassFactory::~ClassFactory(){}
 
-			/**
-			 * Returns the global instance of the ClassFactory
-			 * singleton.
-			 *
-			 * @returns ClassFactory* global instance
-			 * @author John M. Harris, Jr.
-			 */
-			static ClassFactory* getInstance();
-			
-		private:
-			ClassFactory* inst;
-	};
+    ClassFactory* ClassFactory::getInstance(){
+		return inst;
+	}
 }
-
-#endif // OB_CLASSFACTORY
-
-// Local Variables:
-// mode: c++
-// End:
