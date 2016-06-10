@@ -83,13 +83,6 @@ namespace OB{
 
 			/** @brief Returns true if OpenBlox is still running.
 			 *
-			 * When running with rendering enabled, the return
-			 * value of this is the same as irrDev->run() &&
-			 * isRunning.
-			 *
-			 * When rendering is not enabled, this is just
-			 * the value of isRunning.
-			 *
 			 * @returns bool isRunning
 			 * @author John M. Harris, Jr.
 			 */
