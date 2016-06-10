@@ -11,6 +11,7 @@ lib_LTLIBRARIES = libopenblox.la
 libopenblox_la_SOURCES = openblox.cpp \
 OBException.cpp \
 OBEngine.cpp \
+OBLogger.cpp \
 utility.cpp
 
 # Linker options

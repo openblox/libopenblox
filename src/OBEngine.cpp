@@ -48,6 +48,8 @@ namespace OB{
 		irrDev = NULL;
 		irrDriv = NULL;
 		irrSceneMgr = NULL;
+
+		logger = new OBLogger();
 	}
 
 	OBEngine::~OBEngine(){}
@@ -65,6 +67,8 @@ namespace OB{
 															startHeight);
 			p.Vsync = vsync;
 			p.WindowId = windowId;
+
+			p.LoggingLevel = irr::ELL_WARNING;
 
 			irrDev = irr::createDeviceEx(p);
 
@@ -95,7 +99,7 @@ namespace OB{
 
 	void OBEngine::render(){
 		if(doRendering){
-			irrDriv->beginScene(true, true, irr::video::SColor(255, 0, 0, 255));
+			irrDriv->beginScene(true, true, irr::video::SColor(255, 0, 255, 0));
 			irrSceneMgr->drawAll();
 			irrDriv->endScene();
 		}
