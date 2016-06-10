@@ -23,7 +23,7 @@
 
 namespace OB{
     OBLogger::OBLogger(){
-		logLevel = OBLogLevel::Information;
+		logLevel = OLL_Information;
 	}
 	
     OBLogger::~OBLogger(){}
@@ -36,11 +36,11 @@ namespace OB{
 		this->logLevel = logLevel;
 	}
 
-	void OBLogger::log(char* text, OBLogLevel logLevel){
+	void OBLogger::log(std::string text, OBLogLevel logLevel){
 		log(text, "", logLevel);
 	}
 
-	void OBLogger::log(char* text, char* extra, OBLogLevel logLevel){
+	void OBLogger::log(std::string text, std::string extra, OBLogLevel logLevel){
 		std::string logLevelStr = "";
 
 		switch(logLevel){

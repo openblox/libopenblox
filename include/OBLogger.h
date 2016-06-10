@@ -73,7 +73,7 @@ namespace OB{
 			 */
 			OBLogger();
 
-			virtual ~OBException();
+			virtual ~OBLogger();
 
 			/**
 			 * Returns the current log level, corresponding
