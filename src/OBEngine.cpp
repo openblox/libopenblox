@@ -22,6 +22,8 @@
 #include "OBException.h"
 #include "utility.h"
 
+#include <string>
+
 #include <irrlicht/irrlicht.h>
 
 namespace OB{
@@ -59,6 +61,10 @@ namespace OB{
 	}
 
 	void OBEngine::init(){
+		if(initialized){
+			throw new OBException("OBEngine has already been initialized.");
+		}
+		
 		if(doRendering){
 			irr::SIrrlichtCreationParameters p;
 			p.DriverType = irr::video::EDT_OPENGL;
@@ -80,7 +86,35 @@ namespace OB{
 
 			irrDriv = irrDev->getVideoDriver();
 			irrSceneMgr = irrDev->getSceneManager();
+
+			//Log at INFO level
+			std::string renderTag("[RENDERER] ");
+
+			std::string irrVer = renderTag + std::string("Irrlicht: ") + std::string(irrDev->getVersion());
+
+			logger->log(irrVer);
+			
+			std::wstring wsName(irrDriv->getName());
+			std::string renderVersion = renderTag + std::string("Version: ") + std::string(wsName.begin(), wsName.end());
+
+			logger->log(renderVersion);
+
+			std::string renderVendor = renderTag + std::string("Vendor: ") + std::string(irrDriv->getVendorInfo().c_str());
+			
+			logger->log(renderVendor);
+
+			int shaderLangVersion = irrDriv->getDriverAttributes().getAttributeAsInt("ShaderLanguageVersion");
+
+			char buf[32];
+			int shaderLangVerMaj = shaderLangVersion/100;
+			snprintf(buf, 32, "%u.%u", shaderLangVerMaj, shaderLangVersion - shaderLangVerMaj * 100);
+
+			std::string renderShadingLangVer = renderTag + std::string("Shading Language Version: ") + std::string(buf);
+			
+			logger->log(renderShadingLangVer);
 		}
+
+		initialized = true;
 	}
 
 	bool OBEngine::isRunning(){
