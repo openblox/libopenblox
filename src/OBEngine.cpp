@@ -103,10 +103,10 @@ namespace OB{
 			
 			logger->log(renderVendor);
 
-			int shaderLangVersion = irrDriv->getDriverAttributes().getAttributeAsInt("ShaderLanguageVersion");
+			unsigned int shaderLangVersion = irrDriv->getDriverAttributes().getAttributeAsInt("ShaderLanguageVersion");
 
 			char buf[32];
-			int shaderLangVerMaj = shaderLangVersion/100;
+			unsigned int shaderLangVerMaj = shaderLangVersion/100;
 			snprintf(buf, 32, "%u.%u", shaderLangVerMaj, shaderLangVersion - shaderLangVerMaj * 100);
 
 			std::string renderShadingLangVer = renderTag + std::string("Shading Language Version: ") + std::string(buf);
