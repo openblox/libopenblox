@@ -31,9 +31,9 @@ namespace OB{
 			/**
 			 * "Constructor" for this virtual class.
 			 *
-			 * @param std::string Class name
-			 * @param std::string Parent class name
-			 * @param Is instantiatable
+			 * @param className Name of the class described
+			 * @param parentClassName Name of the parent class to the one described
+			 * @param isInstable Whether or not this class can be created. Does not apply to services or replication.
 			 * @author John M. Harris, Jr.
 			 */
 		    void init(std::string className, std::string parentClassName, bool isInstable);
@@ -52,7 +52,7 @@ namespace OB{
 			 * Used to tell if the supplied OB::Instance::Instance* is
 			 * of the class described by this ClassMetadata instance.
 			 *
-			 * @param OB::Instance::Instance* obj
+			 * @param obj Instance to test against this type
 			 * @returns bool isInstance
 			 * @author John M. Harris, Jr.
 			 */
@@ -60,8 +60,9 @@ namespace OB{
 
 			/**
 			 * Used to tell if the class described by this
-			 * ClassMetadata can be created. If this returns false,
-			 * newInstance should return NULL.
+			 * ClassMetadata can be created.
+			 *
+			 * @returns bool true if this class can be created. Doesn't apply to services or replication. Replication bypasses this entirely.
 			 */
 			bool isInstantiatable();
 
@@ -69,8 +70,8 @@ namespace OB{
 			 * Returns true if the class described is a service,
 			 * passes isDataModel for DataModel-only services.
 			 *
-			 * @param bool isDataModel
-			 * @returns bool isService
+			 * @param isDataModel Whether or not this is being called from the DataModel
+			 * @returns bool True if this is a service, otherwise false.
 			 * @author John M. Harris, Jr.
 			 */
 			virtual bool isService(bool isDataModel) = 0;
