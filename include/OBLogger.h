@@ -80,7 +80,7 @@ namespace OB{
 			 * to one of the items in the OBLogLevel enumeration
 			 * class.
 			 *
-			 * @returns OBLogLevel log level
+			 * @returns Current log level
 			 * @author John M. Harris, Jr.
 			 */
 			OBLogLevel getLogLevel();
