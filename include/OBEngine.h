@@ -55,7 +55,7 @@ namespace OB{
 	 * the hierarchical parent of everything else in the engine,
 	 * including the DataModel, InputManager and SoundManager.
 	 *
-	 * author John M. Harris, Jr.
+	 * @author John M. Harris, Jr.
 	 * @date May 2016
 	 */
 	class OBEngine{
@@ -65,13 +65,14 @@ namespace OB{
 
 			/**
 			 * Returns the global instance of OBEngine.
-			 * @returns OBEngine*
+			 *
+			 * @returns Global instance of OBEngine
 			 * @author John M. Harris, Jr.
 			 */
 			static OBEngine* getInstance();
 
 			/**
-			 * @brief Initializes the OpenBlox engine.
+			 * Initializes the OpenBlox engine.
 			 *
 			 * You must have set all initialization parameters
 			 * before calling this, otherwise you will not be
@@ -81,7 +82,8 @@ namespace OB{
 			 */
 			void init();
 
-			/** @brief Returns true if OpenBlox is still running.
+			/** 
+			 * Returns true if OpenBlox is still running.
 			 *
 			 * @returns bool isRunning
 			 * @author John M. Harris, Jr.
@@ -89,7 +91,7 @@ namespace OB{
 			bool isRunning();
 
 			/**
-			 * @brief Runs the logic of the OpenBlox engine.
+			 * Runs the logic of the OpenBlox engine.
 			 *
 			 * This runs a single "tick" of the logic thread,
 			 * including running physics and the Lua task scheduler.
@@ -102,7 +104,7 @@ namespace OB{
 			void tick();
 
 			/**
-			 * @brief Renders one frame of the DataModel.
+			 * Renders one frame of the DataModel.
 			 * 
 			 * This is normally called after OBEngine::tick
 			 *
@@ -114,7 +116,7 @@ namespace OB{
 			 * Returns the global Lua state, which all states
 			 * used by the engine are coroutines of.
 			 *
-			 * @returns lua_State*
+			 * @returns Global Lua state
 			 * @author John M. Harris, Jr.
 			 */
 			lua_State* getGlobalLuaState();
@@ -123,7 +125,7 @@ namespace OB{
 			 * Returns the time the OpenBlox engine was started,
 			 * in milliseconds.
 			 *
-			 * @returns ob_int64
+			 * @returns Start time started in milliseconds
 			 * @author John M. Harris, Jr.
 			 */
 			ob_int64 getStartTime();
@@ -132,7 +134,7 @@ namespace OB{
 			 * Returns true if OBEngine is meant to handle
 			 * rendering.
 			 *
-			 * @returns bool does rendering
+			 * @returns true if this instance of OBEngine supports rendering
 			 * @author John M. Harris, Jr.
 			 */
 			bool doesRendering();
@@ -141,7 +143,7 @@ namespace OB{
 			 * Sets whether or not OBEngine is meant to handle
 			 * rendering.
 			 *
-			 * @param bool doesRender
+			 * @param renders true if this instance of OBEngine is supposed to support rendering, otherwise false
 			 * @author John M. Harris, Jr.
 			 */
 			void setRendering(bool renders);
@@ -150,7 +152,7 @@ namespace OB{
 			 * Gets the initial width of the render window.
 			 * Defaults to 640.
 			 * 
-			 * @returns int width
+			 * @returns Initial width of render window
 			 * @author John M. Harris, Jr.
 			 */
 			int getInitWidth();
@@ -158,7 +160,7 @@ namespace OB{
 			/**
 			 * Sets the initial width of the render window.
 			 *
-			 * @param int width
+			 * @param w Initial width of render window
 			 * @author John M. Harris, Jr.
 			 */
 			void setInitWidth(int w);
@@ -167,7 +169,7 @@ namespace OB{
 			 * Gets the initial height of the render window.
 			 * Defaults to 480.
 			 *
-			 * @returns int height
+			 * @returns Initial height of render window
 			 * @author John M. Harris, Jr.
 			 */
 			int getInitHeight();
@@ -175,7 +177,7 @@ namespace OB{
 			/**
 			 * Sets the initial height of the render window.
 			 *
-			 * @param int height
+			 * @param h Initial height of render window
 			 * @author John M. Harris, Jr.
 			 */
 			void setInitHeight(int h);
@@ -184,7 +186,7 @@ namespace OB{
 			 * Returns true if the OpenBlox engine will use
 			 * vertical synchronization, otherwise false.
 			 *
-			 * @returns bool useVsync
+			 * @returns true if OpenBlox is supposed to use vsync
 			 * @author John M. Harris, Jr.
 			 */
 			bool getUseVsync();
@@ -193,7 +195,7 @@ namespace OB{
 			 * Sets whether or not the OpenBlox engine will
 			 * use vertical synchronization.
 			 *
-			 * @param bool useVsync
+			 * @param useVsync true if OpenBlox is supposed to use vsync, otherwise false
 			 * @author John M. Harris, Jr.
 			 */
 			void setUseVsync(bool useVsync);
@@ -206,7 +208,7 @@ namespace OB{
 			 * 
 			 * Defaults to NULL.
 			 *
-			 * @returns void* window ID
+			 * @returns System-dependent window ID
 			 * @author John M. Harris, Jr.
 			 */
 			void* getWindowId();
@@ -218,7 +220,7 @@ namespace OB{
 			 * Setting this to NULL will mean that the
 			 * engine will create a window for itself.
 			 *
-			 * @param void* window ID
+			 * @param System-dependent window ID
 			 * @author John M. Harris, Jr.
 			 */
 			void setWindowId(void* wId);
