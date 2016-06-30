@@ -35,7 +35,7 @@ namespace OB{
 	/**
 	 * Returns the current time in milliseconds.
 	 * 
-	 * @returns ob_int64 time in millis
+	 * @returns Current time in millis
 	 * @author John M. Harris, Jr.
 	 */
 	ob_int64 currentTimeMillis();
