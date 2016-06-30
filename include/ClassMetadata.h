@@ -42,8 +42,7 @@ namespace OB{
 			 * Used by the ClassFactory to create new instances of the
 			 * class described by this ClassMetadata instance.
 			 *
-			 * @returns OB::Instance::Instance* or NULL if this is
-			 * abstract.
+			 * @returns New Instance or NULL if the class this describes is abstract.
 			 * @author John M. Harris, Jr.
 			 */
 			virtual OB::Instance::Instance* newInstance() = 0;
@@ -53,7 +52,7 @@ namespace OB{
 			 * of the class described by this ClassMetadata instance.
 			 *
 			 * @param obj Instance to test against this type
-			 * @returns bool isInstance
+			 * @returns true if obj is an instance of the defined class
 			 * @author John M. Harris, Jr.
 			 */
 			virtual bool isA(OB::Instance::Instance* obj) = 0;
@@ -62,7 +61,7 @@ namespace OB{
 			 * Used to tell if the class described by this
 			 * ClassMetadata can be created.
 			 *
-			 * @returns bool true if this class can be created. Doesn't apply to services or replication. Replication bypasses this entirely.
+			 * @returns true if this class can be created. Doesn't apply to services or replication. Replication bypasses this entirely.
 			 */
 			bool isInstantiatable();
 
@@ -71,7 +70,7 @@ namespace OB{
 			 * passes isDataModel for DataModel-only services.
 			 *
 			 * @param isDataModel Whether or not this is being called from the DataModel
-			 * @returns bool True if this is a service, otherwise false.
+			 * @returns true if this is a service, otherwise false.
 			 * @author John M. Harris, Jr.
 			 */
 			virtual bool isService(bool isDataModel) = 0;
@@ -80,7 +79,7 @@ namespace OB{
 			 * Returns the name of the class this ClassMetadata
 			 * describes.
 			 *
-			 * @returns std::string Class name
+			 * @returns Name of the class described by this ClassMetadata
 			 * @author John M. Harris, Jr.
 			 */
 			std::string getClassName();
@@ -89,9 +88,9 @@ namespace OB{
 			 * Returns the parent class name of the class this
 			 * ClassMetadata describes. For Instance itself,
 			 * this is "", that should not be true of any
-			 * other Instance, or "bad things" will happen.
+			 * other Instance, or “bad things” will happen.
 			 *
-			 * @returns std::string Parent class name
+			 * @returns Parent class name
 			 * @author John M. Harris, Jr.
 			 */
 			std::string getParentClassName();
