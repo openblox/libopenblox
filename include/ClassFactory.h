@@ -46,8 +46,8 @@ namespace OB{
 			 * map. Classes must have unique names, and parent classes
 			 * are to be added before their children.
 			 *
-			 * @param std::string Class name
-			 * @param ClassMetadata* Metadata describing the class
+			 * @param className Name of the class to add. Should contain no spaces and should be CamelCase e.g. MyInstanceName
+			 * @param newClassMetadata Metadata describing the class
 			 * @author John M. Harris, Jr.
 			 */
 			static void addClass(std::string className, ClassMetadata* newClassMetadata);
@@ -56,7 +56,7 @@ namespace OB{
 			 * Returns whether or not a class of given name can be
 			 * created.
 			 *
-			 * @param std::string Class name
+			 * @param className Name of the class to check
 			 * @returns bool Can create
 			 * @author John M. Harris, Jr.
 			 */
@@ -65,7 +65,7 @@ namespace OB{
 			/**
 			 * Returns the name of the parent class of a given class.
 			 *
-			 * @param std::string Class name
+			 * @param className Name of the class to check
 			 * @returns std::string Parent class name
 			 * @author John M. Harris, Jr.
 			 */
@@ -79,7 +79,7 @@ namespace OB{
 			 * services. If you attempt to call this on one of those
 			 * classes, it will return NULL.
 			 *
-			 * @param std::string Class name
+			 * @param className Name of the class to be created
 			 * @returns OB::Instance::Instance* New instance or NULL
 			 * @author John M. Harris, Jr.
 			 */
@@ -94,8 +94,8 @@ namespace OB{
 			 * created only by the DataModel, or only by other
 			 * ServiceProviders.
 			 *
-			 * @param std::string Class Name
-			 * @param bool Is data model
+			 * @param className Name of the class to be created
+			 * @param isDataModel True if being called from the DataModel.
 			 * @returns OB::Instance::Instance* New instance or NULL
 			 * @author John M. Harris, Jr.
 			 */
@@ -108,7 +108,7 @@ namespace OB{
 			 *
 			 * This is only used to Instance replication.
 			 *
-			 * @param std::string Class name
+			 * @param className Name of the class to be created
 			 * @returns OB::Instance::Instance* New instance or NULL
 			 * @author John M. Harris, Jr.
 			 */
@@ -118,8 +118,8 @@ namespace OB{
 			 * Returns whether or not a given object is an instance of
 			 * the given class name.
 			 *
-			 * @param OB::Instance::Instance* object
-			 * @param std::string Class name
+			 * @param obj Instance to test against
+			 * @param className Name of the class to test against
 			 * @returns bool true if obj is an instance of className, otherwise false
 			 * @author John M. Harris, Jr.
 			 */
