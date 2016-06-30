@@ -59,7 +59,7 @@ namespace OB{
 			/**
 			 * Returns the message of this OBException.
 			 *
-			 * @returns std::string message
+			 * @returns The message of this OBException
 			 * @author John M. Harris, Jr.
 			 */
 			std::string getMessage();
@@ -67,7 +67,7 @@ namespace OB{
 			/**
 			 * Convenience function, same as getMessage.
 			 *
-			 * @returns std::string message
+			 * @returns The message of this OBException
 			 * @author John M. Harris, Jr.
 			 */
 			std::string toString();
