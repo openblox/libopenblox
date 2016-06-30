@@ -36,7 +36,7 @@ namespace OB{
 			/**
 			 * Returns a vector containing all registered class names.
 			 *
-			 * @returns std::vector<std::string>
+			 * @returns Vector containing all registered class names.
 			 * @author John M. Harris, Jr.
 			 */
 			static std::vector<std::string> getRegisteredClasses();
@@ -57,7 +57,7 @@ namespace OB{
 			 * created.
 			 *
 			 * @param className Name of the class to check
-			 * @returns bool Can create
+			 * @returns True if this class can be created (e.g. by Instance.new in Lua)
 			 * @author John M. Harris, Jr.
 			 */
 			static bool canCreate(std::string className);
@@ -66,7 +66,7 @@ namespace OB{
 			 * Returns the name of the parent class of a given class.
 			 *
 			 * @param className Name of the class to check
-			 * @returns std::string Parent class name
+			 * @returns Parent class name, or an empty string in the case of Instance
 			 * @author John M. Harris, Jr.
 			 */
 			static std::string getParentClassName(std::string className);
@@ -80,7 +80,7 @@ namespace OB{
 			 * classes, it will return NULL.
 			 *
 			 * @param className Name of the class to be created
-			 * @returns OB::Instance::Instance* New instance or NULL
+			 * @returns New instance or NULL
 			 * @author John M. Harris, Jr.
 			 */
 			static OB::Instance::Instance* create(std::string className);
@@ -95,8 +95,8 @@ namespace OB{
 			 * ServiceProviders.
 			 *
 			 * @param className Name of the class to be created
-			 * @param isDataModel True if being called from the DataModel.
-			 * @returns OB::Instance::Instance* New instance or NULL
+			 * @param isDataModel True if being called from the DataModel, otherwise false.
+			 * @returns New instance or NULL
 			 * @author John M. Harris, Jr.
 			 */
 			static OB::Instance::Instance* createService(std::string className, bool isDataModel);
@@ -109,7 +109,7 @@ namespace OB{
 			 * This is only used to Instance replication.
 			 *
 			 * @param className Name of the class to be created
-			 * @returns OB::Instance::Instance* New instance or NULL
+			 * @returns New instance or NULL
 			 * @author John M. Harris, Jr.
 			 */
 			static OB::Instance::Instance* createReplicate(std::string className);
@@ -120,7 +120,7 @@ namespace OB{
 			 *
 			 * @param obj Instance to test against
 			 * @param className Name of the class to test against
-			 * @returns bool true if obj is an instance of className, otherwise false
+			 * @returns true if obj is an instance of className, otherwise false
 			 * @author John M. Harris, Jr.
 			 */
 			static bool isA(OB::Instance::Instance* obj, std::string className);
