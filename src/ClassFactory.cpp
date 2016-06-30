@@ -19,17 +19,77 @@
 
 #include "ClassFactory.h"
 
+#include "OBException.h"
+
 namespace OB{
-	ClassFactory::ClassFactory(){
-		if(inst != NULL){
-			throw new OBException("Only one instance of ClassFactory can exist.");
+	std::map<std::string, ClassMetadata*> ClassFactory::metadataTable;
+
+	std::vector<std::string> ClassFactory::getRegisteredClasses(){
+		std::vector<std::string> regged;
+
+		for(std::map<std::string, ClassMetadata*>::iterator it = metadataTable.begin(); it != metadataTable.end(); ++it){
+			regged.push_back(it->first);
 		}
-		inst = this;
+
+		return regged;
 	}
 
-	ClassFactory::~ClassFactory(){}
+	void ClassFactory::addClass(std::string className, ClassMetadata* newClassMetadata){
+		if(!newClassMetadata){
+			throw new OBException("newClassMetadata cannot be NULL.");
+		}
+		metadataTable[className] = newClassMetadata;
+	}
 
-	ClassFactory* ClassFactory::getInstance(){
-		return inst;
+	bool ClassFactory::canCreate(std::string className){
+		ClassMetadata* classMd = metadataTable[className];
+		if(classMd){
+			return classMd->isInstantiatable();
+		}
+		return false;
+	}
+
+	std::string ClassFactory::getParentClassName(std::string className){
+		ClassMetadata* classMd = metadataTable[className];
+		if(classMd){
+			return classMd->getParentClassName();
+		}
+		return "";
+	}
+
+	OB::Instance::Instance* ClassFactory::create(std::string className){
+		ClassMetadata* classMd = metadataTable[className];
+		if(classMd){
+			if(classMd->isInstantiatable()){
+				return classMd->newInstance();
+			}
+		}
+		return NULL;
+	}
+
+	OB::Instance::Instance* ClassFactory::createService(std::string className, bool isDataModel){
+		ClassMetadata* classMd = metadataTable[className];
+		if(classMd){
+			if(classMd->isService(isDataModel)){
+				return classMd->newInstance();
+			}
+		}
+		return NULL;
+	}
+
+	OB::Instance::Instance* ClassFactory::createReplicate(std::string className){
+		ClassMetadata* classMd = metadataTable[className];
+		if(classMd){
+			return classMd->newInstance();
+		}
+		return NULL;
+	}
+
+	bool ClassFactory::isA(OB::Instance::Instance* obj, std::string className){
+		ClassMetadata* classMd = metadataTable[className];
+		if(classMd){
+			return classMd->isA(obj);
+		}
+		return false;
 	}
 }
