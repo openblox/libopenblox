@@ -50,8 +50,6 @@ namespace OB{
 		irrDev = NULL;
 		irrDriv = NULL;
 		irrSceneMgr = NULL;
-
-		logger = new OBLogger();
 	}
 
 	OBEngine::~OBEngine(){}
@@ -92,16 +90,16 @@ namespace OB{
 
 			std::string irrVer = renderTag + std::string("Irrlicht: ") + std::string(irrDev->getVersion());
 
-			logger->log(irrVer);
+			OBLogger::log(irrVer);
 			
 			std::wstring wsName(irrDriv->getName());
 			std::string renderVersion = renderTag + std::string("Version: ") + std::string(wsName.begin(), wsName.end());
 
-			logger->log(renderVersion);
+			OBLogger::log(renderVersion);
 
 			std::string renderVendor = renderTag + std::string("Vendor: ") + std::string(irrDriv->getVendorInfo().c_str());
 			
-			logger->log(renderVendor);
+			OBLogger::log(renderVendor);
 
 			unsigned int shaderLangVersion = irrDriv->getDriverAttributes().getAttributeAsInt("ShaderLanguageVersion");
 
@@ -111,7 +109,7 @@ namespace OB{
 
 			std::string renderShadingLangVer = renderTag + std::string("Shading Language Version: ") + std::string(buf);
 			
-			logger->log(renderShadingLangVer);
+			OBLogger::log(renderShadingLangVer);
 		}
 
 		initialized = true;
