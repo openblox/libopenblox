@@ -67,15 +67,6 @@ namespace OB{
 	class OBLogger{
 		public:
 			/**
-			 * Constructor for the OBLogger singleton.
-			 *
-			 * @author John M. Harris, Jr.
-			 */
-			OBLogger();
-
-			virtual ~OBLogger();
-
-			/**
 			 * Returns the current log level, corresponding
 			 * to one of the items in the OBLogLevel enumeration
 			 * class.
@@ -83,7 +74,7 @@ namespace OB{
 			 * @returns Current log level
 			 * @author John M. Harris, Jr.
 			 */
-			OBLogLevel getLogLevel();
+			static OBLogLevel getLogLevel();
 
 			/**
 			 * Sets a new log level. The default is OLL_Information.
@@ -91,7 +82,7 @@ namespace OB{
 			 * @param logLevel log level
 			 * @author John M. Harris, Jr.
 			 */
-			void setLogLevel(OBLogLevel logLevel);
+			static void setLogLevel(OBLogLevel logLevel);
 
 			/**
 			 * Prints a message to the log.
@@ -100,7 +91,7 @@ namespace OB{
 			 * @param logLevel Log level of this message. Defaults to OLL_Information.
 			 * @author John M. Harris, Jr.
 			 */
-			void log(std::string message, OBLogLevel logLevel = OLL_Information);
+			static void log(std::string message, OBLogLevel logLevel = OLL_Information);
 
 			/**
 			 * Prints a message to the log, with additional information.
@@ -110,10 +101,10 @@ namespace OB{
 			 * @param logLevel Log level of this message. Defaults to OLL_Information.
 			 * @author John M. Harris, Jr.
 			 */
-			void log(std::string message, std::string extra, OBLogLevel logLevel = OLL_Information);
+			static void log(std::string message, std::string extra, OBLogLevel logLevel = OLL_Information);
 
 		private:
-			OBLogLevel logLevel;
+			static OBLogLevel _logLevel;
 	};
 }
 

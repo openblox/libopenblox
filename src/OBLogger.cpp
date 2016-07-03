@@ -22,18 +22,14 @@
 #include <iostream>
 
 namespace OB{
-	OBLogger::OBLogger(){
-		logLevel = OLL_Information;
-	}
-
-	OBLogger::~OBLogger(){}
+	OBLogLevel OBLogger::_logLevel;
 
 	OBLogLevel OBLogger::getLogLevel(){
-		return logLevel;
+		return _logLevel;
 	}
 
 	void OBLogger::setLogLevel(OBLogLevel logLevel){
-		this->logLevel = logLevel;
+	    _logLevel = logLevel;
 	}
 
 	void OBLogger::log(std::string text, OBLogLevel logLevel){
@@ -62,7 +58,7 @@ namespace OB{
 			}
 		}
 
-		if(logLevel >= this->logLevel){
+		if(logLevel >= _logLevel){
 			if(logLevel == OLL_Error){
 				if(extra.length() > 0){
 					std::cerr << logLevelStr << text << " :" << extra << std::endl;
