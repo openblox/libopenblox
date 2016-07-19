@@ -10,14 +10,14 @@ OpenBlox uses the Git version control system, with its main repository
 hosted on git.openblox.org.
 
 The following shell commands would set up a clone of the libopenblox
-repository in the directory "libopenblox.git" under your current
+repository in the directory "libopenblox" under your current
 directory:
 
 	git config --global user.name 'Your Name'
 	git config --global user.email 'your.name@example.com'
 	git clone https://git.openblox.org/libopenblox.git
 
-OpenBlox uses GNU Autotools to prepare OpenBlox to be built. In
+OpenBlox uses GNU Autotools to prepare this library to be built. In
 particular, libopenblox uses libtool in addition to autoconf and
 automake.
 
