@@ -15,6 +15,7 @@ ClassMetadata.cpp \
 ClassFactory.cpp \
 OBEngine.cpp \
 lua/OBLua.cpp \
+lua/OBLua_OBBase.cpp \
 instance/Instance.cpp \
 utility.cpp
 
