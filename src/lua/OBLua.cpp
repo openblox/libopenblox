@@ -22,6 +22,8 @@
 #include "lua/OBLua_OBBase.h"
 #include "lua/OBLua_OBOS.h"
 
+#include <cstdlib>
+
 #include <map>
 
 namespace OB{
