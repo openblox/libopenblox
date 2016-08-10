@@ -20,6 +20,7 @@
 #include "lua/OBLua.h"
 
 #include "lua/OBLua_OBBase.h"
+#include "lua/OBLua_OBOS.h"
 
 #include <map>
 
