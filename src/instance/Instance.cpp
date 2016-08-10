@@ -17,21 +17,10 @@
  * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <string>
-
-#ifndef OB_INST_INSTANCE
-#define OB_INST_INSTANCE
+#include "instance/Instance.h"
 
 namespace OB{
 	namespace Instance{
-		class Instance{
-		};
+		
 	}
 }
-
-#endif // OB_INST_INSTANCE
-
-
-// Local Variables:
-// mode: c++
-// End:
