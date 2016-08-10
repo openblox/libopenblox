@@ -19,6 +19,8 @@
 
 #include "lua/OBLua.h"
 
+#include "lua/OBLua_OBBase.h"
+
 #include <map>
 
 namespace OB{
@@ -54,7 +56,7 @@ namespace OB{
 			lStates[L] = LState;
 
 			//Load altered standard lib
-			//luaL_requiref(L, "_G", luaopen_obbase, 1);//OB version of Lua's base lib
+			luaL_requiref(L, "_G", luaopen_obbase, 1);//OB version of Lua's base lib
 			luaL_requiref(L, LUA_COLIBNAME, luaopen_coroutine, 1);
 			luaL_requiref(L, LUA_TABLIBNAME, luaopen_table, 1);
 			//luaL_requiref(L, LUA_OSLIBNAME, luaopen_obos, 1);//OB version of Lua's os lib
