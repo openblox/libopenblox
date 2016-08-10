@@ -59,7 +59,7 @@ namespace OB{
 			luaL_requiref(L, "_G", luaopen_obbase, 1);//OB version of Lua's base lib
 			luaL_requiref(L, LUA_COLIBNAME, luaopen_coroutine, 1);
 			luaL_requiref(L, LUA_TABLIBNAME, luaopen_table, 1);
-			//luaL_requiref(L, LUA_OSLIBNAME, luaopen_obos, 1);//OB version of Lua's os lib
+			luaL_requiref(L, LUA_OSLIBNAME, luaopen_obos, 1);//OB version of Lua's os lib
 			luaL_requiref(L, LUA_STRLIBNAME, luaopen_string, 1);
 			luaL_requiref(L, LUA_MATHLIBNAME, luaopen_math, 1);
 			luaL_requiref(L, LUA_UTF8LIBNAME, luaopen_utf8, 1);
