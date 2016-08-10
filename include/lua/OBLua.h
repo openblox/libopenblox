@@ -20,9 +20,11 @@
 #ifndef OB_LUA_OBLUA
 #define OB_LUA_OBLUA
 
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
+extern "C" {
+	#include <lua.h>
+	#include <lauxlib.h>
+	#include <lualib.h>
+}
 
 namespace OB{
 	namespace Lua{
