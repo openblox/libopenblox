@@ -9,7 +9,7 @@ AC_CANONICAL_SYSTEM
 
 AC_CONFIG_MACRO_DIR([m4])
 
-AM_INIT_AUTOMAKE([1.10 foreign])
+AM_INIT_AUTOMAKE([1.10 foreign subdir-objects])
 
 #Options
 AC_ARG_WITH(irrlicht, AS_HELP_STRING([--without-irrlicht], [Compile without Irrlicht support.]))
