@@ -13,6 +13,7 @@ OBException.cpp \
 OBLogger.cpp \
 ClassMetadata.cpp \
 ClassFactory.cpp \
+TaskScheduler.cpp \
 OBEngine.cpp \
 lua/OBLua.cpp \
 lua/OBLua_OBBase.cpp \
