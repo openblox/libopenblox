@@ -29,3 +29,13 @@
 /src/Makefile
 /src/Makefile.in
 /docs/
+/src/instance/.deps/
+/src/instance/.dirstamp
+/src/instance/.libs/
+/src/instance/*.lo
+/src/instance/*.o
+/src/lua/.deps/
+/src/lua/.dirstamp
+/src/lua/.libs/
+/src/lua/*.lo
+/src/lua/*.o
