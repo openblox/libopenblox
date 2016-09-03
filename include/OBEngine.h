@@ -50,6 +50,10 @@ namespace irr{
 #endif
 
 namespace OB{
+	#ifndef OB_TASKSCHEDULER
+	class TaskScheduler;
+	#endif
+	
 	/**
 	 * This is the main class of the OpenBlox engine. This class is
 	 * the hierarchical parent of everything else in the engine,
@@ -238,13 +242,13 @@ namespace OB{
 			bool vsync;
 			void* windowId;
 
-			OBLogger* logger;
-
 			lua_State* globalState;
 
 			irr::IrrlichtDevice* irrDev;
 			irr::video::IVideoDriver* irrDriv;
 			irr::scene::ISceneManager* irrSceneMgr;
+
+			TaskScheduler* taskSched;
 
 			static OBEngine* inst;
 	};

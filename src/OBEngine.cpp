@@ -22,6 +22,8 @@
 #include "OBException.h"
 #include "utility.h"
 
+#include "TaskScheduler.h"
+
 #include <string>
 
 #include <irrlicht/irrlicht.h>
@@ -50,6 +52,8 @@ namespace OB{
 		irrDev = NULL;
 		irrDriv = NULL;
 		irrSceneMgr = NULL;
+		
+		taskSched = NULL;
 	}
 
 	OBEngine::~OBEngine(){}
@@ -112,6 +116,8 @@ namespace OB{
 			OBLogger::log(renderShadingLangVer);
 		}
 
+		taskSched = new TaskScheduler();
+
 		initialized = true;
 	}
 
@@ -126,7 +132,7 @@ namespace OB{
 				return;//Early return, we're not running anymore!
 			}
 		}
-		//TODO: stub
+	    taskSched->tick();
 	}
 
 	void OBEngine::render(){
