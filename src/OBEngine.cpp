@@ -62,6 +62,10 @@ namespace OB{
 		return inst;
 	}
 
+	TaskScheduler* OBEngine::getTaskScheduler(){
+		return taskSched;
+	}
+
 	void OBEngine::init(){
 		if(initialized){
 			throw new OBException("OBEngine has already been initialized.");
@@ -132,6 +136,7 @@ namespace OB{
 				return;//Early return, we're not running anymore!
 			}
 		}
+		
 	    taskSched->tick();
 	}
 

@@ -76,6 +76,14 @@ namespace OB{
 			static OBEngine* getInstance();
 
 			/**
+			 * Returns the TaskScheduler associated with this OBEngine.
+			 *
+			 * @returns Instance of TaskScheduler
+			 * @author John M. Harris, Jr.
+			 */
+			TaskScheduler* getTaskScheduler();
+
+			/**
 			 * Initializes the OpenBlox engine.
 			 *
 			 * You must have set all initialization parameters
