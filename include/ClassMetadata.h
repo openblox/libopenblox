@@ -20,24 +20,20 @@
 #include <string>
 #include <vector>
 
-#include "instance/Instance.h"
-
 #ifndef OB_CLASSMETADATA
 #define OB_CLASSMETADATA
 
 namespace OB{
+	#ifndef OB_INST_INSTANCE
+	namespace Instance{
+		class Instance;
+	}
+	#endif
+
+	typedef void (*InstanceInitFnc)();
+	
 	class ClassMetadata{
 		public:
-			/**
-			 * "Constructor" for this virtual class.
-			 *
-			 * @param className Name of the class described
-			 * @param parentClassName Name of the parent class to the one described
-			 * @param isInstable Whether or not this class can be created. Does not apply to services or replication.
-			 * @author John M. Harris, Jr.
-			 */
-		    void init(std::string className, std::string parentClassName, bool isInstable);
-			
 			/**
 			 * Used by the ClassFactory to create new instances of the
 			 * class described by this ClassMetadata instance.
@@ -63,7 +59,7 @@ namespace OB{
 			 *
 			 * @returns true if this class can be created. Doesn't apply to services or replication. Replication bypasses this entirely.
 			 */
-			bool isInstantiatable();
+			virtual bool isInstantiatable() = 0;
 
 			/**
 			 * Returns true if the class described is a service,
@@ -82,7 +78,7 @@ namespace OB{
 			 * @returns Name of the class described by this ClassMetadata
 			 * @author John M. Harris, Jr.
 			 */
-			std::string getClassName();
+			virtual std::string getClassName() = 0;
 
 			/**
 			 * Returns the parent class name of the class this
@@ -93,11 +89,15 @@ namespace OB{
 			 * @returns Parent class name
 			 * @author John M. Harris, Jr.
 			 */
-			std::string getParentClassName();
-		private:
-			std::string className;
-			std::string parentClassName;
-			bool isInstable;
+			virtual std::string getParentClassName() = 0;
+
+			/**
+			 * Used to initialize Lua metatables for classes, among
+			 * other things.
+			 *
+			 * @author John M. Harris, Jr.
+			 */
+			virtual InstanceInitFnc getInitFunc() = 0;
 	};
 }
 

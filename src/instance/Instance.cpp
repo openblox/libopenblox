@@ -19,8 +19,14 @@
 
 #include "instance/Instance.h"
 
+#include <iostream>
+
 namespace OB{
 	namespace Instance{
-		
+		DEFINE_CLASS_ABS(Instance, NULL);
+
+		REGISTER_CLASS(Instance){
+			std::cout << "Hey, this runs. Cool." << std::endl;
+		}
 	}
 }

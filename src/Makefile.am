@@ -11,7 +11,6 @@ lib_LTLIBRARIES = libopenblox.la
 libopenblox_la_SOURCES = openblox.cpp \
 OBException.cpp \
 OBLogger.cpp \
-ClassMetadata.cpp \
 ClassFactory.cpp \
 TaskScheduler.cpp \
 OBEngine.cpp \
