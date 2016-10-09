@@ -20,6 +20,10 @@
 #ifndef OB_TASKSCHEDULER
 #define OB_TASKSCHEDULER
 
+#include <vector>
+
+#include "obtype.h"
+
 namespace OB{
 	/**
 	 * This typedef describes the type of function accepted by the
