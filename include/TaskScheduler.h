@@ -106,6 +106,16 @@ namespace OB{
 			void enqueue(ob_task_fnc fnc, void* metad, ob_int64 at);
 		private:
 			std::vector<_ob_waiting_task> tasks;
+
+			/**
+			 * Internal method used to add a task to the vector of
+			 * tasks and handle sorting of tasks.
+			 *
+			 * @param t Task to enqueue.
+			 * 
+			 * @author John M. Harris, Jr.
+			 */
+			void enq(_ob_waiting_task t);
 	};
 }
 
