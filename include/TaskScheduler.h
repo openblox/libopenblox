@@ -108,14 +108,11 @@ namespace OB{
 			std::vector<_ob_waiting_task> tasks;
 
 			/**
-			 * Internal method used to add a task to the vector of
-			 * tasks and handle sorting of tasks.
-			 *
-			 * @param t Task to enqueue.
+			 * Internal method used to sort tasks.
 			 * 
 			 * @author John M. Harris, Jr.
 			 */
-			void enq(_ob_waiting_task t);
+			void sortTasks();
 	};
 }
 

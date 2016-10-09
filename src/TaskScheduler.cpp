@@ -28,7 +28,58 @@ namespace OB{
 	TaskScheduler::~TaskScheduler(){}
 
 	void TaskScheduler::tick(){
-		
+		if(!tasks.empty()){
+			/* This vector contains tasks that returned response code
+			 * 1. These are pushed back onto the tasks vector after
+			 * other tasks have been handled, or until a task returns
+			 * an area code that marks the end of task handling for
+			 * this tick.
+			 */
+			std::vector<_ob_waiting_task> tmpPopped;
+
+			bool stopProcTasks = false;
+			
+			while(!tasks.empty() && stopProcTasks){
+				ob_int64 curTime = currentTimeMillis();
+
+				_ob_waiting_task t = tasks.back();
+
+				if(t.at < curTime){
+					int retCode = t.task_fnc(t.metad, t.start);
+
+					switch(retCode){
+						case 0: {
+							tasks.erase(std::remove(tasks.begin(), tasks.end(), t), tasks.end());
+							break;
+						}
+						case 1: {
+							tmpPopped.push_back(t);
+							tasks.erase(std::remove(tasks.begin(), tasks.end(), t), tasks.end());
+							break;
+						}
+						case 2: {
+							tasks.erase(std::remove(tasks.begin(), tasks.end(), t), tasks.end());
+							stopProcTasks = true;
+							break;
+						}
+						case 3: {
+							tmpPopped.push_back(t);
+							tasks.erase(std::remove(tasks.begin(), tasks.end(), t), tasks.end());
+							stopProcTasks = true;
+							break;
+						}
+					}
+				}
+			}
+
+			if(!tmpPopped.empty()){
+				while(!tmpPopped.empty()){
+					tasks.push_back(tmpPopped.back());
+					tmpPopped.pop_back();
+				}
+				sortTasks();
+			}
+		}
 	}
 
 	void TaskScheduler::enqueue(ob_task_fnc fnc, void* metad, ob_int64 at){
@@ -40,12 +91,12 @@ namespace OB{
 		t.metad = metad;
 		t.task_fnc = fnc;
 
-		enq(t);
+		tasks.push_back(t);
+		
+		sortTasks();
 	}
 
-	void TaskScheduler::enq(_ob_waiting_task t){
-		tasks.push_back(t);
-
+	void TaskScheduler::sortTasks(){
 		std::sort(tasks.begin(), tasks.end(), [](const _ob_waiting_task& t1, const _ob_waiting_task& t2)->bool{
 			return t1.at > t2.at;
 		});
