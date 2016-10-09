@@ -23,6 +23,9 @@
 #include "utility.h"
 
 #include "TaskScheduler.h"
+#include "ClassFactory.h"
+
+#include "lua/OBLua.h"
 
 #include <string>
 
@@ -120,6 +123,9 @@ namespace OB{
 		}
 
 		taskSched = new TaskScheduler();
+		globalState = OB::Lua::initGlobal();
+
+		ClassFactory::initClasses();
 
 		initialized = true;
 	}

@@ -92,4 +92,10 @@ namespace OB{
 		}
 		return false;
 	}
+
+	void ClassFactory::initClasses(){
+		for(std::map<std::string, ClassMetadata*>::iterator it = metadataTable.begin(); it != metadataTable.end(); ++it){
+			it->second->getInitFunc()();
+		}
+	}
 }

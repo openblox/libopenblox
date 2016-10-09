@@ -124,6 +124,14 @@ namespace OB{
 			 * @author John M. Harris, Jr.
 			 */
 			static bool isA(OB::Instance::Instance* obj, std::string className);
+
+			/**
+			 * Initializes Lua metatables and other Instance related
+			 * runtime requirements.
+			 *
+			 * @author John M. Harris, Jr.
+			 */
+			static void initClasses();
 			
 		private:
 			static std::map<std::string, ClassMetadata*> metadataTable;
