@@ -75,8 +75,7 @@ namespace OB{
 			irr::SIrrlichtCreationParameters p;
 			p.DriverType = irr::video::EDT_OPENGL;
 
-			p.WindowSize = irr::core::dimension2d<irr::u32>(startWidth,
-															startHeight);
+			p.WindowSize = irr::core::dimension2d<irr::u32>(startWidth, startHeight);
 			p.Vsync = vsync;
 			p.WindowId = windowId;
 
