@@ -30,8 +30,11 @@ namespace OB{
 	 * TaskScheduler. When queuing a task, you specify a function of
 	 * this type, and any type to be used as metadata. That type is
 	 * cast to a void*, which will be passed as the first parameter of
-	 * this function on invocation.
-
+	 * this function on invocation. The second parameter, startTime,
+	 * is the time, in milliseconds, that the task was queued. This is
+	 * used mainly by certain Lua functions, such as `wait` and
+	 * `delay`.
+	 *
 	 * The return code of this function is very important, as each
 	 * return code signals a different handling in the TaskScheduler.
 	 * If you don't know what you're doing, just return 0 and you'll
@@ -52,7 +55,7 @@ namespace OB{
 	 * a response code 1, except the TaskScheduler should stop
 	 * processing tasks for this tick.
 	 */
-	typedef int (*ob_task_fnc)(void* metad);
+	typedef int (*ob_task_fnc)(void* metad, ob_int64 startTime);
 
 	/**
 	 * This struct holds the internal data of a waiting task. This
@@ -90,6 +93,17 @@ namespace OB{
 			 * @author John M. Harris, Jr.
 			 */
 			void tick();
+
+			/**
+			 * Queues a task to be run at a given time.
+			 *
+			 * @param fnc Function to queue
+			 * @param metad Metadata to be passed to the function.
+			 * @param at When this task needs to run.
+			 *
+			 * @author John M. Harris, Jr.
+			 */
+			void enqueue(ob_task_fnc fnc, void* metad, ob_int64 at);
 		private:
 			std::vector<_ob_waiting_task> tasks;
 	};
