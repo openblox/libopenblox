@@ -19,13 +19,20 @@
 
 #include "TaskScheduler.h"
 
+#include <algorithm>
+
 #include "OBException.h"
+#include "utility.h"
 
 namespace OB{
 	TaskScheduler::TaskScheduler(){
 	}
 
 	TaskScheduler::~TaskScheduler(){}
+
+	bool operator==(const _ob_waiting_task& t1, const _ob_waiting_task& t2){
+		return &t1 == &t2;
+	}
 
 	void TaskScheduler::tick(){
 		if(!tasks.empty()){
@@ -96,9 +103,11 @@ namespace OB{
 		sortTasks();
 	}
 
+	bool __ob_taskscheduler_sort_cmp(const _ob_waiting_task& t1, const _ob_waiting_task& t2){
+		return t1.at > t2.at;
+	}
+
 	void TaskScheduler::sortTasks(){
-		std::sort(tasks.begin(), tasks.end(), [](const _ob_waiting_task& t1, const _ob_waiting_task& t2)->bool{
-			return t1.at > t2.at;
-		});
+		std::sort(tasks.begin(), tasks.end(), __ob_taskscheduler_sort_cmp);
 	}
 }
