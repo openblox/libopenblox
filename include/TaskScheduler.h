@@ -91,7 +91,7 @@ namespace OB{
 			 */
 			void tick();
 		private:
-			std::vector<waiting_task> tasks;
+			std::vector<_ob_waiting_task> tasks;
 	};
 }
 
