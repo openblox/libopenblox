@@ -28,5 +28,26 @@ namespace OB{
 	TaskScheduler::~TaskScheduler(){}
 
 	void TaskScheduler::tick(){
+		
+	}
+
+	void TaskScheduler::enqueue(ob_task_fnc fnc, void* metad, ob_int64 at){
+		ob_int64 curTime = currentTimeMillis();
+		
+		_ob_waiting_task t;
+		t.start = curTime;
+		t.at = at;
+		t.metad = metad;
+		t.task_fnc = fnc;
+
+		enq(t);
+	}
+
+	void TaskScheduler::enq(_ob_waiting_task t){
+		tasks.push_back(t);
+
+		std::sort(tasks.begin(), tasks.end(), [](const _ob_waiting_task& t1, const _ob_waiting_task& t2)->bool{
+			return t1.at > t2.at;
+		});
 	}
 }
