@@ -65,14 +65,6 @@ namespace OB{
 			std::string getMessage();
 
 			/**
-			 * Convenience function, same as getMessage.
-			 *
-			 * @returns The message of this OBException
-			 * @author John M. Harris, Jr.
-			 */
-			std::string toString();
-
-			/**
 			 * Convenience function to throw this exception.
 			 *
 			 * @author John M. Harris, Jr.
