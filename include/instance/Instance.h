@@ -28,6 +28,8 @@
 
 typedef void (*luaRegisterFunc)(lua_State* L);
 
+#define COLONERR "Expected ':' not '.' calling member function %s"
+
 #define DECLARE_CLASS(Class_Name) \
 	virtual Instance* cloneImpl(); \
 	virtual std::string getClassName(); \
@@ -37,6 +39,22 @@ typedef void (*luaRegisterFunc)(lua_State* L);
 protected: \
 	static std::string ClassName; \
 	static std::string LuaClassName
+
+#define _OB_DEFCLASS_SHARED(Class_Name) \
+	std::string Class_Name::ClassName = #Class_Name; \
+	std::string Class_Name::LuaClassName = "luaL_Instance_" #Class_Name; \
+	int Class_Name::wrap_lua(lua_State* L){ \
+		Class_Name** udata = (Class_Name**)lua_newuserdata(L, sizeof(*this)); \
+		*udata = this; \
+		luaL_getmetatable(L, LuaClassName.c_str()); \
+		lua_setmetatable(L, -2); \
+		return 1; \
+	} \
+	std::string Class_Name::getClassName(){ \
+		return ClassName; \
+	} \
+	OB::ClassMetadata* Class_Name::_ob_classmetadata = new Class_Name##ClassMetadata; \
+	void Class_Name::_ob_init()
 
 #define DEFINE_CLASS(Class_Name, isInstable, isAService, ParentClass) \
 	class Class_Name##ClassMetadata: public OB::ClassMetadata{ \
@@ -66,7 +84,8 @@ protected: \
 		virtual InstanceInitFnc getInitFunc(){ \
 			return Class_Name::_ob_init; \
 		} \
-	}
+	}; \
+    _OB_DEFCLASS_SHARED(Class_Name)
 
 #define DEFINE_CLASS_ABS(Class_Name, ParentClass) \
     class Class_Name##ClassMetadata: public OB::ClassMetadata{ \
@@ -96,12 +115,11 @@ protected: \
 		virtual InstanceInitFnc getInitFunc(){ \
 			return Class_Name::_ob_init; \
 		} \
-	}
+	}; \
+	_OB_DEFCLASS_SHARED(Class_Name)
 
-#define REGISTER_CLASS(Class_Name) \
-	OB::ClassMetadata* Class_Name::_ob_classmetadata = new Class_Name##ClassMetadata; \
-	void Class_Name::_ob_init()
-		
+#define DECLARE_LUA_METHOD(MethodName) \
+	static int lua_##MethodName(lua_State* L)
 
 namespace OB{
 	/**
@@ -114,32 +132,316 @@ namespace OB{
 				Instance();
 				virtual ~Instance();
 
+				/**
+				 * Calls Remove on all children.
+				 *
+				 * @author John M. Harris, Jr.
+				 */
 				virtual void ClearAllChildren();
+
+				/**
+				 * Clones an Instance, if possible. This also clones
+				 * children of the Instance.
+				 *
+				 * @returns Instance*, NULL if not able to clone.
+				 * @author John M. Harris, Jr.
+				 */
 				virtual Instance* Clone();
+
+				/**
+				 * Used to parent the object to NULL (nil in Lua) and
+				 * remove all references. This also parent-locks it.
+				 *
+				 * @author John M. Harris, Jr.
+				 */
 				virtual void Destroy();
+
+				/**
+				 * Used to set the parent of this object to NULL
+				 * (nil in Lua). Calls Remove recursively on child
+				 * objects.
+				 *
+				 * @author John M. Harris, Jr.
+				 */
 				virtual void Remove();
+
+				/**
+				 * Finds the first child with a given name. This has
+				 * an optional argument for searching recursively.
+				 *
+				 * @param name Name of the Instance to search for
+				 * @param recursive Whether or not to search recursively.
+				 *
+				 * @author John M. Harris, Jr.
+				 */
 				virtual Instance* FindFirstChild(std::string name, bool recursive = false);
+
+				/**
+				 * Returns the children of an object.
+				 *
+				 * @returns Vector containing the children of this object.
+				 *
+				 * @author John M. Harris, Jr.
+				 */
 				virtual std::vector<Instance*> GetChildren();
+
+				/**
+				 * Returns the full name of this object. Usually in
+				 * the form of "game.Service.Thing", can return weird
+				 * things when one of the parents of this Instance is
+				 * parented to NULL.
+				 *
+				 * @returns Full name of this Instance
+				 *
+				 * @author John M. Harris, Jr.
+				 */
 				virtual std::string GetFullName();
+
+				/**
+				 * Used for class inheritance checking.
+				 * @param name Name of the class to test against.
+				 *
+				 * @returns true if this class inherits from the class
+				 * of the name given.
+				 *
+				 * @author John M. Harris, Jr.
+				 */
 				virtual bool IsA(std::string name);
+
+				/**
+				 * Returns whether or not this Instance is the
+				 * ancestor of another Instance.
+				 *
+				 * @param descendant Possible Descendant
+				 *
+				 * @returns true if the possible descendant is not
+				 * NULL and this Instance is an ancestor of the
+				 * possible descendant.
+				 *
+				 * @author John M. Harris, Jr.
+				 */
 				virtual bool IsAncestorOf(Instance* descendant);
+
+				/**
+				 * Returns whether or not this Instance is a
+				 * descendant of another Instance.
+				 *
+				 * @param ancestor Possible Ancestor
+				 * @returns true if the possible ancestor is NULL or
+				 * this Instance is a descendant of the possible
+				 * ancestor.
+				 *
+				 * @author John M. Harris, Jr.
+				 */
 				virtual bool IsDescendantOf(Instance* ancestor);
 
+				/**
+				 * Called internally every tick.
+				 *
+				 * @author John M. Harris, Jr.
+				 */
 				virtual void tick();
+
+				/**
+				 * Convenience method to call tick on all children.
+
+				 * @author John M. Harris, Jr.
+				 */
 				virtual void tickChildren();
 
+				/**
+				 * Convenience method to register this class as an
+				 * Instance class.
+				 *
+				 * @author John M. Harris, Jr.
+				 */
 				static void registerLuaClass(std::string className, luaRegisterFunc register_metamethods, luaRegisterFunc register_methods, luaRegisterFunc register_getters, luaRegisterFunc register_setters, luaRegisterFunc register_events);
 
+				/**
+				 * Returns the stringified version of this Instance,
+				 * for C++ and Lua this will return the Name.
+				 *
+				 * @returns Name
+				 *
+				 * @author John M. Harris, Jr.
+				 */
 				virtual std::string toString();
+
+				/**
+				 * Used to set the Parent property.
+				 *
+				 * @param parent New Parent
+				 *
+				 * @author John M. Harris, Jr.
+				 */
 				virtual void setParent(Instance* parent, bool useDMNotify);
+
+				virtual void removeChild(Instance* kid);
+				virtual void addChild(Instance* kid);
+
+				/**
+				 * Returns the current Parent of this Instance.
+				 *
+				 * @returns Parent
+				 *
+				 * @author John M. Harris, Jr.
+				 */
 				Instance* getParent();
-				
+
+				/**
+				 * Checks that the value at the specified index on the
+				 * Lua state is an Instance, and if so returns it.
+				 *
+				 * @param L Lua State
+				 * @param index Index on the Lua stack
+				 *
+				 * @author John M. Harris, Jr.
+				 * @author DigiTechs
+				 */
 				static Instance* checkInstance(lua_State* L, int index);
 
+			    /**
+				 * Handles attempts to set properties of this Instance.
+				 *
+				 * @param L Lua State
+				 *
+				 * @returns 0 or error (Does not return if an
+				 * error occurs)
+				 *
+				 * @author DigiTechs
+				 * @author John M. Harris, Jr.
+				 */
 				static int lua_index(lua_State* L);
+
+				/**
+				 * Handles attempts to get properties, methods or
+				 * events of this Instance.
+				 *
+				 * @param L Lua State
+				 *
+				 * @returns 1 if there is a corresponding value,
+				 * otherwise errors. (No return)
+				 *
+				 * @author DigiTechs
+				 * @author John M. Harris, Jr.
+				 */
 				static int lua_newindex(lua_State* L);
 
-			    DECLARE_CLASS(Instance);	
+			    /**
+				 * Handles equality tests from Lua.
+				 *
+				 * @param L Lua State
+				 *
+				 * @returns 1, a bool value on the lua stack.
+				 * (This value is true if the two Instances are
+				 * the same)
+				 *
+				 * @author John M. Harris, Jr.
+				 */
+				static int lua_eq(lua_State* L);
+
+				/**
+				 * Handles tostring calls on this Instance from Lua.
+				 *
+				 * @param L Lua State
+				 *
+				 * @returns 1, a string value on the lua stack. (The
+				 * result of Instance::toString)
+				 *
+				 * @author John M. Harris, Jr.
+				 */
+				static int lua_toString(lua_State* L);
+				
+				DECLARE_LUA_METHOD(getClassName);
+				DECLARE_LUA_METHOD(getName);
+				DECLARE_LUA_METHOD(setName);
+				DECLARE_LUA_METHOD(getParent);
+				DECLARE_LUA_METHOD(setParent);
+				DECLARE_LUA_METHOD(getArchivable);
+				DECLARE_LUA_METHOD(setArchivable);
+
+				/**
+				 * Used as the 'setter' for read-only properties.
+				 *
+				 * @param L Lua state
+				 *
+				 * @author John M. Harris, Jr.
+				 */
+				static int lua_readOnlyProperty(lua_State* L);
+
+				DECLARE_LUA_METHOD(ClearAllChildren);
+				DECLARE_LUA_METHOD(Clone);
+				DECLARE_LUA_METHOD(Destroy);
+				DECLARE_LUA_METHOD(Remove);
+				DECLARE_LUA_METHOD(FindFirstChild);
+				DECLARE_LUA_METHOD(GetChildren);
+				DECLARE_LUA_METHOD(GetFullName);
+				DECLARE_LUA_METHOD(IsA);
+				DECLARE_LUA_METHOD(IsAncestorOf);
+				DECLARE_LUA_METHOD(IsDescendantOf);
+				DECLARE_LUA_METHOD(GetNetworkID);
+
+				bool ParentLocked;
+
+				//TODO: Events
+
+				bool Archivable;
+				std::string Name;
+				Instance* Parent;
+
+				/**
+				 * Lua Metamethods for the Instance class.
+				 *
+				 * @param L Lua State
+				 *
+				 * @author John M. Harris, Jr.
+				 * @author DigiTechs
+				 */
+				static void register_lua_metamethods(lua_State* L);
+
+				/**
+				 * Lua methods for the Instance class.
+				 *
+				 * @param L Lua State
+				 *
+				 * @author John M. Harris, Jr.
+				 * @author DigiTechs
+				 */
+				static void register_lua_methods(lua_State* L);
+
+				/**
+				 * Lua property setters for the Instance class.
+				 *
+				 * @param L Lua State
+				 *
+				 * @author John M. Harris, Jr.
+				 * @author DigiTechs
+				 */
+				static void register_lua_property_setters(lua_State* L);
+
+				/**
+				 * Lua property getters for the Instance class.
+				 *
+				 * @param L Lua State
+				 *
+				 * @author John M. Harris, Jr.
+				 * @author DigiTechs
+				 */
+				static void register_lua_property_getters(lua_State* L);
+
+				/**
+				 * Lua events for the Instance class.
+				 *
+				 * @param L Lua State
+				 *
+				 * @author John M. Harris, Jr.
+				 * @author DigiTechs
+				 */
+				static void register_lua_events(lua_State* L);
+
+				DECLARE_CLASS(Instance);
+
+				std::vector<Instance*> children;
 		};
 	}
 }
