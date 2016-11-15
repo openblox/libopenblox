@@ -50,7 +50,6 @@ namespace OB{
 			bool stopProcTasks = false;
 			
 			while(!tasks.empty() && !stopProcTasks){
-				puts("Tasks not empty");
 				ob_int64 curTime = currentTimeMillis();
 
 				_ob_waiting_task t = tasks.back();
@@ -61,28 +60,26 @@ namespace OB{
 
 					switch(retCode){
 						case 0: {
-							tasks.erase(std::remove(tasks.begin(), tasks.end(), t), tasks.end());
+							tasks.pop_back();
 							break;
 						}
 						case 1: {
 							tmpPopped.push_back(t);
-							tasks.erase(std::remove(tasks.begin(), tasks.end(), t), tasks.end());
+							tasks.pop_back();
 							break;
 						}
 						case 2: {
-							tasks.erase(std::remove(tasks.begin(), tasks.end(), t), tasks.end());
+							tasks.pop_back();
 							stopProcTasks = true;
 							break;
 						}
 						case 3: {
 							tmpPopped.push_back(t);
-							tasks.erase(std::remove(tasks.begin(), tasks.end(), t), tasks.end());
+							tasks.pop_back();
 							stopProcTasks = true;
 							break;
 						}
 					}
-				}else{
-					puts("Not running task");
 				}
 			}
 
