@@ -36,6 +36,8 @@
  */
 typedef long long int ob_int64;
 
+#define OB_NETID_UNASSIGNED 0
+
 #endif // OB_OBTYPE
 
 // Local Variables:
