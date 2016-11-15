@@ -80,6 +80,17 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		std::string handle_errors(lua_State* L);
+
+		//Lua functions and misc
+
+		/**
+		 * Used as the redefined "print" function for Lua.
+		 *
+		 * @param L Lua state
+		 * @returns int 0
+		 * @author John M. Harris, Jr.
+		 */
+		int lua_print(lua_State* L);
 	}
 }
 

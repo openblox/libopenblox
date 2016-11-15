@@ -68,6 +68,16 @@ namespace OB{
 			luaL_requiref(L, LUA_UTF8LIBNAME, luaopen_utf8, 1);
 
 			lua_pop(L, 7);
+
+			luaL_Reg mainlib[] = {
+				{"print", lua_print},
+					
+				{NULL, NULL}
+			};
+
+			lua_pushglobaltable(L);
+			luaL_setfuncs(L, mainlib, 0);
+			lua_pop(L, 1);
 			
 			return L;
 		}
@@ -93,6 +103,40 @@ namespace OB{
 			lua_pop(L, 1);//Pop the error off the stack like it never happened.
 			
 			return lerr;
+		}
+
+		//Lua functions and misc
+		
+		int lua_print(lua_State* L){
+			std::string output = "";
+
+			int n = lua_gettop(L);
+			int i;
+
+			lua_getglobal(L, "tostring");
+			for(i=1; i <= n; i++){
+				const char* s;
+				lua_pushvalue(L, -1);
+				lua_pushvalue(L, i);
+				lua_call(L, 1, 1);
+
+				s = lua_tostring(L, -1);
+				lua_pop(L, 1);
+				
+				if(s == NULL){
+					return luaL_error(L, LUA_QL("tostring") " must return a string to " LUA_QL("print"));
+				}
+
+				if(i > 1){
+					output = output + "\t";
+				}
+				output = output + std::string(s);
+			}
+
+			//TODO: Consider passing this to a logger or something as well
+		    puts(output.c_str());
+			
+			return 0;
 		}
 	}
 }
