@@ -22,6 +22,7 @@
 
 #include "lua/OBLua.h"
 #include "ClassFactory.h"
+#include "obtype.h"
 
 #ifndef OB_INST_INSTANCE
 #define OB_INST_INSTANCE
@@ -236,6 +237,18 @@ namespace OB{
 				virtual bool IsDescendantOf(Instance* ancestor);
 
 				/**
+				 * Returns a unique 64 bit integer, globally used to
+				 * identify this Instance. Defaults to
+				 * OB_NETID_UNASSIGNED.
+				 *
+				 * @returns Unique 64 bit integer, 0 or a static
+				 * assignment
+				 *
+				 * @author John M. Harris, Jr.
+				 */
+				ob_int64 GetNetworkID();
+
+				/**
 				 * Called internally every tick.
 				 *
 				 * @author John M. Harris, Jr.
@@ -440,6 +453,8 @@ namespace OB{
 				static void register_lua_events(lua_State* L);
 
 				DECLARE_CLASS(Instance);
+
+				ob_int64 netId;
 
 				std::vector<Instance*> children;
 		};
