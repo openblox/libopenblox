@@ -26,6 +26,8 @@ extern "C" {
 	#include <lualib.h>
 }
 
+#include <string>
+
 namespace OB{
 	namespace Lua{
 		struct OBLState{
@@ -68,6 +70,16 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		lua_State* initCoroutine(lua_State* pL);
+
+		/**
+		 * Used internally to handle errors. Returns a Lua error as a
+		 * string.
+		 *
+		 * @param L Lua state
+		 * @returns std::string Lua error message
+		 * @author John M. Harris, Jr.
+		 */
+		std::string handle_errors(lua_State* L);
 	}
 }
 

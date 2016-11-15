@@ -86,5 +86,13 @@ namespace OB{
 			
 			return L;
 		}
+
+		std::string handle_errors(lua_State* L){
+			std::string lerr = std::string(lua_tostring(L, -1));
+
+			lua_pop(L, 1);//Pop the error off the stack like it never happened.
+			
+			return lerr;
+		}
 	}
 }
