@@ -18,6 +18,7 @@ lua/OBLua.cpp \
 lua/OBLua_OBBase.cpp \
 lua/OBLua_OBOS.cpp \
 instance/Instance.cpp \
+instance/TestInstance.cpp \
 utility.cpp
 
 # Linker options

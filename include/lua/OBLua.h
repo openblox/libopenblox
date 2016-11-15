@@ -117,6 +117,24 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		int lua_wait(lua_State* L);
+
+		/**
+		 * Used to create an Instance from Lua.
+		 *
+		 * @param L Lua state
+		 * @returns int 1
+		 * @author John M. Harris, Jr.
+		 */
+		int lua_newInstance(lua_State* L);
+
+		/**
+		 * Used to get a list of all Instance classes from Lua.
+		 *
+		 * @param L Lua state
+		 * @returns int 1
+		 * @author John M. Harris, Jr.
+		 */
+		int lua_listInstanceClasses(lua_State* L);
 	}
 }
 

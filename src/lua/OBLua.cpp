@@ -32,6 +32,7 @@
 #include "OBEngine.h"
 #include "utility.h"
 #include "TaskScheduler.h"
+#include "instance/Instance.h"
 
 namespace OB{
 	namespace Lua{
@@ -87,6 +88,15 @@ namespace OB{
 			lua_pushglobaltable(L);
 			luaL_setfuncs(L, mainlib, 0);
 			lua_pop(L, 1);
+
+			lua_newtable(L);
+			luaL_Reg instancelib[] = {
+				{"new", lua_newInstance},
+				{"listClasses", lua_listInstanceClasses},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, instancelib, 0);
+			lua_setglobal(L, "Instance");
 			
 			return L;
 		}
@@ -238,6 +248,40 @@ namespace OB{
 			tasks->enqueue(_ob_lua_wake_wait, L, at);
 
 			return lua_yield(L, 0);
+		}
+
+		int lua_newInstance(lua_State* L){
+			std::string className = std::string(luaL_checkstring(L, 1));
+			Instance::Instance* par = Instance::Instance::checkInstance(L, 2);
+			
+		    Instance::Instance* newGuy = ClassFactory::create(className);
+			if(newGuy != NULL){
+				if(par != NULL){
+					try{
+						newGuy->setParent(par, true);
+					}catch(std::exception & ex){
+						return luaL_error(L, ex.what());
+					}
+				}
+				return newGuy->wrap_lua(L);
+			}else{
+				puts("newGuy was NULL");
+			}
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int lua_listInstanceClasses(lua_State* L){
+			lua_newtable(L);
+
+			std::vector<std::string> reggedClasses = ClassFactory::getRegisteredClasses();
+			for(std::vector<std::string>::size_type i = 0; i != reggedClasses.size(); i++){
+				int lidx = i + 1;
+				lua_pushstring(L, reggedClasses[i].c_str());
+				lua_rawseti(L, -2, lidx);
+			}
+
+			return 1;
 		}
 	}
 }
