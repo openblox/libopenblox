@@ -72,6 +72,14 @@ namespace OB{
 		lua_State* initCoroutine(lua_State* pL);
 
 		/**
+		 * Handles closing a state.
+		 *
+		 * @param L Lua state
+		 * @author John M. Harris, Jr.
+		 */
+		void close_state(lua_State* L);
+
+		/**
 		 * Used internally to handle errors. Returns a Lua error as a
 		 * string.
 		 *
@@ -91,6 +99,24 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		int lua_print(lua_State* L);
+
+		/**
+		 * Basic warn function.
+		 *
+		 * @param L Lua state
+		 * @returns int 0
+		 * @author John M. Harris, Jr.
+		 */
+		int lua_warn(lua_State* L);
+
+		/**
+		 * Used to yield the current coroutine for a certain amount of time.
+		 *
+		 * @param L Lua state
+		 * @returns int 0
+		 * @author John M. Harris, Jr.
+		 */
+		int lua_wait(lua_State* L);
 	}
 }
 

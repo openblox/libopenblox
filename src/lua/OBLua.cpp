@@ -22,9 +22,16 @@
 #include "lua/OBLua_OBBase.h"
 #include "lua/OBLua_OBOS.h"
 
+#include "obtype.h"
+
 #include <cstdlib>
 
 #include <map>
+#include <iostream>
+
+#include "OBEngine.h"
+#include "utility.h"
+#include "TaskScheduler.h"
 
 namespace OB{
 	namespace Lua{
@@ -71,6 +78,8 @@ namespace OB{
 
 			luaL_Reg mainlib[] = {
 				{"print", lua_print},
+				{"warn", lua_warn},
+				{"wait", lua_wait},
 					
 				{NULL, NULL}
 			};
@@ -97,6 +106,22 @@ namespace OB{
 			return L;
 		}
 
+		void close_state(lua_State* L){
+			if(lStates.count(L)){
+				struct OBLState* oL = lStates[L];
+
+				OBEngine* eng = OBEngine::getInstance();
+				lua_State* gL = eng->getGlobalLuaState();
+
+				luaL_unref(gL, LUA_REGISTRYINDEX, oL->ref);
+
+				std::map<lua_State*, struct OBLState*>::iterator it = lStates.find(L);
+				lStates.erase(it);
+				delete oL;
+			}
+			lua_close(L);
+		}
+		
 		std::string handle_errors(lua_State* L){
 			std::string lerr = std::string(lua_tostring(L, -1));
 
@@ -133,10 +158,86 @@ namespace OB{
 				output = output + std::string(s);
 			}
 
-			//TODO: Consider passing this to a logger or something as well
+			//TODO: Pass to LogService
 		    puts(output.c_str());
 			
 			return 0;
+		}
+
+		int lua_warn(lua_State* L){
+			std::string output = "";
+
+			int n = lua_gettop(L);
+			int i;
+
+			lua_getglobal(L, "tostring");
+			for(i=1; i <= n; i++){
+				const char* s;
+				lua_pushvalue(L, -1);
+				lua_pushvalue(L, i);
+				lua_call(L, 1, 1);
+
+				s = lua_tostring(L, -1);
+				lua_pop(L, 1);
+				
+				if(s == NULL){
+					return luaL_error(L, LUA_QL("tostring") " must return a string to " LUA_QL("warn"));
+				}
+
+				if(i > 1){
+					output = output + "\t";
+				}
+				output = output + std::string(s);
+			}
+
+			//TODO: Pass to LogService
+		    puts(output.c_str());
+			
+			return 0;
+		}
+
+		//Wakes up a Lua coroutine after a wait
+		int _ob_lua_wake_wait(void* metad, ob_int64 start){
+			ob_int64 curTime = currentTimeMillis();
+
+			lua_State* L = (lua_State*)metad;
+			lua_pushnumber(L, (curTime - start) / 1000.0);
+			lua_pushnumber(L, (curTime - 0) / 1000.0);
+
+			int ret = lua_resume(L, NULL, 2);
+
+			if(ret != LUA_OK && ret != LUA_YIELD){
+				std::string lerr = Lua::handle_errors(L);
+				std::cerr << "A Lua error occurred:" << std::endl;
+				std::cerr << lerr << std::endl;
+
+			    close_state(L);
+
+				return 0;
+			}
+
+			if(ret == LUA_OK){
+			    close_state(L);
+			}
+			
+			return 0;
+		}
+
+		int lua_wait(lua_State* L){
+		    double waitTime = 1/60;
+			if(!lua_isnoneornil(L, 1)){
+				waitTime = luaL_checknumber(L, 1);
+			}
+
+			OBEngine* eng = OBEngine::getInstance();
+			TaskScheduler* tasks = eng->getTaskScheduler();
+
+			ob_int64 curTime = currentTimeMillis();
+			ob_int64 at = curTime + (int)(waitTime * 1000);
+
+			tasks->enqueue(_ob_lua_wake_wait, L, at);
+
+			return lua_yield(L, 0);
 		}
 	}
 }
