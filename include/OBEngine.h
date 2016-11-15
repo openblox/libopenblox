@@ -33,7 +33,7 @@
 
 #include "OBLogger.h"
 
-#include <lua.h>
+#include <lua/OBLua.h>
 
 #ifndef __I_IRRLICHT_DEVICE_H_INCLUDED__
 namespace irr{
