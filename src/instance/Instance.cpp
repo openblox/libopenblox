@@ -19,7 +19,6 @@
 
 #include "instance/Instance.h"
 
-#include <iostream>
 #include <algorithm>
 
 #include "OBException.h"
@@ -27,9 +26,7 @@
 
 namespace OB{
 	namespace Instance{
-		DEFINE_CLASS_ABS(Instance, NULL){
-			std::cout << "Hey, this runs. Cool." << std::endl;
-		}
+		DEFINE_CLASS_ABS(Instance, NULL){}
 
 		Instance::Instance(){
 			Archivable = true;
