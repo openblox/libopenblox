@@ -26,7 +26,9 @@
 
 namespace OB{
 	namespace Instance{
-		DEFINE_CLASS_ABS(Instance, NULL){}
+		DEFINE_CLASS_ABS(Instance, NULL){
+			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+		}
 
 		Instance::Instance(){
 			Archivable = true;

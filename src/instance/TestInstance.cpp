@@ -21,7 +21,9 @@
 
 namespace OB{
 	namespace Instance{
-		DEFINE_CLASS(TestInstance, true, false, Instance){}
+		DEFINE_CLASS(TestInstance, true, false, Instance){
+			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+		}
 
 		TestInstance::TestInstance(){
 			Name = ClassName;
