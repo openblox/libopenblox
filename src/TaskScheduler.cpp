@@ -78,6 +78,8 @@ namespace OB{
 							break;
 						}
 					}
+				}else{
+				    stopProcTasks = true;
 				}
 			}
 
