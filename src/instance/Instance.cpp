@@ -37,6 +37,8 @@ namespace OB{
 			Parent = NULL;
 			ParentLocked = false;
 
+			netId = OB_NETID_UNASSIGNED;
+
 			//TODO: Events
 		}
 
@@ -165,6 +167,10 @@ namespace OB{
 			return ancestor->IsAncestorOf(this);
 		}
 
+		ob_int64 Instance::GetNetworkID(){
+			return netId;
+		}
+		
 		void Instance::tick(){
 			tickChildren();
 		}
@@ -763,7 +769,7 @@ namespace OB{
 		int Instance::lua_GetNetworkID(lua_State* L){
 			Instance* inst = checkInstance(L, 1);
 			if(inst){
-				lua_pushnumber(L, 111);//TODO:
+				lua_pushnumber(L, inst->GetNetworkID());
 				return 1;
 			}
 			return luaL_error(L, COLONERR, "GetNetworkID");
