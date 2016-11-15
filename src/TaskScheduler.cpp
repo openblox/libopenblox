@@ -24,6 +24,8 @@
 #include "OBException.h"
 #include "utility.h"
 
+#include <cstdio>
+
 namespace OB{
 	TaskScheduler::TaskScheduler(){
 	}
@@ -36,6 +38,7 @@ namespace OB{
 
 	void TaskScheduler::tick(){
 		if(!tasks.empty()){
+			puts("Got a task");
 			/* This vector contains tasks that returned response code
 			 * 1. These are pushed back onto the tasks vector after
 			 * other tasks have been handled, or until a task returns
@@ -46,12 +49,14 @@ namespace OB{
 
 			bool stopProcTasks = false;
 			
-			while(!tasks.empty() && stopProcTasks){
+			while(!tasks.empty() && !stopProcTasks){
+				puts("Tasks not empty");
 				ob_int64 curTime = currentTimeMillis();
 
 				_ob_waiting_task t = tasks.back();
 
 				if(t.at < curTime){
+					puts("Running task");
 					int retCode = t.task_fnc(t.metad, t.start);
 
 					switch(retCode){
@@ -76,6 +81,8 @@ namespace OB{
 							break;
 						}
 					}
+				}else{
+					puts("Not running task");
 				}
 			}
 
