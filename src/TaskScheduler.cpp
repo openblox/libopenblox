@@ -38,7 +38,6 @@ namespace OB{
 
 	void TaskScheduler::tick(){
 		if(!tasks.empty()){
-			puts("Got a task");
 			/* This vector contains tasks that returned response code
 			 * 1. These are pushed back onto the tasks vector after
 			 * other tasks have been handled, or until a task returns
@@ -55,7 +54,6 @@ namespace OB{
 				_ob_waiting_task t = tasks.back();
 
 				if(t.at < curTime){
-					puts("Running task");
 					int retCode = t.task_fnc(t.metad, t.start);
 
 					switch(retCode){
