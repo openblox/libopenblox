@@ -57,7 +57,9 @@ namespace OB{
 			if(kid){
 				if(PVInstance* oInst = dynamic_cast<PVInstance*>(kid)){
 					if(irrNode && oInst->irrNode){
-						irrNode->addChild(oInst->irrNode);
+						if(irrNode->getParent() != oInst->irrNode){//This prevents a segmentation fault!
+							irrNode->addChild(oInst->irrNode);
+						}
 					}
 				}
 				Instance::addChild(kid);
