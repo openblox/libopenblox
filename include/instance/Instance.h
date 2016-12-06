@@ -117,7 +117,39 @@ protected: \
 			return Class_Name::_ob_init; \
 		} \
 	}; \
-	Instance* Class_Name::cloneImpl(){ return NULL; }	\
+	Instance* Class_Name::cloneImpl(){ return NULL; } \
+	_OB_DEFCLASS_SHARED(Class_Name)
+
+#define DEFINE_CLASS_ABS_WCLONE(Class_Name, ParentClass) \
+    class Class_Name##ClassMetadata: public OB::ClassMetadata{ \
+		public: \
+		Class_Name##ClassMetadata(){ \
+			OB::ClassFactory::addClass(#Class_Name, this); \
+		} \
+		virtual OB::Instance::Instance* newInstance(){ \
+			return NULL; \
+		} \
+		virtual bool isA(OB::Instance::Instance* obj){ \
+			return (dynamic_cast<const Class_Name*>(obj)) != NULL; \
+		} \
+		virtual bool isInstantiatable(){ \
+			return false; \
+		} \
+		virtual bool isService(bool isDataModel){ \
+			(void)isDataModel; \
+			return false; \
+		} \
+		virtual std::string getClassName(){ \
+			return #Class_Name; \
+		} \
+		virtual std::string getParentClassName(){ \
+			return #ParentClass; \
+		} \
+		virtual InstanceInitFnc getInitFunc(){ \
+			return Class_Name::_ob_init; \
+		} \
+	}; \
+	Instance* Class_Name::cloneImpl(){ return NULL; } \
 	_OB_DEFCLASS_SHARED(Class_Name)
 
 #define DECLARE_LUA_METHOD(MethodName) \
