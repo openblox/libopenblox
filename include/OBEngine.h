@@ -35,6 +35,8 @@
 
 #include <lua/OBLua.h>
 
+#include <instance/DataModel.h>
+
 #ifndef __I_IRRLICHT_DEVICE_H_INCLUDED__
 namespace irr{
 	class IrrlichtDevice;
@@ -265,6 +267,7 @@ namespace OB{
 			irr::scene::ISceneManager* irrSceneMgr;
 
 			TaskScheduler* taskSched;
+			Instance::DataModel* dm;
 
 			static OBEngine* inst;
 	};

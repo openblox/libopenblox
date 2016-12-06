@@ -57,6 +57,8 @@ namespace OB{
 		irrSceneMgr = NULL;
 		
 		taskSched = NULL;
+
+		dm = NULL;
 	}
 
 	OBEngine::~OBEngine(){}
@@ -124,6 +126,7 @@ namespace OB{
 
 		taskSched = new TaskScheduler();
 		globalState = OB::Lua::initGlobal();
+		dm = new Instance::DataModel();
 
 		ClassFactory::initClasses();
 
