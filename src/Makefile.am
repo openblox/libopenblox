@@ -21,6 +21,7 @@ instance/Instance.cpp \
 instance/TestInstance.cpp \
 instance/PVInstance.cpp \
 instance/Model.cpp \
+instance/ServiceProvider.cpp \
 utility.cpp
 
 # Linker options
