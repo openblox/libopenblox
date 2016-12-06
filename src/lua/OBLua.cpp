@@ -264,8 +264,6 @@ namespace OB{
 					}
 				}
 				return newGuy->wrap_lua(L);
-			}else{
-				puts("newGuy was NULL");
 			}
 			lua_pushnil(L);
 			return 1;
