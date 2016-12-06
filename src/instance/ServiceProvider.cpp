@@ -51,7 +51,7 @@ namespace OB{
 		    Instance* newGuy = ClassFactory::createService(className, false);
 			if(newGuy){
 				newGuy->setParent(this, false);
-				newGuy->parentLock();
+				newGuy->ParentLocked = true;
 			}
 			return newGuy;
 		}
