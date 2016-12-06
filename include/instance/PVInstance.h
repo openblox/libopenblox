@@ -19,12 +19,16 @@
 
 #include "instance/Instance.h"
 
-#ifndef OB_INST_PTINSTANCE
+#include <irrlicht/irrlicht.h>
+
+#ifndef OB_INST_PVINSTANCE
 #define OB_INST_PVINSTANCE
 
 namespace OB{
 	/**
-	 * TestInstance is a test instance class.
+	 * PVInstance is the base class of all renderable objects in
+	 * OpenBlox.
+	 *
 	 * @author John M. Harris, Jr.
 	 */
 	namespace Instance{
@@ -33,7 +37,12 @@ namespace OB{
 				PVInstance();
 				virtual ~PVInstance();
 
+				virtual void removeChild(Instance* kid);
+				virtual void addChild(Instance* kid);
+
 				DECLARE_CLASS(PVInstance);
+
+				irr::scene::ISceneNode* irrNode;
 		};
 	}
 }
