@@ -19,14 +19,21 @@
 
 #include "instance/DataModel.h"
 
+//Services we're including just to initiate them ahead of time
+#include "instance/Lighting.h"
+
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(DataModel, false, false, Instance){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(LuaClassName, register_lua_metamethods, ServiceProvider::register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
 	    DataModel::DataModel(){
 			Name = "game";
+
+			Lighting* lighting = new Lighting();
+			lighting->setParent(this, false);
+			lighting->ParentLocked = true;
 		}
 
 	    DataModel::~DataModel(){}
