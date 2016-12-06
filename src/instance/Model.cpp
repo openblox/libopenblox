@@ -43,5 +43,13 @@ namespace OB{
 		}
 
 	    Model::~Model(){}
+
+		Instance* Model::cloneImpl(){
+			Model* mi = new Model;
+			mi->Archivable = Archivable;
+			mi->Name = Name;
+			mi->ParentLocked = ParentLocked;
+			return mi;
+		}
 	}
 }
