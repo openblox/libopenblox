@@ -117,7 +117,6 @@ protected: \
 			return Class_Name::_ob_init; \
 		} \
 	}; \
-	Instance* Class_Name::cloneImpl(){ return NULL; } \
 	_OB_DEFCLASS_SHARED(Class_Name)
 
 #define DEFINE_CLASS_ABS_WCLONE(Class_Name, ParentClass) \
