@@ -31,6 +31,10 @@ namespace OB{
 
 	    DataModel::~DataModel(){}
 
+		Instance* DataModel::cloneImpl(){
+			return NULL;
+		}
+
 		Instance* DataModel::GetService(std::string className){
 			Instance* foundService = FindService(className);
 			if(foundService != NULL){
