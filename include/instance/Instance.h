@@ -178,6 +178,17 @@ namespace OB{
 				virtual Instance* FindFirstChild(std::string name, bool recursive = false);
 
 				/**
+				 * Finds the first child with a given class name. This
+				 * has an optional argument for searching recursively.
+				 *
+				 * @param className Name of the class to search for
+				 * @param recursive Whether or not to search recursively.
+				 *
+				 * @author John M. Harris, Jr.
+				 */
+				virtual Instance* FindFirstChildOfClass(std::string className, bool recursive = false);
+
+				/**
 				 * Returns the children of an object.
 				 *
 				 * @returns Vector containing the children of this object.

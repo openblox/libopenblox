@@ -119,6 +119,29 @@ namespace OB{
 			return NULL;
 		}
 
+		Instance* Instance::FindFirstChildOfClass(std::string className, bool recursive){
+			for(std::vector<Instance*>::size_type i = 0; i != children.size(); i++){
+				Instance* kid = children[i];
+				if(kid){
+					if(kid->ClassName == className){
+						return kid;
+					}
+				}
+			}
+			if(recursive){
+				for(std::vector<Instance*>::size_type i = 0; i != children.size(); i++){
+					Instance* kid = children[i];
+					if(kid){
+						Instance* myFind = kid->FindFirstChildOfClass(className, recursive);
+						if(myFind){
+							return myFind;
+						}
+					}
+				}
+			}
+			return NULL;
+		}
+
 		std::vector<Instance*> Instance::GetChildren(){
 			return std::vector<Instance*>(children);
 		}
