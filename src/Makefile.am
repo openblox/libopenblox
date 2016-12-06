@@ -19,6 +19,7 @@ lua/OBLua_OBBase.cpp \
 lua/OBLua_OBOS.cpp \
 instance/Instance.cpp \
 instance/TestInstance.cpp \
+instance/PVInstance.cpp \
 utility.cpp
 
 # Linker options
