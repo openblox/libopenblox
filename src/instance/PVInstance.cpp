@@ -21,7 +21,7 @@
 
 namespace OB{
 	namespace Instance{
-		DEFINE_CLASS_ABS(PVInstance, Instance){
+		DEFINE_CLASS_ABS_WCLONE(PVInstance, Instance){
 			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
