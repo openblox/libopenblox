@@ -246,6 +246,14 @@ namespace OB{
 			 * @author John M. Harris, Jr.
 			 */
 			irr::IrrlichtDevice* getIrrlichtDevice();
+
+			/**
+			 * Returns the DataModel.
+			 *
+			 * @returns DataModel
+			 * @author John M. Harris, Jr.
+			 */
+			Instance::DataModel* getDataModel();
 			
 		private:
 			//State helpers

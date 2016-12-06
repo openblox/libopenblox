@@ -222,4 +222,8 @@ namespace OB{
 	irr::IrrlichtDevice* OBEngine::getIrrlichtDevice(){
 		return irrDev;
 	}
+
+	Instance::DataModel* OBEngine::getDataModel(){
+		return dm;
+	}
 }
