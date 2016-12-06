@@ -26,7 +26,7 @@ namespace OB{
 		}
 
 	    Lighting::Lighting(){
-			Name = ClasName;
+			Name = ClassName;
 		}
 
 	    Lighting::~Lighting(){}
