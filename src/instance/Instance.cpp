@@ -254,6 +254,10 @@ namespace OB{
 		}
 
 		void Instance::setParent(Instance* parent, bool useDMNotify){
+			if(Parent == parent){
+				//noop
+				return;
+			}
 			if(ParentLocked){
 				std::string errMsg = "The Parent property of ";
 				errMsg = errMsg + Name + " is locked.";
