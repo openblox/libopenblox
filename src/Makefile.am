@@ -20,6 +20,7 @@ lua/OBLua_OBOS.cpp \
 instance/Instance.cpp \
 instance/TestInstance.cpp \
 instance/PVInstance.cpp \
+instance/Model.cpp \
 utility.cpp
 
 # Linker options
