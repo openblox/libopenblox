@@ -23,11 +23,11 @@
 #define OB_INST_TESTINSTANCE
 
 namespace OB{
-	/**
-	 * TestInstance is a test instance class.
-	 * @author John M. Harris, Jr.
-	 */
 	namespace Instance{
+		/**
+		 * TestInstance is a test instance class.
+		 * @author John M. Harris, Jr.
+		 */
 		class TestInstance: public Instance{
 			public:
 				TestInstance();

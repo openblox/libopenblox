@@ -155,11 +155,11 @@ protected: \
 	static int lua_##MethodName(lua_State* L)
 
 namespace OB{
-	/**
-	 * Instance is the base class of all world objects in OpenBlox.
-	 * @author John M. Harris, Jr.
-	 */
 	namespace Instance{
+		/**
+		 * Instance is the base class of all world objects in OpenBlox.
+		 * @author John M. Harris, Jr.
+		 */
 		class Instance{
 			public:
 				Instance();

@@ -23,13 +23,13 @@
 #define OB_INST_MODEL
 
 namespace OB{
-	/**
-	 * Model instances are used to group other instances, mostly for
-	 * organizational purposes.
-	 *
-	 * @author John M. Harris, Jr.
-	 */
 	namespace Instance{
+		/**
+		 * Model instances are used to group other instances, mostly for
+		 * organizational purposes.
+		 *
+		 * @author John M. Harris, Jr.
+		 */
 		class Model: public PVInstance{
 			public:
 				Model();

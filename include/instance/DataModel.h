@@ -23,14 +23,14 @@
 #define OB_INST_DATAMODEL
 
 namespace OB{
-	/**
-	 * DataModel is the root singleton of the OpenBlox engine.
-	 * The DataModel contains all of the core services of the engine,
-	 * such as Workspace, Lighting, LogService and similar.
-	 *
-	 * @author John M. Harris, Jr.
-	 */
 	namespace Instance{
+		/**
+		 * DataModel is the root singleton of the OpenBlox engine.
+		 * The DataModel contains all of the core services of the engine,
+		 * such as Workspace, Lighting, LogService and similar.
+		 *
+		 * @author John M. Harris, Jr.
+		 */
 		class DataModel: public ServiceProvider{
 			public:
 			    DataModel();

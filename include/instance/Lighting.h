@@ -19,35 +19,28 @@
 
 #include "instance/Instance.h"
 
-#include <irrlicht/irrlicht.h>
-
-#ifndef OB_INST_PVINSTANCE
-#define OB_INST_PVINSTANCE
+#ifndef OB_INST_LIGHTING
+#define OB_INST_LIGHTING
 
 namespace OB{
 	namespace Instance{
 		/**
-		 * PVInstance is the base class of all renderable objects in
-		 * OpenBlox.
+		 * Lighting provides access to lighting related options as well as
+		 * ambient colors and similar properties.
 		 *
 		 * @author John M. Harris, Jr.
 		 */
-		class PVInstance: public Instance{
+		class Lighting: public Instance{
 			public:
-				PVInstance();
-				virtual ~PVInstance();
-
-				virtual void removeChild(Instance* kid);
-				virtual void addChild(Instance* kid);
-
-				DECLARE_CLASS(PVInstance);
-
-				irr::scene::ISceneNode* irrNode;
+			    Lighting();
+				virtual ~Lighting();
+				
+				DECLARE_CLASS(Lighting);
 		};
 	}
 }
 
-#endif // OB_INST_PVINSTANCE
+#endif // OB_INST_LIGHTING
 
 
 // Local Variables:

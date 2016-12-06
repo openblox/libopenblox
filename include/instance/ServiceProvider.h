@@ -23,13 +23,13 @@
 #define OB_INST_SERVICEPROVIDER
 
 namespace OB{
-	/**
-	 * ServiceProvider provides methods for objects like DataModel
-	 * that provide access to service classes like Lighting.
-	 *
-	 * @author John M. Harris, Jr.
-	 */
 	namespace Instance{
+		/**
+		 * ServiceProvider provides methods for objects like DataModel
+		 * that provide access to service classes like Lighting.
+		 *
+		 * @author John M. Harris, Jr.
+		 */
 		class ServiceProvider: public Instance{
 			public:
 			    ServiceProvider();
