@@ -236,7 +236,15 @@ namespace OB{
 			 * @author John M. Harris, Jr.
 			 */
 			void setWindowId(void* wId);
-		
+
+			/**
+			 * Returns the currently active Irrlicht device, if any.
+			 *
+			 * @returns Irrlicht device
+			 * @author John M. Harris, Jr.
+			 */
+			irr::IrrlichtDevice* getIrrlichtDevice();
+			
 		private:
 			//State helpers
 			bool initialized;

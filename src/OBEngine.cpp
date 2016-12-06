@@ -215,4 +215,8 @@ namespace OB{
 		}
 		windowId = wId;
 	}
+
+	irr::IrrlichtDevice* OBEngine::getIrrlichtDevice(){
+		return irrDev;
+	}
 }
