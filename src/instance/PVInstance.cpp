@@ -27,8 +27,41 @@ namespace OB{
 
 		PVInstance::PVInstance(){
 			Name = ClassName;
+			irrNode = NULL;
 		}
 
-		PVInstance::~PVInstance(){}
+		PVInstance::~PVInstance(){
+			if(irrNode){
+				irr::scene::ISceneNode* irrPar = irrNode->getParent();
+				if(irrPar){
+					irrPar->removeChild(irrNode);
+				}
+				
+				delete irrNode;
+				irrNode = NULL;
+			}
+		}
+
+		void PVInstance::removeChild(Instance* kid){
+			if(kid){
+				if(PVInstance* oInst = dynamic_cast<PVInstance*>(kid)){
+					if(irrNode && oInst->irrNode){
+						irrNode->removeChild(oInst->irrNode);
+					}
+				}
+				Instance::removeChild(kid);
+			}
+		}
+
+		void PVInstance::addChild(Instance* kid){
+			if(kid){
+				if(PVInstance* oInst = dynamic_cast<PVInstance*>(kid)){
+					if(irrNode && oInst->irrNode){
+						irrNode->addChild(oInst->irrNode);
+					}
+				}
+				Instance::addChild(kid);
+			}
+		}
 	}
 }
