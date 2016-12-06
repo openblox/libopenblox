@@ -22,6 +22,7 @@ instance/TestInstance.cpp \
 instance/PVInstance.cpp \
 instance/Model.cpp \
 instance/ServiceProvider.cpp \
+instance/Lighting.cpp \
 instance/DataModel.cpp \
 utility.cpp
 
