@@ -48,7 +48,7 @@ namespace OB{
 			if(foundService != NULL){
 				return foundService;
 			}
-			ob_instance::Instance* newGuy = ClassFactory::createService(className, false);
+		    Instance* newGuy = ClassFactory::createService(className, false);
 			if(newGuy){
 				newGuy->setParent(this, false);
 				newGuy->parentLock();
