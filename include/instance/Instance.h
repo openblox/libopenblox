@@ -117,6 +117,7 @@ protected: \
 			return Class_Name::_ob_init; \
 		} \
 	}; \
+	Instance* Class_Name::cloneImpl(){ return NULL; }	\
 	_OB_DEFCLASS_SHARED(Class_Name)
 
 #define DECLARE_LUA_METHOD(MethodName) \
