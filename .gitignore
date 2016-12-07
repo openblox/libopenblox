@@ -41,3 +41,9 @@
 /src/lua/.libs/
 /src/lua/*.lo
 /src/lua/*.o
+/src/type/.deps/
+/src/type/.dirstamp
+/src/type/.libs/
+/src/type/*.lo
+/src/type/*.o
+
