@@ -31,6 +31,10 @@
 
 #include <irrlicht/irrlicht.h>
 
+//OB types, all initialized individually in init()
+#include "type/Event.h"
+#include "type/EventConnection.h"
+
 namespace OB{
 	OBEngine* OBEngine::inst = NULL;
 
@@ -123,11 +127,14 @@ namespace OB{
 			
 			OBLogger::log(renderShadingLangVer);
 		}
-
+		
 		taskSched = new TaskScheduler();
 		globalState = OB::Lua::initGlobal();
 		dm = new Instance::DataModel();
 
+		Type::Event::init();
+		Type::EventConnection::init();
+		
 		ClassFactory::initClasses();
 
 		initialized = true;

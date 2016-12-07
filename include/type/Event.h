@@ -17,36 +17,47 @@
  * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef OB_OBTYPE
-#define OB_OBTYPE
+#include "obtype.h"
 
-/**
- * @file obtype.h
- * @author John M. Harris, Jr.
- * @date May 2016
- * 
- * This file defines internal types used by the OpenBlox game engine.
- */
+#include <string>
+#include <vector>
 
-/**
- * This type is used for 64 bit integers, specifically for use with
- * time.
- *
- * @author John M. Harris, Jr.
- */
-typedef long long int ob_int64;
+#ifndef OB_TYPE_EVENT
+#define OB_TYPE_EVENT
 
-/**
- * This type is used as the signature for event connections and 
- * callbacks.
- *
- * @author John M. Harris, Jr.
- */
-typedef int (*eventConnectFunction)(void* ud, ...);
+namespace OB{
+	namespace Type{	
+		class EventConnection;
+		
+		class Event{
+			public:
+			    Event(std::string name);
+				virtual ~Event();
 
-#define OB_NETID_UNASSIGNED 0
+			    EventConnection* Connect(eventConnectFunction fnc, void* ud);
 
-#endif // OB_OBTYPE
+				void disconnectAll();
+				void disconnect(EventConnection* conn);
+			    bool isConnected(EventConnection* conn);
+				
+			    static void init();
+				
+			protected:
+				std::string name;
+				std::vector<EventConnection> conns;
+
+				static int lua_connect(lua_State* L);
+				static int lua_wait(lua_State* L);
+
+				static int lua_toString(lua_State* L);
+		};
+
+		Event* checkEvent(lua_State* L, int n);
+	}
+}
+
+#endif // OB_TYPE_EVENT
+
 
 // Local Variables:
 // mode: c++
