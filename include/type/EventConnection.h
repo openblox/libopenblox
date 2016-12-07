@@ -19,6 +19,12 @@
 
 #include "obtype.h"
 
+extern "C" {
+	#include <lua.h>
+	#include <lauxlib.h>
+	#include <lualib.h>
+}
+
 #ifndef OB_TYPE_EVENTCONNECTION
 #define OB_TYPE_EVENTCONNECTION
 
