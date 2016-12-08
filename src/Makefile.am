@@ -17,6 +17,7 @@ OBEngine.cpp \
 lua/OBLua.cpp \
 lua/OBLua_OBBase.cpp \
 lua/OBLua_OBOS.cpp \
+type/Type.cpp \
 type/EventConnection.cpp \
 type/Event.cpp \
 instance/Instance.cpp \
