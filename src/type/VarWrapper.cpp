@@ -17,29 +17,10 @@
  * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef OB_OBTYPE
-#define OB_OBTYPE
+#include "type/VarWrapper.h"
 
-/**
- * @file obtype.h
- * @author John M. Harris, Jr.
- * @date May 2016
- * 
- * This file defines internal types used by the OpenBlox game engine.
- */
-
-/**
- * This type is used for 64 bit integers, specifically for use with
- * time.
- *
- * @author John M. Harris, Jr.
- */
-typedef long long int ob_int64;
-
-#define OB_NETID_UNASSIGNED 0
-
-#endif // OB_OBTYPE
-
-// Local Variables:
-// mode: c++
-// End:
+namespace OB{
+	namespace Type{
+		
+	}
+}

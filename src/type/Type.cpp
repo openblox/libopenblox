@@ -22,17 +22,27 @@
 #include "OBException.h"
 #include "OBEngine.h"
 
+#include "type/Event.h"
+#include "type/EventConnection.h"
+
 namespace OB{
 	namespace Type{
 	    DEFINE_TYPE(Type){
 			registerLuaType(LuaTypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
+
+			Event::_ob_init();
+			EventConnection::_ob_init();
 		}
+
+		std::vector<std::string> Type::typeList;
 
 		Type::Type(){}
 
 		Type::~Type(){}
 
 		void Type::registerLuaType(std::string typeName, luaRegisterFunc register_metamethods, luaRegisterFunc register_methods, luaRegisterFunc register_getters, luaRegisterFunc register_setters){
+			typeList.push_back(typeName);
+			
 			lua_State* L = OB::OBEngine::getInstance()->getGlobalLuaState();
 
 			luaL_newmetatable(L, typeName.c_str());
@@ -109,16 +119,12 @@ namespace OB{
 
 	    Type* Type::checkType(lua_State* L, int index){
 			if(lua_isuserdata(L, index)){
-				std::vector<std::string> existing;//This list is manually done. Why? I don't know.
-				existing.push_back("Type");
-				
-				unsigned size = existing.size();
+				unsigned size = typeList.size();
 				void* udata = lua_touserdata(L, index);
 				int meta = lua_getmetatable(L, index);
 				if(meta != 0){
 					for(unsigned i = 0; i<size; i++){
-						std::string name = "luaL_Type_" + existing[i];
-						luaL_getmetatable(L, name.c_str());
+						luaL_getmetatable(L, typeList[i].c_str());
 						if(lua_rawequal(L, -1, -2)){
 							lua_pop(L, 2);
 							return *(Type**)udata;

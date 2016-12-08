@@ -17,13 +17,7 @@
  * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "obtype.h"
-
-extern "C" {
-	#include <lua.h>
-	#include <lauxlib.h>
-	#include <lualib.h>
-}
+#include "type/Type.h"
 
 #ifndef OB_TYPE_EVENTCONNECTION
 #define OB_TYPE_EVENTCONNECTION
@@ -32,9 +26,9 @@ namespace OB{
 	namespace Type{
 		class Event;
 		
-		class EventConnection{
+		class EventConnection: public Type{
 			public:
-			    EventConnection(Event* evt, void* ud, eventConnectFunction fnc);
+			    EventConnection(Event* evt, void* ud, void (*fnc)(std::vector<VarWrapper>, void*));
 				virtual ~EventConnection();
 
 				void Disconnect();
@@ -42,10 +36,11 @@ namespace OB{
 
 			    static void init();
 				
-			protected:
+				DECLARE_TYPE();
+				
 			    Event* evt;
 				void* ud;
-				eventConnectFunction fnc;
+			    void (*fnc)(std::vector<VarWrapper>, void*);
 		};
 
 		EventConnection* checkEventConnection(lua_State* L, int n);

@@ -22,11 +22,14 @@
 #include "type/EventConnection.h"
 
 #include <cstdlib>
-#include <cstdio>
 
 namespace OB{
 	namespace Type{
-		EventConnection::EventConnection(Event* evt, void* ud, eventConnectFunction fnc){
+		DEFINE_TYPE(EventConnection){
+			registerLuaType(LuaTypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
+		}
+		
+		EventConnection::EventConnection(Event* evt, void* ud, void (*fnc)(std::vector<VarWrapper>, void*)){
 			this->evt = evt;
 			this->ud = ud;
 		    this->fnc = fnc;
@@ -52,10 +55,6 @@ namespace OB{
 			}else{
 				return false;
 			}
-		}
-
-		void EventConnection::init(){
-			puts("I'm running, okay?!");
 		}
 	}
 }

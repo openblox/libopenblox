@@ -39,6 +39,7 @@ namespace OB{
 			netId = OB_NETID_UNASSIGNED;
 
 			//TODO: Events
+			TestEvent = new Type::Event("TestEvent");
 		}
 
 		Instance::~Instance(){
@@ -397,6 +398,7 @@ namespace OB{
 
 		void Instance::register_lua_events(lua_State* L){
 			luaL_Reg events[] = {
+				{"TestEvent", WRAP_EVT(TestEvent)},
 				//TODO: Events don't even exist yet.
 				/*{"Changed", WRAP_EVT(Changed)},
 				  {"AncestryChanged", WRAP_EVT(AncestryChanged)},

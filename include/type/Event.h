@@ -17,15 +17,10 @@
  * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "obtype.h"
+#include "type/Type.h"
 
-extern "C" {
-	#include <lua.h>
-	#include <lauxlib.h>
-	#include <lualib.h>
-}
+#include "type/VarWrapper.h"
 
-#include <string>
 #include <vector>
 
 #ifndef OB_TYPE_EVENT
@@ -35,20 +30,25 @@ namespace OB{
 	namespace Type{	
 		class EventConnection;
 		
-		class Event{
+		class Event: public Type{
 			public:
 			    Event(std::string name);
 				virtual ~Event();
 
-			    EventConnection* Connect(eventConnectFunction fnc, void* ud);
+			    EventConnection* Connect(void (*fnc)(std::vector<VarWrapper>, void*), void* ud);
 
 				void disconnectAll();
 				void disconnect(EventConnection* conn);
 			    bool isConnected(EventConnection* conn);
+
+				void FireLater(std::vector<VarWrapper>* argList);
+				void Fire(std::vector<VarWrapper>* argList);
+				void Fire();
+
+				virtual std::string toString();
 				
-			    static void init();
+				DECLARE_TYPE();
 				
-			protected:
 				std::string name;
 				std::vector<EventConnection> conns;
 

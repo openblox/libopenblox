@@ -31,9 +31,7 @@
 
 #include <irrlicht/irrlicht.h>
 
-//OB types, all initialized individually in init()
-#include "type/Event.h"
-#include "type/EventConnection.h"
+#include "type/Type.h"
 
 namespace OB{
 	OBEngine* OBEngine::inst = NULL;
@@ -132,8 +130,8 @@ namespace OB{
 		globalState = OB::Lua::initGlobal();
 		dm = new Instance::DataModel();
 
-		Type::Event::init();
-		Type::EventConnection::init();
+		//Initialize Lua types
+		Type::Type::_ob_init();
 		
 		ClassFactory::initClasses();
 

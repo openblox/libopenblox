@@ -22,6 +22,8 @@
 #include "lua/OBLua.h"
 #include "obtype.h"
 
+#include <vector>
+
 #ifndef OB_TYPE_TYPE
 #define OB_TYPE_TYPE
 
@@ -79,7 +81,7 @@ namespace OB{
 				 *
 				 * @author John M. Harris, Jr.
 				 */
-				virtual std::string toString() = 0;
+				virtual std::string toString();
 
 			    /**
 				 * Handles attempts to set properties of this Type.
@@ -176,6 +178,8 @@ namespace OB{
 				static Type* checkType(lua_State* L, int index);
 
 				DECLARE_TYPE();
+
+				static std::vector<std::string> typeList;
 		};
 	}
 }

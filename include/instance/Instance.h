@@ -24,6 +24,8 @@
 #include "ClassFactory.h"
 #include "obtype.h"
 
+#include "type/Event.h"
+
 #ifndef OB_INST_INSTANCE
 #define OB_INST_INSTANCE
 
@@ -153,6 +155,16 @@ protected: \
 
 #define DECLARE_LUA_METHOD(MethodName) \
 	static int lua_##MethodName(lua_State* L)
+
+
+#define WRAP_EVT(Event_Name) \
+	[](lua_State* L)->int{ \
+		Instance* inst = checkInstance(L, 1); \
+		if(inst){ \
+			return inst->Event_Name->wrap_lua(L); \
+		} \
+		return 0; \
+	}
 
 namespace OB{
 	namespace Instance{
@@ -440,6 +452,7 @@ namespace OB{
 				bool ParentLocked;
 
 				//TODO: Events
+				Type::Event* TestEvent;
 
 				bool Archivable;
 				std::string Name;
