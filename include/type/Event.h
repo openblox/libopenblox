@@ -33,6 +33,7 @@ namespace OB{
 		class Event: public Type{
 			public:
 			    Event(std::string name);
+				Event(std::string name, bool canFireFromLua);
 				virtual ~Event();
 
 			    EventConnection* Connect(void (*fnc)(std::vector<VarWrapper>, void*), void* ud);
@@ -48,14 +49,16 @@ namespace OB{
 				virtual std::string toString();
 				
 				DECLARE_TYPE();
-				
-				std::string name;
-				std::vector<EventConnection> conns;
 
+				bool canFireFromLua;
+				std::string name;
+				std::vector<EventConnection*> conns;
+
+				static int lua_fire(lua_State* L);
 				static int lua_connect(lua_State* L);
 				static int lua_wait(lua_State* L);
 
-				static int lua_toString(lua_State* L);
+				static void register_lua_methods(lua_State* L);
 		};
 
 		Event* checkEvent(lua_State* L, int n);

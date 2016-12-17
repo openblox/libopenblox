@@ -34,9 +34,18 @@ namespace OB{
 				void Disconnect();
 				bool isConnected();
 
-			    static void init();
+				void fire(std::vector<VarWrapper> args);
+
+				virtual std::string toString();
 				
 				DECLARE_TYPE();
+
+				static int lua_disconnect(lua_State* L);
+				static int lua_isConnected(lua_State* L);
+
+				static void register_lua_methods(lua_State* L);
+				static void register_lua_property_setters(lua_State* L);
+				static void register_lua_property_getters(lua_State* L);
 				
 			    Event* evt;
 				void* ud;

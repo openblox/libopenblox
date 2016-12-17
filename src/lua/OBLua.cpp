@@ -54,7 +54,16 @@ namespace OB{
 		lua_State* initGlobal(){
 			//Don't put anything on the global state, its one purpose
 			//is to be the parent of coroutines.
-			return lua_newstate(l_alloc, NULL);
+		    lua_State* L = lua_newstate(l_alloc, NULL);
+
+			struct OBLState* LState = new struct OBLState;
+			LState->L = L;
+			LState->ref = -1;
+			LState->numChildStates = 0;
+			LState->parent = NULL;
+			LState->initUseOver = false;
+			
+			return L;
 		}
 
 		lua_State* initThread(lua_State* gL){
@@ -63,6 +72,9 @@ namespace OB{
 			struct OBLState* LState = new struct OBLState;
 			LState->L = L;
 			LState->ref = luaL_ref(gL, LUA_REGISTRYINDEX);
+			LState->numChildStates = 0;
+			LState->parent = NULL;
+			LState->initUseOver = false;
 
 			lStates[L] = LState;
 
@@ -117,10 +129,21 @@ namespace OB{
 			//We want this coroutine to use the environment of the parent state.
 
 			lua_State* L = lua_newthread(pL);
-
+			
 			struct OBLState* LState = new struct OBLState;
 			LState->L = L;
 			LState->ref = luaL_ref(pL, LUA_REGISTRYINDEX);
+			LState->numChildStates = 0;
+			LState->initUseOver = false;
+
+			if(lStates.count(pL)){
+				struct OBLState* oL = lStates[pL];
+				if(oL){
+					oL->numChildStates = oL->numChildStates + 1;
+				}
+				
+				LState->parent = oL;
+			}
 
 			lStates[L] = LState;
 			
@@ -129,18 +152,37 @@ namespace OB{
 
 		void close_state(lua_State* L){
 			if(lStates.count(L)){
-				struct OBLState* oL = lStates[L];
+		    	struct OBLState* oL = lStates[L];
+				if(oL->numChildStates > 0){
+					oL->initUseOver = true;
+					//We aren't gonna kill it while it has kids!
+					return;
+				}
 
 				OBEngine* eng = OBEngine::getInstance();
-				lua_State* gL = eng->getGlobalLuaState();
+			    lua_State* gL = eng->getGlobalLuaState();
 
-				luaL_unref(gL, LUA_REGISTRYINDEX, oL->ref);
+				if(oL->ref != -1){
+					luaL_unref(gL, LUA_REGISTRYINDEX, oL->ref);
+					oL->ref = -1;
+				}
 
 				std::map<lua_State*, struct OBLState*>::iterator it = lStates.find(L);
 				lStates.erase(it);
+
+				if(oL->parent){
+					struct OBLState* poL = oL->parent;
+					poL->numChildStates = poL->numChildStates - 1;
+					if(poL->initUseOver && poL->numChildStates <= 0){
+						close_state(poL->L);
+					}
+				}
+
 				delete oL;
+				lua_close(L);
+			}else{
+				lua_close(L);
 			}
-			lua_close(L);
 		}
 		
 		std::string handle_errors(lua_State* L){

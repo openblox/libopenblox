@@ -51,29 +51,24 @@ namespace OB{
 			while(!tasks.empty() && !stopProcTasks){
 				ob_int64 curTime = currentTimeMillis();
 
-				_ob_waiting_task t = tasks.back();
+				_ob_waiting_task t = tasks.back();				
 
 				if(t.at < curTime){
+					tasks.pop_back();
+					
 					int retCode = t.task_fnc(t.metad, t.start);
-
+					
 					switch(retCode){
-						case 0: {
-							tasks.pop_back();
-							break;
-						}
 						case 1: {
 							tmpPopped.push_back(t);
-							tasks.pop_back();
 							break;
 						}
 						case 2: {
-							tasks.pop_back();
 							stopProcTasks = true;
 							break;
 						}
 						case 3: {
 							tmpPopped.push_back(t);
-							tasks.pop_back();
 							stopProcTasks = true;
 							break;
 						}

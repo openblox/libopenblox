@@ -21,6 +21,34 @@
 
 namespace OB{
 	namespace Type{
+		VarWrapper::VarWrapper(){
+			wrapped = NULL;
+			type = TYPE_UNKNOWN;
+		}
 		
+		VarWrapper::VarWrapper(void* anything, VarType vtype){
+			wrapped = anything;
+			type = vtype;
+		}
+
+	    OB_PRIMATIVE_WRAPPER_IMPL(Int, int, INT);
+		OB_PRIMATIVE_WRAPPER_IMPL(Double, double, DOUBLE);
+		OB_PRIMATIVE_WRAPPER_IMPL(Float, float, FLOAT);
+		OB_PRIMATIVE_WRAPPER_IMPL(Long, long, LONG);
+		OB_PRIMATIVE_WRAPPER_IMPL(UnsignedLong, unsigned long, UNSIGNED_LONG);
+		OB_PRIMATIVE_WRAPPER_IMPL(Bool, bool, BOOL);
+		OB_PRIMATIVE_WRAPPER_IMPL(String, std::string, STRING);
+
+		VarWrapper::VarWrapper(Instance::Instance* var){
+			type = TYPE_INSTANCE;
+			wrapped = var;
+		}
+
+		VarWrapper::VarWrapper(Type* var){
+			type = TYPE_TYPE;
+			wrapped = var;
+		}
+
+		VarWrapper::~VarWrapper(){}
 	}
 }

@@ -33,6 +33,9 @@ namespace OB{
 		struct OBLState{
 			lua_State* L;
 			int ref;
+			int numChildStates;
+			bool initUseOver;
+			OBLState* parent;
 		};
 
 		/**

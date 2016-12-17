@@ -21,6 +21,8 @@
 
 #include "type/EventConnection.h"
 
+#include "instance/Instance.h"
+
 #include <cstdlib>
 
 namespace OB{
@@ -55,6 +57,77 @@ namespace OB{
 			}else{
 				return false;
 			}
+		}
+
+		void EventConnection::fire(std::vector<VarWrapper> args){
+			fnc(args, ud);
+		}
+
+		std::string EventConnection::toString(){
+			return "EventConnection";
+		}
+
+		int EventConnection::lua_disconnect(lua_State* L){
+			EventConnection* evtCon = checkEventConnection(L, 1);
+
+			if(evtCon){
+				evtCon->Disconnect();
+			}
+
+		    return 0;
+		}
+
+		int EventConnection::lua_isConnected(lua_State* L){
+			EventConnection* evtCon = checkEventConnection(L, 1);
+
+			if(evtCon){
+			    lua_pushboolean(L, evtCon->isConnected());
+			}else{
+				lua_pushnil(L);
+			}
+			
+			return 1;
+		}
+
+		void EventConnection::register_lua_methods(lua_State* L){
+			luaL_Reg methods[] = {
+				{"Disconnect", lua_disconnect},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, methods, 0);
+		}
+
+		void EventConnection::register_lua_property_setters(lua_State* L){
+			luaL_Reg props[] = {
+				{"Connected", Instance::Instance::lua_readOnlyProperty},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, props, 0);
+		}
+
+		void EventConnection::register_lua_property_getters(lua_State* L){
+			luaL_Reg props[] = {
+				{"Connected", lua_isConnected},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, props, 0);
+		}
+
+		EventConnection* checkEventConnection(lua_State* L, int index){
+			if(lua_isuserdata(L, index)){
+				void* udata = lua_touserdata(L, index);
+				int meta = lua_getmetatable(L, index);
+				if(meta != 0){
+					luaL_getmetatable(L, "luaL_Type_EventConnection");
+					if(lua_rawequal(L, -1, -2)){
+						lua_pop(L, 2);
+						return *(EventConnection**)udata;
+					}
+					lua_pop(L, 1);
+				}
+				return NULL;
+			}
+			return NULL;
 		}
 	}
 }

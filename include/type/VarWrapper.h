@@ -54,6 +54,15 @@ namespace OB{
 				type val; \
 		}
 
+#define OB_PRIMATIVE_WRAPPER_IMPL(ntype, typee, type_C) \
+			ntype##Wrapper::ntype##Wrapper(typee val){ \
+				this->val = val; \
+			}\
+			VarWrapper::VarWrapper(typee var){ \
+				type = TYPE_##type_C; \
+				wrapped = reinterpret_cast<void*>(new ntype##Wrapper(var)); \
+			}
+
 	    OB_PRIMATIVE_WRAPPER(Int, int);
 		OB_PRIMATIVE_WRAPPER(Double, double);
 		OB_PRIMATIVE_WRAPPER(Float, float);

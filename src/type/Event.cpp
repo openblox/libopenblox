@@ -21,6 +21,12 @@
 
 #include "type/EventConnection.h"
 
+#include "OBEngine.h"
+#include "TaskScheduler.h"
+
+#include <algorithm>
+#include <iostream>
+
 namespace OB{
 	namespace Type{
 		DEFINE_TYPE(Event){
@@ -29,24 +35,169 @@ namespace OB{
 		
 		Event::Event(std::string name){
 			this->name = name;
+			canFireFromLua = false;
+		}
+
+		Event::Event(std::string name, bool canFireFromLua){
+			this->name = name;
+			this->canFireFromLua = canFireFromLua;
 		}
 
 		Event::~Event(){}
 
 		EventConnection* Event::Connect(void (*fnc)(std::vector<VarWrapper>, void*), void* ud){
-			return NULL;
+			EventConnection* evtCon = new EventConnection(this, ud, fnc);
+			conns.push_back(evtCon);
+
+			return evtCon;
 		}
 
-		void Event::disconnectAll(){}
+		void Event::disconnectAll(){
+			conns.clear();
+		}
 
-		void Event::disconnect(EventConnection* conn){}
+		void Event::disconnect(EventConnection* conn){
+		    if(conns.empty()){
+				return;
+			}
+
+			auto res = std::find(conns.begin(), conns.end(), conn);
+
+			if(res != conns.end()){
+				conns.erase(res);
+			}
+		}
 
 		bool Event::isConnected(EventConnection* conn){
-			return false;
+			return !conns.empty() && std::find(conns.begin(), conns.end(), conn) != conns.end();
+		}
+
+		struct evt_vconn_t{
+			EventConnection* evtCon;
+			std::vector<VarWrapper>* args;
+		};
+		
+		int evt_do_fire_connection(void* vconn, ob_int64 startTime){
+			struct evt_vconn_t* conn = (struct evt_vconn_t*)vconn;
+			
+			conn->evtCon->fire(*(conn->args));
+
+			delete conn;
+
+			return 0;
+		}
+		
+		void Event::Fire(std::vector<VarWrapper>* argList){
+			if(!conns.empty()){
+				OBEngine* engine = OBEngine::getInstance();
+				TaskScheduler* tasks = engine->getTaskScheduler();
+				
+			    for(std::vector<EventConnection*>::size_type i = 0; i != conns.size(); i++){					
+				    /* We push these tasks onto the TaskScheduler so that
+					   they can call Disconnect without messing up this loop. */
+					struct evt_vconn_t* conn = new struct evt_vconn_t;
+					conn->evtCon = conns[i];
+					conn->args = argList;
+					
+					tasks->enqueue(evt_do_fire_connection, conn, 0);
+				}
+			}
+		}
+		
+		void Event::Fire(){
+			Fire(new std::vector<VarWrapper>());
 		}
 
 	    std::string Event::toString(){
 			return "Event: " + name;
+		}
+
+		int Event::lua_fire(lua_State* L){
+			Event* evt = checkEvent(L, 1);
+
+			if(evt){
+				evt->Fire();
+			}
+			
+			return 0;
+		}
+
+		struct evt_lua_connection_ud_t{
+		    int fncRef;
+			lua_State* thread;
+		};
+		
+		void evt_lua_connection_fnc(std::vector<VarWrapper> args, void* ud){
+		    struct evt_lua_connection_ud_t* eud = (struct evt_lua_connection_ud_t*)ud;
+
+			lua_State* L = Lua::initCoroutine(eud->thread);
+			
+			lua_rawgeti(L, LUA_REGISTRYINDEX, eud->fncRef);
+			
+			int ret = lua_resume(L, NULL, 0);
+			if(ret != LUA_OK && ret != LUA_YIELD){
+				std::string lerr = Lua::handle_errors(L);
+				std::cerr << lerr << std::endl;
+
+				Lua::close_state(L);
+			}
+
+			if(ret == LUA_OK){
+				Lua::close_state(L);
+			}
+		}
+		
+		int Event::lua_connect(lua_State* L){
+			Event* evt = checkEvent(L, 1);
+
+			if(!evt){
+				lua_pushnil(L);
+				return 1;
+			}
+
+			luaL_checktype(L, 2, LUA_TFUNCTION);
+			lua_pushvalue(L, 2);
+
+			//Pop the function into the Lua registry so it won't be GC'd
+			int r = luaL_ref(L, LUA_REGISTRYINDEX);
+
+			struct evt_lua_connection_ud_t* eud = new struct evt_lua_connection_ud_t;
+			eud->fncRef = r;
+
+			lua_State* newL = Lua::initCoroutine(L);
+			eud->thread = newL;
+
+			EventConnection* evtCon = evt->Connect(evt_lua_connection_fnc, eud);
+			return evtCon->wrap_lua(L);
+		}
+		
+		int Event::lua_wait(lua_State* L){}
+
+		void Event::register_lua_methods(lua_State* L){
+			luaL_Reg methods[] = {
+				{"Fire", lua_fire},
+				{"Connect", lua_connect},
+				{"Wait", lua_wait},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, methods, 0);
+		}
+
+	    Event* checkEvent(lua_State* L, int index){
+			if(lua_isuserdata(L, index)){
+				void* udata = lua_touserdata(L, index);
+				int meta = lua_getmetatable(L, index);
+				if(meta != 0){
+					luaL_getmetatable(L, "luaL_Type_Event");
+					if(lua_rawequal(L, -1, -2)){
+						lua_pop(L, 2);
+						return *(Event**)udata;
+					}
+					lua_pop(L, 1);
+				}
+				return NULL;
+			}
+			return NULL;
 		}
 	}
 }
