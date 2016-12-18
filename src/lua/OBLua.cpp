@@ -111,7 +111,7 @@ namespace OB{
 			lua_setglobal(L, "Instance");
 
 			OBEngine* eng = OBEngine::getInstance();
-		    Instance::DataModel* dm = eng->getDataModel();
+		    shared_ptr<Instance::DataModel> dm = eng->getDataModel();
 			int gm = dm->wrap_lua(L);
 			lua_pushvalue(L, -gm);
 			lua_setglobal(L, "game");
@@ -293,7 +293,7 @@ namespace OB{
 			}
 
 			OBEngine* eng = OBEngine::getInstance();
-			TaskScheduler* tasks = eng->getTaskScheduler();
+		    shared_ptr<TaskScheduler> tasks = eng->getTaskScheduler();
 
 			ob_int64 curTime = currentTimeMillis();
 			ob_int64 at = curTime + (int)(waitTime * 1000);

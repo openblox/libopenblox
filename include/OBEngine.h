@@ -30,6 +30,7 @@
 #define OB_OBENGINE
 
 #include "obtype.h"
+#include "mem.h"
 
 #include "OBLogger.h"
 
@@ -83,7 +84,7 @@ namespace OB{
 			 * @returns Instance of TaskScheduler
 			 * @author John M. Harris, Jr.
 			 */
-			TaskScheduler* getTaskScheduler();
+			shared_ptr<TaskScheduler> getTaskScheduler();
 
 			/**
 			 * Initializes the OpenBlox engine.
@@ -253,7 +254,7 @@ namespace OB{
 			 * @returns DataModel
 			 * @author John M. Harris, Jr.
 			 */
-			Instance::DataModel* getDataModel();
+			shared_ptr<Instance::DataModel> getDataModel();
 			
 		private:
 			//State helpers
@@ -274,8 +275,8 @@ namespace OB{
 			irr::video::IVideoDriver* irrDriv;
 			irr::scene::ISceneManager* irrSceneMgr;
 
-			TaskScheduler* taskSched;
-			Instance::DataModel* dm;
+			shared_ptr<TaskScheduler> taskSched;
+			shared_ptr<Instance::DataModel> dm;
 
 			static OBEngine* inst;
 	};

@@ -57,10 +57,6 @@ namespace OB{
 		irrDev = NULL;
 		irrDriv = NULL;
 		irrSceneMgr = NULL;
-		
-		taskSched = NULL;
-
-		dm = NULL;
 	}
 
 	OBEngine::~OBEngine(){}
@@ -69,8 +65,8 @@ namespace OB{
 		return inst;
 	}
 
-	TaskScheduler* OBEngine::getTaskScheduler(){
-		return taskSched;
+	shared_ptr<TaskScheduler> OBEngine::getTaskScheduler(){
+		return shared_ptr<TaskScheduler>(taskSched);
 	}
 
 	void OBEngine::init(){
@@ -126,9 +122,9 @@ namespace OB{
 			OBLogger::log(renderShadingLangVer);
 		}
 		
-		taskSched = new TaskScheduler();
+		taskSched = make_shared<TaskScheduler>();
 		globalState = OB::Lua::initGlobal();
-		dm = new Instance::DataModel();
+		dm = make_shared<Instance::DataModel>();
 
 		//Initialize Lua types
 		Type::Type::_ob_init();
@@ -175,7 +171,7 @@ namespace OB{
 
 	void OBEngine::setRendering(bool renders){
 		if(initialized){
-			throw new OBException("You can't setRendering after init is called.");
+			throw new OBException("You can't call setRendering after init is called.");
 		}
 		doRendering = renders;
 	}
@@ -186,7 +182,7 @@ namespace OB{
 
 	void OBEngine::setInitWidth(int w){
 		if(initialized){
-			throw new OBException("You can't setRendering after init is called.");
+			throw new OBException("You can't call setInitWidth after init is called.");
 		}
 		startWidth = w;
 	}
@@ -197,7 +193,7 @@ namespace OB{
 
 	void OBEngine::setInitHeight(int h){
 		if(initialized){
-			throw new OBException("You can't setRendering after init is called.");
+			throw new OBException("You can't call setInitHeight after init is called.");
 		}
 		startHeight = h;
 	}
@@ -208,7 +204,7 @@ namespace OB{
 
 	void OBEngine::setUseVsync(bool useVsync){
 		if(initialized){
-			throw new OBException("You can't setRendering after init is called.");
+			throw new OBException("You can't call setUsesVsync after init is called.");
 		}
 		vsync = useVsync;
 	}
@@ -219,7 +215,7 @@ namespace OB{
 
 	void OBEngine::setWindowId(void* wId){
 		if(initialized){
-			throw new OBException("You can't setRendering after init is called.");
+			throw new OBException("You can't call setWindowId after init is called.");
 		}
 		windowId = wId;
 	}
@@ -228,7 +224,7 @@ namespace OB{
 		return irrDev;
 	}
 
-	Instance::DataModel* OBEngine::getDataModel(){
-		return dm;
+	shared_ptr<Instance::DataModel> OBEngine::getDataModel(){
+		return shared_ptr<Instance::DataModel>(dm);
 	}
 }

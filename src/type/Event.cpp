@@ -90,7 +90,7 @@ namespace OB{
 		void Event::Fire(std::vector<VarWrapper>* argList){
 			if(!conns.empty()){
 				OBEngine* engine = OBEngine::getInstance();
-				TaskScheduler* tasks = engine->getTaskScheduler();
+				shared_ptr<TaskScheduler> tasks = engine->getTaskScheduler();
 				
 			    for(std::vector<EventConnection*>::size_type i = 0; i != conns.size(); i++){					
 				    /* We push these tasks onto the TaskScheduler so that
