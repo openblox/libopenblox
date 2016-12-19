@@ -38,6 +38,8 @@ namespace OB{
 			    DataModel();
 				virtual ~DataModel();
 
+				void Shutdown(int statusCode = 0);
+				
 				void initServices();
 
 				/**
@@ -54,6 +56,8 @@ namespace OB{
 				DECLARE_CLASS(DataModel);
 
 				shared_ptr<Lighting> lighting;
+
+				DECLARE_LUA_METHOD(Shutdown);
 				
 				static void register_lua_methods(lua_State* L);
 		};

@@ -45,6 +45,7 @@ namespace OB{
 		initialized = false;
 		startTime = currentTimeMillis();
 		_isRunning = true;
+		exitCode = 0;
 
 		doRendering = true;
 		startWidth = 640;
@@ -133,6 +134,18 @@ namespace OB{
 		ClassFactory::initClasses();
 
 		initialized = true;
+	}
+
+	void OBEngine::setExitCode(int exitCode){
+	    this->exitCode = exitCode;
+	}
+
+	int OBEngine::getExitCode(){
+	    return exitCode;
+	}
+
+	void OBEngine::shutdown(){
+	    _isRunning = false;
 	}
 
 	bool OBEngine::isRunning(){

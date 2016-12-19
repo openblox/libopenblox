@@ -97,6 +97,32 @@ namespace OB{
 			 */
 			void init();
 
+			/**
+			 * Sets the exit code of the OpenBlox engine.
+			 *
+			 * @param exitCode Exit code
+			 *
+			 * @author John M. Harris, Jr.
+			 */
+			void setExitCode(int exitCode);
+
+			/**
+			 * Gets the exit code of the OpenBlox engine.
+			 *
+			 * @returns Exit code
+			 *
+			 * @author John M. Harris, Jr.
+			 */
+			int getExitCode();
+
+			/**
+			 * Starts the shutdown process of the OpenBlox engine.
+			 *
+			 *
+			 * @author John M. Harris, Jr.
+			 */
+			void shutdown();
+
 			/** 
 			 * Returns true if OpenBlox is still running.
 			 *
@@ -261,6 +287,7 @@ namespace OB{
 			bool initialized;
 			ob_int64 startTime;
 			bool _isRunning;
+			int exitCode;
 
 			//Init options
 			bool doRendering;

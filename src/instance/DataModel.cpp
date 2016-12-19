@@ -19,6 +19,8 @@
 
 #include "instance/DataModel.h"
 
+#include "OBEngine.h"
+
 //Services we're including just to initiate them ahead of time
 #include "instance/Lighting.h"
 
@@ -34,6 +36,12 @@ namespace OB{
 
 	    DataModel::~DataModel(){}
 
+		void DataModel::Shutdown(int statusCode){
+		    OBEngine* eng = OBEngine::getInstance();
+			eng->setExitCode(statusCode);
+			eng->shutdown();
+		}
+		
 		void DataModel::initServices(){
 			lighting = make_shared<Lighting>();
 			lighting->setParent(std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this(), false);
@@ -57,10 +65,26 @@ namespace OB{
 			return newGuy;
 		}
 
+		int DataModel::lua_Shutdown(lua_State* L){
+		    shared_ptr<Instance> inst = checkInstance(L, 1);
+			if(shared_ptr<DataModel> dm = dynamic_pointer_cast<DataModel>(inst)){
+				int statusCode = 0;
+				if(!lua_isnoneornil(L, 2)){
+					statusCode = luaL_checkinteger(L, 2);
+				}
+
+				dm->Shutdown(statusCode);
+				
+				return 0;
+			}
+			return luaL_error(L, COLONERR, "Shutdown");
+		}
+
 		void DataModel::register_lua_methods(lua_State* L){
 			Instance::register_lua_methods(L);
 
 			luaL_Reg methods[] = {
+				{"Shutdown", lua_Shutdown},
 			    {NULL, NULL}
 			};
 			luaL_setfuncs(L, methods, 0);
