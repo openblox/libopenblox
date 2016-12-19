@@ -28,7 +28,7 @@ namespace OB{
 		 * TestInstance is a test instance class.
 		 * @author John M. Harris, Jr.
 		 */
-		class TestInstance: public Instance{
+		class TestInstance: public Instance {
 			public:
 				TestInstance();
 				virtual ~TestInstance();

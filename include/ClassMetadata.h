@@ -20,6 +20,8 @@
 #include <string>
 #include <vector>
 
+#include "mem.h"
+
 #ifndef OB_CLASSMETADATA
 #define OB_CLASSMETADATA
 
@@ -41,7 +43,7 @@ namespace OB{
 			 * @returns New Instance or NULL if the class this describes is abstract.
 			 * @author John M. Harris, Jr.
 			 */
-			virtual OB::Instance::Instance* newInstance() = 0;
+			virtual shared_ptr<Instance::Instance> newInstance() = 0;
 
 			/**
 			 * Used to tell if the supplied OB::Instance::Instance* is
@@ -51,7 +53,7 @@ namespace OB{
 			 * @returns true if obj is an instance of the defined class
 			 * @author John M. Harris, Jr.
 			 */
-			virtual bool isA(OB::Instance::Instance* obj) = 0;
+			virtual bool isA(shared_ptr<Instance::Instance> obj) = 0;
 
 			/**
 			 * Used to tell if the class described by this

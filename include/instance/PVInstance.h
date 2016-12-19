@@ -37,8 +37,8 @@ namespace OB{
 				PVInstance();
 				virtual ~PVInstance();
 
-				virtual void removeChild(Instance* kid);
-				virtual void addChild(Instance* kid);
+				virtual void removeChild(shared_ptr<Instance> kid);
+				virtual void addChild(shared_ptr<Instance> kid);
 
 				DECLARE_CLASS(PVInstance);
 

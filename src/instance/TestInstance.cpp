@@ -29,13 +29,16 @@ namespace OB{
 			Name = ClassName;
 		}
 
-		TestInstance::~TestInstance(){}
+		TestInstance::~TestInstance(){
+			std::cout << "Deleting TestInstance(" << Name << ")" << std::endl;
+		}
 
-		Instance* TestInstance::cloneImpl(){
-			TestInstance* ti = new TestInstance;
+		shared_ptr<Instance> TestInstance::cloneImpl(){
+			shared_ptr<TestInstance> ti = make_shared<TestInstance>();
 			ti->Archivable = Archivable;
 			ti->Name = Name;
 			ti->ParentLocked = ParentLocked;//Hah, that'd be amusing
+			
 			return ti;
 		}
 	}

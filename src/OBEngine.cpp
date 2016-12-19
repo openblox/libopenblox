@@ -66,7 +66,7 @@ namespace OB{
 	}
 
 	shared_ptr<TaskScheduler> OBEngine::getTaskScheduler(){
-		return shared_ptr<TaskScheduler>(taskSched);
+		return taskSched;
 	}
 
 	void OBEngine::init(){
@@ -125,6 +125,7 @@ namespace OB{
 		taskSched = make_shared<TaskScheduler>();
 		globalState = OB::Lua::initGlobal();
 		dm = make_shared<Instance::DataModel>();
+		dm->initServices();
 
 		//Initialize Lua types
 		Type::Type::_ob_init();
@@ -225,6 +226,6 @@ namespace OB{
 	}
 
 	shared_ptr<Instance::DataModel> OBEngine::getDataModel(){
-		return shared_ptr<Instance::DataModel>(dm);
+		return dm;
 	}
 }

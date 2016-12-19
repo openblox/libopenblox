@@ -30,26 +30,28 @@ namespace OB{
 
 	    DataModel::DataModel(){
 			Name = "game";
-
-			Lighting* lighting = new Lighting();
-			lighting->setParent(this, false);
-			lighting->ParentLocked = true;
 		}
 
 	    DataModel::~DataModel(){}
 
-		Instance* DataModel::cloneImpl(){
+		void DataModel::initServices(){
+			lighting = make_shared<Lighting>();
+			lighting->setParent(std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this(), false);
+			lighting->ParentLocked = true;
+		}
+
+		shared_ptr<Instance> DataModel::cloneImpl(){
 			return NULL;
 		}
 
-		Instance* DataModel::GetService(std::string className){
-			Instance* foundService = FindService(className);
+		shared_ptr<Instance> DataModel::GetService(std::string className){
+			shared_ptr<Instance> foundService = FindService(className);
 			if(foundService != NULL){
 				return foundService;
 			}
-		    Instance* newGuy = ClassFactory::createService(className, true);
+		    shared_ptr<Instance> newGuy = ClassFactory::createService(className, true);
 			if(newGuy){
-				newGuy->setParent(this, false);
+				newGuy->setParent(std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this(), false);
 				newGuy->ParentLocked = true;
 			}
 			return newGuy;

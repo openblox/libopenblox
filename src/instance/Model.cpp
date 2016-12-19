@@ -44,11 +44,12 @@ namespace OB{
 
 	    Model::~Model(){}
 
-		Instance* Model::cloneImpl(){
-			Model* mi = new Model;
+		shared_ptr<Instance> Model::cloneImpl(){
+			shared_ptr<Model> mi = make_shared<Model>();
 			mi->Archivable = Archivable;
 			mi->Name = Name;
 			mi->ParentLocked = ParentLocked;
+			
 			return mi;
 		}
 	}

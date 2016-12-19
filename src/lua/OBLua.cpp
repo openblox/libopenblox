@@ -112,7 +112,7 @@ namespace OB{
 
 			OBEngine* eng = OBEngine::getInstance();
 		    shared_ptr<Instance::DataModel> dm = eng->getDataModel();
-			int gm = dm->wrap_lua(L);
+			int gm = dm->wrap_lua(L, dm);
 			lua_pushvalue(L, -gm);
 			lua_setglobal(L, "game");
 
@@ -305,9 +305,9 @@ namespace OB{
 
 		int lua_newInstance(lua_State* L){
 			std::string className = std::string(luaL_checkstring(L, 1));
-			Instance::Instance* par = Instance::Instance::checkInstance(L, 2);
+			shared_ptr<Instance::Instance> par = Instance::Instance::checkInstance(L, 2);
 			
-		    Instance::Instance* newGuy = ClassFactory::create(className);
+		    shared_ptr<Instance::Instance> newGuy = ClassFactory::create(className);
 			if(newGuy != NULL){
 				if(par != NULL){
 					try{
@@ -316,7 +316,8 @@ namespace OB{
 						return luaL_error(L, ex.what());
 					}
 				}
-				return newGuy->wrap_lua(L);
+				
+			    return newGuy->wrap_lua(L, newGuy);
 			}
 			lua_pushnil(L);
 			return 1;

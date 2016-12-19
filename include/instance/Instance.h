@@ -20,11 +20,15 @@
 #include <string>
 #include <vector>
 
+#include "mem.h"
+
 #include "lua/OBLua.h"
 #include "ClassFactory.h"
 #include "obtype.h"
 
 #include "type/Event.h"
+
+#include <iostream>
 
 #ifndef OB_INST_INSTANCE
 #define OB_INST_INSTANCE
@@ -34,9 +38,9 @@ typedef void (*luaRegisterFunc)(lua_State* L);
 #define COLONERR "Expected ':' not '.' calling member function %s"
 
 #define DECLARE_CLASS(Class_Name) \
-	virtual Instance* cloneImpl(); \
+	virtual shared_ptr<Instance> cloneImpl(); \
 	virtual std::string getClassName(); \
-	virtual int wrap_lua(lua_State* L); \
+	virtual std::string getLuaClassName(); \
 	static OB::ClassMetadata* _ob_classmetadata; \
 	static void _ob_init(); \
 protected: \
@@ -46,15 +50,11 @@ protected: \
 #define _OB_DEFCLASS_SHARED(Class_Name) \
 	std::string Class_Name::ClassName = #Class_Name; \
 	std::string Class_Name::LuaClassName = "luaL_Instance_" #Class_Name; \
-	int Class_Name::wrap_lua(lua_State* L){ \
-		Class_Name** udata = (Class_Name**)lua_newuserdata(L, sizeof(*this)); \
-		*udata = this; \
-		luaL_getmetatable(L, LuaClassName.c_str()); \
-		lua_setmetatable(L, -2); \
-		return 1; \
-	} \
 	std::string Class_Name::getClassName(){ \
 		return ClassName; \
+	} \
+	std::string Class_Name::getLuaClassName(){ \
+		return LuaClassName; \
 	} \
 	OB::ClassMetadata* Class_Name::_ob_classmetadata = new Class_Name##ClassMetadata; \
 	void Class_Name::_ob_init()
@@ -65,11 +65,11 @@ protected: \
 		Class_Name##ClassMetadata(){ \
 			OB::ClassFactory::addClass(#Class_Name, this); \
 		} \
-		virtual OB::Instance::Instance* newInstance(){ \
-			return new Class_Name; \
+		virtual shared_ptr<OB::Instance::Instance> newInstance(){ \
+			return make_shared<Class_Name>(); \
 		} \
-		virtual bool isA(OB::Instance::Instance* obj){ \
-			return (dynamic_cast<const Class_Name*>(obj)) != NULL; \
+		virtual bool isA(shared_ptr<OB::Instance::Instance> obj){ \
+			return (dynamic_pointer_cast<Class_Name>(obj)) != NULL; \
 		} \
 		virtual bool isInstantiatable(){ \
 			return isInstable; \
@@ -96,11 +96,11 @@ protected: \
 		Class_Name##ClassMetadata(){ \
 			OB::ClassFactory::addClass(#Class_Name, this); \
 		} \
-		virtual OB::Instance::Instance* newInstance(){ \
+		virtual shared_ptr<OB::Instance::Instance> newInstance(){ \
 			return NULL; \
 		} \
-		virtual bool isA(OB::Instance::Instance* obj){ \
-			return (dynamic_cast<const Class_Name*>(obj)) != NULL; \
+		virtual bool isA(shared_ptr<OB::Instance::Instance> obj){ \
+			return (dynamic_pointer_cast<Class_Name>(obj)) != NULL; \
 		} \
 		virtual bool isInstantiatable(){ \
 			return false; \
@@ -127,11 +127,11 @@ protected: \
 		Class_Name##ClassMetadata(){ \
 			OB::ClassFactory::addClass(#Class_Name, this); \
 		} \
-		virtual OB::Instance::Instance* newInstance(){ \
+		virtual shared_ptr<OB::Instance::Instance> newInstance(){ \
 			return NULL; \
 		} \
-		virtual bool isA(OB::Instance::Instance* obj){ \
-			return (dynamic_cast<const Class_Name*>(obj)) != NULL; \
+		virtual bool isA(shared_ptr<OB::Instance::Instance> obj){ \
+			return (dynamic_pointer_cast<Class_Name>(obj)) != NULL; \
 		} \
 		virtual bool isInstantiatable(){ \
 			return false; \
@@ -150,7 +150,7 @@ protected: \
 			return Class_Name::_ob_init; \
 		} \
 	}; \
-	Instance* Class_Name::cloneImpl(){ return NULL; } \
+	shared_ptr<Instance> Class_Name::cloneImpl(){ return NULL; } \
 	_OB_DEFCLASS_SHARED(Class_Name)
 
 #define DECLARE_LUA_METHOD(MethodName) \
@@ -159,9 +159,9 @@ protected: \
 
 #define WRAP_EVT(Event_Name) \
 	[](lua_State* L)->int{ \
-		Instance* inst = checkInstance(L, 1); \
+		shared_ptr<Instance> inst = checkInstance(L, 1); \
 		if(inst){ \
-			return inst->Event_Name->wrap_lua(L); \
+				 return inst->Event_Name->wrap_lua(L); \
 		} \
 		return 0; \
 	}
@@ -172,7 +172,7 @@ namespace OB{
 		 * Instance is the base class of all world objects in OpenBlox.
 		 * @author John M. Harris, Jr.
 		 */
-		class Instance{
+		class Instance: public std::enable_shared_from_this<Instance>{
 			public:
 				Instance();
 				virtual ~Instance();
@@ -188,10 +188,10 @@ namespace OB{
 				 * Clones an Instance, if possible. This also clones
 				 * children of the Instance.
 				 *
-				 * @returns Instance*, NULL if not able to clone.
+				 * @returns Instance, NULL if not able to clone.
 				 * @author John M. Harris, Jr.
 				 */
-				virtual Instance* Clone();
+				virtual shared_ptr<Instance> Clone();
 
 				/**
 				 * Used to parent the object to NULL (nil in Lua) and
@@ -219,7 +219,7 @@ namespace OB{
 				 *
 				 * @author John M. Harris, Jr.
 				 */
-				virtual Instance* FindFirstChild(std::string name, bool recursive = false);
+				virtual shared_ptr<Instance> FindFirstChild(std::string name, bool recursive = false);
 
 				/**
 				 * Finds the first child with a given class name. This
@@ -230,7 +230,7 @@ namespace OB{
 				 *
 				 * @author John M. Harris, Jr.
 				 */
-				virtual Instance* FindFirstChildOfClass(std::string className, bool recursive = false);
+				virtual shared_ptr<Instance> FindFirstChildOfClass(std::string className, bool recursive = false);
 
 				/**
 				 * Returns the children of an object.
@@ -239,7 +239,7 @@ namespace OB{
 				 *
 				 * @author John M. Harris, Jr.
 				 */
-				virtual std::vector<Instance*> GetChildren();
+				virtual std::vector<shared_ptr<Instance>> GetChildren();
 
 				/**
 				 * Returns the full name of this object. Usually in
@@ -276,7 +276,7 @@ namespace OB{
 				 *
 				 * @author John M. Harris, Jr.
 				 */
-				virtual bool IsAncestorOf(Instance* descendant);
+				virtual bool IsAncestorOf(shared_ptr<Instance> descendant);
 
 				/**
 				 * Returns whether or not this Instance is a
@@ -289,7 +289,7 @@ namespace OB{
 				 *
 				 * @author John M. Harris, Jr.
 				 */
-				virtual bool IsDescendantOf(Instance* ancestor);
+				virtual bool IsDescendantOf(shared_ptr<Instance> ancestor);
 
 				/**
 				 * Returns a unique 64 bit integer, globally used to
@@ -342,10 +342,10 @@ namespace OB{
 				 *
 				 * @author John M. Harris, Jr.
 				 */
-				virtual void setParent(Instance* parent, bool useDMNotify);
+				virtual void setParent(shared_ptr<Instance> parent, bool useDMNotify);
 
-				virtual void removeChild(Instance* kid);
-				virtual void addChild(Instance* kid);
+				virtual void removeChild(shared_ptr<Instance> kid);
+				virtual void addChild(shared_ptr<Instance> kid);
 
 				/**
 				 * Returns the current Parent of this Instance.
@@ -354,7 +354,7 @@ namespace OB{
 				 *
 				 * @author John M. Harris, Jr.
 				 */
-				Instance* getParent();
+				shared_ptr<Instance> getParent();
 
 				/**
 				 * Checks that the value at the specified index on the
@@ -366,7 +366,7 @@ namespace OB{
 				 * @author John M. Harris, Jr.
 				 * @author DigiTechs
 				 */
-				static Instance* checkInstance(lua_State* L, int index);
+				static shared_ptr<Instance> checkInstance(lua_State* L, int index);
 
 			    /**
 				 * Handles attempts to set properties of this Instance.
@@ -409,6 +409,17 @@ namespace OB{
 				static int lua_eq(lua_State* L);
 
 				/**
+				 * Handles garbage collection from Lua.
+				 *
+				 * @param L Lua State
+				 *
+				 * @returns 0
+				 *
+				 * @author John M. Harris, Jr.
+				 */
+				static int lua_gc(lua_State* L);
+
+				/**
 				 * Handles tostring calls on this Instance from Lua.
 				 *
 				 * @param L Lua State
@@ -421,6 +432,7 @@ namespace OB{
 				static int lua_toString(lua_State* L);
 				
 				DECLARE_LUA_METHOD(getClassName);
+				DECLARE_LUA_METHOD(getUseCount);
 				DECLARE_LUA_METHOD(getName);
 				DECLARE_LUA_METHOD(setName);
 				DECLARE_LUA_METHOD(getParent);
@@ -452,11 +464,13 @@ namespace OB{
 				bool ParentLocked;
 
 				//TODO: Events
-				Type::Event* TestEvent;
+				shared_ptr<Type::Event> TestEvent;
 
 				bool Archivable;
 				std::string Name;
-				Instance* Parent;
+				shared_ptr<Instance> Parent;
+
+				int wrap_lua(lua_State* L, shared_ptr<Instance> ptr);
 
 				/**
 				 * Lua Metamethods for the Instance class.
@@ -512,7 +526,7 @@ namespace OB{
 
 				ob_int64 netId;
 
-				std::vector<Instance*> children;
+				std::vector<shared_ptr<Instance>> children;
 		};
 	}
 }

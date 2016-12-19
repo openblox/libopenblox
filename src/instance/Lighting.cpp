@@ -31,7 +31,7 @@ namespace OB{
 
 	    Lighting::~Lighting(){}
 
-		Instance* Lighting::cloneImpl(){
+		shared_ptr<Instance> Lighting::cloneImpl(){
 			return NULL;
 		}
 	}

@@ -24,6 +24,8 @@
 
 namespace OB{
 	namespace Instance{
+		class Lighting;
+		
 		/**
 		 * DataModel is the root singleton of the OpenBlox engine.
 		 * The DataModel contains all of the core services of the engine,
@@ -36,6 +38,8 @@ namespace OB{
 			    DataModel();
 				virtual ~DataModel();
 
+				void initServices();
+
 				/**
 				 * Reimplementation of ServiceProvider's GetService,
 				 * this time calling ClassFactory's createService with
@@ -45,9 +49,11 @@ namespace OB{
 				 * @returns Instance* The service requested, or NULL if it cannot be created.
 				 * @author John M. Harris, Jr.
 				 */
-				virtual Instance* GetService(std::string className);
+				virtual shared_ptr<Instance> GetService(std::string className);
 				
 				DECLARE_CLASS(DataModel);
+
+				shared_ptr<Lighting> lighting;
 				
 				static void register_lua_methods(lua_State* L);
 		};

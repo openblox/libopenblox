@@ -83,7 +83,7 @@ namespace OB{
 			 * @returns New instance or NULL
 			 * @author John M. Harris, Jr.
 			 */
-			static OB::Instance::Instance* create(std::string className);
+			static shared_ptr<Instance::Instance> create(std::string className);
 
 			/**
 			 * Returns a new instance of the given class name, or NULL
@@ -99,7 +99,7 @@ namespace OB{
 			 * @returns New instance or NULL
 			 * @author John M. Harris, Jr.
 			 */
-			static OB::Instance::Instance* createService(std::string className, bool isDataModel);
+			static shared_ptr<Instance::Instance> createService(std::string className, bool isDataModel);
 
 			/**
 			 * Returns a new instance of a given class name, or NULL
@@ -112,7 +112,7 @@ namespace OB{
 			 * @returns New instance or NULL
 			 * @author John M. Harris, Jr.
 			 */
-			static OB::Instance::Instance* createReplicate(std::string className);
+			static shared_ptr<Instance::Instance> createReplicate(std::string className);
 
 			/**
 			 * Returns whether or not a given object is an instance of
@@ -123,7 +123,7 @@ namespace OB{
 			 * @returns true if obj is an instance of className, otherwise false
 			 * @author John M. Harris, Jr.
 			 */
-			static bool isA(OB::Instance::Instance* obj, std::string className);
+			static bool isA(shared_ptr<Instance::Instance> obj, std::string className);
 
 			/**
 			 * Initializes Lua metatables and other Instance related

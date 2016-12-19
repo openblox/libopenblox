@@ -24,6 +24,8 @@
 #include "OBException.h"
 #include "OBEngine.h"
 
+#include <iostream>
+
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS_ABS(Instance, NULL){
@@ -33,36 +35,37 @@ namespace OB{
 		Instance::Instance(){
 			Archivable = true;
 			Name = ClassName;
-			Parent = NULL;
 			ParentLocked = false;
 
 			netId = OB_NETID_UNASSIGNED;
 
 			//TODO: Events
-			TestEvent = new Type::Event("TestEvent");
+			TestEvent = make_shared<Type::Event>("TestEvent");
 		}
 
 		Instance::~Instance(){
-			//TODO: Events
+			std::cout << "Deleting Instance(" << Name << ")" << std::endl;
 		}
 
 		void Instance::ClearAllChildren(){
-			for(std::vector<Instance*>::size_type i = 0; i != children.size(); i++){
-				Instance* kid = children[i];
+			std::vector<shared_ptr<Instance>> kids = GetChildren();
+			
+			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
+				shared_ptr<Instance> kid = kids[i];
 				if(kid){
 					kid->Remove();
 				}
 			}
 		}
 
-		Instance* Instance::Clone(){
+		shared_ptr<Instance> Instance::Clone(){
 			if(Archivable){
-				Instance* newGuy = cloneImpl();
+				shared_ptr<Instance> newGuy = cloneImpl();
 				if(newGuy == NULL){
 					return NULL;
 				}
-				for(std::vector<Instance*>::size_type i = 0; i != children.size(); i++){
-					Instance* kidClone = children[i];
+				for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != children.size(); i++){
+					shared_ptr<Instance> kidClone = children[i];
 					if(kidClone){
 						kidClone->setParent(newGuy, true);
 					}
@@ -79,8 +82,11 @@ namespace OB{
 			ParentLocked = true;
 			//TODO:
 			//Changed->disconnectAll();
-			for(std::vector<Instance*>::size_type i = 0; i != children.size(); i++){
-				Instance* kid = children[i];
+
+			std::vector<shared_ptr<Instance>> kids = GetChildren();
+			
+			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
+				shared_ptr<Instance> kid = kids[i];
 				if(kid){
 					kid->Destroy();
 				}
@@ -89,17 +95,19 @@ namespace OB{
 
 		void Instance::Remove(){
 			setParent(NULL, true);
-			for(std::vector<Instance*>::size_type i = 0; i != children.size(); i++){
-				Instance* kid = children[i];
+
+			std::vector<shared_ptr<Instance>> kids = GetChildren();
+			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
+				shared_ptr<Instance> kid = kids[i];
 				if(kid){
 					kid->Remove();
 				}
 			}
 		}
 
-		Instance* Instance::FindFirstChild(std::string name, bool recursive){
-			for(std::vector<Instance*>::size_type i = 0; i != children.size(); i++){
-				Instance* kid = children[i];
+		shared_ptr<Instance> Instance::FindFirstChild(std::string name, bool recursive){
+			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != children.size(); i++){
+				shared_ptr<Instance> kid = children[i];
 				if(kid){
 					if(kid->Name == name){
 						return kid;
@@ -107,10 +115,10 @@ namespace OB{
 				}
 			}
 			if(recursive){
-				for(std::vector<Instance*>::size_type i = 0; i != children.size(); i++){
-					Instance* kid = children[i];
+				for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != children.size(); i++){
+					shared_ptr<Instance> kid = children[i];
 					if(kid){
-						Instance* myFind = kid->FindFirstChild(name, recursive);
+						shared_ptr<Instance> myFind = kid->FindFirstChild(name, recursive);
 						if(myFind){
 							return myFind;
 						}
@@ -120,9 +128,9 @@ namespace OB{
 			return NULL;
 		}
 
-		Instance* Instance::FindFirstChildOfClass(std::string className, bool recursive){
-			for(std::vector<Instance*>::size_type i = 0; i != children.size(); i++){
-				Instance* kid = children[i];
+		shared_ptr<Instance> Instance::FindFirstChildOfClass(std::string className, bool recursive){
+			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != children.size(); i++){
+				shared_ptr<Instance> kid = children[i];
 				if(kid){
 					if(kid->ClassName == className){
 						return kid;
@@ -130,10 +138,10 @@ namespace OB{
 				}
 			}
 			if(recursive){
-				for(std::vector<Instance*>::size_type i = 0; i != children.size(); i++){
-					Instance* kid = children[i];
+				for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != children.size(); i++){
+					shared_ptr<Instance> kid = children[i];
 					if(kid){
-						Instance* myFind = kid->FindFirstChildOfClass(className, recursive);
+						shared_ptr<Instance> myFind = kid->FindFirstChildOfClass(className, recursive);
 						if(myFind){
 							return myFind;
 						}
@@ -143,8 +151,8 @@ namespace OB{
 			return NULL;
 		}
 
-		std::vector<Instance*> Instance::GetChildren(){
-			return std::vector<Instance*>(children);
+		std::vector<shared_ptr<Instance>> Instance::GetChildren(){
+			return std::vector<shared_ptr<Instance>>(children);
 		}
 
 		std::string Instance::GetFullName(){
@@ -156,23 +164,23 @@ namespace OB{
 		}
 
 		bool Instance::IsA(std::string name){
-			OB::ClassFactory::isA(this, name);
+			return OB::ClassFactory::isA(shared_from_this(), name);
 		}
 
-		bool Instance::IsAncestorOf(Instance* descendant){
+		bool Instance::IsAncestorOf(shared_ptr<Instance> descendant){
 			if(descendant == NULL){
 				return false;
 			}
-			for(std::vector<Instance*>::size_type i = 0; i != children.size(); i++){
-				Instance* kid = children[i];
+			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != children.size(); i++){
+				shared_ptr<Instance> kid = children[i];
 				if(kid){
 					if(kid == descendant){
 						return true;
 					}
 				}
 			}
-			for(std::vector<Instance*>::size_type i = 0; i != children.size(); i++){
-				Instance* kid = children[i];
+			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != children.size(); i++){
+				shared_ptr<Instance> kid = children[i];
 				if(kid){
 					bool isAncestor = kid->IsAncestorOf(descendant);
 					if(isAncestor){
@@ -183,11 +191,11 @@ namespace OB{
 			return false;
 		}
 
-		bool Instance::IsDescendantOf(Instance* ancestor){
+		bool Instance::IsDescendantOf(shared_ptr<Instance> ancestor){
 			if(ancestor == NULL){
 				return true;
 			}
-			return ancestor->IsAncestorOf(this);
+			return ancestor->IsAncestorOf(shared_from_this());
 		}
 
 		ob_int64 Instance::GetNetworkID(){
@@ -199,8 +207,10 @@ namespace OB{
 		}
 	
 		void Instance::tickChildren(){
-			for(std::vector<Instance*>::size_type i = 0; i != children.size(); i++){
-				Instance* kid = children[i];
+			std::vector<shared_ptr<Instance>> kids = GetChildren();
+			
+			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
+				shared_ptr<Instance> kid = kids[i];
 				if(kid){
 					kid->tick();
 				}
@@ -254,7 +264,7 @@ namespace OB{
 			lua_pop(L, 1);
 		}
 
-		void Instance::setParent(Instance* parent, bool useDMNotify){
+		void Instance::setParent(shared_ptr<Instance> parent, bool useDMNotify){
 			if(Parent == parent){
 				//noop
 				return;
@@ -265,7 +275,7 @@ namespace OB{
 				throw OBException(errMsg.c_str());
 				return;
 			}
-			if(parent == this){
+			if(parent == shared_from_this()){
 				std::string errMsg = "Attempt to set ";
 				errMsg = errMsg + GetFullName() + " as its own parent";
 				throw OBException(errMsg.c_str());
@@ -273,11 +283,11 @@ namespace OB{
 			}
 
 			if(Parent){
-				Parent->removeChild(this);
+				Parent->removeChild(shared_from_this());
 			}
 			Parent = parent;
 			if(Parent){
-				Parent->addChild(this);
+				Parent->addChild(shared_from_this());
 
 				//TODO: Just look at this cruft!
 
@@ -289,7 +299,7 @@ namespace OB{
 						if(dm){
 							if(dm->isServer()){
 								if(this->IsDescendantOf(dm)){
-									Instance* nsInst = dm->FindService("NetworkServer");
+									shared_ptr<Instance> nsInst = dm->FindService("NetworkServer");
 									if(ob_instance::NetworkServer* ns = dynamic_cast<ob_instance::NetworkServer*>(nsInst)){
 										ns->sendCreateInstancePacket(GetNetworkID(), RakNet::RakString(getClassName().toStdString().c_str()));
 
@@ -317,15 +327,15 @@ namespace OB{
 			return Name;
 		}
 
-		Instance* Instance::cloneImpl(){
+		shared_ptr<Instance> Instance::cloneImpl(){
 			return NULL;
 		}
 
-		Instance* Instance::getParent(){
+		shared_ptr<Instance> Instance::getParent(){
 			return Parent;
 		}
 
-		void Instance::removeChild(Instance* kid){
+		void Instance::removeChild(shared_ptr<Instance> kid){
 			if(kid){
 				children.erase(std::remove(children.begin(), children.end(), kid));
 
@@ -336,7 +346,7 @@ namespace OB{
 			}
 		}
 
-		void Instance::addChild(Instance* kid){
+		void Instance::addChild(shared_ptr<Instance> kid){
 			if(kid){
 				children.push_back(kid);
 
@@ -347,10 +357,20 @@ namespace OB{
 			}
 		}
 
+		int Instance::wrap_lua(lua_State* L, shared_ptr<Instance> ptr){
+		    shared_ptr<Instance>* udata = static_cast<shared_ptr<Instance>*>(lua_newuserdata(L, sizeof(shared_ptr<Instance>)));
+			new(udata) shared_ptr<Instance>(ptr);
+			
+			luaL_getmetatable(L, getLuaClassName().c_str());
+			lua_setmetatable(L, -2);
+			return 1;
+		}
+
 		void Instance::register_lua_metamethods(lua_State* L){
 			luaL_Reg metamethods[] = {
 				{"__tostring", Instance::lua_toString},
 				{"__eq", lua_eq},
+				{"__gc", lua_gc},
 				{NULL, NULL}
 			};
 			luaL_setfuncs(L, metamethods, 0);
@@ -377,6 +397,7 @@ namespace OB{
 		void Instance::register_lua_property_setters(lua_State* L){
 			luaL_Reg properties[] = {
 				{"ClassName", lua_readOnlyProperty},
+				{"UseCount", lua_readOnlyProperty},
 				{"Name", lua_setName},
 				{"Parent", lua_setParent},
 				{"Archivable", lua_setArchivable},
@@ -388,6 +409,7 @@ namespace OB{
 		void Instance::register_lua_property_getters(lua_State* L){
 			luaL_Reg properties[] = {
 				{"ClassName", lua_getClassName},
+				{"UseCount", lua_getUseCount},
 				{"Name", lua_getName},
 				{"Parent", lua_getParent},
 				{"Archivable", lua_getArchivable},
@@ -411,7 +433,7 @@ namespace OB{
 			luaL_setfuncs(L, events, 0);
 		}
 
-		Instance* Instance::checkInstance(lua_State* L, int index){
+		shared_ptr<Instance> Instance::checkInstance(lua_State* L, int index){
 			if(lua_isuserdata(L, index)){
 				std::vector<std::string> existing = OB::ClassFactory::getRegisteredClasses();
 				unsigned size = existing.size();
@@ -423,7 +445,7 @@ namespace OB{
 						luaL_getmetatable(L, name.c_str());
 						if(lua_rawequal(L, -1, -2)){
 							lua_pop(L, 2);
-							return *(Instance**)udata;
+						    return *static_cast<shared_ptr<Instance>*>(udata);
 						}
 						lua_pop(L, 1);
 					}
@@ -434,7 +456,7 @@ namespace OB{
 		}
 
 		int Instance::lua_newindex(lua_State* L){
-			Instance* inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(inst){
 				const char* name = luaL_checkstring(L, 2);
 				lua_getmetatable(L, 1);//-3
@@ -459,7 +481,7 @@ namespace OB{
 		}
 
 		int Instance::lua_index(lua_State* L){
-			Instance* inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(inst){
 				const char* name = luaL_checkstring(L, 2);
 
@@ -498,9 +520,9 @@ namespace OB{
 						}else{
 							lua_pop(L, 3);
 
-							Instance* kiddie = inst->FindFirstChild(name, false);
+							shared_ptr<Instance> kiddie = inst->FindFirstChild(name, false);
 							if(kiddie){
-								return kiddie->wrap_lua(L);
+								return kiddie->wrap_lua(L, kiddie);
 							}
 
 							return luaL_error(L, "attempt to index '%s' (a nil value)", name);
@@ -512,9 +534,9 @@ namespace OB{
 		}
 
 		int Instance::lua_eq(lua_State* L){
-			Instance* inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(inst){
-				Instance* oinst = checkInstance(L, 2);
+				shared_ptr<Instance> oinst = checkInstance(L, 2);
 				if(oinst){
 					lua_pushboolean(L, inst == oinst);
 					return 1;
@@ -523,9 +545,35 @@ namespace OB{
 			lua_pushboolean(L, false);
 			return 1;
 		}
+		
+		int Instance::lua_gc(lua_State* L){
+		    if(lua_isuserdata(L, 1)){
+				std::vector<std::string> existing = OB::ClassFactory::getRegisteredClasses();
+				unsigned size = existing.size();
+				void* udata = lua_touserdata(L, 1);
+				int meta = lua_getmetatable(L, 1);
+				if(meta != 0){
+					for(unsigned i = 0; i < size; i++){
+						std::string name = "luaL_Instance_" + existing[i];
+						luaL_getmetatable(L, name.c_str());
+						if(lua_rawequal(L, -1, -2)){
+							lua_pop(L, 2);
+							
+						    shared_ptr<Instance> sharedObj = *static_cast<shared_ptr<Instance>*>(udata);
+							#undef shared_ptr
+							sharedObj.~shared_ptr<Instance>();
+							#define shared_ptr std::shared_ptr
+						}
+						lua_pop(L, 1);
+					}
+				}
+			}
+			
+			return 0;
+		}
 
 		int Instance::lua_toString(lua_State* L){
-			Instance* inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(inst){
 				lua_pushstring(L, inst->toString().c_str());
 				return 1;
@@ -534,10 +582,20 @@ namespace OB{
 		}
 
 		int Instance::lua_getClassName(lua_State* L){
-			Instance* inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(inst){
 				std::string className = inst->getClassName();
 				lua_pushstring(L, className.c_str());
+				return 1;
+			}
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int Instance::lua_getUseCount(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1);
+			if(inst){
+				lua_pushinteger(L, inst.use_count() - 1);
 				return 1;
 			}
 			lua_pushnil(L);
@@ -551,7 +609,7 @@ namespace OB{
 		}
 
 		int Instance::lua_getName(lua_State* L){
-			Instance* inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(inst){
 				lua_pushstring(L, inst->Name.c_str());
 				return 1;
@@ -560,7 +618,7 @@ namespace OB{
 		}
 
 		int Instance::lua_setName(lua_State* L){
-			Instance* inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(inst){
 				std::string desired = std::string(luaL_checkstring(L, 2));
 				if(inst->Name != desired){
@@ -577,10 +635,10 @@ namespace OB{
 		}
 
 		int Instance::lua_getParent(lua_State* L){
-			Instance* inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(inst){
 				if(inst->Parent){
-					return inst->Parent->wrap_lua(L);
+					return inst->Parent->wrap_lua(L, inst->Parent);
 				}
 				lua_pushnil(L);
 				return 1;
@@ -589,10 +647,10 @@ namespace OB{
 		}
 
 		int Instance::lua_setParent(lua_State* L){
-			Instance* inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(inst){
 				bool throwErrorIf = true;
-				Instance* otherInst = NULL;
+				shared_ptr<Instance> otherInst = NULL;
 				if(lua_isnil(L, 2)){
 					throwErrorIf = false;
 				}else{
@@ -614,7 +672,7 @@ namespace OB{
 		}
 
 		int Instance::lua_getArchivable(lua_State* L){
-			Instance* inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(inst){
 				lua_pushboolean(L, inst->Archivable);
 				return 1;
@@ -623,7 +681,7 @@ namespace OB{
 		}
 
 		int Instance::lua_setArchivable(lua_State* L){
-			Instance* inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(inst){
 				//Again, following ROBLOX's ways....
 				bool newVal = false;
@@ -646,7 +704,7 @@ namespace OB{
 		}
 
 		int Instance::lua_ClearAllChildren(lua_State* L){
-			Instance* inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(inst){
 				inst->ClearAllChildren();
 				return 0;
@@ -655,11 +713,11 @@ namespace OB{
 		}
 
 		int Instance::lua_Clone(lua_State* L){
-			Instance* inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(inst){
-				Instance* newGuy = inst->Clone();
+				shared_ptr<Instance> newGuy = inst->Clone();
 				if(newGuy){
-					return newGuy->wrap_lua(L);
+					return newGuy->wrap_lua(L, newGuy);
 				}
 				return 0;
 			}
@@ -667,7 +725,7 @@ namespace OB{
 		}
 
 		int Instance::lua_Destroy(lua_State* L){
-			Instance* inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(inst){
 				inst->Destroy();
 				return 0;
@@ -676,7 +734,7 @@ namespace OB{
 		}
 
 		int Instance::lua_Remove(lua_State* L){
-			Instance* inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(inst){
 				inst->Remove();
 				return 0;
@@ -685,7 +743,7 @@ namespace OB{
 		}
 
 		int Instance::lua_FindFirstChild(lua_State* L){
-			Instance* inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(inst){
 				const char* kidName = luaL_checkstring(L, 2);
 				bool recursive = false;
@@ -696,9 +754,9 @@ namespace OB{
 						luaL_argerror(L, 3, "boolean expected");
 					}
 				}
-				Instance* foundStuff = inst->FindFirstChild(kidName, recursive);
+				shared_ptr<Instance> foundStuff = inst->FindFirstChild(kidName, recursive);
 				if(foundStuff){
-					return foundStuff->wrap_lua(L);
+					return foundStuff->wrap_lua(L, foundStuff);
 				}
 				lua_pushnil(L);
 				return 1;
@@ -707,16 +765,16 @@ namespace OB{
 		}
 
 		int Instance::lua_GetChildren(lua_State* L){
-			Instance* inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(inst){
 				lua_newtable(L);
 
-				for(std::vector<Instance*>::size_type i = 0; i != inst->children.size(); i++){
-					Instance* kid = inst->children[i];
+				for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != inst->children.size(); i++){
+					shared_ptr<Instance> kid = inst->children[i];
 					if(kid){
 						int lIndex = i + 1;
 						//lua_pushnumber(L, lIndex);
-						kid->wrap_lua(L);
+						kid->wrap_lua(L, kid);
 						lua_rawseti(L, -2, lIndex);
 					}
 				}
@@ -726,7 +784,7 @@ namespace OB{
 		}
 
 		int Instance::lua_GetFullName(lua_State* L){
-			Instance* inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(inst){
 				std::string fullName = inst->GetFullName();
 				lua_pushstring(L, fullName.c_str());
@@ -736,7 +794,7 @@ namespace OB{
 		}
 
 		int Instance::lua_IsA(lua_State* L){
-			Instance* inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(inst){
 				const char* checkName = luaL_checkstring(L, 2);
 				if(checkName){
@@ -751,10 +809,10 @@ namespace OB{
 		}
 
 		int Instance::lua_IsAncestorOf(lua_State* L){
-			Instance* inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(inst){
 				bool throwErrorIf = true;
-				Instance* otherInst = NULL;
+				shared_ptr<Instance> otherInst = NULL;
 				if(lua_isnil(L, 2)){
 					throwErrorIf = false;
 				}else{
@@ -773,10 +831,10 @@ namespace OB{
 		}
 
 		int Instance::lua_IsDescendantOf(lua_State* L){
-			Instance* inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(inst){
 				bool throwErrorIf = true;
-				Instance* otherInst = NULL;
+				shared_ptr<Instance> otherInst = NULL;
 				if(lua_isnil(L, 2)){
 					throwErrorIf = false;
 				}else{
@@ -795,7 +853,7 @@ namespace OB{
 		}
 
 		int Instance::lua_GetNetworkID(lua_State* L){
-			Instance* inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(inst){
 				lua_pushnumber(L, inst->GetNetworkID());
 				return 1;

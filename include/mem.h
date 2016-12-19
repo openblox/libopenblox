@@ -24,6 +24,8 @@
 
 #define make_shared std::make_shared
 #define shared_ptr std::shared_ptr
+#define weak_ptr std::weak_ptr
+#define dynamic_pointer_cast std::dynamic_pointer_cast
 
 #endif
 

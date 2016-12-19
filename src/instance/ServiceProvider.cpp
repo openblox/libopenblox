@@ -31,9 +31,9 @@ namespace OB{
 
 		ServiceProvider::~ServiceProvider(){}
 
-		Instance* ServiceProvider::FindService(std::string className){
-			for(std::vector<Instance*>::size_type i = 0; i != children.size(); i++){
-				Instance* kid = children[i];
+		shared_ptr<Instance> ServiceProvider::FindService(std::string className){
+			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != children.size(); i++){
+				shared_ptr<Instance> kid = children[i];
 				if(kid != NULL){
 					if(kid->getClassName() == className){
 						return kid;
@@ -43,26 +43,26 @@ namespace OB{
 			return NULL;
 		}
 
-		Instance* ServiceProvider::GetService(std::string className){
-			Instance* foundService = FindService(className);
+		shared_ptr<Instance> ServiceProvider::GetService(std::string className){
+			shared_ptr<Instance> foundService = FindService(className);
 			if(foundService != NULL){
 				return foundService;
 			}
-		    Instance* newGuy = ClassFactory::createService(className, false);
+		    shared_ptr<Instance> newGuy = ClassFactory::createService(className, false);
 			if(newGuy){
-				newGuy->setParent(this, false);
+				newGuy->setParent(std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this(), false);
 				newGuy->ParentLocked = true;
 			}
 			return newGuy;
 		}
 
 		int ServiceProvider::lua_FindService(lua_State* L){
-			Instance* inst = checkInstance(L, 1);
-			if(ServiceProvider* sp = dynamic_cast<ServiceProvider*>(inst)){
+			shared_ptr<Instance> inst = checkInstance(L, 1);
+			if(shared_ptr<ServiceProvider> sp = dynamic_pointer_cast<ServiceProvider>(inst)){
 				std::string serviceName = std::string(luaL_checkstring(L, 2));
-				Instance* foundGuy = sp->FindService(serviceName);
+				shared_ptr<Instance> foundGuy = sp->FindService(serviceName);
 				if(foundGuy != NULL){
-					return foundGuy->wrap_lua(L);
+					return foundGuy->wrap_lua(L, foundGuy);
 				}
 				lua_pushnil(L);
 				return 1;
@@ -71,12 +71,12 @@ namespace OB{
 		}
 
 		int ServiceProvider::lua_GetService(lua_State* L){
-			Instance* inst = checkInstance(L, 1);
-			if(ServiceProvider* sp = dynamic_cast<ServiceProvider*>(inst)){
+			shared_ptr<Instance> inst = checkInstance(L, 1);
+			if(shared_ptr<ServiceProvider> sp = dynamic_pointer_cast<ServiceProvider>(inst)){
 				std::string serviceName = std::string(luaL_checkstring(L, 2));
-				Instance* foundGuy = sp->GetService(serviceName);
+				shared_ptr<Instance> foundGuy = sp->GetService(serviceName);
 				if(foundGuy != NULL){
-					return foundGuy->wrap_lua(L);
+					return foundGuy->wrap_lua(L, foundGuy);
 				}
 				lua_pushnil(L);
 				return 0;

@@ -57,7 +57,7 @@ namespace OB{
 		return "";
 	}
 
-	OB::Instance::Instance* ClassFactory::create(std::string className){
+	shared_ptr<Instance::Instance> ClassFactory::create(std::string className){
 		ClassMetadata* classMd = metadataTable[className];
 		if(classMd){
 			if(classMd->isInstantiatable()){
@@ -67,7 +67,7 @@ namespace OB{
 		return NULL;
 	}
 
-	OB::Instance::Instance* ClassFactory::createService(std::string className, bool isDataModel){
+	shared_ptr<Instance::Instance> ClassFactory::createService(std::string className, bool isDataModel){
 		ClassMetadata* classMd = metadataTable[className];
 		if(classMd){
 			if(classMd->isService(isDataModel)){
@@ -77,7 +77,7 @@ namespace OB{
 		return NULL;
 	}
 
-	OB::Instance::Instance* ClassFactory::createReplicate(std::string className){
+    shared_ptr<Instance::Instance> ClassFactory::createReplicate(std::string className){
 		ClassMetadata* classMd = metadataTable[className];
 		if(classMd){
 			return classMd->newInstance();
@@ -85,7 +85,7 @@ namespace OB{
 		return NULL;
 	}
 
-	bool ClassFactory::isA(OB::Instance::Instance* obj, std::string className){
+	bool ClassFactory::isA(shared_ptr<Instance::Instance> obj, std::string className){
 		ClassMetadata* classMd = metadataTable[className];
 		if(classMd){
 			return classMd->isA(obj);

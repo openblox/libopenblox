@@ -43,7 +43,7 @@ namespace OB{
 				 * @returns Instance* The service requested or NULL
 				 * @author John M. Harris, Jr.
 				 */
-				virtual Instance* FindService(std::string className);
+				virtual shared_ptr<Instance> FindService(std::string className);
 
 				/**
 				 * Calls FindService, and attempts to create the 
@@ -53,7 +53,7 @@ namespace OB{
 				 * @returns Instance* The service requested, or NULL if it cannot be created.
 				 * @author John M. Harris, Jr.
 				 */
-				virtual Instance* GetService(std::string className);
+				virtual shared_ptr<Instance> GetService(std::string className);
 
 				DECLARE_LUA_METHOD(FindService);
 				DECLARE_LUA_METHOD(GetService);

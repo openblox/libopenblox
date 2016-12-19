@@ -24,8 +24,6 @@
 #include "OBException.h"
 #include "utility.h"
 
-#include <cstdio>
-
 namespace OB{
 	TaskScheduler::TaskScheduler(){
 	}
