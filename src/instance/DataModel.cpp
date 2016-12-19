@@ -27,7 +27,7 @@
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(DataModel, false, false, Instance){
-			registerLuaClass(LuaClassName, register_lua_metamethods, ServiceProvider::register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(LuaClassName, register_lua_metamethods, DataModel::register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
 	    DataModel::DataModel(){
@@ -81,7 +81,7 @@ namespace OB{
 		}
 
 		void DataModel::register_lua_methods(lua_State* L){
-			Instance::register_lua_methods(L);
+		    ServiceProvider::register_lua_methods(L);
 
 			luaL_Reg methods[] = {
 				{"Shutdown", lua_Shutdown},
