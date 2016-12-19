@@ -43,9 +43,7 @@ namespace OB{
 			TestEvent = make_shared<Type::Event>("TestEvent");
 		}
 
-		Instance::~Instance(){
-			std::cout << "Deleting Instance(" << Name << ")" << std::endl;
-		}
+		Instance::~Instance(){}
 
 		void Instance::ClearAllChildren(){
 			std::vector<shared_ptr<Instance>> kids = GetChildren();
