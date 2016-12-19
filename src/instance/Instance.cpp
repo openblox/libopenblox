@@ -559,10 +559,7 @@ namespace OB{
 						if(lua_rawequal(L, -1, -2)){
 							lua_pop(L, 2);
 							
-						    shared_ptr<Instance> sharedObj = *static_cast<shared_ptr<Instance>*>(udata);
-							#undef shared_ptr
-							sharedObj.~shared_ptr<Instance>();
-							#define shared_ptr std::shared_ptr
+							(*static_cast<shared_ptr<Instance>*>(udata)).reset();
 						}
 						lua_pop(L, 1);
 					}
