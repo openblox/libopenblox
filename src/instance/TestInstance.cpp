@@ -29,9 +29,7 @@ namespace OB{
 			Name = ClassName;
 		}
 
-		TestInstance::~TestInstance(){
-			std::cout << "Deleting TestInstance(" << Name << ")" << std::endl;
-		}
+		TestInstance::~TestInstance(){}
 
 		shared_ptr<Instance> TestInstance::cloneImpl(){
 			shared_ptr<TestInstance> ti = make_shared<TestInstance>();
