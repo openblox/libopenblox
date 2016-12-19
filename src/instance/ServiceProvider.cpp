@@ -79,7 +79,7 @@ namespace OB{
 					return foundGuy->wrap_lua(L, foundGuy);
 				}
 				lua_pushnil(L);
-				return 0;
+				return 1;
 			}
 			return luaL_error(L, COLONERR, "GetService");
 		}
