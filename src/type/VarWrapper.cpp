@@ -39,16 +39,36 @@ namespace OB{
 		OB_PRIMATIVE_WRAPPER_IMPL(Bool, bool, BOOL);
 		OB_PRIMATIVE_WRAPPER_IMPL(String, std::string, STRING);
 
-		VarWrapper::VarWrapper(Instance::Instance* var){
+		VarWrapper::VarWrapper(shared_ptr<Instance::Instance> var){
 			type = TYPE_INSTANCE;
-			wrapped = var;
+			wrapped = malloc(sizeof(shared_ptr<Instance::Instance>));
+			if(!wrapped){
+				std::bad_alloc exception;
+				throw exception;
+			}
+			new(wrapped) shared_ptr<Instance::Instance>(var);
 		}
 
-		VarWrapper::VarWrapper(Type* var){
+		VarWrapper::VarWrapper(shared_ptr<Type> var){
 			type = TYPE_TYPE;
-			wrapped = var;
+			wrapped = malloc(sizeof(shared_ptr<Type>));
+			if(!wrapped){
+				std::bad_alloc exception;
+				throw exception;
+			}
+			new(wrapped) shared_ptr<Type>(var);
 		}
 
-		VarWrapper::~VarWrapper(){}
+		VarWrapper::~VarWrapper(){
+			if(type == TYPE_INSTANCE){
+				(*static_cast<shared_ptr<Instance::Instance>*>(wrapped)).reset();
+			}
+			
+			if(type == TYPE_TYPE){
+			    (*static_cast<shared_ptr<Type>*>(wrapped)).reset();
+			}
+
+			free(wrapped);
+		}
 	}
 }

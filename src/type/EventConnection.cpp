@@ -31,7 +31,7 @@ namespace OB{
 			registerLuaType(LuaTypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
 		}
 		
-		EventConnection::EventConnection(Event* evt, void* ud, void (*fnc)(std::vector<VarWrapper>, void*)){
+		EventConnection::EventConnection(shared_ptr<Event> evt, void* ud, void (*fnc)(std::vector<VarWrapper>, void*)){
 			this->evt = evt;
 			this->ud = ud;
 		    this->fnc = fnc;
@@ -46,14 +46,14 @@ namespace OB{
 
 		void EventConnection::Disconnect(){
 			if(evt){
-				evt->disconnect(this);
+				evt->disconnect(dynamic_pointer_cast<EventConnection>(std::enable_shared_from_this<Type>::shared_from_this()));
 				evt = NULL;
 			}
 		}
 
 		bool EventConnection::isConnected(){
 		    if(evt){
-			    return evt->isConnected(this);
+			    return evt->isConnected(dynamic_pointer_cast<EventConnection>(std::enable_shared_from_this<Type>::shared_from_this()));
 			}else{
 				return false;
 			}
@@ -68,7 +68,7 @@ namespace OB{
 		}
 
 		int EventConnection::lua_disconnect(lua_State* L){
-			EventConnection* evtCon = checkEventConnection(L, 1);
+			shared_ptr<EventConnection> evtCon = checkEventConnection(L, 1);
 
 			if(evtCon){
 				evtCon->Disconnect();
@@ -78,7 +78,7 @@ namespace OB{
 		}
 
 		int EventConnection::lua_isConnected(lua_State* L){
-			EventConnection* evtCon = checkEventConnection(L, 1);
+			shared_ptr<EventConnection> evtCon = checkEventConnection(L, 1);
 
 			if(evtCon){
 			    lua_pushboolean(L, evtCon->isConnected());
@@ -113,7 +113,7 @@ namespace OB{
 			luaL_setfuncs(L, props, 0);
 		}
 
-		EventConnection* checkEventConnection(lua_State* L, int index){
+		shared_ptr<EventConnection> checkEventConnection(lua_State* L, int index){
 			if(lua_isuserdata(L, index)){
 				void* udata = lua_touserdata(L, index);
 				int meta = lua_getmetatable(L, index);
@@ -121,7 +121,7 @@ namespace OB{
 					luaL_getmetatable(L, "luaL_Type_EventConnection");
 					if(lua_rawequal(L, -1, -2)){
 						lua_pop(L, 2);
-						return *(EventConnection**)udata;
+						return dynamic_pointer_cast<EventConnection>(*static_cast<shared_ptr<Type>*>(udata));
 					}
 					lua_pop(L, 1);
 				}

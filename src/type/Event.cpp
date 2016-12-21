@@ -45,8 +45,8 @@ namespace OB{
 
 		Event::~Event(){}
 
-		EventConnection* Event::Connect(void (*fnc)(std::vector<VarWrapper>, void*), void* ud){
-			EventConnection* evtCon = new EventConnection(this, ud, fnc);
+		shared_ptr<EventConnection> Event::Connect(void (*fnc)(std::vector<VarWrapper>, void*), void* ud){
+			shared_ptr<EventConnection> evtCon = make_shared<EventConnection>(dynamic_pointer_cast<Event>(std::enable_shared_from_this<Type>::shared_from_this()), ud, fnc);
 			conns.push_back(evtCon);
 
 			return evtCon;
@@ -56,7 +56,7 @@ namespace OB{
 			conns.clear();
 		}
 
-		void Event::disconnect(EventConnection* conn){
+		void Event::disconnect(shared_ptr<EventConnection> conn){
 		    if(conns.empty()){
 				return;
 			}
@@ -68,31 +68,31 @@ namespace OB{
 			}
 		}
 
-		bool Event::isConnected(EventConnection* conn){
+		bool Event::isConnected(shared_ptr<EventConnection> conn){
 			return !conns.empty() && std::find(conns.begin(), conns.end(), conn) != conns.end();
 		}
 
 		struct evt_vconn_t{
-			EventConnection* evtCon;
-			std::vector<VarWrapper>* args;
+			shared_ptr<EventConnection> evtCon;
+			std::vector<VarWrapper> args;
 		};
 		
 		int evt_do_fire_connection(void* vconn, ob_int64 startTime){
 			struct evt_vconn_t* conn = (struct evt_vconn_t*)vconn;
 			
-			conn->evtCon->fire(*(conn->args));
+			conn->evtCon->fire(conn->args);
 
 			delete conn;
 
 			return 0;
 		}
 		
-		void Event::Fire(std::vector<VarWrapper>* argList){
+		void Event::Fire(std::vector<VarWrapper> argList){
 			if(!conns.empty()){
 				OBEngine* engine = OBEngine::getInstance();
 				shared_ptr<TaskScheduler> tasks = engine->getTaskScheduler();
 				
-			    for(std::vector<EventConnection*>::size_type i = 0; i != conns.size(); i++){					
+			    for(std::vector<shared_ptr<EventConnection>>::size_type i = 0; i != conns.size(); i++){					
 				    /* We push these tasks onto the TaskScheduler so that
 					   they can call Disconnect without messing up this loop. */
 					struct evt_vconn_t* conn = new struct evt_vconn_t;
@@ -105,7 +105,7 @@ namespace OB{
 		}
 		
 		void Event::Fire(){
-			Fire(new std::vector<VarWrapper>());
+			Fire(std::vector<VarWrapper>());
 		}
 
 	    std::string Event::toString(){
@@ -113,7 +113,7 @@ namespace OB{
 		}
 
 		int Event::lua_fire(lua_State* L){
-			Event* evt = checkEvent(L, 1);
+			shared_ptr<Event> evt = checkEvent(L, 1);
 
 			if(evt){
 				evt->Fire();
@@ -148,7 +148,7 @@ namespace OB{
 		}
 		
 		int Event::lua_connect(lua_State* L){
-			Event* evt = checkEvent(L, 1);
+			shared_ptr<Event> evt = checkEvent(L, 1);
 
 			if(!evt){
 				lua_pushnil(L);
@@ -167,7 +167,7 @@ namespace OB{
 			lua_State* newL = Lua::initCoroutine(L);
 			eud->thread = newL;
 
-			EventConnection* evtCon = evt->Connect(evt_lua_connection_fnc, eud);
+			shared_ptr<EventConnection> evtCon = evt->Connect(evt_lua_connection_fnc, eud);
 			return evtCon->wrap_lua(L);
 		}
 		
@@ -183,7 +183,7 @@ namespace OB{
 			luaL_setfuncs(L, methods, 0);
 		}
 
-	    Event* checkEvent(lua_State* L, int index){
+	    shared_ptr<Event> checkEvent(lua_State* L, int index){
 			if(lua_isuserdata(L, index)){
 				void* udata = lua_touserdata(L, index);
 				int meta = lua_getmetatable(L, index);
@@ -191,7 +191,7 @@ namespace OB{
 					luaL_getmetatable(L, "luaL_Type_Event");
 					if(lua_rawequal(L, -1, -2)){
 						lua_pop(L, 2);
-						return *(Event**)udata;
+						return dynamic_pointer_cast<Event>(*static_cast<shared_ptr<Type>*>(udata));
 					}
 					lua_pop(L, 1);
 				}

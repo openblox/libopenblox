@@ -91,6 +91,7 @@ namespace OB{
 			luaL_Reg metamethods[] = {
 				{"__tostring", Type::lua_toString},
 				{"__eq", lua_eq},
+				{"__gc", lua_gc},
 				{NULL, NULL}
 			};
 			luaL_setfuncs(L, metamethods, 0);
@@ -117,7 +118,7 @@ namespace OB{
 			luaL_setfuncs(L, properties, 0);
 		}
 
-	    Type* Type::checkType(lua_State* L, int index){
+	    shared_ptr<Type> Type::checkType(lua_State* L, int index){
 			if(lua_isuserdata(L, index)){
 				unsigned size = typeList.size();
 				void* udata = lua_touserdata(L, index);
@@ -127,7 +128,7 @@ namespace OB{
 						luaL_getmetatable(L, typeList[i].c_str());
 						if(lua_rawequal(L, -1, -2)){
 							lua_pop(L, 2);
-							return *(Type**)udata;
+							return *static_cast<shared_ptr<Type>*>(udata);
 						}
 						lua_pop(L, 1);
 					}
@@ -138,7 +139,7 @@ namespace OB{
 		}
 
 		int Type::lua_newindex(lua_State* L){
-		    Type* t = checkType(L, 1);
+		    shared_ptr<Type> t = checkType(L, 1);
 			if(t){
 				const char* name = luaL_checkstring(L, 2);
 				lua_getmetatable(L, 1);//-3
@@ -163,7 +164,7 @@ namespace OB{
 		}
 
 		int Type::lua_index(lua_State* L){
-		    Type* t = checkType(L, 1);
+		    shared_ptr<Type> t = checkType(L, 1);
 			if(t){
 				const char* name = luaL_checkstring(L, 2);
 
@@ -196,9 +197,9 @@ namespace OB{
 		}
 
 		int Type::lua_eq(lua_State* L){
-		    Type* t = checkType(L, 1);
+		    shared_ptr<Type> t = checkType(L, 1);
 			if(t){
-			    Type* ot = checkType(L, 2);
+			    shared_ptr<Type> ot = checkType(L, 2);
 				if(ot){
 					lua_pushboolean(L, t == ot);
 					return 1;
@@ -208,13 +209,43 @@ namespace OB{
 			return 1;
 		}
 
+		int Type::lua_gc(lua_State* L){
+			if(lua_isuserdata(L, 1)){
+				unsigned size = typeList.size();
+				void* udata = lua_touserdata(L, 1);
+				int meta = lua_getmetatable(L, 1);
+				if(meta != 0){
+					for(unsigned i = 0; i<size; i++){
+						luaL_getmetatable(L, typeList[i].c_str());
+						if(lua_rawequal(L, -1, -2)){
+							lua_pop(L, 2);
+							
+							(*static_cast<shared_ptr<Type>*>(udata)).reset();
+						}
+						lua_pop(L, 1);
+					}
+				}
+			}
+			
+			return 0;
+		}
+
 		int Type::lua_toString(lua_State* L){
-			Type* t = checkType(L, 1);
+			shared_ptr<Type> t = checkType(L, 1);
 			if(t){
 				lua_pushstring(L, t->toString().c_str());
 				return 1;
 			}
 			return 0;
+		}
+
+		int Type::wrap_lua(lua_State* L){
+			shared_ptr<Type>* udata = static_cast<shared_ptr<Type>*>(lua_newuserdata(L, sizeof(shared_ptr<Type>)));
+			new(udata) shared_ptr<Type>(shared_from_this());
+			
+			luaL_getmetatable(L, getLuaClassName().c_str());
+			lua_setmetatable(L, -2);
+			return 1;
 		}
 	}
 }

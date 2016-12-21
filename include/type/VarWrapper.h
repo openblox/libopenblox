@@ -82,8 +82,8 @@ namespace OB{
 				VarWrapper(unsigned long var);
 				VarWrapper(bool var);
 				VarWrapper(std::string var);
-				VarWrapper(Instance::Instance* var);
-				VarWrapper(Type* var);
+				VarWrapper(shared_ptr<Instance::Instance> var);
+				VarWrapper(shared_ptr<Type> var);
 				~VarWrapper();
 
 				void* wrapped;

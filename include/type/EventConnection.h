@@ -28,7 +28,7 @@ namespace OB{
 		
 		class EventConnection: public Type{
 			public:
-			    EventConnection(Event* evt, void* ud, void (*fnc)(std::vector<VarWrapper>, void*));
+			    EventConnection(shared_ptr<Event> evt, void* ud, void (*fnc)(std::vector<VarWrapper>, void*));
 				virtual ~EventConnection();
 
 				void Disconnect();
@@ -47,12 +47,12 @@ namespace OB{
 				static void register_lua_property_setters(lua_State* L);
 				static void register_lua_property_getters(lua_State* L);
 				
-			    Event* evt;
+			    shared_ptr<Event> evt;
 				void* ud;
 			    void (*fnc)(std::vector<VarWrapper>, void*);
 		};
 
-		EventConnection* checkEventConnection(lua_State* L, int n);
+		shared_ptr<EventConnection> checkEventConnection(lua_State* L, int n);
 	}
 }
 

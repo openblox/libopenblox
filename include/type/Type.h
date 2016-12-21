@@ -22,6 +22,8 @@
 #include "lua/OBLua.h"
 #include "obtype.h"
 
+#include "mem.h"
+
 #include <vector>
 
 #ifndef OB_TYPE_TYPE
@@ -32,7 +34,7 @@ typedef void (*luaRegisterFunc)(lua_State* L);
 #define COLONERR "Expected ':' not '.' calling member function %s"
 
 #define DECLARE_TYPE() \
-	virtual int wrap_lua(lua_State* L); \
+	virtual std::string getLuaClassName(); \
 	static void _ob_init(); \
 protected: \
 	static std::string TypeName; \
@@ -41,12 +43,8 @@ protected: \
 #define DEFINE_TYPE(Type_Name) \
    	std::string Type_Name::TypeName = #Type_Name; \
 	std::string Type_Name::LuaTypeName = "luaL_Type_" #Type_Name; \
-	int Type_Name::wrap_lua(lua_State* L){ \
-	    Type_Name** udata = (Type_Name**)lua_newuserdata(L, sizeof(*this)); \
-		*udata = this; \
-		luaL_getmetatable(L, LuaTypeName.c_str()); \
-		lua_setmetatable(L, -2); \
-		return 1; \
+	std::string Type_Name::getLuaClassName(){ \
+		return LuaTypeName; \
 	} \
 	void Type_Name::_ob_init()
 
@@ -61,7 +59,7 @@ namespace OB{
 		 *
 		 * @author John M. Harris, Jr.
 		 */
-		class Type{
+		class Type: public std::enable_shared_from_this<Type>{
 			public:
 				Type();
 				virtual ~Type();
@@ -123,6 +121,8 @@ namespace OB{
 				 */
 				static int lua_eq(lua_State* L);
 
+				static int lua_gc(lua_State* L);
+
 				/**
 				 * Handles tostring calls on this Type from Lua.
 				 *
@@ -134,6 +134,8 @@ namespace OB{
 				 * @author John M. Harris, Jr.
 				 */
 				static int lua_toString(lua_State* L);
+
+				int wrap_lua(lua_State* L);
 
 				/**
 				 * Lua Metamethods for the Type class.
@@ -175,7 +177,7 @@ namespace OB{
 				 */
 				static void register_lua_property_getters(lua_State* L);
 
-				static Type* checkType(lua_State* L, int index);
+				static shared_ptr<Type> checkType(lua_State* L, int index);
 
 				DECLARE_TYPE();
 

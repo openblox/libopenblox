@@ -36,14 +36,14 @@ namespace OB{
 				Event(std::string name, bool canFireFromLua);
 				virtual ~Event();
 
-			    EventConnection* Connect(void (*fnc)(std::vector<VarWrapper>, void*), void* ud);
+			    shared_ptr<EventConnection> Connect(void (*fnc)(std::vector<VarWrapper>, void*), void* ud);
 
 				void disconnectAll();
-				void disconnect(EventConnection* conn);
-			    bool isConnected(EventConnection* conn);
+				void disconnect(shared_ptr<EventConnection> conn);
+			    bool isConnected(shared_ptr<EventConnection> conn);
 
-				void FireLater(std::vector<VarWrapper>* argList);
-				void Fire(std::vector<VarWrapper>* argList);
+				void FireLater(std::vector<VarWrapper> argList);
+				void Fire(std::vector<VarWrapper> argList);
 				void Fire();
 
 				virtual std::string toString();
@@ -52,7 +52,7 @@ namespace OB{
 
 				bool canFireFromLua;
 				std::string name;
-				std::vector<EventConnection*> conns;
+				std::vector<shared_ptr<EventConnection>> conns;
 
 				static int lua_fire(lua_State* L);
 				static int lua_connect(lua_State* L);
@@ -61,7 +61,7 @@ namespace OB{
 				static void register_lua_methods(lua_State* L);
 		};
 
-		Event* checkEvent(lua_State* L, int n);
+		shared_ptr<Event> checkEvent(lua_State* L, int n);
 	}
 }
 
