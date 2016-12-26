@@ -22,6 +22,8 @@
 #include "OBException.h"
 #include "OBEngine.h"
 
+#include "type/Color3.h"
+
 #include "type/Event.h"
 #include "type/EventConnection.h"
 
@@ -30,6 +32,8 @@ namespace OB{
 	    DEFINE_TYPE(Type){
 			registerLuaType(LuaTypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
 
+			Color3::_ob_init();
+			
 			Event::_ob_init();
 			EventConnection::_ob_init();
 		}
