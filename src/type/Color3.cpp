@@ -44,6 +44,10 @@ namespace OB{
 		Color3::~Color3(){}
 
 		bool Color3::equals(shared_ptr<Color3> other){
+			if(other == NULL){
+				return false;
+			}
+			
 			return other->r == r && other->g == g && other->b == b;
 		}
 
