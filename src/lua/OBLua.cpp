@@ -34,6 +34,8 @@
 #include "TaskScheduler.h"
 #include "instance/Instance.h"
 
+#include "type/Color3.h"
+
 namespace OB{
 	namespace Lua{
 		void* l_alloc(void* ud, void* ptr, size_t osize, size_t nsize){
@@ -109,6 +111,14 @@ namespace OB{
 			};
 			luaL_setfuncs(L, instancelib, 0);
 			lua_setglobal(L, "Instance");
+
+			lua_newtable(L);
+			luaL_Reg color3lib[] = {
+				{"new", lua_newColor3},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, color3lib, 0);
+			lua_setglobal(L, "Color3");
 
 			OBEngine* eng = OBEngine::getInstance();
 		    shared_ptr<Instance::DataModel> dm = eng->getDataModel();
@@ -321,6 +331,21 @@ namespace OB{
 			}
 			lua_pushnil(L);
 			return 1;
+		}
+
+		int lua_newColor3(lua_State* L){
+			double r = 0;
+			double g = 0;
+			double b = 0;
+
+			if(!lua_isnone(L, 1) && !lua_isnone(L, 2) && !lua_isnone(L, 3)){
+				r = luaL_checknumber(L, 1);
+				g = luaL_checknumber(L, 2);
+				b = luaL_checknumber(L, 3);
+			}
+
+		    shared_ptr<Type::Color3> newGuy = make_shared<Type::Color3>(r, g, b);
+			return newGuy->wrap_lua(L);
 		}
 
 		int lua_listInstanceClasses(lua_State* L){

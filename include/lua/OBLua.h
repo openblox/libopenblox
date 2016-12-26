@@ -131,6 +131,15 @@ namespace OB{
 		int lua_newInstance(lua_State* L);
 
 		/**
+		 * Used to create a Color3 from Lua.
+		 *
+		 * @param L Lua state
+		 * @returns int 1
+		 * @author John M. Harris, Jr.
+		 */
+		int lua_newColor3(lua_State* L);
+
+		/**
 		 * Used to get a list of all Instance classes from Lua.
 		 *
 		 * @param L Lua state
