@@ -31,7 +31,10 @@
 
 #include <irrlicht/irrlicht.h>
 
+#include "instance/Lighting.h"
+
 #include "type/Type.h"
+#include "type/Color3.h"
 
 namespace OB{
 	OBEngine* OBEngine::inst = NULL;
@@ -165,7 +168,17 @@ namespace OB{
 
 	void OBEngine::render(){
 		if(doRendering){
-			irrDriv->beginScene(true, true, irr::video::SColor(255, 0, 255, 0));
+			shared_ptr<Instance::Lighting> light = dm->getLighting();
+			
+			shared_ptr<Type::Color3> skyCol = light->GetSkyColor();
+			irr::video::SColor irrSkyCol;
+			if(skyCol != NULL){
+				irrSkyCol = skyCol->toIrrlichtSColor();
+			}else{
+				irrSkyCol = irr::video::SColor(255, 0, 0, 0);
+			}
+			
+			irrDriv->beginScene(true, true, irrSkyCol);
 			irrSceneMgr->drawAll();
 			irrDriv->endScene();
 		}

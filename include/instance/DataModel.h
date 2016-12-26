@@ -42,6 +42,8 @@ namespace OB{
 				
 				void initServices();
 
+				shared_ptr<Lighting> getLighting();
+
 				/**
 				 * Reimplementation of ServiceProvider's GetService,
 				 * this time calling ClassFactory's createService with

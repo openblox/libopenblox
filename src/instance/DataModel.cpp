@@ -48,6 +48,10 @@ namespace OB{
 			lighting->ParentLocked = true;
 		}
 
+		shared_ptr<Lighting> DataModel::getLighting(){
+			return lighting;
+		}
+
 		shared_ptr<Instance> DataModel::cloneImpl(){
 			return NULL;
 		}

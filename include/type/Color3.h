@@ -19,6 +19,8 @@
 
 #include "type/Type.h"
 
+#include <irrlicht/SColor.h>
+
 #ifndef OB_TYPE_COLOR3
 #define OB_TYPE_COLOR3
 
@@ -29,6 +31,8 @@ namespace OB{
 			    Color3();
 			    Color3(double r, double g, double b);
 				virtual ~Color3();
+
+				irr::video::SColor toIrrlichtSColor(unsigned int alpha = 255);
 
 				bool equals(shared_ptr<Color3> other);
 

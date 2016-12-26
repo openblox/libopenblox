@@ -43,6 +43,10 @@ namespace OB{
 
 		Color3::~Color3(){}
 
+		irr::video::SColor Color3::toIrrlichtSColor(unsigned int alpha){
+			return irr::video::SColor(alpha, r * 255, g * 255, b * 255);
+		}
+
 		bool Color3::equals(shared_ptr<Color3> other){
 			if(other == NULL){
 				return false;

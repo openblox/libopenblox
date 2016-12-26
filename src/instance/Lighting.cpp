@@ -34,5 +34,81 @@ namespace OB{
 		shared_ptr<Instance> Lighting::cloneImpl(){
 			return NULL;
 		}
+
+		shared_ptr<Type::Color3> Lighting::GetSkyColor(){
+			return SkyColor;
+		}
+		
+		void Lighting::SetSkyColor(shared_ptr<Type::Color3> skyColor){
+			if(skyColor == NULL){
+				shared_ptr<Type::Color3> col3 = make_shared<Type::Color3>();
+				if(!col3->equals(SkyColor)){
+					SkyColor = col3;
+				}
+			}else{
+				if(!skyColor->equals(SkyColor)){
+					SkyColor = skyColor;
+				}
+			}
+		}
+
+		int Lighting::lua_getSkyColor(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1);
+			if(inst){
+				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
+				if(instL){
+				    shared_ptr<Type::Color3> col3 = instL->GetSkyColor();
+					if(col3){
+						return col3->wrap_lua(L);
+					}else{
+						lua_pushnil(L);
+						return 1;
+					}
+				}
+			}
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int Lighting::lua_setSkyColor(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1);
+			if(inst){
+				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
+				if(instL){
+				    shared_ptr<Type::Color3> col3 = Type::checkColor3(L, 2);
+					if(col3){
+						instL->SetSkyColor(col3);
+					}else{
+						if(lua_isnil(L, 2)){
+							instL->SetSkyColor(NULL);
+						}else{
+							return luaL_error(L, "bad argument #1 to '?' (Color3 expected, got %s)", lua_typename(L, 2));
+						}
+					}
+				}
+			}
+			lua_pushnil(L);
+			return 1;
+		}
+
+		void Lighting::register_lua_property_setters(lua_State* L){
+			Instance::register_lua_property_setters(L);
+			
+			luaL_Reg properties[] = {
+				{"SkyColor", lua_setSkyColor},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, properties, 0);
+		}
+
+		void Lighting::register_lua_property_getters(lua_State* L){
+			Instance::register_lua_property_getters(L);
+			
+			luaL_Reg properties[] = {
+				{"SkyColor", lua_getSkyColor},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, properties, 0);
+		}
 	}
 }

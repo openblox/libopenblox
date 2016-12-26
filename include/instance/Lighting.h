@@ -19,6 +19,8 @@
 
 #include "instance/Instance.h"
 
+#include "type/Color3.h"
+
 #ifndef OB_INST_LIGHTING
 #define OB_INST_LIGHTING
 
@@ -34,8 +36,19 @@ namespace OB{
 			public:
 			    Lighting();
 				virtual ~Lighting();
-				
+
+				shared_ptr<Type::Color3> GetSkyColor();
+				void SetSkyColor(shared_ptr<Type::Color3> skyColor);
+
+				DECLARE_LUA_METHOD(getSkyColor);
+				DECLARE_LUA_METHOD(setSkyColor);
+
+				static void register_lua_property_getters(lua_State* L);
+				static void register_lua_property_setters(lua_State* L);
+
 				DECLARE_CLASS(Lighting);
+
+				shared_ptr<Type::Color3> SkyColor;
 		};
 	}
 }
