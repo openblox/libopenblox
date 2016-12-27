@@ -22,11 +22,17 @@
 #include <stddef.h>
 #include <sys/time.h>
 
+#include <algorithm>
+
 namespace OB{
 	ob_int64 currentTimeMillis(){
 		struct timeval tp;
 		gettimeofday(&tp, NULL);
 
 		return (ob_int64)(tp.tv_sec * 1000 + tp.tv_usec / 1000);
+	}
+
+	bool ob_str_startsWith(std::string str, std::string prefix){
+		return std::equal(prefix.begin(), prefix.end(), str.begin());
 	}
 }

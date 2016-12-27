@@ -17,11 +17,6 @@
  * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef OB_UTILITY
-#define OB_UTILITY
-
-#include "obtype.h"
-
 /**
  * @file utility.h
  * @author John M. Harris, Jr.
@@ -31,6 +26,12 @@
  * engine.
  */
 
+#include "obtype.h"
+#include <string>
+
+#ifndef OB_UTILITY
+#define OB_UTILITY
+
 namespace OB{
 	/**
 	 * Returns the current time in milliseconds.
@@ -39,6 +40,13 @@ namespace OB{
 	 * @author John M. Harris, Jr.
 	 */
 	ob_int64 currentTimeMillis();
+
+	/**
+	 * Returns true if str starts with prefix.
+	 *
+	 * @author John M. Harris, Jr.
+	 */
+	bool ob_str_startsWith(std::string str, std::string prefix);
 }
 
 #endif // OB_UTILITY
