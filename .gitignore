@@ -46,4 +46,4 @@
 /src/type/.libs/
 /src/type/*.lo
 /src/type/*.o
-
+.\#*
