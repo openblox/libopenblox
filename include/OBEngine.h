@@ -33,10 +33,13 @@
 #include "mem.h"
 
 #include "OBLogger.h"
+#include "AssetLocator.h"
 
 #include <lua/OBLua.h>
 
 #include <instance/DataModel.h>
+
+#include <pthread.h>
 
 #ifndef __I_IRRLICHT_DEVICE_H_INCLUDED__
 namespace irr{
@@ -79,12 +82,20 @@ namespace OB{
 			static OBEngine* getInstance();
 
 			/**
-			 * Returns the TaskScheduler associated with this OBEngine.
+			 * Returns primary TaskScheduler.
 			 *
 			 * @returns Instance of TaskScheduler
 			 * @author John M. Harris, Jr.
 			 */
 			shared_ptr<TaskScheduler> getTaskScheduler();
+
+			/**
+			 * Returns secondary TaskScheduler.
+			 *
+			 * @returns Instance of TaskScheduler
+			 * @author John M. Harris, Jr.
+			 */
+			shared_ptr<TaskScheduler> getSecondaryTaskScheduler();
 
 			/**
 			 * Initializes the OpenBlox engine.
@@ -281,6 +292,14 @@ namespace OB{
 			 * @author John M. Harris, Jr.
 			 */
 			shared_ptr<Instance::DataModel> getDataModel();
+
+			/**
+			 * Returns the AssetLocator.
+			 *
+			 * @returns AssetLocator
+			 * @author John M. Harris, Jr.
+			 */
+			shared_ptr<AssetLocator> getAssetLocator();
 			
 		private:
 			//State helpers
@@ -288,6 +307,7 @@ namespace OB{
 			ob_int64 startTime;
 			bool _isRunning;
 			int exitCode;
+			pthread_t secondaryTaskThread;
 
 			//Init options
 			bool doRendering;
@@ -303,6 +323,8 @@ namespace OB{
 			irr::scene::ISceneManager* irrSceneMgr;
 
 			shared_ptr<TaskScheduler> taskSched;
+			shared_ptr<TaskScheduler> secondaryTaskSched;
+			shared_ptr<AssetLocator> assetLocator;
 			shared_ptr<Instance::DataModel> dm;
 
 			static OBEngine* inst;

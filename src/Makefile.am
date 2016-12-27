@@ -13,6 +13,7 @@ OBException.cpp \
 OBLogger.cpp \
 ClassFactory.cpp \
 TaskScheduler.cpp \
+AssetLocator.cpp \
 OBEngine.cpp \
 lua/OBLua.cpp \
 lua/OBLua_OBBase.cpp \
@@ -36,4 +37,4 @@ libopenblox_la_LDFLAGS = $LIRRLICHT_CFLAGS $LCURL_CFLAGS $LLUA_CFLAGS
 
 # Compiler options. Here we are adding the include directory
 # to be searched for headers included in the source code.
-libopenblox_la_CPPFLAGS = -I$(top_srcdir)/include $(LLUA_CFLAGS) -std=c++11
+libopenblox_la_CPPFLAGS = -I$(top_srcdir)/include $(LLUA_CFLAGS) -std=c++11 -pthread

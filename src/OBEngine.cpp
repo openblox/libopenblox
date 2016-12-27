@@ -36,6 +36,8 @@
 #include "type/Type.h"
 #include "type/Color3.h"
 
+#include <unistd.h>
+
 namespace OB{
 	OBEngine* OBEngine::inst = NULL;
 
@@ -71,6 +73,24 @@ namespace OB{
 
 	shared_ptr<TaskScheduler> OBEngine::getTaskScheduler(){
 		return taskSched;
+	}
+
+	shared_ptr<TaskScheduler> OBEngine::getSecondaryTaskScheduler(){
+		return secondaryTaskSched;
+	}
+
+	void* _ob_eng_secondaryTaskThread(void* vobEng){
+		OBEngine* eng = (OBEngine*)vobEng;
+		shared_ptr<TaskScheduler> taskS = eng->getSecondaryTaskScheduler();
+
+		while(eng->isRunning()){
+			taskS->tick();
+
+			usleep(100000);
+		}
+		
+	    pthread_exit(NULL);
+		return NULL;
 	}
 
 	void OBEngine::init(){
@@ -127,6 +147,8 @@ namespace OB{
 		}
 		
 		taskSched = make_shared<TaskScheduler>();
+		secondaryTaskSched = make_shared<TaskScheduler>();
+		assetLocator = make_shared<AssetLocator>();
 		globalState = OB::Lua::initGlobal();
 		dm = make_shared<Instance::DataModel>();
 		dm->initServices();
@@ -135,6 +157,8 @@ namespace OB{
 		Type::Type::_ob_init();
 		
 		ClassFactory::initClasses();
+
+		pthread_create(&secondaryTaskThread, NULL, _ob_eng_secondaryTaskThread, this);
 
 		initialized = true;
 	}
@@ -159,11 +183,21 @@ namespace OB{
 		if(doRendering){
 			if(!irrDev->run()){
 				_isRunning = false;
+
+				void* _stat;
+				
+				pthread_join(secondaryTaskThread, &_stat);
+				
 				return;//Early return, we're not running anymore!
 			}
 		}
 		
 	    taskSched->tick();
+
+		if(!doRendering){
+			//If we aren't rendering, there's no wait and we end up in a busy loop doing nothing.
+			usleep(10000);
+		}
 	}
 
 	void OBEngine::render(){
@@ -253,5 +287,9 @@ namespace OB{
 
 	shared_ptr<Instance::DataModel> OBEngine::getDataModel(){
 		return dm;
+	}
+
+	shared_ptr<AssetLocator> OBEngine::getAssetLocator(){
+		return assetLocator;
 	}
 }
