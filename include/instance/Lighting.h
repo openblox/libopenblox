@@ -40,15 +40,43 @@ namespace OB{
 				shared_ptr<Type::Color3> GetSkyColor();
 				void SetSkyColor(shared_ptr<Type::Color3> skyColor);
 
+				bool IsFogEnabled();
+				void SetFogEnabled(bool fogEnabled);
+
+				shared_ptr<Type::Color3> GetFogColor();
+				void SetFogColor(shared_ptr<Type::Color3> fogColor);
+
+				float GetFogStart();
+				void SetFogStart(float fogStart);
+
+			    float GetFogEnd();
+				void SetFogEnd(float fogEnd);
+
 				DECLARE_LUA_METHOD(getSkyColor);
 				DECLARE_LUA_METHOD(setSkyColor);
+				
+				DECLARE_LUA_METHOD(getFogEnabled);
+				DECLARE_LUA_METHOD(setFogEnabled);
+				DECLARE_LUA_METHOD(getFogColor);
+				DECLARE_LUA_METHOD(setFogColor);
+				DECLARE_LUA_METHOD(getFogStart);
+				DECLARE_LUA_METHOD(setFogStart);
+				DECLARE_LUA_METHOD(getFogEnd);
+				DECLARE_LUA_METHOD(setFogEnd);
 
 				static void register_lua_property_getters(lua_State* L);
 				static void register_lua_property_setters(lua_State* L);
 
 				DECLARE_CLASS(Lighting);
 
+				void updateFog();
+
 				shared_ptr<Type::Color3> SkyColor;
+				
+				bool FogEnabled;
+				shared_ptr<Type::Color3> FogColor;
+			    float FogStart;
+			    float FogEnd;
 		};
 	}
 }

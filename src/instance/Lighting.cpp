@@ -19,6 +19,10 @@
 
 #include "instance/Lighting.h"
 
+#include "OBEngine.h"
+
+#include <irrlicht/irrlicht.h>
+
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(Lighting, false, isDataModel, Instance){
@@ -27,6 +31,8 @@ namespace OB{
 
 	    Lighting::Lighting(){
 			Name = ClassName;
+			
+			FogEnabled = false;
 		}
 
 	    Lighting::~Lighting(){}
@@ -49,6 +55,82 @@ namespace OB{
 				if(!skyColor->equals(SkyColor)){
 					SkyColor = skyColor;
 				}
+			}
+		}
+
+		void Lighting::updateFog(){
+		    OBEngine* eng = OBEngine::getInstance();
+		  	irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
+			irr::video::IVideoDriver* driver = irrDev->getVideoDriver();
+
+			if(FogEnabled){
+				irr::video::SColor irrFogCol;
+				if(FogColor != NULL){
+					irrFogCol = FogColor->toIrrlichtSColor();
+				}else{
+					irrFogCol = irr::video::SColor(255, 0, 0, 0);
+				}
+				
+				driver->setFog(irrFogCol, irr::video::EFT_FOG_LINEAR, FogStart, FogEnd, 0, true, false);
+			}else{
+				driver->setFog();
+			}
+		}
+
+		bool Lighting::IsFogEnabled(){
+			return FogEnabled;
+		}
+		
+		void Lighting::SetFogEnabled(bool fogEnabled){
+			if(FogEnabled != fogEnabled){
+				FogEnabled = fogEnabled;
+
+				updateFog();
+			}
+		}
+		
+		shared_ptr<Type::Color3> Lighting::GetFogColor(){
+			return FogColor;
+		}
+		
+		void Lighting::SetFogColor(shared_ptr<Type::Color3> fogColor){
+			if(fogColor == NULL){
+				shared_ptr<Type::Color3> col3 = make_shared<Type::Color3>();
+				if(!col3->equals(FogColor)){
+					FogColor = col3;
+
+					updateFog();
+				}
+			}else{
+				if(!fogColor->equals(FogColor)){
+					FogColor = fogColor;
+					
+					updateFog();
+				}
+			}
+		}
+
+	    float Lighting::GetFogStart(){
+			return FogStart;
+		}
+
+		void Lighting::SetFogStart(float fogStart){
+			if(fogStart != FogStart){
+				FogStart = fogStart;
+				
+				updateFog();
+			}
+		}
+
+		float Lighting::GetFogEnd(){
+			return FogEnd;
+		}
+
+		void Lighting::SetFogEnd(float fogEnd){
+			if(fogEnd != FogEnd){
+				FogEnd = fogEnd;
+				
+				updateFog();
 			}
 		}
 
@@ -87,8 +169,117 @@ namespace OB{
 					}
 				}
 			}
+			return 0;
+		}
+
+		int Lighting::lua_getFogEnabled(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1);
+			if(inst){
+				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
+				if(instL){
+					lua_pushboolean(L, instL->IsFogEnabled());
+				}
+			}
 			lua_pushnil(L);
 			return 1;
+		}
+
+		int Lighting::lua_setFogEnabled(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1);
+			if(inst){
+				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
+				if(instL){
+					bool newV = lua_toboolean(L, 2);
+					instL->SetFogEnabled(newV);
+				}
+			}
+			return 0;
+		}
+
+		int Lighting::lua_getFogColor(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1);
+			if(inst){
+				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
+				if(instL){
+				    shared_ptr<Type::Color3> col3 = instL->GetFogColor();
+					if(col3){
+						return col3->wrap_lua(L);
+					}else{
+						lua_pushnil(L);
+						return 1;
+					}
+				}
+			}
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int Lighting::lua_setFogColor(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1);
+			if(inst){
+				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
+				if(instL){
+				    shared_ptr<Type::Color3> col3 = Type::checkColor3(L, 2);
+					if(col3){
+						instL->SetFogColor(col3);
+					}else{
+						if(lua_isnil(L, 2)){
+							instL->SetFogColor(NULL);
+						}else{
+							return luaL_error(L, "bad argument #1 to '?' (Color3 expected, got %s)", lua_typename(L, 2));
+						}
+					}
+				}
+			}
+			return 0;
+		}
+
+		int Lighting::lua_getFogStart(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1);
+			if(inst){
+				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
+				if(instL){
+					lua_pushnumber(L, instL->GetFogStart());
+				}
+			}
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int Lighting::lua_setFogStart(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1);
+			if(inst){
+				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
+				if(instL){
+					float newV = luaL_checknumber(L, 2);
+					instL->SetFogStart(newV);
+				}
+			}
+			return 0;
+		}
+
+		int Lighting::lua_getFogEnd(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1);
+			if(inst){
+				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
+				if(instL){
+					lua_pushnumber(L, instL->GetFogEnd());
+				}
+			}
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int Lighting::lua_setFogEnd(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1);
+			if(inst){
+				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
+				if(instL){
+					float newV = luaL_checknumber(L, 2);
+					instL->SetFogEnd(newV);
+				}
+			}
+			return 0;
 		}
 
 		void Lighting::register_lua_property_setters(lua_State* L){
@@ -96,6 +287,10 @@ namespace OB{
 			
 			luaL_Reg properties[] = {
 				{"SkyColor", lua_setSkyColor},
+				{"FogEnabled", lua_setFogEnabled},
+				{"FogColor", lua_setFogColor},
+				{"FogStart", lua_setFogStart},
+				{"FogEnd", lua_setFogEnd},
 				{NULL, NULL}
 			};
 			luaL_setfuncs(L, properties, 0);
@@ -106,6 +301,10 @@ namespace OB{
 			
 			luaL_Reg properties[] = {
 				{"SkyColor", lua_getSkyColor},
+				{"FogEnabled", lua_getFogEnabled},
+				{"FogColor", lua_getFogColor},
+				{"FogStart", lua_getFogStart},
+				{"FogEnd", lua_getFogEnd},
 				{NULL, NULL}
 			};
 			luaL_setfuncs(L, properties, 0);
