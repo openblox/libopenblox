@@ -39,8 +39,6 @@ namespace OB{
 
 	void TaskScheduler::tick(){
 		if(!tasks.empty()){
-			pthread_mutex_lock(&mmutex);
-			
 			/* This vector contains tasks that returned response code
 			 * 1. These are pushed back onto the tasks vector after
 			 * other tasks have been handled, or until a task returns
@@ -48,16 +46,20 @@ namespace OB{
 			 * this tick.
 			 */
 			std::vector<_ob_waiting_task> tmpPopped;
-
+			
 			bool stopProcTasks = false;
 			
 			while(!tasks.empty() && !stopProcTasks){
 				ob_int64 curTime = currentTimeMillis();
 
-				_ob_waiting_task t = tasks.back();				
+				if(pthread_mutex_trylock(&mmutex) != 0){
+					return;
+				}
+				_ob_waiting_task t = tasks.back();
 
 				if(t.at < curTime){
 					tasks.pop_back();
+					pthread_mutex_unlock(&mmutex);
 					
 					int retCode = t.task_fnc(t.metad, t.start);
 					
@@ -77,19 +79,24 @@ namespace OB{
 						}
 					}
 				}else{
+					pthread_mutex_unlock(&mmutex);
 				    stopProcTasks = true;
 				}
 			}
 
 			if(!tmpPopped.empty()){
+				if(pthread_mutex_trylock(&mmutex) != 0){
+					return;
+				}
+				
 				while(!tmpPopped.empty()){
 					tasks.push_back(tmpPopped.back());
 					tmpPopped.pop_back();
 				}
 				sortTasks();
+				
+				pthread_mutex_unlock(&mmutex);
 			}
-
-			pthread_mutex_unlock(&mmutex);
 		}
 	}
 

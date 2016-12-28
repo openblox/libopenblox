@@ -59,10 +59,14 @@ namespace OB{
 
 			shared_ptr<AssetResponse> resp = assetLoc->getAsset(url);
 			if(resp){
-			    char* strAsset = (char*)malloc(resp->getSize() + 1);
-				memcpy(strAsset, resp->getData(), resp->getSize());
-				strAsset[resp->getSize()] = '\0';
-				return strAsset;
+			    char* dat = resp->getData();
+				int siz = resp->getSize();
+				if(dat && siz > 0){
+					char* strAsset = (char*)malloc(siz + 1);
+					strncpy(strAsset, resp->getData(), siz);
+					strAsset[siz] = '\0';
+					return strAsset;
+				}
 			}
 			
 		    return NULL;
