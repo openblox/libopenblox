@@ -62,7 +62,7 @@ namespace OB{
 			    char* dat = resp->getData();
 				int siz = resp->getSize();
 				if(dat && siz > 0){
-					char* strAsset = (char*)malloc(siz + 1);
+					char* strAsset = new char[siz + 1];
 					strncpy(strAsset, resp->getData(), siz);
 					strAsset[siz] = '\0';
 					return strAsset;

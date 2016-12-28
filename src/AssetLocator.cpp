@@ -203,7 +203,7 @@ namespace OB{
 		}
 		
 		if(hasAsset(url)){
-			return contentCache.at(url);
+			return shared_ptr<AssetResponse>(contentCache.at(url));
 		}else{
 			if(loadIfNotPresent){
 				loadAsset(url);
