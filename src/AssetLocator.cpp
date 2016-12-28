@@ -19,26 +19,166 @@
 
 #include "AssetLocator.h"
 
+#include "OBEngine.h"
+#include "TaskScheduler.h"
 #include "OBException.h"
 #include "utility.h"
 
+#include <iostream>
+
 #include <cstdlib>
+#include <cstring>
+#include "unistd.h"
+
+#include <curl/curl.h>
 
 namespace OB{
-	AssetResponse::AssetResponse(size_t size, void* data){
+	AssetResponse::AssetResponse(size_t size, char* data){
 		this->size = size;
 		this->data = data;
 	}
 
 	AssetResponse::~AssetResponse(){
-		free(data);
+		if(size > 0 && data){
+			free(data);
+		}
+	}
+
+	size_t AssetResponse::getSize(){
+		return size;
+	}
+
+    char* AssetResponse::getData(){
+		return data;
 	}
 	
-    AssetLocator::AssetLocator(){}
+    AssetLocator::AssetLocator(){
+		requestQueueSize = 0;
+	}
 
     AssetLocator::~AssetLocator(){}
 
-    void AssetLocator::loadAsset(std::string url){
+	struct _ob_curl_body{
+		public:
+		    char* data;
+			size_t size;
+	};
+	
+	size_t _ob_assetlocator_write_data(void* ptr, size_t size, size_t nmemb, struct _ob_curl_body* data){
+		size_t index = data->size;
+		size_t n = (size * nmemb);
+	    char* tmp;
+
+		data->size += n;
+
+		tmp = (char*)realloc(data->data, data->size);
+
+		if(tmp){
+			data->data = tmp;
+		}else{
+			if(data->data){
+			    free(data->data);
+				data->data = NULL;
+			}
+			std::cout << "[AssetLocator] Failed to allocate memory." << std::endl;
+			return 0;
+		}
+
+		memcpy((data->data + index), ptr, n);
+
+		return n;
+	}
+
+    void AssetLocator::loadAssetSync(std::string url, bool decCount){
+		if(url.empty()){
+			if(decCount){
+				requestQueueSize--;
+			}
+			return;
+		}
+
+		if(ob_str_startsWith(url, "file://")){
+			if(decCount){
+			    requestQueueSize--;
+			}
+			return;
+		}
+
+		if(ob_str_startsWith(url, "res://")){
+			url = url.substr(6);
+
+			std::cout << "Looking for file: " << url << std::endl;
+
+			std::string canonPath = realpath(url.c_str(), NULL);
+			std::cout << "Looking for file: " << canonPath << std::endl;
+
+			if(decCount){
+				requestQueueSize--;
+			}
+			
+			return;
+		}
+
+		CURL* curl;
+		CURLcode res;
+
+		struct _ob_curl_body* body = new struct _ob_curl_body;
+		body->size = 0;
+		body->data = NULL;
+
+		curl = curl_easy_init();
+		if(curl){
+			curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+			curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1);
+			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
+			//curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
+			curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, _ob_assetlocator_write_data);
+			curl_easy_setopt(curl, CURLOPT_WRITEDATA, body);
+
+			res = curl_easy_perform(curl);
+			if(res != CURLE_OK){
+				std::cout << "[AssetLocator] cURL Error: " << curl_easy_strerror(res) << std::endl;
+			}
+
+			curl_easy_cleanup(curl);
+
+			if(body->data != NULL){
+				putAsset(url, body->size, body->data);
+			}
+
+		    delete body;
+
+			if(decCount){
+				requestQueueSize--;
+			}
+
+			return;
+		}
+	}
+
+	struct _ob_assetLocatorMetad{
+	    char* url;
+	};
+
+	int AssetLocator::loadAssetAsyncTask(void* metad, ob_int64 startTime){
+		if(metad == NULL){
+			return 0;
+		}
+		
+		struct _ob_assetLocatorMetad* locmetad = (struct _ob_assetLocatorMetad*)metad;
+
+		OBEngine* eng = OBEngine::getInstance();
+		shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
+
+		assetLoc->loadAssetSync(locmetad->url, true);
+
+	    free(locmetad->url);
+		free(metad);
+		
+		return 0;
+	}
+
+	void AssetLocator::loadAsset(std::string url){
 		if(url.empty()){
 			return;
 		}
@@ -46,6 +186,15 @@ namespace OB{
 		if(ob_str_startsWith(url, "file://")){
 			return;
 		}
+
+		OBEngine* eng = OBEngine::getInstance();
+		shared_ptr<TaskScheduler> taskS = eng->getSecondaryTaskScheduler();
+
+		struct _ob_assetLocatorMetad* metad = new struct _ob_assetLocatorMetad;
+		metad->url = strdup(url.c_str());
+
+		requestQueueSize++;
+		taskS->enqueue(loadAssetAsyncTask, metad, 0);
 	}
 	
 	shared_ptr<AssetResponse> AssetLocator::getAsset(std::string url, bool loadIfNotPresent){
@@ -54,7 +203,7 @@ namespace OB{
 		}
 		
 		if(hasAsset(url)){
-			return contentCache[url];
+			return contentCache.at(url);
 		}else{
 			if(loadIfNotPresent){
 				loadAsset(url);
@@ -65,5 +214,13 @@ namespace OB{
 
 	bool AssetLocator::hasAsset(std::string url){
 		return contentCache.count(url) != 0;
+	}
+
+	void AssetLocator::putAsset(std::string url, size_t size, char* data){
+	    contentCache.emplace(url, make_shared<AssetResponse>(size, data));
+	}
+
+	int AssetLocator::getRequestQueueSize(){
+		return requestQueueSize;
 	}
 }

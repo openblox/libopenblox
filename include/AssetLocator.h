@@ -29,15 +29,15 @@
 namespace OB{
 	class AssetResponse{
 		public:
-			AssetResponse(size_t size, void* data);
+			AssetResponse(size_t size, char* data);
 			~AssetResponse();
 
 			size_t getSize();
-			void* getData();
+		    char* getData();
 
 		private:
 			size_t size;
-			void* data;
+			char* data;
 			
 	};
 	
@@ -48,13 +48,19 @@ namespace OB{
 
 			void tick();
 
+			void loadAssetSync(std::string url, bool decCount = false);
+			static int loadAssetAsyncTask(void* metad, ob_int64 startTime);
 			void loadAsset(std::string url);
 			shared_ptr<AssetResponse> getAsset(std::string url, bool loadIfNotPresent = false);
 			bool hasAsset(std::string url);
+			void putAsset(std::string url, size_t size, char* data);
+
+			int getRequestQueueSize();
 			
 		private:
 			std::map<std::string, shared_ptr<AssetResponse>> contentCache;
 
+			int requestQueueSize;
 	};
 }
 

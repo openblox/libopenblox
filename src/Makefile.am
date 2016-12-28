@@ -29,6 +29,7 @@ instance/PVInstance.cpp \
 instance/Model.cpp \
 instance/ServiceProvider.cpp \
 instance/Lighting.cpp \
+instance/ContentProvider.cpp \
 instance/DataModel.cpp \
 utility.cpp
 

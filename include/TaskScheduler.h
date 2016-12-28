@@ -17,12 +17,14 @@
  * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef OB_TASKSCHEDULER
-#define OB_TASKSCHEDULER
-
 #include <vector>
 
 #include "obtype.h"
+
+#include <pthread.h>
+
+#ifndef OB_TASKSCHEDULER
+#define OB_TASKSCHEDULER
 
 namespace OB{
 	/**
@@ -106,6 +108,8 @@ namespace OB{
 			void enqueue(ob_task_fnc fnc, void* metad, ob_int64 at);
 		private:
 			std::vector<_ob_waiting_task> tasks;
+
+			pthread_mutex_t mmutex;
 
 			/**
 			 * Internal method used to sort tasks.

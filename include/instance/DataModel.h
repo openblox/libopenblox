@@ -25,6 +25,7 @@
 namespace OB{
 	namespace Instance{
 		class Lighting;
+		class ContentProvider;
 		
 		/**
 		 * DataModel is the root singleton of the OpenBlox engine.
@@ -42,7 +43,21 @@ namespace OB{
 				
 				void initServices();
 
+				/**
+				 * Returns the Lighting service.
+				 *
+				 * @returns Lighting
+				 * @author John M. Harris, Jr.
+				 */
 				shared_ptr<Lighting> getLighting();
+
+				/**
+				 * Returns the ContentProvider service.
+				 *
+				 * @returns ContentProvider
+				 * @author John M. Harris, Jr.
+				 */
+				shared_ptr<ContentProvider> getContentProvider();
 
 				/**
 				 * Reimplementation of ServiceProvider's GetService,
@@ -58,6 +73,7 @@ namespace OB{
 				DECLARE_CLASS(DataModel);
 
 				shared_ptr<Lighting> lighting;
+				shared_ptr<ContentProvider> contentProvider;
 
 				DECLARE_LUA_METHOD(Shutdown);
 				

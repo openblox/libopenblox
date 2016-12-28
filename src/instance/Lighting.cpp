@@ -61,7 +61,13 @@ namespace OB{
 		void Lighting::updateFog(){
 		    OBEngine* eng = OBEngine::getInstance();
 		  	irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
+			if(irrDev == NULL){
+				return;
+			}
 			irr::video::IVideoDriver* driver = irrDev->getVideoDriver();
+			if(driver == NULL){
+				return;
+			}
 
 			if(FogEnabled){
 				irr::video::SColor irrFogCol;

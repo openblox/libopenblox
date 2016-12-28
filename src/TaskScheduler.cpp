@@ -26,9 +26,12 @@
 
 namespace OB{
 	TaskScheduler::TaskScheduler(){
+		pthread_mutex_init(&mmutex, NULL);
 	}
 
-	TaskScheduler::~TaskScheduler(){}
+	TaskScheduler::~TaskScheduler(){
+		pthread_mutex_destroy(&mmutex);
+	}
 
 	bool operator==(const _ob_waiting_task& t1, const _ob_waiting_task& t2){
 		return &t1 == &t2;
@@ -36,6 +39,8 @@ namespace OB{
 
 	void TaskScheduler::tick(){
 		if(!tasks.empty()){
+			pthread_mutex_lock(&mmutex);
+			
 			/* This vector contains tasks that returned response code
 			 * 1. These are pushed back onto the tasks vector after
 			 * other tasks have been handled, or until a task returns
@@ -83,6 +88,8 @@ namespace OB{
 				}
 				sortTasks();
 			}
+
+			pthread_mutex_unlock(&mmutex);
 		}
 	}
 
@@ -95,9 +102,13 @@ namespace OB{
 		t.metad = metad;
 		t.task_fnc = fnc;
 
+		pthread_mutex_lock(&mmutex);
+		
 		tasks.push_back(t);
 		
 		sortTasks();
+
+		pthread_mutex_unlock(&mmutex);
 	}
 
 	bool __ob_taskscheduler_sort_cmp(const _ob_waiting_task& t1, const _ob_waiting_task& t2){

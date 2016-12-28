@@ -23,6 +23,7 @@
 
 //Services we're including just to initiate them ahead of time
 #include "instance/Lighting.h"
+#include "instance/ContentProvider.h"
 
 namespace OB{
 	namespace Instance{
@@ -43,13 +44,23 @@ namespace OB{
 		}
 		
 		void DataModel::initServices(){
+			shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
+			
 			lighting = make_shared<Lighting>();
-			lighting->setParent(std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this(), false);
+			lighting->setParent(sharedThis, false);
 			lighting->ParentLocked = true;
+
+			contentProvider = make_shared<ContentProvider>();
+		    contentProvider->setParent(sharedThis, false);
+		    contentProvider->ParentLocked = true;
 		}
 
 		shared_ptr<Lighting> DataModel::getLighting(){
 			return lighting;
+		}
+
+		shared_ptr<ContentProvider> DataModel::getContentProvider(){
+			return contentProvider;
 		}
 
 		shared_ptr<Instance> DataModel::cloneImpl(){
