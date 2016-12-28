@@ -62,10 +62,10 @@ namespace OB{
 			    char* dat = resp->getData();
 				int siz = resp->getSize();
 				if(dat && siz > 0){
-					char* strAsset = new char[siz + 1];
-					strncpy(strAsset, resp->getData(), siz);
-					strAsset[siz] = '\0';
-					return strAsset;
+					//char* strAsset = new char[siz + 1];
+					//strncpy(strAsset, dat, siz);
+					//strAsset[siz] = '\0';
+					return dat;
 				}
 			}
 			
@@ -107,7 +107,7 @@ namespace OB{
 					return 1;
 				}
 				lua_pushstring(L, strAsset);
-				delete[] strAsset;
+				//delete[] strAsset;
 				
 				return 1;
 			}
