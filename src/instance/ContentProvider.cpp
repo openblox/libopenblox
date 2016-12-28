@@ -107,7 +107,7 @@ namespace OB{
 					return 1;
 				}
 				lua_pushstring(L, strAsset);
-				free(strAsset);
+				delete[] strAsset;
 				
 				return 1;
 			}
