@@ -54,9 +54,13 @@ namespace OB{
 	
     AssetLocator::AssetLocator(){
 		requestQueueSize = 0;
+
+		pthread_mutex_init(&mmutex, NULL);
 	}
 
-    AssetLocator::~AssetLocator(){}
+    AssetLocator::~AssetLocator(){
+		pthread_mutex_destroy(&mmutex);
+	}
 
 	struct _ob_curl_body{
 		public:
@@ -90,10 +94,13 @@ namespace OB{
 	}
 
     void AssetLocator::loadAssetSync(std::string url, bool decCount){
+	    pthread_mutex_lock(&mmutex);
+		
 		if(url.empty()){
 			if(decCount){
 				requestQueueSize--;
 			}
+			pthread_mutex_unlock(&mmutex);
 			return;
 		}
 
@@ -101,6 +108,7 @@ namespace OB{
 			if(decCount){
 			    requestQueueSize--;
 			}
+			pthread_mutex_unlock(&mmutex);
 			return;
 		}
 
@@ -115,7 +123,8 @@ namespace OB{
 			if(decCount){
 				requestQueueSize--;
 			}
-			
+
+			pthread_mutex_unlock(&mmutex);
 			return;
 		}
 
@@ -152,6 +161,7 @@ namespace OB{
 				requestQueueSize--;
 			}
 
+			pthread_mutex_unlock(&mmutex);
 			return;
 		}
 	}
@@ -193,7 +203,13 @@ namespace OB{
 		struct _ob_assetLocatorMetad* metad = new struct _ob_assetLocatorMetad;
 		metad->url = strdup(url.c_str());
 
+
+		pthread_mutex_lock(&mmutex);
+		
 		requestQueueSize++;
+
+		pthread_mutex_unlock(&mmutex);
+		
 		taskS->enqueue(loadAssetAsyncTask, metad, 0);
 	}
 	

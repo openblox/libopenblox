@@ -23,6 +23,8 @@
 #include "obtype.h"
 #include "mem.h"
 
+#include <pthread.h>
+
 #include <string>
 #include <map>
 
@@ -59,6 +61,8 @@ namespace OB{
 			
 		private:
 			std::map<std::string, shared_ptr<AssetResponse>> contentCache;
+
+			pthread_mutex_t mmutex;
 
 			int requestQueueSize;
 	};

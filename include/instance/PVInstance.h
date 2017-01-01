@@ -19,7 +19,9 @@
 
 #include "instance/Instance.h"
 
+#if HAVE_IRRLICHT
 #include <irrlicht/irrlicht.h>
+#endif
 
 #ifndef OB_INST_PVINSTANCE
 #define OB_INST_PVINSTANCE
@@ -37,12 +39,20 @@ namespace OB{
 				PVInstance();
 				virtual ~PVInstance();
 
+				#if HAVE_IRRLICHT
+				
 				virtual void removeChild(shared_ptr<Instance> kid);
 				virtual void addChild(shared_ptr<Instance> kid);
+				
+				#endif
 
 				DECLARE_CLASS(PVInstance);
 
+				#if HAVE_IRRLICHT
+				
 				irr::scene::ISceneNode* irrNode;
+				
+				#endif
 		};
 	}
 }

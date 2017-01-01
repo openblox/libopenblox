@@ -29,7 +29,9 @@
 
 #include <string>
 
+#if HAVE_IRRLICHT
 #include <irrlicht/irrlicht.h>
+#endif
 
 #include "instance/Lighting.h"
 
@@ -60,9 +62,14 @@ namespace OB{
 		globalState = NULL;
 
 		windowId = NULL;
+
+		#if HAVE_IRRLICHT
+		
 		irrDev = NULL;
 		irrDriv = NULL;
 		irrSceneMgr = NULL;
+		
+		#endif
 	}
 
 	OBEngine::~OBEngine(){}
@@ -97,6 +104,8 @@ namespace OB{
 		if(initialized){
 			throw new OBException("OBEngine has already been initialized.");
 		}
+
+		#if HAVE_IRRLICHT
 		
 		if(doRendering){
 			irr::SIrrlichtCreationParameters p;
@@ -145,6 +154,7 @@ namespace OB{
 			
 			OBLogger::log(renderShadingLangVer);
 		}
+		#endif
 		
 		taskSched = make_shared<TaskScheduler>();
 		secondaryTaskSched = make_shared<TaskScheduler>();
@@ -180,6 +190,8 @@ namespace OB{
 	}
 
 	void OBEngine::tick(){
+		#if HAVE_IRRLICHT
+		
 		if(doRendering){
 			if(!irrDev->run()){
 				_isRunning = false;
@@ -192,6 +204,8 @@ namespace OB{
 			}
 		}
 		
+		#endif
+		
 	    taskSched->tick();
 
 		if(!doRendering){
@@ -201,6 +215,8 @@ namespace OB{
 	}
 
 	void OBEngine::render(){
+		#if HAVE_IRRLICHT
+		
 		if(doRendering){
 			shared_ptr<Instance::Lighting> light = dm->getLighting();
 			
@@ -216,6 +232,8 @@ namespace OB{
 			irrSceneMgr->drawAll();
 			irrDriv->endScene();
 		}
+		
+		#endif
 	}
 
 	lua_State* OBEngine::getGlobalLuaState(){
@@ -281,9 +299,13 @@ namespace OB{
 		windowId = wId;
 	}
 
+	#if HAVE_IRRLICHT
+	
 	irr::IrrlichtDevice* OBEngine::getIrrlichtDevice(){
 		return irrDev;
 	}
+
+	#endif
 
 	shared_ptr<Instance::DataModel> OBEngine::getDataModel(){
 		return dm;

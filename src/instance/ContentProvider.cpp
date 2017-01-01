@@ -21,8 +21,6 @@
 
 #include "OBEngine.h"
 
-#include <irrlicht/irrlicht.h>
-
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(ContentProvider, false, isDataModel, Instance){
@@ -68,6 +66,7 @@ namespace OB{
 					return dat;
 				}
 			}
+
 			
 		    return NULL;
 		}
@@ -75,7 +74,7 @@ namespace OB{
 		int ContentProvider::lua_Preload(lua_State* L){
 		    shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(shared_ptr<ContentProvider> cp = dynamic_pointer_cast<ContentProvider>(inst)){
-				std::string urlStr = luaL_checkstring(L, 2);
+				std::string urlStr = std::string(luaL_checkstring(L, 2));
 				
 			    cp->Preload(urlStr);
 				
@@ -87,7 +86,7 @@ namespace OB{
 		int ContentProvider::lua_Load(lua_State* L){
 		    shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(shared_ptr<ContentProvider> cp = dynamic_pointer_cast<ContentProvider>(inst)){
-				std::string urlStr = luaL_checkstring(L, 2);
+				std::string urlStr = std::string(luaL_checkstring(L, 2));
 				
 			    cp->Load(urlStr);
 				
@@ -99,7 +98,7 @@ namespace OB{
 		int ContentProvider::lua_GetAsset(lua_State* L){
 		    shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(shared_ptr<ContentProvider> cp = dynamic_pointer_cast<ContentProvider>(inst)){
-				std::string urlStr = luaL_checkstring(L, 2);
+				std::string urlStr = std::string(luaL_checkstring(L, 2));
 				
 			    char* strAsset = cp->GetAsset(urlStr);
 				if(strAsset == NULL){

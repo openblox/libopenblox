@@ -21,7 +21,9 @@
 
 #include "OBEngine.h"
 
+#if HAVE_IRRLICHT
 #include <irrlicht/irrlicht.h>
+#endif
 
 namespace OB{
 	namespace Instance{
@@ -59,6 +61,8 @@ namespace OB{
 		}
 
 		void Lighting::updateFog(){
+			#if HAVE_IRRLICHT
+			
 		    OBEngine* eng = OBEngine::getInstance();
 		  	irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
 			if(irrDev == NULL){
@@ -81,6 +85,8 @@ namespace OB{
 			}else{
 				driver->setFog();
 			}
+
+			#endif
 		}
 
 		bool Lighting::IsFogEnabled(){

@@ -27,10 +27,17 @@ namespace OB{
 
 		PVInstance::PVInstance(){
 			Name = ClassName;
+
+			#if HAVE_IRRLICHT
+			
 			irrNode = NULL;
+			
+			#endif
 		}
 
 		PVInstance::~PVInstance(){
+			#if HAVE_IRRLICHT
+
 			if(irrNode){
 				irr::scene::ISceneNode* irrPar = irrNode->getParent();
 				if(irrPar){
@@ -40,8 +47,12 @@ namespace OB{
 				delete irrNode;
 				irrNode = NULL;
 			}
+			
+			#endif
 		}
 
+		#if HAVE_IRRLICHT
+		
 		void PVInstance::removeChild(shared_ptr<Instance> kid){
 			if(kid){
 				if(shared_ptr<PVInstance> oInst = dynamic_pointer_cast<PVInstance>(kid)){
@@ -63,5 +74,7 @@ namespace OB{
 				Instance::addChild(kid);
 			}
 		}
+
+		#endif
 	}
 }

@@ -42,6 +42,7 @@
 #include <pthread.h>
 
 #ifndef __I_IRRLICHT_DEVICE_H_INCLUDED__
+#if HAVE_IRRLICHT
 namespace irr{
 	class IrrlichtDevice;
 
@@ -53,6 +54,7 @@ namespace irr{
 		class ISceneManager;
 	}
 }
+#endif
 #endif
 
 namespace OB{
@@ -277,6 +279,8 @@ namespace OB{
 			 */
 			void setWindowId(void* wId);
 
+			#if HAVE_IRRLICHT
+
 			/**
 			 * Returns the currently active Irrlicht device, if any.
 			 *
@@ -284,6 +288,8 @@ namespace OB{
 			 * @author John M. Harris, Jr.
 			 */
 			irr::IrrlichtDevice* getIrrlichtDevice();
+
+			#endif
 
 			/**
 			 * Returns the DataModel.
@@ -318,9 +324,13 @@ namespace OB{
 
 			lua_State* globalState;
 
+			#if HAVE_IRRLICHT
+			
 			irr::IrrlichtDevice* irrDev;
 			irr::video::IVideoDriver* irrDriv;
 			irr::scene::ISceneManager* irrSceneMgr;
+			
+			#endif
 
 			shared_ptr<TaskScheduler> taskSched;
 			shared_ptr<TaskScheduler> secondaryTaskSched;
