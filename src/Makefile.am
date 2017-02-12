@@ -31,6 +31,7 @@ instance/ServiceProvider.cpp \
 instance/Lighting.cpp \
 instance/ContentProvider.cpp \
 instance/DataModel.cpp \
+instance/Humanoid.cpp \
 utility.cpp
 
 # Linker options
