@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 John M. Harris, Jr. <johnmh@openblox.org>
+ * Copyright (C) 2016-2017 John M. Harris, Jr. <johnmh@openblox.org>
  *
  * This file is part of OpenBlox.
  *
@@ -154,6 +154,10 @@ namespace OB{
 				}
 				case TYPE_TYPE: {
 					shared_ptr<Type> tp = *static_cast<shared_ptr<Type>*>(wrapped);
+					break;
+				}
+				case TYPE_NULL: {
+					lua_pushnil(L);
 					break;
 				}
 				case TYPE_UNKNOWN: {
