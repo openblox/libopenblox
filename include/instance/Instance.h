@@ -183,7 +183,10 @@ namespace OB{
 		 * Instance is the base class of all world objects in OpenBlox.
 		 * @author John M. Harris, Jr.
 		 */
-		class Instance: public std::enable_shared_from_this<Instance>{
+		class Instance:
+				// @cond DOXYGEN_IGNORE
+				public std::enable_shared_from_this<Instance>{
+				// @endcond
 			public:
 				Instance();
 				virtual ~Instance();
