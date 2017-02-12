@@ -116,8 +116,46 @@ namespace OB{
 			shared_ptr<Event> evt = checkEvent(L, 1);
 
 			if(evt){
+				std::vector<shared_ptr<VarWrapper>> fireArgs;
+				
+				int nargs = lua_gettop(L);
+				if(nargs > 1){
+					for(int i = 2; i <= nargs; i++){
+						int ltype = lua_type(L, i);
+
+						switch(ltype){
+							case LUA_TNIL: {
+								fireArgs.push_back(make_shared<VarWrapper>((void*)NULL, TYPE_NULL));
+								break;
+							}
+							case LUA_TNUMBER: {
+								fireArgs.push_back(make_shared<VarWrapper>(lua_tonumber(L, i)));
+								break;
+							}
+							case LUA_TBOOLEAN: {
+								fireArgs.push_back(make_shared<VarWrapper>(lua_toboolean(L, i)));
+								break;
+							}
+							case LUA_TSTRING: {
+								const char* tmpStr = lua_tostring(L, i);
+								fireArgs.push_back(make_shared<VarWrapper>(std::string(tmpStr)));
+								break;
+							}
+							case LUA_TUSERDATA: {
+								break;
+							}
+							case LUA_TTABLE:
+							case LUA_TFUNCTION:
+							case LUA_TTHREAD:
+							case LUA_TLIGHTUSERDATA: {
+								break;
+							}
+						}
+					}
+				}
+				
 				//TODO: Get args from Lua
-				evt->Fire();
+				evt->Fire(fireArgs);
 			}
 			
 			return 0;
