@@ -26,6 +26,7 @@ type/Event.cpp \
 instance/Instance.cpp \
 instance/PVInstance.cpp \
 instance/Model.cpp \
+instance/BindableEvent.cpp \
 instance/ServiceProvider.cpp \
 instance/Lighting.cpp \
 instance/ContentProvider.cpp \
