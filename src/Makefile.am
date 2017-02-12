@@ -29,6 +29,7 @@ instance/Model.cpp \
 instance/ServiceProvider.cpp \
 instance/Lighting.cpp \
 instance/ContentProvider.cpp \
+instance/CoreGui.cpp \
 instance/DataModel.cpp \
 instance/Humanoid.cpp \
 utility.cpp
