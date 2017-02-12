@@ -17,7 +17,7 @@
  * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "instance/CoreGui.h"
+#include "instance/PlayerGui.h"
 
 #include "OBEngine.h"
 
