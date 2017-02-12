@@ -26,15 +26,21 @@
 
 namespace OB{
 	TaskScheduler::TaskScheduler(){
-		pthread_mutex_init(&mmutex, NULL);
+	    SortsTasks = true;
 	}
 
-	TaskScheduler::~TaskScheduler(){
-		pthread_mutex_destroy(&mmutex);
-	}
+	TaskScheduler::~TaskScheduler(){}
 
 	bool operator==(const _ob_waiting_task& t1, const _ob_waiting_task& t2){
 		return &t1 == &t2;
+	}
+
+	bool TaskScheduler::GetSortsTasks(){
+		return SortsTasks;
+	}
+
+	void TaskScheduler::SetSortsTasks(bool sortsTasks){
+		SortsTasks = sortsTasks;
 	}
 
 	void TaskScheduler::tick(){
@@ -52,14 +58,10 @@ namespace OB{
 			while(!tasks.empty() && !stopProcTasks){
 				ob_int64 curTime = currentTimeMillis();
 
-				if(pthread_mutex_trylock(&mmutex) != 0){
-					return;
-				}
 				_ob_waiting_task t = tasks.back();
 
 				if(t.at < curTime){
 					tasks.pop_back();
-					pthread_mutex_unlock(&mmutex);
 					
 					int retCode = t.task_fnc(t.metad, t.start);
 					
@@ -79,23 +81,18 @@ namespace OB{
 						}
 					}
 				}else{
-					pthread_mutex_unlock(&mmutex);
 				    stopProcTasks = true;
 				}
 			}
 
 			if(!tmpPopped.empty()){
-				if(pthread_mutex_trylock(&mmutex) != 0){
-					return;
-				}
-				
 				while(!tmpPopped.empty()){
 					tasks.push_back(tmpPopped.back());
 					tmpPopped.pop_back();
 				}
-				sortTasks();
-				
-				pthread_mutex_unlock(&mmutex);
+				if(SortsTasks){
+					sortTasks();
+				}
 			}
 		}
 	}
@@ -108,14 +105,12 @@ namespace OB{
 		t.at = at;
 		t.metad = metad;
 		t.task_fnc = fnc;
-
-		pthread_mutex_lock(&mmutex);
 		
 		tasks.push_back(t);
-		
-		sortTasks();
 
-		pthread_mutex_unlock(&mmutex);
+		if(SortsTasks){
+			sortTasks();
+		}
 	}
 
 	bool __ob_taskscheduler_sort_cmp(const _ob_waiting_task& t1, const _ob_waiting_task& t2){

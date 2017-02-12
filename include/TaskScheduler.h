@@ -21,8 +21,6 @@
 
 #include "obtype.h"
 
-#include <pthread.h>
-
 #ifndef OB_TASKSCHEDULER
 #define OB_TASKSCHEDULER
 
@@ -80,12 +78,18 @@ namespace OB{
 	 * This class is used to schedule tasks to be run on the task
 	 * thread, mostly tasks involving Lua states.
 	 *
+	 * When GetSortsTasks is false, the TaskScheduler will act as a
+	 * FIFO queue.
+	 *
 	 * @author John M. Harris, Jr.
 	 */
 	class TaskScheduler{
 		public:
 		    TaskScheduler();
 			virtual ~TaskScheduler();
+
+			bool GetSortsTasks();
+			void SetSortsTasks(bool sortsTasks);
 
 			/**
 			 * Runs the task scheduler one time, handles any pending
@@ -109,8 +113,8 @@ namespace OB{
 		private:
 			std::vector<_ob_waiting_task> tasks;
 
-			pthread_mutex_t mmutex;
-
+			bool SortsTasks;
+			
 			/**
 			 * Internal method used to sort tasks.
 			 * 

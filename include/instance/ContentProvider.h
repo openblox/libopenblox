@@ -37,6 +37,8 @@ namespace OB{
 			    ContentProvider();
 				virtual ~ContentProvider();
 
+				shared_ptr<Type::Event> GetAssetLoaded();
+
 				void Preload(std::string url);
 				void Load(std::string url);
 			    char* GetAsset(std::string url);
@@ -49,8 +51,11 @@ namespace OB{
 				static void register_lua_methods(lua_State* L);
 				static void register_lua_property_getters(lua_State* L);
 				static void register_lua_property_setters(lua_State* L);
+				static void register_lua_events(lua_State* L);
 
 				DECLARE_CLASS(ContentProvider);
+
+				shared_ptr<Type::Event> AssetLoaded;
 		};
 	}
 }

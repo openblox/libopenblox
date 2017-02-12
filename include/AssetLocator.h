@@ -62,6 +62,7 @@ namespace OB{
 		private:
 			std::map<std::string, shared_ptr<AssetResponse>> contentCache;
 
+			shared_ptr<AssetResponse> loadingResponse;
 			pthread_mutex_t mmutex;
 
 			int requestQueueSize;

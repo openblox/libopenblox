@@ -24,6 +24,8 @@
 #include "OBException.h"
 #include "utility.h"
 
+#include "instance/ContentProvider.h"
+
 #include <iostream>
 
 #include <cstdlib>
@@ -55,6 +57,8 @@ namespace OB{
     AssetLocator::AssetLocator(){
 		requestQueueSize = 0;
 
+		loadingResponse = make_shared<AssetResponse>(0, (char*)NULL);
+		
 		pthread_mutex_init(&mmutex, NULL);
 	}
 
@@ -113,11 +117,11 @@ namespace OB{
 		}
 
 		if(ob_str_startsWith(url, "res://")){
-			url = url.substr(6);
+			std::string furl = url.substr(6);
 
-			std::cout << "Looking for file: " << url << std::endl;
+			std::cout << "Looking for file: " << furl << std::endl;
 
-			std::string canonPath = realpath(url.c_str(), NULL);
+			std::string canonPath = realpath(furl.c_str(), NULL);
 			std::cout << "Looking for file: " << canonPath << std::endl;
 
 			if(decCount){
@@ -134,7 +138,7 @@ namespace OB{
 		struct _ob_curl_body* body = new struct _ob_curl_body;
 		body->size = 0;
 		body->data = NULL;
-
+		
 		curl = curl_easy_init();
 		if(curl){
 			curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
@@ -152,7 +156,20 @@ namespace OB{
 			curl_easy_cleanup(curl);
 
 			if(body->data != NULL){
+				OBEngine* eng = OBEngine::getInstance();
+				shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+				shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
+				shared_ptr<Type::Event> AssetLoaded = cp->GetAssetLoaded();
+
+				std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
+				fireArgs.push_back(make_shared<Type::VarWrapper>(url));
+				
+				AssetLoaded->Fire(fireArgs);
+				
 				putAsset(url, body->size, body->data);
+			}else{
+				std::cout << "[AssetLocator] cURL Error: No data" << std::endl;
+				//AssetLoad Failed
 			}
 
 		    delete body;
@@ -160,10 +177,9 @@ namespace OB{
 			if(decCount){
 				requestQueueSize--;
 			}
-
-			pthread_mutex_unlock(&mmutex);
-			return;
 		}
+
+		pthread_mutex_unlock(&mmutex);
 	}
 
 	struct _ob_assetLocatorMetad{
@@ -203,12 +219,13 @@ namespace OB{
 		struct _ob_assetLocatorMetad* metad = new struct _ob_assetLocatorMetad;
 		metad->url = strdup(url.c_str());
 
-
 		pthread_mutex_lock(&mmutex);
 		
 		requestQueueSize++;
 
 		pthread_mutex_unlock(&mmutex);
+
+		contentCache.emplace(url, loadingResponse);
 		
 		taskS->enqueue(loadAssetAsyncTask, metad, 0);
 	}
@@ -217,15 +234,20 @@ namespace OB{
 		if(url.empty()){
 			return NULL;
 		}
-		
+
 		if(hasAsset(url)){
-			return shared_ptr<AssetResponse>(contentCache.at(url));
+		    shared_ptr<AssetResponse> resp = shared_ptr<AssetResponse>(contentCache.at(url));
+			if(resp != loadingResponse){
+				return resp;
+			}
 		}else{
 			if(loadIfNotPresent){
 				loadAsset(url);
 				return getAsset(url, false);
 			}
 		}
+		
+		return NULL;
 	}
 
 	bool AssetLocator::hasAsset(std::string url){

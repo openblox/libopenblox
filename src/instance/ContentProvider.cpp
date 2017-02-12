@@ -29,12 +29,18 @@ namespace OB{
 
 	    ContentProvider::ContentProvider(){
 			Name = ClassName;
+
+			AssetLoaded = make_shared<Type::Event>("AssetLoaded");
 		}
 
 	    ContentProvider::~ContentProvider(){}
 
 		shared_ptr<Instance> ContentProvider::cloneImpl(){
 			return NULL;
+		}
+
+		shared_ptr<Type::Event> ContentProvider::GetAssetLoaded(){
+			return AssetLoaded;
 		}
 
 	    void ContentProvider::Preload(std::string url){
@@ -156,6 +162,16 @@ namespace OB{
 				{NULL, NULL}
 			};
 			luaL_setfuncs(L, properties, 0);
+		}
+
+		void ContentProvider::register_lua_events(lua_State* L){
+			Instance::register_lua_events(L);
+			
+			luaL_Reg events[] = {
+				{"AssetLoaded", WRAP_EVT(ContentProvider, AssetLoaded)},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, events, 0);
 		}
 	}
 }
