@@ -86,6 +86,8 @@ namespace OB{
 				VarWrapper(shared_ptr<Type> var);
 				~VarWrapper();
 
+				void wrap_lua(lua_State* L);
+
 				void* wrapped;
 				VarType type;
 		};

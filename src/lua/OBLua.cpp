@@ -189,10 +189,10 @@ namespace OB{
 				}
 
 				delete oL;
+				//lua_close(L);
+			}/*else{
 				lua_close(L);
-			}else{
-				lua_close(L);
-			}
+				}*/
 		}
 		
 		std::string handle_errors(lua_State* L){

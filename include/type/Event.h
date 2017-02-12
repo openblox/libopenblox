@@ -36,14 +36,14 @@ namespace OB{
 				Event(std::string name, bool canFireFromLua);
 				virtual ~Event();
 
-			    shared_ptr<EventConnection> Connect(void (*fnc)(std::vector<VarWrapper>, void*), void* ud);
+			    shared_ptr<EventConnection> Connect(void (*fnc)(std::vector<shared_ptr<VarWrapper>>, void*), void* ud);
 
 				void disconnectAll();
 				void disconnect(shared_ptr<EventConnection> conn);
 			    bool isConnected(shared_ptr<EventConnection> conn);
 
-				void FireLater(std::vector<VarWrapper> argList);
-				void Fire(std::vector<VarWrapper> argList);
+				void FireLater(std::vector<shared_ptr<VarWrapper>> argList);
+				void Fire(std::vector<shared_ptr<VarWrapper>> argList);
 				void Fire();
 
 				virtual std::string toString();

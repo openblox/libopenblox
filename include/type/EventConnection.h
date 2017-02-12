@@ -28,13 +28,13 @@ namespace OB{
 		
 		class EventConnection: public Type{
 			public:
-			    EventConnection(shared_ptr<Event> evt, void* ud, void (*fnc)(std::vector<VarWrapper>, void*));
+			    EventConnection(shared_ptr<Event> evt, void* ud, void (*fnc)(std::vector<shared_ptr<VarWrapper>>, void*));
 				virtual ~EventConnection();
 
 				void Disconnect();
 				bool isConnected();
 
-				void fire(std::vector<VarWrapper> args);
+				void fire(std::vector<shared_ptr<VarWrapper>> args);
 
 				virtual std::string toString();
 				
@@ -49,7 +49,7 @@ namespace OB{
 				
 			    shared_ptr<Event> evt;
 				void* ud;
-			    void (*fnc)(std::vector<VarWrapper>, void*);
+			    void (*fnc)(std::vector<shared_ptr<VarWrapper>>, void*);
 		};
 
 		shared_ptr<EventConnection> checkEventConnection(lua_State* L, int n);

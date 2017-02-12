@@ -45,7 +45,7 @@ namespace OB{
 
 		Event::~Event(){}
 
-		shared_ptr<EventConnection> Event::Connect(void (*fnc)(std::vector<VarWrapper>, void*), void* ud){
+		shared_ptr<EventConnection> Event::Connect(void (*fnc)(std::vector<shared_ptr<VarWrapper>>, void*), void* ud){
 			shared_ptr<EventConnection> evtCon = make_shared<EventConnection>(dynamic_pointer_cast<Event>(std::enable_shared_from_this<Type>::shared_from_this()), ud, fnc);
 			conns.push_back(evtCon);
 
@@ -74,7 +74,7 @@ namespace OB{
 
 		struct evt_vconn_t{
 			shared_ptr<EventConnection> evtCon;
-			std::vector<VarWrapper> args;
+			std::vector<shared_ptr<VarWrapper>> args;
 		};
 		
 		int evt_do_fire_connection(void* vconn, ob_int64 startTime){
@@ -87,7 +87,7 @@ namespace OB{
 			return 0;
 		}
 		
-		void Event::Fire(std::vector<VarWrapper> argList){
+		void Event::Fire(std::vector<shared_ptr<VarWrapper>> argList){
 			if(!conns.empty()){
 				OBEngine* engine = OBEngine::getInstance();
 				shared_ptr<TaskScheduler> tasks = engine->getTaskScheduler();
@@ -105,7 +105,7 @@ namespace OB{
 		}
 		
 		void Event::Fire(){
-			Fire(std::vector<VarWrapper>());
+			Fire(std::vector<shared_ptr<VarWrapper>>());
 		}
 
 	    std::string Event::toString(){
@@ -116,6 +116,7 @@ namespace OB{
 			shared_ptr<Event> evt = checkEvent(L, 1);
 
 			if(evt){
+				//TODO: Get args from Lua
 				evt->Fire();
 			}
 			
@@ -127,7 +128,7 @@ namespace OB{
 			lua_State* thread;
 		};
 		
-		void evt_lua_connection_fnc(std::vector<VarWrapper> args, void* ud){
+		void evt_lua_connection_fnc(std::vector<shared_ptr<VarWrapper>> args, void* ud){
 		    struct evt_lua_connection_ud_t* eud = (struct evt_lua_connection_ud_t*)ud;
 
 			lua_State* L = Lua::initCoroutine(eud->thread);

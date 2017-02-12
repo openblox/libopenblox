@@ -19,6 +19,8 @@
 
 #include "type/VarWrapper.h"
 
+#include "instance/Instance.h"
+
 namespace OB{
 	namespace Type{
 		VarWrapper::VarWrapper(){
@@ -60,15 +62,105 @@ namespace OB{
 		}
 
 		VarWrapper::~VarWrapper(){
-			if(type == TYPE_INSTANCE){
-				(*static_cast<shared_ptr<Instance::Instance>*>(wrapped)).reset();
+			switch(type){
+				case TYPE_INT: {
+				    IntWrapper* iw = static_cast<IntWrapper*>(wrapped);
+					delete iw;
+					break;
+				}
+				case TYPE_DOUBLE: {
+				    DoubleWrapper* dw = static_cast<DoubleWrapper*>(wrapped);
+					delete dw;
+					break;
+				}
+				case TYPE_FLOAT: {
+				    FloatWrapper* fw = static_cast<FloatWrapper*>(wrapped);
+					delete fw;
+					break;
+				}
+				case TYPE_LONG: {
+				    LongWrapper* lw = static_cast<LongWrapper*>(wrapped);
+					delete lw;
+					break;
+				}
+				case TYPE_UNSIGNED_LONG: {
+					UnsignedLongWrapper* ulw = static_cast<UnsignedLongWrapper*>(wrapped);
+					delete ulw;
+					break;
+				}
+				case TYPE_BOOL: {
+				    BoolWrapper* bw = static_cast<BoolWrapper*>(wrapped);
+					delete bw;
+					break;
+				}
+				case TYPE_STRING: {
+				    StringWrapper* sw = static_cast<StringWrapper*>(wrapped);
+					delete sw;
+					break;
+				}
+				case TYPE_INSTANCE: {
+					(*static_cast<shared_ptr<Instance::Instance>*>(wrapped)).reset();
+					delete static_cast<shared_ptr<Instance::Instance>*>(wrapped);
+					break;
+				}
+				case TYPE_TYPE: {
+					(*static_cast<shared_ptr<Type>*>(wrapped)).reset();
+				    delete static_cast<shared_ptr<Type>*>(wrapped);
+					break;
+				}
+				case TYPE_UNKNOWN: {
+					//This might end very badly!
+				    free(wrapped);
+					break;
+				}
 			}
-			
-			if(type == TYPE_TYPE){
-			    (*static_cast<shared_ptr<Type>*>(wrapped)).reset();
-			}
+			wrapped = NULL;
+		}
 
-			free(wrapped);
+		void VarWrapper::wrap_lua(lua_State* L){
+			switch(type){
+				case TYPE_INT: {
+					lua_pushinteger(L, static_cast<IntWrapper*>(wrapped)->val);
+					break;
+				}
+				case TYPE_DOUBLE: {
+					lua_pushnumber(L, static_cast<DoubleWrapper*>(wrapped)->val);
+					break;
+				}
+				case TYPE_FLOAT: {
+					lua_pushnumber(L, static_cast<FloatWrapper*>(wrapped)->val);
+					break;
+				}
+				case TYPE_LONG: {
+					lua_pushnumber(L, static_cast<LongWrapper*>(wrapped)->val);
+					break;
+				}
+				case TYPE_UNSIGNED_LONG: {
+					lua_pushnumber(L, static_cast<UnsignedLongWrapper*>(wrapped)->val);
+					break;
+				}
+				case TYPE_BOOL: {
+					lua_pushboolean(L, static_cast<BoolWrapper*>(wrapped)->val);
+					break;
+				}
+				case TYPE_STRING: {
+					lua_pushstring(L, static_cast<StringWrapper*>(wrapped)->val.c_str());
+					break;
+				}
+				case TYPE_INSTANCE: {
+					shared_ptr<Instance::Instance> inst = *static_cast<shared_ptr<Instance::Instance>*>(wrapped);
+					inst->wrap_lua(L, inst);
+					break;
+				}
+				case TYPE_TYPE: {
+					shared_ptr<Type> tp = *static_cast<shared_ptr<Type>*>(wrapped);
+					break;
+				}
+				case TYPE_UNKNOWN: {
+					lua_pushnil(L);
+					break;
+				}
+			}
 		}
 	}
 }
