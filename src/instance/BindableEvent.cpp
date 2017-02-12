@@ -34,12 +34,12 @@ namespace OB{
 	    BindableEvent::~BindableEvent(){}
 
 		shared_ptr<Instance> BindableEvent::cloneImpl(){
-			shared_ptr<Humanoid> ti = make_shared<Humanoid>();
-			ti->Archivable = Archivable;
-			ti->Name = Name;
-			ti->ParentLocked = ParentLocked;
+			shared_ptr<BindableEvent> be = make_shared<BindableEvent>();
+			be->Archivable = Archivable;
+			be->Name = Name;
+			be->ParentLocked = ParentLocked;
 			
-			return ti;
+			return be;
 		}
 
 		void BindableEvent::register_lua_events(lua_State* L){
