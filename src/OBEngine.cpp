@@ -93,7 +93,7 @@ namespace OB{
 		while(eng->isRunning()){
 			taskS->tick();
 
-			usleep(100000);
+			usleep(10000);
 		}
 		
 	    pthread_exit(NULL);
@@ -157,9 +157,14 @@ namespace OB{
 		#endif
 		
 		taskSched = make_shared<TaskScheduler>();
+		
 		secondaryTaskSched = make_shared<TaskScheduler>();
+		secondaryTaskSched->SetSortsTasks(false);
+		
 		assetLocator = make_shared<AssetLocator>();
+		
 		globalState = OB::Lua::initGlobal();
+		
 		dm = make_shared<Instance::DataModel>();
 		dm->initServices();
 
