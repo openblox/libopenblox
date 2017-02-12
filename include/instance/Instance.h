@@ -157,11 +157,22 @@ protected: \
 	static int lua_##MethodName(lua_State* L)
 
 
-#define WRAP_EVT(Event_Name) \
+#define WRAP_EVTI(Event_Name) \
 	[](lua_State* L)->int{ \
 		shared_ptr<Instance> inst = checkInstance(L, 1); \
 		if(inst){ \
 				 return inst->Event_Name->wrap_lua(L); \
+		} \
+		return 0; \
+	}
+
+#define WRAP_EVT(Clazz, Event_Name) \
+	[](lua_State* L)->int{ \
+		shared_ptr<Instance> inst = checkInstance(L, 1); \
+		if(inst){ \
+			if(shared_ptr<Clazz> wi = dynamic_pointer_cast<Clazz>(inst)){ \
+				 return wi->Event_Name->wrap_lua(L); \
+			} \
 		} \
 		return 0; \
 	}
