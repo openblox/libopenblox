@@ -185,8 +185,9 @@ namespace OB{
 		 */
 		class Instance:
 				// @cond DOXYGEN_IGNORE
-				public std::enable_shared_from_this<Instance>{
+				public std::enable_shared_from_this<Instance>
 				// @endcond
+		{
 			public:
 				Instance();
 				virtual ~Instance();
