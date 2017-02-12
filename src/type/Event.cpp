@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 John M. Harris, Jr. <johnmh@openblox.org>
+ * Copyright (C) 2016-2017 John M. Harris, Jr. <johnmh@openblox.org>
  *
  * This file is part of OpenBlox.
  *
@@ -134,8 +134,12 @@ namespace OB{
 			lua_State* L = Lua::initCoroutine(eud->thread);
 			
 			lua_rawgeti(L, LUA_REGISTRYINDEX, eud->fncRef);
+
+			for(std::vector<shared_ptr<VarWrapper>>::size_type i = 0; i != args.size(); i++){
+				args[i]->wrap_lua(L);
+			}
 			
-			int ret = lua_resume(L, NULL, 0);
+			int ret = lua_resume(L, NULL, args.size());
 			if(ret != LUA_OK && ret != LUA_YIELD){
 				std::string lerr = Lua::handle_errors(L);
 				std::cerr << lerr << std::endl;
