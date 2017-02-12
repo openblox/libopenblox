@@ -17,7 +17,7 @@
  * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "instance/Instance.h"
+#include "instance/BasePlayerGui.h"
 
 #include "type/Color3.h"
 
@@ -45,7 +45,7 @@ namespace OB{
 		 *
 		 * @author John M. Harris, Jr.
 		 */
-		class CoreGui: public Instance{
+		class CoreGui: public BasePlayerGui{
 			public:
 			    CoreGui();
 				virtual ~CoreGui();

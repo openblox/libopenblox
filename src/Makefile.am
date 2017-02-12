@@ -30,6 +30,7 @@ instance/BindableEvent.cpp \
 instance/ServiceProvider.cpp \
 instance/Lighting.cpp \
 instance/ContentProvider.cpp \
+instance/BasePlayerGui.cpp \
 instance/CoreGui.cpp \
 instance/DataModel.cpp \
 instance/Humanoid.cpp \
