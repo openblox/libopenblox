@@ -172,12 +172,12 @@ namespace OB{
 				//AssetLoad Failed
 			}
 
-		    delete body;
-
 			if(decCount){
 				requestQueueSize--;
 			}
 		}
+
+		delete body;
 
 		pthread_mutex_unlock(&mmutex);
 	}
