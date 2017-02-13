@@ -122,7 +122,7 @@ namespace OB{
 
 			OBEngine* eng = OBEngine::getInstance();
 		    shared_ptr<Instance::DataModel> dm = eng->getDataModel();
-			int gm = dm->wrap_lua(L, dm);
+			int gm = dm->wrap_lua(L);
 			lua_pushvalue(L, -gm);
 			lua_setglobal(L, "game");
 
@@ -327,7 +327,7 @@ namespace OB{
 					}
 				}
 				
-			    return newGuy->wrap_lua(L, newGuy);
+			    return newGuy->wrap_lua(L);
 			}
 			lua_pushnil(L);
 			return 1;

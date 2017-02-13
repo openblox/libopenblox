@@ -485,7 +485,7 @@ namespace OB{
 				std::string Name;
 				shared_ptr<Instance> Parent;
 
-				int wrap_lua(lua_State* L, shared_ptr<Instance> ptr);
+				int wrap_lua(lua_State* L);
 
 				/**
 				 * Lua Metamethods for the Instance class.

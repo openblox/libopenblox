@@ -355,9 +355,11 @@ namespace OB{
 			}
 		}
 
-		int Instance::wrap_lua(lua_State* L, shared_ptr<Instance> ptr){
+		int Instance::wrap_lua(lua_State* L){
+			shared_ptr<Instance> shared_this = std::enable_shared_from_this<Instance>::shared_from_this();
+			
 		    shared_ptr<Instance>* udata = static_cast<shared_ptr<Instance>*>(lua_newuserdata(L, sizeof(shared_ptr<Instance>)));
-			new(udata) shared_ptr<Instance>(ptr);
+			new(udata) shared_ptr<Instance>(shared_this);
 			
 			luaL_getmetatable(L, getLuaClassName().c_str());
 			lua_setmetatable(L, -2);
@@ -520,7 +522,7 @@ namespace OB{
 
 							shared_ptr<Instance> kiddie = inst->FindFirstChild(name, false);
 							if(kiddie){
-								return kiddie->wrap_lua(L, kiddie);
+								return kiddie->wrap_lua(L);
 							}
 
 							return luaL_error(L, "attempt to index '%s' (a nil value)", name);
@@ -633,7 +635,7 @@ namespace OB{
 			shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(inst){
 				if(inst->Parent){
-					return inst->Parent->wrap_lua(L, inst->Parent);
+					return inst->Parent->wrap_lua(L);
 				}
 				lua_pushnil(L);
 				return 1;
@@ -712,7 +714,7 @@ namespace OB{
 			if(inst){
 				shared_ptr<Instance> newGuy = inst->Clone();
 				if(newGuy){
-					return newGuy->wrap_lua(L, newGuy);
+					return newGuy->wrap_lua(L);
 				}
 				return 0;
 			}
@@ -751,7 +753,7 @@ namespace OB{
 				}
 				shared_ptr<Instance> foundStuff = inst->FindFirstChild(kidName, recursive);
 				if(foundStuff){
-					return foundStuff->wrap_lua(L, foundStuff);
+					return foundStuff->wrap_lua(L);
 				}
 				lua_pushnil(L);
 				return 1;
@@ -769,7 +771,7 @@ namespace OB{
 					if(kid){
 						int lIndex = i + 1;
 						//lua_pushnumber(L, lIndex);
-						kid->wrap_lua(L, kid);
+						kid->wrap_lua(L);
 						lua_rawseti(L, -2, lIndex);
 					}
 				}

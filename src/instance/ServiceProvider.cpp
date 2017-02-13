@@ -62,7 +62,7 @@ namespace OB{
 				std::string serviceName = std::string(luaL_checkstring(L, 2));
 				shared_ptr<Instance> foundGuy = sp->FindService(serviceName);
 				if(foundGuy != NULL){
-					return foundGuy->wrap_lua(L, foundGuy);
+					return foundGuy->wrap_lua(L);
 				}
 				lua_pushnil(L);
 				return 1;
@@ -76,7 +76,7 @@ namespace OB{
 				std::string serviceName = std::string(luaL_checkstring(L, 2));
 				shared_ptr<Instance> foundGuy = sp->GetService(serviceName);
 				if(foundGuy != NULL){
-					return foundGuy->wrap_lua(L, foundGuy);
+					return foundGuy->wrap_lua(L);
 				}
 				lua_pushnil(L);
 				return 1;

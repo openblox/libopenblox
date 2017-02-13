@@ -149,7 +149,7 @@ namespace OB{
 				}
 				case TYPE_INSTANCE: {
 					shared_ptr<Instance::Instance> inst = *static_cast<shared_ptr<Instance::Instance>*>(wrapped);
-					inst->wrap_lua(L, inst);
+					inst->wrap_lua(L);
 					break;
 				}
 				case TYPE_TYPE: {
