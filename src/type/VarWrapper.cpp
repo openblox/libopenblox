@@ -41,6 +41,15 @@ namespace OB{
 		OB_PRIMATIVE_WRAPPER_IMPL(Bool, bool, BOOL);
 		OB_PRIMATIVE_WRAPPER_IMPL(String, std::string, STRING);
 
+		LuaReferencedWrapper::LuaReferencedWrapper(lua_State* L, int ref){
+			this->ref = ref;
+			this->L = L;
+		}
+
+		LuaReferencedWrapper::~LuaReferencedWrapper(){
+		    luaL_unref(L, LUA_REGISTRYINDEX, ref);
+		}
+
 		VarWrapper::VarWrapper(shared_ptr<Instance::Instance> var){
 			type = TYPE_INSTANCE;
 			wrapped = malloc(sizeof(shared_ptr<Instance::Instance>));
@@ -59,6 +68,11 @@ namespace OB{
 				throw exception;
 			}
 			new(wrapped) shared_ptr<Type>(var);
+		}
+
+		VarWrapper::VarWrapper(lua_State* L, int ref){
+			type = TYPE_LUA_OBJECT;
+			wrapped = (void*)new LuaReferencedWrapper(L, ref);
 		}
 
 		VarWrapper::~VarWrapper(){
@@ -108,6 +122,11 @@ namespace OB{
 				    delete static_cast<shared_ptr<Type>*>(wrapped);
 					break;
 				}
+				case TYPE_LUA_OBJECT: {
+					LuaReferencedWrapper* lrw = static_cast<LuaReferencedWrapper*>(wrapped);
+					delete lrw;
+					break;
+				}
 				case TYPE_UNKNOWN: {
 					//This might end very badly!
 				    free(wrapped);
@@ -154,6 +173,11 @@ namespace OB{
 				}
 				case TYPE_TYPE: {
 					shared_ptr<Type> tp = *static_cast<shared_ptr<Type>*>(wrapped);
+					break;
+				}
+				case TYPE_LUA_OBJECT: {
+					LuaReferencedWrapper* lrw = static_cast<LuaReferencedWrapper*>(wrapped);
+				    lua_rawgeti(L, LUA_REGISTRYINDEX, lrw->ref);
 					break;
 				}
 				case TYPE_NULL: {

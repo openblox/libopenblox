@@ -44,6 +44,7 @@ namespace OB{
 			TYPE_STRING,
 			TYPE_INSTANCE,
 			TYPE_TYPE,
+			TYPE_LUA_OBJECT,
 			TYPE_NULL,
 			TYPE_UNKNOWN
 		};
@@ -55,14 +56,14 @@ namespace OB{
 				type val; \
 		}
 
-#define OB_PRIMATIVE_WRAPPER_IMPL(ntype, typee, type_C) \
-			ntype##Wrapper::ntype##Wrapper(typee val){ \
-				this->val = val; \
-			}\
-			VarWrapper::VarWrapper(typee var){ \
-				type = TYPE_##type_C; \
-				wrapped = reinterpret_cast<void*>(new ntype##Wrapper(var)); \
-			}
+		#define OB_PRIMATIVE_WRAPPER_IMPL(ntype, typee, type_C) \
+		ntype##Wrapper::ntype##Wrapper(typee val){ \
+			this->val = val; \
+		}\
+		VarWrapper::VarWrapper(typee var){ \
+			type = TYPE_##type_C; \
+			wrapped = reinterpret_cast<void*>(new ntype##Wrapper(var)); \
+		}
 
 	    OB_PRIMATIVE_WRAPPER(Int, int);
 		OB_PRIMATIVE_WRAPPER(Double, double);
@@ -71,6 +72,15 @@ namespace OB{
 		OB_PRIMATIVE_WRAPPER(UnsignedLong, unsigned long);
 		OB_PRIMATIVE_WRAPPER(Bool, bool);
 		OB_PRIMATIVE_WRAPPER(String, std::string);
+
+		class LuaReferencedWrapper{
+			public:
+				LuaReferencedWrapper(lua_State* L, int ref);
+				~LuaReferencedWrapper();
+
+				lua_State* L;
+				int ref;
+		};
 
 		class VarWrapper{
 			public:
@@ -85,6 +95,7 @@ namespace OB{
 				VarWrapper(std::string var);
 				VarWrapper(shared_ptr<Instance::Instance> var);
 				VarWrapper(shared_ptr<Type> var);
+				VarWrapper(lua_State* L, int ref);
 				~VarWrapper();
 
 				void wrap_lua(lua_State* L);

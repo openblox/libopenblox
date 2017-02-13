@@ -148,6 +148,9 @@ namespace OB{
 							case LUA_TFUNCTION:
 							case LUA_TTHREAD:
 							case LUA_TLIGHTUSERDATA: {
+								lua_pushvalue(L, i);
+								int ref = luaL_ref(L, LUA_REGISTRYINDEX);
+								fireArgs.push_back(make_shared<VarWrapper>(L, ref));
 								break;
 							}
 						}
