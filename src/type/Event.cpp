@@ -142,7 +142,17 @@ namespace OB{
 								break;
 							}
 							case LUA_TUSERDATA: {
-								break;
+								shared_ptr<Type> tl = checkType(L, i);
+								if(tl){
+									fireArgs.push_back(make_shared<VarWrapper>(tl));
+									break;
+								}
+
+								shared_ptr<Instance::Instance> ti = Instance::Instance::checkInstance(L, i);
+								if(ti){
+									fireArgs.push_back(make_shared<VarWrapper>(ti));
+									break;
+								}
 							}
 							case LUA_TTABLE:
 							case LUA_TFUNCTION:
