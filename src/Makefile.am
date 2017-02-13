@@ -32,6 +32,7 @@ instance/Lighting.cpp \
 instance/ContentProvider.cpp \
 instance/BasePlayerGui.cpp \
 instance/CoreGui.cpp \
+instance/StarterGui.cpp \
 instance/PlayerGui.cpp \
 instance/DataModel.cpp \
 instance/Humanoid.cpp \
