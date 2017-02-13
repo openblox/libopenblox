@@ -59,7 +59,11 @@ namespace OB{
 		 *
 		 * @author John M. Harris, Jr.
 		 */
-		class Type: public std::enable_shared_from_this<Type>{
+		class Type:
+				// @cond DOXYGEN_IGNORE
+				public std::enable_shared_from_this<Type>
+				// @endconf
+		{
 			public:
 				Type();
 				virtual ~Type();
