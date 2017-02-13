@@ -64,6 +64,8 @@ namespace OB{
 			LState->numChildStates = 0;
 			LState->parent = NULL;
 			LState->initUseOver = false;
+
+			globalOBLState = LState;
 			
 			return L;
 		}
