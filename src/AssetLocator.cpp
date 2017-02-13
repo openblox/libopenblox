@@ -151,6 +151,29 @@ namespace OB{
 			res = curl_easy_perform(curl);
 			if(res != CURLE_OK){
 				std::cout << "[AssetLocator] cURL Error: " << curl_easy_strerror(res) << std::endl;
+
+				OBEngine* eng = OBEngine::getInstance();
+				shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+				shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
+				shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
+
+				std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
+				fireArgs.push_back(make_shared<Type::VarWrapper>(url));
+				fireArgs.push_back(make_shared<Type::VarWrapper>(std::string(curl_easy_strerror(res))));
+
+				AssetLoadFailed->Fire(fireArgs);
+
+				curl_easy_cleanup(curl);
+
+				if(decCount){
+					requestQueueSize--;
+				}
+				
+			    delete body;
+
+				pthread_mutex_unlock(&mmutex);
+				
+				return;
 			}
 
 			curl_easy_cleanup(curl);
@@ -168,17 +191,40 @@ namespace OB{
 				
 				putAsset(url, body->size, body->data);
 			}else{
-				std::cout << "[AssetLocator] cURL Error: No data" << std::endl;
-				//AssetLoad Failed
-			}
+				std::cout << "[AssetLocator] No data" << std::endl;
 
-			if(decCount){
-				requestQueueSize--;
+				OBEngine* eng = OBEngine::getInstance();
+				shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+				shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
+				shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
+
+				std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
+				fireArgs.push_back(make_shared<Type::VarWrapper>(url));
+				fireArgs.push_back(make_shared<Type::VarWrapper>("No data."));
+
+				AssetLoadFailed->Fire(fireArgs);
 			}
+		}else{
+			std::cout << "[AssetLocator] Failed to initialize cURL" << std::endl;
+
+			OBEngine* eng = OBEngine::getInstance();
+			shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+			shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
+			shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
+
+			std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
+			fireArgs.push_back(make_shared<Type::VarWrapper>(url));
+			fireArgs.push_back(make_shared<Type::VarWrapper>("Failed to initialize cURL."));
+
+			AssetLoadFailed->Fire(fireArgs);
+		}
+
+		if(decCount){
+			requestQueueSize--;
 		}
 
 		delete body;
-
+		
 		pthread_mutex_unlock(&mmutex);
 	}
 

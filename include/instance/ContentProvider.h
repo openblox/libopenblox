@@ -38,6 +38,7 @@ namespace OB{
 				virtual ~ContentProvider();
 
 				shared_ptr<Type::Event> GetAssetLoaded();
+				shared_ptr<Type::Event> GetAssetLoadFailed();
 
 				void Preload(std::string url);
 				void Load(std::string url);
@@ -56,6 +57,7 @@ namespace OB{
 				DECLARE_CLASS(ContentProvider);
 
 				shared_ptr<Type::Event> AssetLoaded;
+				shared_ptr<Type::Event> AssetLoadFailed;
 		};
 	}
 }

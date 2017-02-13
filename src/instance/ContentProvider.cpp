@@ -31,6 +31,7 @@ namespace OB{
 			Name = ClassName;
 
 			AssetLoaded = make_shared<Type::Event>("AssetLoaded");
+			AssetLoadFailed = make_shared<Type::Event>("AssetLoadFailed");
 		}
 
 	    ContentProvider::~ContentProvider(){}
@@ -41,6 +42,10 @@ namespace OB{
 
 		shared_ptr<Type::Event> ContentProvider::GetAssetLoaded(){
 			return AssetLoaded;
+		}
+
+		shared_ptr<Type::Event> ContentProvider::GetAssetLoadFailed(){
+			return AssetLoadFailed;
 		}
 
 	    void ContentProvider::Preload(std::string url){
@@ -169,6 +174,7 @@ namespace OB{
 			
 			luaL_Reg events[] = {
 				{"AssetLoaded", WRAP_EVT(ContentProvider, AssetLoaded)},
+				{"AssetLoadFailed", WRAP_EVT(ContentProvider, AssetLoadFailed)},
 				{NULL, NULL}
 			};
 			luaL_setfuncs(L, events, 0);
