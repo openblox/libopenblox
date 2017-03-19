@@ -29,10 +29,6 @@
 
 #include <string>
 
-#if HAVE_IRRLICHT
-#include <irrlicht/irrlicht.h>
-#endif
-
 #include "instance/Lighting.h"
 
 #include "type/Type.h"
@@ -105,7 +101,7 @@ namespace OB{
 			throw new OBException("OBEngine has already been initialized.");
 		}
 
-		#if HAVE_IRRLICHT
+	    #if HAVE_IRRLICHT
 		
 		if(doRendering){
 			irr::SIrrlichtCreationParameters p;

@@ -19,6 +19,8 @@
 
 #include "type/Type.h"
 
+#include "config.h"
+
 #if HAVE_IRRLICHT
 #include <irrlicht/SColor.h>
 #endif

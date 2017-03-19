@@ -19,6 +19,8 @@
 
 #include "instance/Instance.h"
 
+#include "config.h"
+
 #if HAVE_IRRLICHT
 #include <irrlicht/irrlicht.h>
 #endif

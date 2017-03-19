@@ -29,6 +29,8 @@
 #ifndef OB_OBENGINE
 #define OB_OBENGINE
 
+#include "config.h"
+
 #include "obtype.h"
 #include "mem.h"
 
@@ -41,20 +43,8 @@
 
 #include <pthread.h>
 
-#ifndef __I_IRRLICHT_DEVICE_H_INCLUDED__
 #if HAVE_IRRLICHT
-namespace irr{
-	class IrrlichtDevice;
-
-	namespace video{
-		class IVideoDriver;
-	}
-
-	namespace scene{
-		class ISceneManager;
-	}
-}
-#endif
+#include <irrlicht/irrlicht.h>
 #endif
 
 namespace OB{
