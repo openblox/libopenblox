@@ -19,6 +19,8 @@
 
 #include "OBEngine.h"
 
+#include "config.h"
+
 #include "OBException.h"
 #include "utility.h"
 
@@ -100,6 +102,10 @@ namespace OB{
 		if(initialized){
 			throw new OBException("OBEngine has already been initialized.");
 		}
+
+		std::string verString = std::string(PACKAGE_STRING) + " initializing";
+		
+		OBLogger::log(verString);
 
 	    #if HAVE_IRRLICHT
 		

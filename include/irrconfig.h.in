@@ -1,0 +1,4 @@
+/* include/irrconfig.h.in.  Generated from configure.ac by autoheader.  */
+
+/* Define to 1 if you have the `Irrlicht' library (-lIrrlicht). */
+#undef HAVE_IRRLICHT

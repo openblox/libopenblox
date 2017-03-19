@@ -19,7 +19,7 @@
 
 #include "instance/Instance.h"
 
-#include "config.h"
+#include "irrconfig.h"
 
 #if HAVE_IRRLICHT
 #include <irrlicht/irrlicht.h>
