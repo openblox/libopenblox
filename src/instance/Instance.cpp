@@ -40,7 +40,9 @@ namespace OB{
 			netId = OB_NETID_UNASSIGNED;
 
 			//TODO: Events
-			TestEvent = make_shared<Type::Event>("TestEvent");
+		    Changed = make_shared<Type::Event>("Changed");
+		    ChildAdded = make_shared<Type::Event>("ChildAdded");
+		    ChildRemoved = make_shared<Type::Event>("ChildRemoved");
 		}
 
 		Instance::~Instance(){}
