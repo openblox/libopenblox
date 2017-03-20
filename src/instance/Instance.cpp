@@ -83,8 +83,7 @@ namespace OB{
 			}
 			setParent(NULL, true);
 			ParentLocked = true;
-			//TODO:
-			//Changed->disconnectAll();
+			Changed->disconnectAll();
 
 			std::vector<shared_ptr<Instance>> kids = GetChildren();
 			
@@ -267,6 +266,18 @@ namespace OB{
 			lua_pop(L, 1);
 		}
 
+		void Instance::propertyChanged(std::string property){
+		    std::vector<shared_ptr<Type::VarWrapper>> args = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(property)});
+
+			Changed->Fire(args);
+		}
+
+		void Instance::propertyChanged(std::string property, shared_ptr<Instance> inst){
+			std::vector<shared_ptr<Type::VarWrapper>> args = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(property)});
+
+			inst->Changed->Fire(args);
+		}
+
 		void Instance::setParent(shared_ptr<Instance> parent, bool useDMNotify){
 			if(Parent == parent){
 				//noop
@@ -322,8 +333,8 @@ namespace OB{
 #endif
 			}
 
-			//fireAncestryChanged(new std::vector<ob_type::VarWrapper>({ob_type::VarWrapper(this), ob_type::VarWrapper(Parent)}));
-			//propertyChanged("Parent");
+			fireAncestryChanged(std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(std::enable_shared_from_this<Instance>::shared_from_this()), make_shared<Type::VarWrapper>(Parent)}));
+			propertyChanged("Parent");
 		}
 
 		std::string Instance::toString(){
@@ -338,14 +349,41 @@ namespace OB{
 			return Parent;
 		}
 
+		void Instance::fireAncestryChanged(std::vector<shared_ptr<Type::VarWrapper>> args){
+			AncestryChanged->Fire(args);
+
+			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != children.size(); i++){
+				shared_ptr<Instance> kid = children[i];
+				if(kid){
+					kid->fireAncestryChanged(args);
+				}
+			}
+		}
+
+		void Instance::fireDescendantAdded(std::vector<shared_ptr<Type::VarWrapper>> args){
+			DescendantAdded->Fire(args);
+
+			if(Parent){
+				Parent->fireDescendantAdded(args);
+			}
+		}
+
+		void Instance::fireDescendantRemoving(std::vector<shared_ptr<Type::VarWrapper>> args){
+			DescendantRemoving->Fire(args);
+
+			if(Parent){
+				Parent->fireDescendantRemoving(args);
+			}
+		}
+
 		void Instance::removeChild(shared_ptr<Instance> kid){
 			if(kid){
 				children.erase(std::remove(children.begin(), children.end(), kid));
 
-				//TODO:
-				/*std::vector<ob_type::VarWrapper>* args = new std::vector<ob_type::VarWrapper>({ob_type::VarWrapper(kid)});
+
+			    std::vector<shared_ptr<Type::VarWrapper>> args = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(kid)});
 				ChildRemoved->Fire(args);
-				fireDescendantRemoving(args);*/
+				fireDescendantRemoving(args);
 			}
 		}
 
@@ -353,10 +391,9 @@ namespace OB{
 			if(kid){
 				children.push_back(kid);
 
-				//TODO:
-				/*std::vector<ob_type::VarWrapper>* args = new std::vector<ob_type::VarWrapper>({ob_type::VarWrapper(kid)});
+				std::vector<shared_ptr<Type::VarWrapper>> args = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(kid)});
 				ChildAdded->Fire(args);
-				fireDescendantAdded(args);*/
+				fireDescendantAdded(args);
 			}
 		}
 
@@ -627,7 +664,7 @@ namespace OB{
 					//TODO:
 					//REPLICATE_PROPERTY_CHANGE(inst, "Name", inst->Name);
 
-					//propertyChanged("Name", inst);
+					propertyChanged("Name", inst);
 				}
 				return 0;
 			}
@@ -697,7 +734,7 @@ namespace OB{
 				
 					//REPLICATE_PROPERTY_CHANGE(inst, "Archivable", inst->Archivable);
 
-					//propertyChanged("Archivable", inst);
+					propertyChanged("Archivable", inst);
 				}
 			}
 			return 0;

@@ -544,6 +544,12 @@ namespace OB{
 
 				DECLARE_CLASS(Instance);
 
+				void fireAncestryChanged(std::vector<shared_ptr<Type::VarWrapper>> args);
+				void fireDescendantAdded(std::vector<shared_ptr<Type::VarWrapper>> args);
+				void fireDescendantRemoving(std::vector<shared_ptr<Type::VarWrapper>> args);
+				void propertyChanged(std::string property);
+				static void propertyChanged(std::string property, shared_ptr<Instance> inst);
+				
 				ob_int64 netId;
 
 				std::vector<shared_ptr<Instance>> children;
