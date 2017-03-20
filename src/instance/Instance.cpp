@@ -41,8 +41,11 @@ namespace OB{
 
 			//TODO: Events
 		    Changed = make_shared<Type::Event>("Changed");
+			AncestryChanged = make_shared<Type::Event>("AncestryChanged");
 		    ChildAdded = make_shared<Type::Event>("ChildAdded");
 		    ChildRemoved = make_shared<Type::Event>("ChildRemoved");
+			DescendantAdded = make_shared<Type::Event>("DescendantAdded");
+			DescendantRemoving = make_shared<Type::Event>("DescendantRemoving");
 		}
 
 		Instance::~Instance(){}
@@ -422,14 +425,12 @@ namespace OB{
 
 		void Instance::register_lua_events(lua_State* L){
 			luaL_Reg events[] = {
-				{"TestEvent", WRAP_EVTI(TestEvent)},
-				//TODO: Events don't even exist yet.
-				/*{"Changed", WRAP_EVT(Changed)},
-				  {"AncestryChanged", WRAP_EVT(AncestryChanged)},
-				  {"ChildAdded", WRAP_EVT(ChildAdded)},
-				  {"ChildRemoved", WRAP_EVT(ChildRemoved)},
-				  {"DescendantAdded", WRAP_EVT(DescendantAdded)},
-				  {"DescendantRemoving", WRAP_EVT(DescendantRemoving)},*/
+				{"Changed", WRAP_EVTI(Changed)},
+				{"AncestryChanged", WRAP_EVTI(AncestryChanged)},
+				{"ChildAdded", WRAP_EVTI(ChildAdded)},
+				{"ChildRemoved", WRAP_EVTI(ChildRemoved)},
+				{"DescendantAdded", WRAP_EVTI(DescendantAdded)},
+				{"DescendantRemoving", WRAP_EVTI(DescendantRemoving)},
 				{NULL, NULL}
 			};
 			luaL_setfuncs(L, events, 0);
