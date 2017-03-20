@@ -98,6 +98,8 @@ namespace OB{
 				VarWrapper(lua_State* L, int ref);
 				~VarWrapper();
 
+				shared_ptr<Instance::Instance> asInstance();
+
 				void wrap_lua(lua_State* L);
 
 				void* wrapped;

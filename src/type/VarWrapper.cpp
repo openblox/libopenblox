@@ -136,6 +136,14 @@ namespace OB{
 			wrapped = NULL;
 		}
 
+		shared_ptr<Instance::Instance> VarWrapper::asInstance(){
+			if(type == TYPE_INSTANCE){
+				shared_ptr<Instance::Instance> inst = *static_cast<shared_ptr<Instance::Instance>*>(wrapped);
+			    return inst;
+			}
+			return NULL;
+		}
+
 		void VarWrapper::wrap_lua(lua_State* L){
 			switch(type){
 				case TYPE_INT: {
