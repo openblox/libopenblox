@@ -49,7 +49,7 @@ namespace OB{
 
 		initialized = false;
 		startTime = currentTimeMillis();
-		_isRunning = true;
+		_isRunning = false;
 		exitCode = 0;
 
 		doRendering = true;
@@ -102,6 +102,8 @@ namespace OB{
 		if(initialized){
 			throw new OBException("OBEngine has already been initialized.");
 		}
+
+		_isRunning = true;
 
 		std::string verString = std::string(PACKAGE_STRING) + " initializing";
 		
@@ -225,6 +227,10 @@ namespace OB{
 		#if HAVE_IRRLICHT
 		
 		if(doRendering){
+			if(!dm){
+				//Prevents segfault when render() is called before init()
+				return;
+			}
 			shared_ptr<Instance::Lighting> light = dm->getLighting();
 			
 			shared_ptr<Type::Color3> skyCol = light->GetSkyColor();
