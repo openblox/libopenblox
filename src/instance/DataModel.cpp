@@ -32,7 +32,7 @@ namespace OB{
 		}
 
 	    DataModel::DataModel(){
-			Name = "game";
+			Name = "Game";
 		}
 
 	    DataModel::~DataModel(){}
