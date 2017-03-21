@@ -24,6 +24,7 @@
 
 namespace OB{
 	namespace Instance{
+		class Workspace;
 		class Lighting;
 		class ContentProvider;
 		
@@ -43,6 +44,14 @@ namespace OB{
 				
 				void initServices();
 
+				/**
+				 * Returns the Workspace service.
+				 *
+				 * @returns Workspace
+				 * @author John M. Harris, Jr.
+				 */
+				shared_ptr<Workspace> getWorkspace();
+				
 				/**
 				 * Returns the Lighting service.
 				 *
@@ -72,6 +81,7 @@ namespace OB{
 				
 				DECLARE_CLASS(DataModel);
 
+				shared_ptr<Workspace> workspace;
 				shared_ptr<Lighting> lighting;
 				shared_ptr<ContentProvider> contentProvider;
 

@@ -34,6 +34,7 @@ instance/BasePlayerGui.cpp \
 instance/CoreGui.cpp \
 instance/StarterGui.cpp \
 instance/PlayerGui.cpp \
+instance/Workspace.cpp \
 instance/DataModel.cpp \
 instance/Humanoid.cpp \
 instance/Folder.cpp \
