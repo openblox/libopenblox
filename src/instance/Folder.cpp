@@ -27,11 +27,11 @@ namespace OB{
 			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    Folder::Foldre(){
+	    Folder::Folder(){
 			Name = ClassName;
 		}
 
-	    Foldre::~folder(){}
+	    Folder::~Folder(){}
 
 		shared_ptr<Instance> Folder::cloneImpl(){
 			shared_ptr<Folder> fi = make_shared<Folder>();
@@ -39,7 +39,7 @@ namespace OB{
 			fi->Name = Name;
 			fi->ParentLocked = ParentLocked;
 			
-			return mi;
+			return fi;
 		}
 	}
 }
