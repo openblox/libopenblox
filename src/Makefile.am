@@ -36,6 +36,7 @@ instance/StarterGui.cpp \
 instance/PlayerGui.cpp \
 instance/DataModel.cpp \
 instance/Humanoid.cpp \
+instance/Folder.cpp \
 utility.cpp
 
 # Linker options
