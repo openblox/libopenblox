@@ -2,8 +2,10 @@
 
 AC_PREREQ(2.61)
 AC_INIT([libopenblox], [0.1.1], [johnmh@openblox.org])
-AC_CONFIG_HEADERS([include/config.h include/irrconfig.h])
+AC_CONFIG_HEADERS([include/config.h include/oblibconfig.h])
 AC_PROG_CXX
+PKG_PROG_PKG_CONFIG
+PKG_INSTALLDIR
 
 AC_CANONICAL_SYSTEM
 
@@ -15,10 +17,18 @@ syslua="lua"
 
 #Options
 AC_ARG_WITH(irrlicht, AS_HELP_STRING([--without-irrlicht], [Compile without Irrlicht support.]))
+AC_ARG_WITH(curl, AS_HELP_STRING([--without-curl], [Compile without curl support.]))
+AC_ARG_WITH(enet, AS_HELP_STRING([--without-enet], [Compile without enet support.]))
 AC_ARG_WITH(lua, AS_HELP_STRING([--with-lua=LUA_VER], [Compile with a specific system Lua.]), [syslua="$withval"])
 
 #Dependency checks
-PKG_CHECK_MODULES([LCURL], [libcurl])
+
+AS_IF([test "x$syslua" != "xlua"],
+      [LLUA_CFLAGS="-I$oldincludedir/$syslua"] [LLUA_LIBS="-l$syslua -lm"] [LDFLAGS="$LDFLAGS -lm"])
+
+AX_PKG_CHECK_MODULES([LLUA], [lua], [])
+
+AC_CHECK_LIB($syslua, lua_newstate,, AC_MSG_ERROR([lua_newstate was not found in lib$syslua (lua not installed?)]))
 
 AS_IF([test "x$with_irrlicht" != "xno"],
       [AC_CHECK_LIB(Irrlicht, createDevice, [have_irrlicht=yes], AC_MSG_ERROR([createDevice was not found in libIrrlicht (Irrlicht not installed?)]))],
@@ -28,17 +38,23 @@ AS_IF([test "x$have_irrlicht" = "xyes"],
       [LIRRLICHT_CFLAGS="-lIrrlicht"] [AC_DEFINE_UNQUOTED(HAVE_IRRLICHT, 1, [Define to 1 if you have the `Irrlicht' library (-lIrrlicht).],
 	  [LIRRLICHT_CFLAGS=""])])
 
-AS_IF([test "x$syslua" != "xlua"],
-      [LLUA_CFLAGS="-I$oldincludedir/$syslua"] [LLUA_LIBS="-l$syslua -lm"] [LDFLAGS="$LDFLAGS -lm"])
+AC_SUBST(LIRRLICHT_CFLAGS)
 
-PKG_CHECK_MODULES([LLUA], [lua])
+AS_IF([test "x$with_curl" != "xno"],
+	  [AX_PKG_CHECK_MODULES([LCURL], [libcurl], [])],
+	  [have_curl=no])
 
-AC_CHECK_LIB(curl, curl_easy_init,, AC_MSG_ERROR([curl_easy_init was not found in libcurl (curl not installed?)]))
-AC_CHECK_LIB($syslua, lua_newstate,, AC_MSG_ERROR([lua_newstate was not found in lib$syslua (lua not installed?)]))
+AS_IF([test "x$with_enet" != "xno"],
+	  [AX_PKG_CHECK_MODULES([LENET], [libenet], [])],
+	  [have_enet=no])
 
 LT_INIT
 
 AC_CONFIG_FILES(Makefile
                 src/Makefile
-                include/Makefile)
+                include/Makefile
+				libopenblox.pc)
+
+pkgconfig_DATA=libopenblox.pc
+
 AC_OUTPUT

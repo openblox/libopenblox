@@ -29,7 +29,7 @@
 #ifndef OB_OBENGINE
 #define OB_OBENGINE
 
-#include "irrconfig.h"
+#include "oblibconfig.h"
 
 #include "obtype.h"
 #include "mem.h"

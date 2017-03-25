@@ -19,7 +19,7 @@
 
 #include "type/Type.h"
 
-#include "irrconfig.h"
+#include "oblibconfig.h"
 
 #if HAVE_IRRLICHT
 #include <irrlicht/SColor.h>
