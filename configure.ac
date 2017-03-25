@@ -32,11 +32,11 @@ AC_CHECK_LIB($syslua, lua_newstate,, AC_MSG_ERROR([lua_newstate was not found in
 
 AS_IF([test "x$with_irrlicht" != "xno"],
       [AC_CHECK_LIB(Irrlicht, createDevice, [have_irrlicht=yes], AC_MSG_ERROR([createDevice was not found in libIrrlicht (Irrlicht not installed?)]))],
-	  [have_irrlicht=no])
+      [have_irrlicht=no])
 
 AS_IF([test "x$have_irrlicht" = "xyes"],
       [LIRRLICHT_CFLAGS="-lIrrlicht"] [AC_DEFINE_UNQUOTED(HAVE_IRRLICHT, 1, [Define to 1 if you have the `Irrlicht' library (-lIrrlicht).],
-	  [LIRRLICHT_CFLAGS=""])])
+      [LIRRLICHT_CFLAGS=""])])
 
 AC_SUBST(LIRRLICHT_CFLAGS)
 
@@ -44,9 +44,15 @@ AS_IF([test "x$with_curl" != "xno"],
 	  [AX_PKG_CHECK_MODULES([LCURL], [libcurl], [])],
 	  [have_curl=no])
 
+AS_IF([test "x$have_curl" = "xyes"],
+      [AC_DEFINE_UNQUOTED(HAVE_CURL, 1, [Define to 1 if you have the `curl' library (-lcurl).])])
+
 AS_IF([test "x$with_enet" != "xno"],
 	  [AX_PKG_CHECK_MODULES([LENET], [libenet], [])],
 	  [have_enet=no])
+
+AS_IF([test "x$have_enet" = "xyes"],
+      [AC_DEFINE_UNQUOTED(HAVE_ENET, 1, [Define to 1 if you have the `enet' library (-lenet).])])
 
 LT_INIT
 
