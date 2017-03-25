@@ -41,18 +41,12 @@ AS_IF([test "x$have_irrlicht" = "xyes"],
 AC_SUBST(LIRRLICHT_CFLAGS)
 
 AS_IF([test "x$with_curl" != "xno"],
-	  [AX_PKG_CHECK_MODULES([LCURL], [libcurl], [])],
+	  [AX_PKG_CHECK_MODULES([LCURL], [libcurl], [], [AC_DEFINE_UNQUOTED(HAVE_CURL, 1, [Define to 1 if you have the `curl' library (-lcurl).])])],
 	  [have_curl=no])
 
-AS_IF([test "x$have_curl" = "xyes"],
-      [AC_DEFINE_UNQUOTED(HAVE_CURL, 1, [Define to 1 if you have the `curl' library (-lcurl).])])
-
 AS_IF([test "x$with_enet" != "xno"],
-	  [AX_PKG_CHECK_MODULES([LENET], [libenet], [])],
+	  [AX_PKG_CHECK_MODULES([LENET], [libenet], [], [AC_DEFINE_UNQUOTED(HAVE_ENET, 1, [Define to 1 if you have the `enet' library (-lenet).])])],
 	  [have_enet=no])
-
-AS_IF([test "x$have_enet" = "xyes"],
-      [AC_DEFINE_UNQUOTED(HAVE_ENET, 1, [Define to 1 if you have the `enet' library (-lenet).])])
 
 LT_INIT
 
