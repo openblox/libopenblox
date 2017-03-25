@@ -24,7 +24,7 @@
 /include/config.h.in
 /include/config.h~
 /include/config.h.in~
-/include/irrconfig.h
+/include/oblibconfig.h
 /src/.deps/
 /src/*.la
 /src/*.lo
