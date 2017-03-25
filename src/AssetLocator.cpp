@@ -32,7 +32,11 @@
 #include <cstring>
 #include "unistd.h"
 
+#include "oblibconfig.h"
+
+#if HAVE_CURL
 #include <curl/curl.h>
+#endif
 
 namespace OB{
 	AssetResponse::AssetResponse(size_t size, char* data){
@@ -116,6 +120,10 @@ namespace OB{
 			return;
 		}
 
+		struct _ob_curl_body* body = new struct _ob_curl_body;
+		body->size = 0;
+		body->data = NULL;
+
 		if(ob_str_startsWith(url, "res://")){
 			std::string furl = url.substr(6);
 
@@ -123,6 +131,8 @@ namespace OB{
 
 			std::string canonPath = realpath(furl.c_str(), NULL);
 			std::cout << "Looking for file: " << canonPath << std::endl;
+
+			delete body;
 
 			if(decCount){
 				requestQueueSize--;
@@ -132,12 +142,10 @@ namespace OB{
 			return;
 		}
 
+		#if HAVE_CURL
+
 		CURL* curl;
 		CURLcode res;
-
-		struct _ob_curl_body* body = new struct _ob_curl_body;
-		body->size = 0;
-		body->data = NULL;
 		
 		curl = curl_easy_init();
 		if(curl){
@@ -218,6 +226,7 @@ namespace OB{
 
 			AssetLoadFailed->Fire(fireArgs);
 		}
+		#endif
 
 		if(decCount){
 			requestQueueSize--;
