@@ -22,6 +22,7 @@
 #include "OBEngine.h"
 
 //Services we're including just to initiate them ahead of time
+#include "instance/Workspace.h"
 #include "instance/Lighting.h"
 #include "instance/ContentProvider.h"
 
@@ -45,6 +46,10 @@ namespace OB{
 		
 		void DataModel::initServices(){
 			shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
+
+			workspace = make_shared<Workspace>();
+			workspace->setParent(sharedThis, false);
+			workspace->ParentLocked = true;
 			
 			lighting = make_shared<Lighting>();
 			lighting->setParent(sharedThis, false);
@@ -53,6 +58,10 @@ namespace OB{
 			contentProvider = make_shared<ContentProvider>();
 		    contentProvider->setParent(sharedThis, false);
 		    contentProvider->ParentLocked = true;
+		}
+
+		shared_ptr<Workspace> DataModel::getWorkspace(){
+			return workspace;
 		}
 
 		shared_ptr<Lighting> DataModel::getLighting(){
