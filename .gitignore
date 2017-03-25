@@ -49,3 +49,5 @@
 /src/type/*.lo
 /src/type/*.o
 .\#*
+/libopenblox.pc
+
