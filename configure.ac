@@ -53,7 +53,7 @@ LT_INIT
 AC_CONFIG_FILES(Makefile
                 src/Makefile
                 include/Makefile
-				libopenblox.pc)
+                libopenblox.pc)
 
 pkgconfig_DATA=libopenblox.pc
 
