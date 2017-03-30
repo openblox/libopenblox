@@ -319,6 +319,16 @@ namespace OB{
 				ob_int64 GetNetworkID();
 
 				/**
+				 * Sets the number used to identify this Instance.
+				 * Defaults to OB_NETID_UNASSIGNED.
+				 *
+				 * @internal
+				 * @param Unique 64 bit integer
+				 * @author John M. Harris, Jr.
+				 */
+				void setNetworkID(ob_int64 netId);
+
+				/**
 				 * Called internally every tick.
 				 *
 				 * @author John M. Harris, Jr.

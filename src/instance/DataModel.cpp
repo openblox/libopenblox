@@ -25,6 +25,7 @@
 #include "instance/Workspace.h"
 #include "instance/Lighting.h"
 #include "instance/ContentProvider.h"
+#include "instance/LogService.h"
 
 namespace OB{
 	namespace Instance{
@@ -34,6 +35,9 @@ namespace OB{
 
 	    DataModel::DataModel(){
 			Name = "Game";
+
+			netIdStartIdx = (rand() % (7001 - OB_NETID_START)) + OB_NETID_START;
+			netIdNextIdx = netIdStartIdx;
 		}
 
 	    DataModel::~DataModel(){}
@@ -58,6 +62,10 @@ namespace OB{
 			contentProvider = make_shared<ContentProvider>();
 		    contentProvider->setParent(sharedThis, false);
 		    contentProvider->ParentLocked = true;
+
+			logService = make_shared<LogService>();
+			logService->setParent(sharedThis, false);
+			logService->ParentLocked = true;
 		}
 
 		shared_ptr<Workspace> DataModel::getWorkspace(){
@@ -70,6 +78,10 @@ namespace OB{
 
 		shared_ptr<ContentProvider> DataModel::getContentProvider(){
 			return contentProvider;
+		}
+
+		shared_ptr<LogService> DataModel::getLogService(){
+			return logService;
 		}
 
 		shared_ptr<Instance> DataModel::cloneImpl(){
@@ -87,6 +99,24 @@ namespace OB{
 				newGuy->ParentLocked = true;
 			}
 			return newGuy;
+		}
+
+		weak_ptr<Instance> DataModel::lookupInstance(ob_uint64 netId){
+			return instMap[netId];
+		}
+
+		ob_uint64 DataModel::nextNetworkID(){
+			if(netIdNextIdx == OB_NETID_UNASSIGNED){
+				return OB_NETID_UNASSIGNED;
+			}
+			
+		    netIdNextIdx++;
+
+			if(netIdNextIdx >= ULONG_MAX){
+				netIdNextIdx = OB_NETID_UNASSIGNED;
+			}
+
+			return netIdNextIdx;
 		}
 
 		int DataModel::lua_Shutdown(lua_State* L){

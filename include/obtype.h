@@ -36,6 +36,15 @@
  */
 typedef long long int ob_int64;
 
+/**
+ * This type is used for 64 bit unsigned integers, for example network
+ * identifiers.
+ *
+ * @author John M. Harris, Jr.
+ */
+typedef unsigned long long int ob_uint64;
+
+#define OB_NETID_START 200
 #define OB_NETID_UNASSIGNED 0
 
 #endif // OB_OBTYPE

@@ -203,6 +203,10 @@ namespace OB{
 		ob_int64 Instance::GetNetworkID(){
 			return netId;
 		}
+
+		void Instance::setNetworkID(ob_int64 netId){
+			this->netId = netId;
+		}
 		
 		void Instance::tick(){
 			tickChildren();

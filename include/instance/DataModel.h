@@ -27,6 +27,7 @@ namespace OB{
 		class Workspace;
 		class Lighting;
 		class ContentProvider;
+		class LogService;
 		
 		/**
 		 * DataModel is the root singleton of the OpenBlox engine.
@@ -69,23 +70,56 @@ namespace OB{
 				shared_ptr<ContentProvider> getContentProvider();
 
 				/**
+				 * Returns the LogService service.
+				 *
+				 * @returns LogService
+				 * @author John M. Harris, Jr.
+				 */
+				shared_ptr<LogService> getLogService();
+
+				/**
 				 * Reimplementation of ServiceProvider's GetService,
 				 * this time calling ClassFactory's createService with
 				 * the isDataModel parameter being true.
 				 *
-				 * @param std::string className
+				 * @param className Class name
 				 * @returns Instance* The service requested, or NULL if it cannot be created.
 				 * @author John M. Harris, Jr.
 				 */
 				virtual shared_ptr<Instance> GetService(std::string className);
+
+				/**
+				 * Returns a weak reference to an Instance with a
+				 * given Network ID, or NULL.
+				 *
+				 * @param netId Network ID
+				 * @internal
+				 * @returns weak reference to Instance or NULL
+				 * @author John M. Harris, Jr.
+				 */
+			    weak_ptr<Instance> lookupInstance(ob_uint64 netId);
+
+				/**
+				 * Returns the next network ID.
+				 *
+				 * @returns Network ID
+				 * @internal
+				 * @author John M. Harris, Jr.
+				 */
+				ob_uint64 nextNetworkID();
 				
 				DECLARE_CLASS(DataModel);
 
 				shared_ptr<Workspace> workspace;
 				shared_ptr<Lighting> lighting;
 				shared_ptr<ContentProvider> contentProvider;
+				shared_ptr<LogService> logService;
 
 				DECLARE_LUA_METHOD(Shutdown);
+
+				ob_uint64 netIdStartIdx;
+				ob_uint64 netIdNextIdx;
+				std::map<ob_uint64, weak_ptr<Instance>> instMap;
 				
 				static void register_lua_methods(lua_State* L);
 		};

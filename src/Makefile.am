@@ -10,6 +10,7 @@ lib_LTLIBRARIES = libopenblox.la
 # Sources for libopenblox
 libopenblox_la_SOURCES = openblox.cpp \
 OBException.cpp \
+BitStream.cpp \
 OBLogger.cpp \
 ClassFactory.cpp \
 TaskScheduler.cpp \
@@ -35,14 +36,15 @@ instance/CoreGui.cpp \
 instance/StarterGui.cpp \
 instance/PlayerGui.cpp \
 instance/Workspace.cpp \
+instance/LogService.cpp \
 instance/DataModel.cpp \
 instance/Humanoid.cpp \
 instance/Folder.cpp \
 utility.cpp
 
 # Linker options
-libopenblox_la_LDFLAGS = $LIRRLICHT_CFLAGS $LCURL_CFLAGS $LLUA_CFLAGS
+libopenblox_la_LDFLAGS = $(LIRRLICHT_LIBS) $(LCURL_LIBS) $(LENET_LIBS) $(LLUA_LIBS)
 
 # Compiler options. Here we are adding the include directory
 # to be searched for headers included in the source code.
-libopenblox_la_CPPFLAGS = -I$(top_srcdir)/include $(LLUA_CFLAGS) -std=c++11 -pthread
+libopenblox_la_CPPFLAGS = -I$(top_srcdir)/include $(LCURL_CFLAGS) $(LENET_CFLAGS) $(LLUA_CFLAGS) -std=c++11 -pthread

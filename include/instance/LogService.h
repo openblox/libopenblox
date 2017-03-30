@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 John M. Harris, Jr. <johnmh@openblox.org>
+ * Copyright (C) 2017 John M. Harris, Jr. <johnmh@openblox.org>
  *
  * This file is part of OpenBlox.
  *
@@ -17,28 +17,36 @@
  * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "utility.h"
+#include "instance/Instance.h"
 
-#include <stddef.h>
-#include <sys/time.h>
-
-#include <algorithm>
+#ifndef OB_INST_LOGSERVICE
+#define OB_INST_LOGSERVICE
 
 namespace OB{
-	ob_int64 currentTimeMillis(){
-		struct timeval tp;
-		gettimeofday(&tp, NULL);
+	namespace Instance{
+		/**
+		 * Lighting provides access to game logs, including
+		 * print, warn and error calls from Lua.
+		 *
+		 * @author John M. Harris, Jr.
+		 */
+		class LogService: public Instance{
+			public:
+			    LogService();
+				virtual ~LogService();
 
-		return (ob_int64)(tp.tv_sec * 1000 + tp.tv_usec / 1000);
-	}
+				static void register_lua_events(lua_State* L);
+				
+				DECLARE_CLASS(LogService);
 
-	ob_int64 create64BitUniqueRandom(){
-		struct timeval tp;
-		gettimeofday(&tp, NULL);
-		return tp.tv_usec + tp.tv_sec * 1000000;
-	}
-
-	bool ob_str_startsWith(std::string str, std::string prefix){
-		return std::equal(prefix.begin(), prefix.end(), str.begin());
+				shared_ptr<Type::Event> MessageOut;
+		};
 	}
 }
+
+#endif // OB_INST_LOGSERVICE
+
+
+// Local Variables:
+// mode: c++
+// End:

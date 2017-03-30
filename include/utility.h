@@ -41,6 +41,8 @@ namespace OB{
 	 */
 	ob_int64 currentTimeMillis();
 
+	ob_int64 create64BitUniqueRandom();
+
 	/**
 	 * Returns true if str starts with prefix.
 	 *
