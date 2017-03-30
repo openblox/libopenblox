@@ -32,12 +32,6 @@ namespace OB{
 		return (ob_int64)(tp.tv_sec * 1000 + tp.tv_usec / 1000);
 	}
 
-	ob_int64 create64BitUniqueRandom(){
-		struct timeval tp;
-		gettimeofday(&tp, NULL);
-		return tp.tv_usec + tp.tv_sec * 1000000;
-	}
-
 	bool ob_str_startsWith(std::string str, std::string prefix){
 		return std::equal(prefix.begin(), prefix.end(), str.begin());
 	}

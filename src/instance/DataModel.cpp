@@ -35,7 +35,7 @@ namespace OB{
 
 	    DataModel::DataModel(){
 			Name = "Game";
-
+			
 			netIdStartIdx = (rand() % (7001 - OB_NETID_START)) + OB_NETID_START;
 			netIdNextIdx = netIdStartIdx;
 		}
