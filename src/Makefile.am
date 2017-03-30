@@ -20,6 +20,9 @@ lua/OBLua.cpp \
 lua/OBLua_OBBase.cpp \
 lua/OBLua_OBOS.cpp \
 type/Type.cpp \
+type/LuaEnum.cpp \
+type/LuaEnumItem.cpp \
+type/Enum.cpp \
 type/Color3.cpp \
 type/VarWrapper.cpp \
 type/EventConnection.cpp \

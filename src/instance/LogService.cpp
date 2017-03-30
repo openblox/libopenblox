@@ -37,6 +37,10 @@ namespace OB{
 			return NULL;
 		}
 
+		void LogService::postLog(std::string output, Enum::MessageType messageType){
+			
+		}
+
 		void LogService::register_lua_events(lua_State* L){
 			Instance::register_lua_events(L);
 			

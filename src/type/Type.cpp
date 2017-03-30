@@ -26,6 +26,8 @@
 
 #include "type/Event.h"
 #include "type/EventConnection.h"
+#include "type/LuaEnum.h"
+#include "type/LuaEnumItem.h"
 
 namespace OB{
 	namespace Type{
@@ -36,6 +38,8 @@ namespace OB{
 			
 			Event::_ob_init();
 			EventConnection::_ob_init();
+			LuaEnum::_ob_init();
+			LuaEnumItem::_ob_init();
 		}
 
 		std::vector<std::string> Type::typeList;

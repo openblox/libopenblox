@@ -86,6 +86,19 @@ namespace OB{
 		return data + idx;
 	}
 
+	size_t BitStream::writeSizeT(size_t var){
+		return write((unsigned char*)&var, sizeof(size_t));
+	}
+
+	size_t BitStream::readSizeT(){
+		unsigned char* intData = read(sizeof(size_t));
+		if(intData){
+			return (size_t)(*intData);
+		}else{
+		    throw new OBException("No data returned from stream");
+		}
+	}
+
 	size_t BitStream::writeInt(int var){
 		return write((unsigned char*)&var, sizeof(int));
 	}

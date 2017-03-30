@@ -17,40 +17,29 @@
  * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "instance/Instance.h"
-
-#ifndef OB_INST_LOGSERVICE
-#define OB_INST_LOGSERVICE
-
 #include "type/Enum.h"
 
 namespace OB{
-	namespace Instance{
-		/**
-		 * Lighting provides access to game logs, including
-		 * print, warn and error calls from Lua.
-		 *
-		 * @author John M. Harris, Jr.
-		 */
-		class LogService: public Instance{
-			public:
-			    LogService();
-				virtual ~LogService();
+	namespace Enum{
+		DENUM(MessageType,
+			"MessageOutput",
+			"MessageInfo",
+			"MessageWarning",
+			"MessageError"
+		);
 
-				void postLog(std::string message, Enum::MessageType messageType);
+		void registerLuaEnums(lua_State* L){
+			lua_newtable(L);
 
-				static void register_lua_events(lua_State* L);
-				
-				DECLARE_CLASS(LogService);
+			for(std::map<std::string, shared_ptr<Type::LuaEnum>>::iterator it = Type::LuaEnum::enums->begin(); it != Type::LuaEnum::enums->end(); ++it){
+				shared_ptr<Type::LuaEnum> en = it->second;
 
-				shared_ptr<Type::Event> MessageOut;
-		};
+				lua_pushstring(L, en->getType().c_str());
+				en->wrap_lua(L);
+				lua_rawset(L, -3);
+			}
+
+			lua_setglobal(L, "Enum");
+		}
 	}
 }
-
-#endif // OB_INST_LOGSERVICE
-
-
-// Local Variables:
-// mode: c++
-// End:

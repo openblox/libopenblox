@@ -33,8 +33,10 @@
 #include "utility.h"
 #include "TaskScheduler.h"
 #include "instance/Instance.h"
+#include "instance/LogService.h"
 
 #include "type/Color3.h"
+#include "type/Enum.h"
 
 namespace OB{
 	namespace Lua{
@@ -121,6 +123,8 @@ namespace OB{
 			};
 			luaL_setfuncs(L, color3lib, 0);
 			lua_setglobal(L, "Color3");
+
+			Enum::registerLuaEnums(L);
 
 			OBEngine* eng = OBEngine::getInstance();
 		    shared_ptr<Instance::DataModel> dm = eng->getDataModel();
@@ -233,7 +237,16 @@ namespace OB{
 				output = output + std::string(s);
 			}
 
-			//TODO: Pass to LogService
+		    OBEngine* eng = OBEngine::getInstance();
+			if(eng){
+				shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+				if(dm){
+					shared_ptr<Instance::LogService> ls = dm->getLogService();
+					if(ls){
+					    ls->postLog(output, Enum::MessageType::MessageOutput);
+					}
+				}
+			}
 		    puts(output.c_str());
 			
 			return 0;
