@@ -19,6 +19,8 @@
 
 #include "instance/LogService.h"
 
+#include "utility.h"
+
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(LogService, false, isDataModel, Instance){
@@ -27,6 +29,12 @@ namespace OB{
 
 	    LogService::LogService(){
 			Name = ClassName;
+
+			//These pointers are initialized to keep postLog going as quickly as possible. No lookup should be done there.
+			MessageOutput = Enum::LuaMessageType->getEnumItem((int)Enum::MessageType::MessageOutput);
+			MessageInfo = Enum::LuaMessageType->getEnumItem((int)Enum::MessageType::MessageInfo);
+			MessageWarning = Enum::LuaMessageType->getEnumItem((int)Enum::MessageType::MessageWarning);
+			MessageError = Enum::LuaMessageType->getEnumItem((int)Enum::MessageType::MessageError);
 			
 		    MessageOut = make_shared<Type::Event>("MessageOut");
 		}
@@ -37,8 +45,50 @@ namespace OB{
 			return NULL;
 		}
 
-		void LogService::postLog(std::string output, Enum::MessageType messageType){
+		void LogService::postLog(std::string message, Enum::MessageType messageType){
+			if(blocked){
+				return;
+			}
 			
+			ob_int64 timestamp = currentTimeMillis();
+
+		    shared_ptr<Type::LuaEnumItem> val;
+			switch(messageType){
+				case Enum::MessageType::MessageOutput: {
+					val = MessageOutput;
+					break;
+				}
+				case Enum::MessageType::MessageInfo: {
+					val = MessageInfo;
+					break;
+				}
+				case Enum::MessageType::MessageWarning: {
+					val = MessageWarning;
+					break;
+				}
+				case Enum::MessageType::MessageError: {
+					val = MessageError;
+					break;
+				}
+				default: {
+					return;
+				}
+			}
+
+			if(!val){
+				return;
+			}
+
+			std::vector<shared_ptr<Type::VarWrapper>> args = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(message), make_shared<Type::VarWrapper>(val)});
+			MessageOut->Fire(args);
+		}
+
+		void LogService::block(){
+			blocked = true;
+		}
+
+		void LogService::unblock(){
+			blocked = false;
 		}
 
 		void LogService::register_lua_events(lua_State* L){

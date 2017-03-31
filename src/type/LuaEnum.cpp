@@ -33,7 +33,7 @@ namespace OB{
 			lua_State* L = OB::OBEngine::getInstance()->getGlobalLuaState();
 
 			luaL_newmetatable(L, LuaTypeName.c_str());
-			Type::register_lua_metamethods(L);
+		    register_lua_metamethods(L);
 
 			lua_pushstring(L, "__metatable");
 			lua_pushstring(L, "This metatable is locked");

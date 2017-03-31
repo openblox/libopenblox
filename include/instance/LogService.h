@@ -38,12 +38,21 @@ namespace OB{
 				virtual ~LogService();
 
 				void postLog(std::string message, Enum::MessageType messageType);
+				
+				void block();
+				void unblock();
 
 				static void register_lua_events(lua_State* L);
 				
 				DECLARE_CLASS(LogService);
 
+				bool blocked;
 				shared_ptr<Type::Event> MessageOut;
+
+			    shared_ptr<Type::LuaEnumItem> MessageOutput;
+			    shared_ptr<Type::LuaEnumItem> MessageInfo;
+			    shared_ptr<Type::LuaEnumItem> MessageWarning;
+			    shared_ptr<Type::LuaEnumItem> MessageError;
 		};
 	}
 }

@@ -31,7 +31,13 @@ namespace OB{
 			lua_State* L = OB::OBEngine::getInstance()->getGlobalLuaState();
 
 			luaL_newmetatable(L, LuaTypeName.c_str());
-			Type::register_lua_metamethods(L);
+			luaL_Reg metamethods[] = {
+				{"__tostring", lua_toString},
+				{"__eq", lua_eq},
+				{"__gc", lua_gc},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, metamethods, 0);
 
 			lua_pushstring(L, "__metatable");
 			lua_pushstring(L, "This metatable is locked");
@@ -42,10 +48,12 @@ namespace OB{
 			lua_pushcfunction(L, lua_index);
 			lua_rawset(L, -3);
 
+			/*
 			//Item set
 			lua_pushstring(L, "__newindex");
 			lua_pushcfunction(L, Instance::Instance::lua_readOnlyProperty);
 			lua_rawset(L, -3);
+			*/
 
 			lua_pop(L, 1);
 		}

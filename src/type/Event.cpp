@@ -23,6 +23,7 @@
 
 #include "OBEngine.h"
 #include "TaskScheduler.h"
+#include "instance/LogService.h"
 
 #include <algorithm>
 #include <iostream>
@@ -32,15 +33,11 @@ namespace OB{
 		DEFINE_TYPE(Event){
 			registerLuaType(LuaTypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
 		}
-		
-		Event::Event(std::string name){
-			this->name = name;
-			canFireFromLua = false;
-		}
 
-		Event::Event(std::string name, bool canFireFromLua){
+		Event::Event(std::string name, bool canFireFromLua, bool blockLogService){
 			this->name = name;
 			this->canFireFromLua = canFireFromLua;
+			this->blockLogService = blockLogService;
 		}
 
 		Event::~Event(){}
@@ -70,6 +67,10 @@ namespace OB{
 
 		bool Event::isConnected(shared_ptr<EventConnection> conn){
 			return !conns.empty() && std::find(conns.begin(), conns.end(), conn) != conns.end();
+		}
+
+		bool Event::doesBlockLogService(){
+			return blockLogService;
 		}
 
 		struct evt_vconn_t{
@@ -177,6 +178,7 @@ namespace OB{
 		struct evt_lua_connection_ud_t{
 		    int fncRef;
 			lua_State* thread;
+			bool blockedLogService;
 		};
 		
 		void evt_lua_connection_fnc(std::vector<shared_ptr<VarWrapper>> args, void* ud){
@@ -189,8 +191,28 @@ namespace OB{
 			for(std::vector<shared_ptr<VarWrapper>>::size_type i = 0; i != args.size(); i++){
 				args[i]->wrap_lua(L);
 			}
+
+			shared_ptr<Instance::LogService> ls;
+
+			if(eud->blockedLogService){
+				OBEngine* eng = OBEngine::getInstance();
+				if(eng){
+					shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+					if(dm){
+						ls = dm->getLogService();
+						if(ls){
+							ls->block();
+						}
+					}
+				}
+			}
 			
 			int ret = lua_resume(L, NULL, args.size());
+
+			if(ls){
+				ls->unblock();
+			}
+			
 			if(ret != LUA_OK && ret != LUA_YIELD){
 				std::string lerr = Lua::handle_errors(L);
 				std::cerr << lerr << std::endl;
@@ -219,6 +241,7 @@ namespace OB{
 
 			struct evt_lua_connection_ud_t* eud = new struct evt_lua_connection_ud_t;
 			eud->fncRef = r;
+			eud->blockedLogService = evt->doesBlockLogService();
 
 			lua_State* newL = Lua::initCoroutine(L);
 			eud->thread = newL;

@@ -32,8 +32,7 @@ namespace OB{
 		
 		class Event: public Type{
 			public:
-			    Event(std::string name);
-				Event(std::string name, bool canFireFromLua);
+				Event(std::string name, bool canFireFromLua = false, bool blockLogService = false);
 				virtual ~Event();
 
 			    shared_ptr<EventConnection> Connect(void (*fnc)(std::vector<shared_ptr<VarWrapper>>, void*), void* ud);
@@ -41,6 +40,7 @@ namespace OB{
 				void disconnectAll();
 				void disconnect(shared_ptr<EventConnection> conn);
 			    bool isConnected(shared_ptr<EventConnection> conn);
+				bool doesBlockLogService();
 
 				void FireLater(std::vector<shared_ptr<VarWrapper>> argList);
 				void Fire(std::vector<shared_ptr<VarWrapper>> argList);
@@ -51,6 +51,7 @@ namespace OB{
 				DECLARE_TYPE();
 
 				bool canFireFromLua;
+				bool blockLogService;
 				std::string name;
 				std::vector<shared_ptr<EventConnection>> conns;
 

@@ -204,18 +204,6 @@ namespace OB{
 		std::string handle_errors(lua_State* L){
 			std::string lerr = std::string(lua_tostring(L, -1));
 
-			OBEngine* eng = OBEngine::getInstance();
-			if(eng){
-				shared_ptr<Instance::DataModel> dm = eng->getDataModel();
-				if(dm){
-					shared_ptr<Instance::LogService> ls = dm->getLogService();
-					if(ls){
-					    ls->postLog(lerr, Enum::MessageType::MessageError);
-					}
-				}
-			}
-			std::cerr << "Lua Error: " << lerr << std::endl;
-
 			lua_pop(L, 1);//Pop the error off the stack like it never happened.
 			
 			return lerr;
