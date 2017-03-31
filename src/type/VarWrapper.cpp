@@ -181,6 +181,7 @@ namespace OB{
 				}
 				case TYPE_TYPE: {
 					shared_ptr<Type> tp = *static_cast<shared_ptr<Type>*>(wrapped);
+					tp->wrap_lua(L);
 					break;
 				}
 				case TYPE_LUA_OBJECT: {
