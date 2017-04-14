@@ -135,12 +135,11 @@ namespace OB{
 			
 			if(ccanonPath){
 				std::string canonPath = ccanonPath;
-				std::cout << "Looking for file: " << canonPath << std::endl;
 
 				char* realRes = realpath("res/", NULL);
 				char* thisDir = get_current_dir_name();
 				if(realRes){
-					if(ob_str_startsWith(canonPath, std::string(realRes)) || ob_str_startsWith(canonPath, std::string(thisDir))){
+					if(!ob_str_startsWith(canonPath, std::string(realRes)) || !ob_str_startsWith(canonPath, std::string(thisDir))){
 						OBEngine* eng = OBEngine::getInstance();
 						shared_ptr<Instance::DataModel> dm = eng->getDataModel();
 						shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
@@ -163,7 +162,7 @@ namespace OB{
 						return;
 					}
 				}else{
-					if(ob_str_startsWith(canonPath, std::string(thisDir))){
+					if(!ob_str_startsWith(canonPath, std::string(thisDir))){
 						OBEngine* eng = OBEngine::getInstance();
 						shared_ptr<Instance::DataModel> dm = eng->getDataModel();
 						shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
