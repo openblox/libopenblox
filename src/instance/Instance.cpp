@@ -50,6 +50,33 @@ namespace OB{
 
 		Instance::~Instance(){}
 
+		void Instance::setName(std::string name){
+		    if(Name != name){
+			    Name = name;
+
+				//TODO:
+				//REPLICATE_PROPERTY_CHANGE(inst, "Name", Name);
+
+				propertyChanged("Name");
+			}
+		}
+
+		std::string Instance::getName(){
+			return Name;
+		}
+
+		void Instance::setArchivable(bool archivable){
+			if(Archivable != archivable){
+			    Archivable = archivable;
+
+				propertyChanged("Archivable");
+			}
+		}
+
+		bool Instance::getArchivable(){
+			return Archivable;
+		}
+
 		void Instance::ClearAllChildren(){
 			std::vector<shared_ptr<Instance>> kids = GetChildren();
 			
@@ -652,7 +679,7 @@ namespace OB{
 		int Instance::lua_getName(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(inst){
-				lua_pushstring(L, inst->Name.c_str());
+				lua_pushstring(L, inst->getName().c_str());
 				return 1;
 			}
 			return 0;
@@ -662,14 +689,7 @@ namespace OB{
 			shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(inst){
 				std::string desired = std::string(luaL_checkstring(L, 2));
-				if(inst->Name != desired){
-					inst->Name = desired;
-
-					//TODO:
-					//REPLICATE_PROPERTY_CHANGE(inst, "Name", inst->Name);
-
-					propertyChanged("Name", inst);
-				}
+			    inst->setName(desired);
 				return 0;
 			}
 			return 0;
@@ -715,7 +735,7 @@ namespace OB{
 		int Instance::lua_getArchivable(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1);
 			if(inst){
-				lua_pushboolean(L, inst->Archivable);
+				lua_pushboolean(L, inst->getArchivable());
 				return 1;
 			}
 			return 0;
@@ -731,15 +751,7 @@ namespace OB{
 				}else if(!lua_isnoneornil(L, 2)){
 					newVal = true;
 				}
-				if(inst->Archivable != newVal){
-					inst->Archivable = newVal;
-
-					//TODO:
-				
-					//REPLICATE_PROPERTY_CHANGE(inst, "Archivable", inst->Archivable);
-
-					propertyChanged("Archivable", inst);
-				}
+				inst->setArchivable(newVal);
 			}
 			return 0;
 		}

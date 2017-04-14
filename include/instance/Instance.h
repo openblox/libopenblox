@@ -192,6 +192,13 @@ namespace OB{
 				Instance();
 				virtual ~Instance();
 
+				//Accessors and Mutators
+				virtual void setName(std::string name);
+				virtual std::string getName();
+				
+			    virtual void setArchivable(bool archivable);
+				virtual bool getArchivable();
+
 				/**
 				 * Calls Remove on all children.
 				 *
@@ -496,10 +503,6 @@ namespace OB{
 				shared_ptr<Type::Event> DescendantAdded;
 				shared_ptr<Type::Event> DescendantRemoving;
 
-				bool Archivable;
-				std::string Name;
-				shared_ptr<Instance> Parent;
-
 				int wrap_lua(lua_State* L);
 
 				/**
@@ -553,6 +556,10 @@ namespace OB{
 				static void register_lua_events(lua_State* L);
 
 				DECLARE_CLASS(Instance);
+
+				bool Archivable;
+				std::string Name;
+				shared_ptr<Instance> Parent;
 
 				void fireAncestryChanged(std::vector<shared_ptr<Type::VarWrapper>> args);
 				void fireDescendantAdded(std::vector<shared_ptr<Type::VarWrapper>> args);
