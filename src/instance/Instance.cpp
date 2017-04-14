@@ -913,5 +913,9 @@ namespace OB{
 			}
 			return luaL_error(L, COLONERR, "GetNetworkID");
 		}
+
+	    bool Instance::assetLoaded(std::string res){
+			return true;
+		}
 	}
 }

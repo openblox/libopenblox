@@ -23,6 +23,8 @@
 #include "obtype.h"
 #include "mem.h"
 
+#include "instance/Instance.h"
+
 #include <pthread.h>
 
 #include <string>
@@ -56,11 +58,15 @@ namespace OB{
 			shared_ptr<AssetResponse> getAsset(std::string url, bool loadIfNotPresent = false);
 			bool hasAsset(std::string url);
 			void putAsset(std::string url, size_t size, char* data);
+			
+			void addWaitingInstance(shared_ptr<Instance::Instance> inst);
 
 			int getRequestQueueSize();
 			
 		private:
 			std::map<std::string, shared_ptr<AssetResponse>> contentCache;
+
+			std::vector<weak_ptr<Instance::Instance>> instancesWaiting;
 
 			shared_ptr<AssetResponse> loadingResponse;
 			pthread_mutex_t mmutex;

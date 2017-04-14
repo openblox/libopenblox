@@ -555,6 +555,25 @@ namespace OB{
 				 */
 				static void register_lua_events(lua_State* L);
 
+				/**
+				 * When writing a class that uses an asset, we
+				 * implement this to efficiently handle loading
+				 * of assets.
+				 *
+				 * Returns true if the assets required by this
+				 * Instance have been loaded, which signals
+				 * that this can be removed from the list of
+				 * assets waiting for assets.
+				 *
+				 * If false, it stays in the list.
+				 *
+				 * @param res The resource URI loaded
+				 * 
+				 * @author John M. Harris, Jr.
+				 * @returns bool, true if all assets have been loaded
+				 */
+				virtual bool assetLoaded(std::string res);
+
 				DECLARE_CLASS(Instance);
 
 				bool Archivable;
