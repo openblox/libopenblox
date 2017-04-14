@@ -43,6 +43,7 @@ instance/LogService.cpp \
 instance/DataModel.cpp \
 instance/Humanoid.cpp \
 instance/Folder.cpp \
+instance/BasePart.cpp \
 utility.cpp
 
 # Linker options
