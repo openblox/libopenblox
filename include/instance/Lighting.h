@@ -37,20 +37,20 @@ namespace OB{
 			    Lighting();
 				virtual ~Lighting();
 
-				shared_ptr<Type::Color3> GetSkyColor();
-				void SetSkyColor(shared_ptr<Type::Color3> skyColor);
+				shared_ptr<Type::Color3> getSkyColor();
+				void setSkyColor(shared_ptr<Type::Color3> skyColor);
 
-				bool IsFogEnabled();
-				void SetFogEnabled(bool fogEnabled);
+				bool isFogEnabled();
+				void setFogEnabled(bool fogEnabled);
 
-				shared_ptr<Type::Color3> GetFogColor();
-				void SetFogColor(shared_ptr<Type::Color3> fogColor);
+				shared_ptr<Type::Color3> getFogColor();
+				void setFogColor(shared_ptr<Type::Color3> fogColor);
 
-				float GetFogStart();
-				void SetFogStart(float fogStart);
+				float getFogStart();
+				void setFogStart(float fogStart);
 
-			    float GetFogEnd();
-				void SetFogEnd(float fogEnd);
+			    float getFogEnd();
+				void setFogEnd(float fogEnd);
 
 				DECLARE_LUA_METHOD(getSkyColor);
 				DECLARE_LUA_METHOD(setSkyColor);

@@ -43,19 +43,23 @@ namespace OB{
 			return NULL;
 		}
 
-		shared_ptr<Type::Color3> Lighting::GetSkyColor(){
+		shared_ptr<Type::Color3> Lighting::getSkyColor(){
 			return SkyColor;
 		}
 		
-		void Lighting::SetSkyColor(shared_ptr<Type::Color3> skyColor){
+		void Lighting::setSkyColor(shared_ptr<Type::Color3> skyColor){
 			if(skyColor == NULL){
 				shared_ptr<Type::Color3> col3 = make_shared<Type::Color3>();
 				if(!col3->equals(SkyColor)){
 					SkyColor = col3;
+					
+					propertyChanged("SkyColor");
 				}
 			}else{
 				if(!skyColor->equals(SkyColor)){
 					SkyColor = skyColor;
+
+					propertyChanged("SkyColor");
 				}
 			}
 		}
@@ -89,58 +93,68 @@ namespace OB{
 			#endif
 		}
 
-		bool Lighting::IsFogEnabled(){
+		bool Lighting::isFogEnabled(){
 			return FogEnabled;
 		}
 		
-		void Lighting::SetFogEnabled(bool fogEnabled){
+		void Lighting::setFogEnabled(bool fogEnabled){
 			if(FogEnabled != fogEnabled){
 				FogEnabled = fogEnabled;
+
+				propertyChanged("FogEnabled");
 
 				updateFog();
 			}
 		}
 		
-		shared_ptr<Type::Color3> Lighting::GetFogColor(){
+		shared_ptr<Type::Color3> Lighting::getFogColor(){
 			return FogColor;
 		}
 		
-		void Lighting::SetFogColor(shared_ptr<Type::Color3> fogColor){
+		void Lighting::setFogColor(shared_ptr<Type::Color3> fogColor){
 			if(fogColor == NULL){
 				shared_ptr<Type::Color3> col3 = make_shared<Type::Color3>();
 				if(!col3->equals(FogColor)){
 					FogColor = col3;
+
+					propertyChanged("FogColor");
 
 					updateFog();
 				}
 			}else{
 				if(!fogColor->equals(FogColor)){
 					FogColor = fogColor;
+
+					propertyChanged("FogColor");
 					
 					updateFog();
 				}
 			}
 		}
 
-	    float Lighting::GetFogStart(){
+	    float Lighting::getFogStart(){
 			return FogStart;
 		}
 
-		void Lighting::SetFogStart(float fogStart){
+		void Lighting::setFogStart(float fogStart){
 			if(fogStart != FogStart){
 				FogStart = fogStart;
+
+				propertyChanged("FogStart");
 				
 				updateFog();
 			}
 		}
 
-		float Lighting::GetFogEnd(){
+		float Lighting::getFogEnd(){
 			return FogEnd;
 		}
 
-		void Lighting::SetFogEnd(float fogEnd){
+		void Lighting::setFogEnd(float fogEnd){
 			if(fogEnd != FogEnd){
 				FogEnd = fogEnd;
+
+				propertyChanged("FogEnd");
 				
 				updateFog();
 			}
@@ -151,7 +165,7 @@ namespace OB{
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
-				    shared_ptr<Type::Color3> col3 = instL->GetSkyColor();
+				    shared_ptr<Type::Color3> col3 = instL->getSkyColor();
 					if(col3){
 						return col3->wrap_lua(L);
 					}else{
@@ -171,10 +185,10 @@ namespace OB{
 				if(instL){
 				    shared_ptr<Type::Color3> col3 = Type::checkColor3(L, 2);
 					if(col3){
-						instL->SetSkyColor(col3);
+						instL->setSkyColor(col3);
 					}else{
 						if(lua_isnil(L, 2)){
-							instL->SetSkyColor(NULL);
+							instL->setSkyColor(NULL);
 						}else{
 							return luaL_error(L, "bad argument #1 to '?' (Color3 expected, got %s)", lua_typename(L, 2));
 						}
@@ -189,7 +203,7 @@ namespace OB{
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
-					lua_pushboolean(L, instL->IsFogEnabled());
+					lua_pushboolean(L, instL->isFogEnabled());
 				}
 			}
 			lua_pushnil(L);
@@ -202,7 +216,7 @@ namespace OB{
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
 					bool newV = lua_toboolean(L, 2);
-					instL->SetFogEnabled(newV);
+					instL->setFogEnabled(newV);
 				}
 			}
 			return 0;
@@ -213,7 +227,7 @@ namespace OB{
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
-				    shared_ptr<Type::Color3> col3 = instL->GetFogColor();
+				    shared_ptr<Type::Color3> col3 = instL->getFogColor();
 					if(col3){
 						return col3->wrap_lua(L);
 					}else{
@@ -233,10 +247,10 @@ namespace OB{
 				if(instL){
 				    shared_ptr<Type::Color3> col3 = Type::checkColor3(L, 2);
 					if(col3){
-						instL->SetFogColor(col3);
+						instL->setFogColor(col3);
 					}else{
 						if(lua_isnil(L, 2)){
-							instL->SetFogColor(NULL);
+							instL->setFogColor(NULL);
 						}else{
 							return luaL_error(L, "bad argument #1 to '?' (Color3 expected, got %s)", lua_typename(L, 2));
 						}
@@ -251,7 +265,7 @@ namespace OB{
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
-					lua_pushnumber(L, instL->GetFogStart());
+					lua_pushnumber(L, instL->getFogStart());
 				}
 			}
 			lua_pushnil(L);
@@ -264,7 +278,7 @@ namespace OB{
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
 					float newV = luaL_checknumber(L, 2);
-					instL->SetFogStart(newV);
+					instL->setFogStart(newV);
 				}
 			}
 			return 0;
@@ -275,7 +289,7 @@ namespace OB{
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
-					lua_pushnumber(L, instL->GetFogEnd());
+					lua_pushnumber(L, instL->getFogEnd());
 				}
 			}
 			lua_pushnil(L);
@@ -288,7 +302,7 @@ namespace OB{
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
 					float newV = luaL_checknumber(L, 2);
-					instL->SetFogEnd(newV);
+					instL->setFogEnd(newV);
 				}
 			}
 			return 0;

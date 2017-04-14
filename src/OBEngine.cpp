@@ -233,7 +233,7 @@ namespace OB{
 			}
 			shared_ptr<Instance::Lighting> light = dm->getLighting();
 			
-			shared_ptr<Type::Color3> skyCol = light->GetSkyColor();
+			shared_ptr<Type::Color3> skyCol = light->getSkyColor();
 			irr::video::SColor irrSkyCol;
 			if(skyCol != NULL){
 				irrSkyCol = skyCol->toIrrlichtSColor();
