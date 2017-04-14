@@ -40,9 +40,10 @@
 #endif
 
 namespace OB{
-	AssetResponse::AssetResponse(size_t size, char* data){
+	AssetResponse::AssetResponse(size_t size, char* data, std::string resURI){
 		this->size = size;
 		this->data = data;
+		this->resURI = resURI;
 	}
 
 	AssetResponse::~AssetResponse(){
@@ -58,11 +59,34 @@ namespace OB{
     char* AssetResponse::getData(){
 		return data;
 	}
+
+	std::string AssetResponse::getResURI(){
+		return resURI;
+	}
+
+	#if HAVE_IRRLICHT
+	irr::io::IReadFile* AssetResponse::toIReadFile(){
+		OBEngine* eng = OBEngine::getInstance();
+		if(eng){
+			irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
+			if(irrDev){
+				irr::scene::ISceneManager* smgr = irrDev->getSceneManager();
+				if(smgr){
+					irr::io::IFileSystem* ifs = smgr->getFileSystem();
+					if(ifs){
+						return ifs->createMemoryReadFile((void*)data, size, resURI.c_str(), false);
+					}
+				}
+			}
+		}
+		return NULL;
+	}
+	#endif
 	
     AssetLocator::AssetLocator(){
 		requestQueueSize = 0;
 
-		loadingResponse = make_shared<AssetResponse>(0, (char*)NULL);
+		loadingResponse = make_shared<AssetResponse>(0, (char*)NULL, "loading://null");
 		
 		pthread_mutex_init(&mmutex, NULL);
 	}
@@ -418,7 +442,7 @@ namespace OB{
 		}
 
 		if(hasAsset(url)){
-		    shared_ptr<AssetResponse> resp = shared_ptr<AssetResponse>(contentCache.at(url));
+		    shared_ptr<AssetResponse> resp = contentCache.at(url);
 			if(resp != loadingResponse){
 				return resp;
 			}
@@ -437,7 +461,8 @@ namespace OB{
 	}
 
 	void AssetLocator::putAsset(std::string url, size_t size, char* data){
-	    contentCache.emplace(url, make_shared<AssetResponse>(size, data));
+		contentCache.erase(contentCache.find(url));
+	    contentCache.emplace(url, make_shared<AssetResponse>(size, data, url));
 	}
 
 	void AssetLocator::addWaitingInstance(shared_ptr<Instance::Instance> inst){

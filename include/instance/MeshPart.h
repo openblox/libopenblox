@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 John M. Harris, Jr. <johnmh@openblox.org>
+ * Copyright (C) 2017 John M. Harris, Jr. <johnmh@openblox.org>
  *
  * This file is part of OpenBlox.
  *
@@ -17,7 +17,7 @@
  * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "instance/Instance.h"
+#include "instance/BasePart.h"
 
 #include "oblibconfig.h"
 
@@ -25,42 +25,45 @@
 #include <irrlicht/irrlicht.h>
 #endif
 
-#ifndef OB_INST_PVINSTANCE
-#define OB_INST_PVINSTANCE
+#ifndef OB_INST_MESHPART
+#define OB_INST_MESHPART
 
 namespace OB{
 	namespace Instance{
 		/**
-		 * PVInstance is the base class of all renderable objects in
-		 * OpenBlox.
+		 * MeshPart allows creation of 3D objects with non-primitive
+		 * meshes. 
 		 *
 		 * @author John M. Harris, Jr.
 		 */
-		class PVInstance: public Instance{
+		class MeshPart: public BasePart{
 			public:
-				PVInstance();
-				virtual ~PVInstance();
+			    MeshPart();
+				virtual ~MeshPart();
 
-				#if HAVE_IRRLICHT
-				virtual irr::scene::ISceneNode* getIrrNode();
-				
-				virtual void removeChild(shared_ptr<Instance> kid);
-				virtual void addChild(shared_ptr<Instance> kid);
-				
-				#endif
+				void setMesh(std::string mesh);
+				std::string getMesh();
 
-				DECLARE_CLASS(PVInstance);
+				void updateMesh();
+				void updateColor();
+				virtual void propertyChanged(std::string property);
 
-				#if HAVE_IRRLICHT
-				
-				irr::scene::ISceneNode* irrNode;
-				
-				#endif
+				virtual bool assetLoaded(std::string res);
+
+				DECLARE_LUA_METHOD(setMesh);
+				DECLARE_LUA_METHOD(getMesh);
+
+				static void register_lua_property_getters(lua_State* L);
+				static void register_lua_property_setters(lua_State* L);
+
+				DECLARE_CLASS(MeshPart);
+
+				std::string Mesh;
 		};
 	}
 }
 
-#endif // OB_INST_PVINSTANCE
+#endif // OB_INST_MESHPART
 
 
 // Local Variables:

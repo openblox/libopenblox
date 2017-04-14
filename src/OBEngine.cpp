@@ -157,6 +157,9 @@ namespace OB{
 			std::string renderShadingLangVer = renderTag + std::string("Shading Language Version: ") + std::string(buf);
 			
 			OBLogger::log(renderShadingLangVer);
+
+			irrSceneMgr->addLightSceneNode();
+			irrSceneMgr->addCameraSceneNode(0, irr::core::vector3df(0,30,-40), irr::core::vector3df(0,5,0));
 		}
 		#endif
 		

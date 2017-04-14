@@ -304,9 +304,7 @@ namespace OB{
 		}
 
 		void Instance::propertyChanged(std::string property, shared_ptr<Instance> inst){
-			std::vector<shared_ptr<Type::VarWrapper>> args = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(property)});
-
-			inst->Changed->Fire(args);
+			inst->propertyChanged(property);
 		}
 
 		void Instance::setParent(shared_ptr<Instance> parent, bool useDMNotify){

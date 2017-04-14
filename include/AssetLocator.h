@@ -30,18 +30,30 @@
 #include <string>
 #include <map>
 
+#include "oblibconfig.h"
+
+#if HAVE_IRRLICHT
+#include <irrlicht/irrlicht.h>
+#endif
+
 namespace OB{
 	class AssetResponse{
 		public:
-			AssetResponse(size_t size, char* data);
+			AssetResponse(size_t size, char* data, std::string resURI);
 			~AssetResponse();
 
 			size_t getSize();
 		    char* getData();
+			std::string getResURI();
+
+			#if HAVE_IRRLICHT
+			irr::io::IReadFile* toIReadFile();
+			#endif
 
 		private:
 			size_t size;
 			char* data;
+			std::string resURI;
 			
 	};
 	

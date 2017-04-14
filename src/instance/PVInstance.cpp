@@ -52,6 +52,10 @@ namespace OB{
 		}
 
 		#if HAVE_IRRLICHT
+
+		irr::scene::ISceneNode* PVInstance::getIrrNode(){
+			return irrNode;
+		}
 		
 		void PVInstance::removeChild(shared_ptr<Instance> kid){
 			if(kid){

@@ -19,6 +19,8 @@
 
 #include "instance/Workspace.h"
 
+#include "OBEngine.h"
+
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(Workspace, false, isDataModel, Model){
@@ -27,6 +29,19 @@ namespace OB{
 
 	    Workspace::Workspace(){
 			Name = ClassName;
+
+			#if HAVE_IRRLICHT
+		    OBEngine* eng = OBEngine::getInstance();
+			if(eng){
+				irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
+				if(irrDev){
+					irr::scene::ISceneManager* sceneMgr = irrDev->getSceneManager();
+					if(sceneMgr){
+					    irrNode = sceneMgr->addEmptySceneNode();
+					}
+				}
+			}
+			#endif
 		}
 
 	    Workspace::~Workspace(){}
