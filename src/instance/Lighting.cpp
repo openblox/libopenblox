@@ -204,6 +204,7 @@ namespace OB{
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
 					lua_pushboolean(L, instL->isFogEnabled());
+					return 1;
 				}
 			}
 			lua_pushnil(L);
@@ -266,6 +267,7 @@ namespace OB{
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
 					lua_pushnumber(L, instL->getFogStart());
+					return 1;
 				}
 			}
 			lua_pushnil(L);
@@ -290,6 +292,7 @@ namespace OB{
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
 					lua_pushnumber(L, instL->getFogEnd());
+					return 1;
 				}
 			}
 			lua_pushnil(L);
