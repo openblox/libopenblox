@@ -27,6 +27,7 @@
 #include "instance/ContentProvider.h"
 
 #include <iostream>
+#include <fstream>
 
 #include <cstdlib>
 #include <cstring>
@@ -127,20 +128,118 @@ namespace OB{
 		if(ob_str_startsWith(url, "res://")){
 			std::string furl = url.substr(6);
 
-			std::cout << "Looking for file: " << furl << std::endl;
-
-			std::string canonPath = realpath(furl.c_str(), NULL);
-			std::cout << "Looking for file: " << canonPath << std::endl;
-
-			delete body;
-
-			if(decCount){
-				requestQueueSize--;
+			char* ccanonPath = realpath(furl.c_str(), NULL);
+			if(!ccanonPath){
+				char* ccanonPath = realpath(("res/" + furl).c_str(), NULL);
 			}
+			
+			if(ccanonPath){
+				std::string canonPath = ccanonPath;
+				std::cout << "Looking for file: " << canonPath << std::endl;
 
-			pthread_mutex_unlock(&mmutex);
-			return;
-		}
+				char* realRes = realpath("res/", NULL);
+				char* thisDir = get_current_dir_name();
+				if(realRes){
+					if(ob_str_startsWith(canonPath, std::string(realRes)) || ob_str_startsWith(canonPath, std::string(thisDir))){
+						OBEngine* eng = OBEngine::getInstance();
+						shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+						shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
+						shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
+
+						std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
+						fireArgs.push_back(make_shared<Type::VarWrapper>(url));
+						fireArgs.push_back(make_shared<Type::VarWrapper>("File not under resource directory."));
+
+						AssetLoadFailed->Fire(fireArgs);
+			
+						if(decCount){
+							requestQueueSize--;
+						}
+
+						delete body;
+		
+						pthread_mutex_unlock(&mmutex);
+						free(thisDir);
+						return;
+					}
+				}else{
+					if(ob_str_startsWith(canonPath, std::string(thisDir))){
+						OBEngine* eng = OBEngine::getInstance();
+						shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+						shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
+						shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
+
+						std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
+						fireArgs.push_back(make_shared<Type::VarWrapper>(url));
+						fireArgs.push_back(make_shared<Type::VarWrapper>("File not under resource directory."));
+
+						AssetLoadFailed->Fire(fireArgs);
+			
+						if(decCount){
+							requestQueueSize--;
+						}
+
+						delete body;
+		
+						pthread_mutex_unlock(&mmutex);
+						free(thisDir);
+						return;
+					}
+				}
+				free(thisDir);
+
+				std::ifstream file(canonPath, std::ios::binary | std::ios::ate);
+			    size_t fileLen = file.tellg();
+				file.seekg(0, std::ios::beg);
+
+				char* bodyDat = (char*)malloc(fileLen);
+				if(file.read(bodyDat, fileLen)){
+					body->data = bodyDat;
+					body->size = fileLen;
+				}else{
+					OBEngine* eng = OBEngine::getInstance();
+					shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+					shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
+					shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
+
+					std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
+					fireArgs.push_back(make_shared<Type::VarWrapper>(url));
+					fireArgs.push_back(make_shared<Type::VarWrapper>("Failed to read file."));
+
+					AssetLoadFailed->Fire(fireArgs);
+			
+					if(decCount){
+						requestQueueSize--;
+					}
+
+					delete body;
+		
+					pthread_mutex_unlock(&mmutex);
+					free(bodyDat);
+					return;
+				}
+			}else{
+				OBEngine* eng = OBEngine::getInstance();
+				shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+				shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
+				shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
+
+				std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
+				fireArgs.push_back(make_shared<Type::VarWrapper>(url));
+				fireArgs.push_back(make_shared<Type::VarWrapper>("File not found."));
+
+				AssetLoadFailed->Fire(fireArgs);
+			
+				if(decCount){
+					requestQueueSize--;
+				}
+
+				delete body;
+		
+				pthread_mutex_unlock(&mmutex);
+				return;
+			}
+		}else{
 
 		#if HAVE_CURL
 
@@ -185,33 +284,6 @@ namespace OB{
 			}
 
 			curl_easy_cleanup(curl);
-
-			if(body->data != NULL){
-				OBEngine* eng = OBEngine::getInstance();
-				shared_ptr<Instance::DataModel> dm = eng->getDataModel();
-				shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
-				shared_ptr<Type::Event> AssetLoaded = cp->GetAssetLoaded();
-
-				std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
-				fireArgs.push_back(make_shared<Type::VarWrapper>(url));
-				
-				AssetLoaded->Fire(fireArgs);
-				
-				putAsset(url, body->size, body->data);
-			}else{
-				std::cout << "[AssetLocator] No data" << std::endl;
-
-				OBEngine* eng = OBEngine::getInstance();
-				shared_ptr<Instance::DataModel> dm = eng->getDataModel();
-				shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
-				shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
-
-				std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
-				fireArgs.push_back(make_shared<Type::VarWrapper>(url));
-				fireArgs.push_back(make_shared<Type::VarWrapper>("No data."));
-
-				AssetLoadFailed->Fire(fireArgs);
-			}
 		}else{
 			std::cout << "[AssetLocator] Failed to initialize cURL" << std::endl;
 
@@ -225,8 +297,64 @@ namespace OB{
 			fireArgs.push_back(make_shared<Type::VarWrapper>("Failed to initialize cURL."));
 
 			AssetLoadFailed->Fire(fireArgs);
+
+			if(decCount){
+				requestQueueSize--;
+			}
+
+			delete body;
+		
+			pthread_mutex_unlock(&mmutex);
+			return;
 		}
 		#endif
+		}
+
+		if(body->data != NULL){
+			OBEngine* eng = OBEngine::getInstance();
+			shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+			shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
+			shared_ptr<Type::Event> AssetLoaded = cp->GetAssetLoaded();
+
+			std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
+			fireArgs.push_back(make_shared<Type::VarWrapper>(url));
+
+			putAsset(url, body->size, body->data);
+				
+			AssetLoaded->Fire(fireArgs);
+				
+			std::vector<weak_ptr<Instance::Instance>>::iterator i = instancesWaiting.begin();
+			while(i != instancesWaiting.end()){
+				if(i->expired()){
+					i = instancesWaiting.erase(i);
+					continue;
+				}
+
+				shared_ptr<Instance::Instance> inst = i->lock();
+				if(inst){
+					bool didLoad = inst->assetLoaded(url);
+					if(didLoad){
+						i = instancesWaiting.erase(i);
+						continue;
+					}
+				}
+					
+				i++;
+			}
+		}else{
+			std::cout << "[AssetLocator] No data" << std::endl;
+
+			OBEngine* eng = OBEngine::getInstance();
+			shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+			shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
+			shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
+
+			std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
+			fireArgs.push_back(make_shared<Type::VarWrapper>(url));
+			fireArgs.push_back(make_shared<Type::VarWrapper>("No data."));
+
+			AssetLoadFailed->Fire(fireArgs);
+		}
 
 		if(decCount){
 			requestQueueSize--;
@@ -311,6 +439,12 @@ namespace OB{
 
 	void AssetLocator::putAsset(std::string url, size_t size, char* data){
 	    contentCache.emplace(url, make_shared<AssetResponse>(size, data));
+	}
+
+	void AssetLocator::addWaitingInstance(shared_ptr<Instance::Instance> inst){
+		if(inst){
+			instancesWaiting.push_back(inst);
+		}
 	}
 
 	int AssetLocator::getRequestQueueSize(){
