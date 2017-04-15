@@ -27,6 +27,7 @@ type/Color3.cpp \
 type/VarWrapper.cpp \
 type/EventConnection.cpp \
 type/Event.cpp \
+type/Vector3.cpp \
 instance/Instance.cpp \
 instance/PVInstance.cpp \
 instance/Model.cpp \
