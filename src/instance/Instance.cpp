@@ -260,6 +260,16 @@ namespace OB{
 			lua_pushstring(L, "This metatable is locked");
 			lua_rawset(L, -3);
 
+			//Name
+			lua_pushstring(L, "__name");
+			/*
+			For now, I think all Instance classes being called
+			'Instance' is for the best, in this context. I say this
+		    only because we typecheck against 'Instance' in Lua.
+			*/
+			lua_pushstring(L, "Instance");
+			lua_rawset(L, -3);
+
 			//Methods
 			lua_pushstring(L, "__methods");
 			lua_newtable(L);
@@ -502,7 +512,13 @@ namespace OB{
 			luaL_setfuncs(L, events, 0);
 		}
 
-		shared_ptr<Instance> Instance::checkInstance(lua_State* L, int index){
+		shared_ptr<Instance> Instance::checkInstance(lua_State* L, int index, bool errIfNot, bool allowNil){
+			if(allowNil){
+				if(lua_isnoneornil(L, index)){
+					return NULL;
+				}
+			}
+			
 			if(lua_isuserdata(L, index)){
 				std::vector<std::string> existing = OB::ClassFactory::getRegisteredClasses();
 				unsigned size = existing.size();
@@ -519,98 +535,109 @@ namespace OB{
 						lua_pop(L, 1);
 					}
 				}
-				return NULL;
+			}
+
+			if(errIfNot){
+				luaO_typeerror(L, index, "Instance");
 			}
 			return NULL;
 		}
 
 		int Instance::lua_newindex(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
-			if(inst){
-				const char* name = luaL_checkstring(L, 2);
-				lua_getmetatable(L, 1);//-3
-				lua_getfield(L, -1, "__propertysetters");//-2
-				lua_getfield(L, -1, name);//-1
-				if (lua_iscfunction(L, -1)){
-					lua_remove(L, -2);
-					lua_remove(L, -2);
-
-					lua_pushvalue(L, 1);
-					lua_pushvalue(L, 3);
-					lua_call(L, 2, 0);
-
-					return 0;
-				}else{
-					lua_pop(L, 3);
-
-					return luaL_error(L, "attempt to index '%s' (a nil value)", name);
-				}
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			if(!inst){
+				return 0;
 			}
+			
+			const char* name = luaL_checkstring(L, 2);
+			lua_getmetatable(L, 1);//-3
+			lua_getfield(L, -1, "__propertysetters");//-2
+			lua_getfield(L, -1, name);//-1
+			if (lua_iscfunction(L, -1)){
+				lua_remove(L, -2);
+				lua_remove(L, -2);
+
+				lua_pushvalue(L, 1);
+				lua_pushvalue(L, 3);
+				lua_call(L, 2, 0);
+
+				return 0;
+			}else{
+				lua_pop(L, 3);
+
+				return luaL_error(L, "attempt to index '%s' (a nil value)", name);
+			}
+			
 			return 0;
 		}
 
 		int Instance::lua_index(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
-			if(inst){
-				const char* name = luaL_checkstring(L, 2);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			if(!inst){
+				return 0;
+			}
+			
+			const char* name = luaL_checkstring(L, 2);
 
-				lua_getmetatable(L, 1);//-3
-				lua_getfield(L, -1, "__propertygetters");//-2
+			lua_getmetatable(L, 1);//-3
+			lua_getfield(L, -1, "__propertygetters");//-2
+			lua_getfield(L, -1, name);//-1
+			if(lua_iscfunction(L, -1)){
+				lua_remove(L, -2);
+				lua_remove(L, -2);
+
+				lua_pushvalue(L, 1);
+				lua_call(L, 1, 1);
+				return 1;
+			}else{
+				lua_pop(L, 2);
+				//Check methods
+				lua_getfield(L, -1, "__methods");//-2
 				lua_getfield(L, -1, name);//-1
 				if(lua_iscfunction(L, -1)){
 					lua_remove(L, -2);
-					lua_remove(L, -2);
+					lua_remove(L, -3);
 
-					lua_pushvalue(L, 1);
-					lua_call(L, 1, 1);
 					return 1;
 				}else{
 					lua_pop(L, 2);
-					//Check methods
-					lua_getfield(L, -1, "__methods");//-2
+					//Check events
+					lua_getfield(L, -1, "__events");//-2
 					lua_getfield(L, -1, name);//-1
 					if(lua_iscfunction(L, -1)){
 						lua_remove(L, -2);
 						lua_remove(L, -3);
 
+						lua_pushvalue(L, 1);
+						lua_call(L, 1, 1);
 						return 1;
 					}else{
-						lua_pop(L, 2);
-						//Check events
-						lua_getfield(L, -1, "__events");//-2
-						lua_getfield(L, -1, name);//-1
-						if(lua_iscfunction(L, -1)){
-							lua_remove(L, -2);
-							lua_remove(L, -3);
+						lua_pop(L, 3);
 
-							lua_pushvalue(L, 1);
-							lua_call(L, 1, 1);
-							return 1;
-						}else{
-							lua_pop(L, 3);
-
-							shared_ptr<Instance> kiddie = inst->FindFirstChild(name, false);
-							if(kiddie){
-								return kiddie->wrap_lua(L);
-							}
-
-							return luaL_error(L, "attempt to index '%s' (a nil value)", name);
+						shared_ptr<Instance> kiddie = inst->FindFirstChild(name, false);
+						if(kiddie){
+							return kiddie->wrap_lua(L);
 						}
+
+						return luaL_error(L, "attempt to index '%s' (a nil value)", name);
 					}
 				}
 			}
+				
 			return 0;
 		}
 
 		int Instance::lua_eq(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
 			if(inst){
-				shared_ptr<Instance> oinst = checkInstance(L, 2);
+				shared_ptr<Instance> oinst = checkInstance(L, 2, false);
 				if(oinst){
 					lua_pushboolean(L, inst == oinst);
 					return 1;
 				}
 			}
+			
 			lua_pushboolean(L, false);
 			return 1;
 		}
@@ -639,108 +666,112 @@ namespace OB{
 		}
 
 		int Instance::lua_toString(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				lua_pushstring(L, inst->toString().c_str());
-				return 1;
 			}
-			return 0;
+			
+			return 1;
 		}
 
 		int Instance::lua_getClassName(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
 			if(inst){
 				std::string className = inst->getClassName();
 				lua_pushstring(L, className.c_str());
 				return 1;
 			}
-			lua_pushnil(L);
-			return 1;
+			
+			return 0;
 		}
 
 		int Instance::lua_getUseCount(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				lua_pushinteger(L, inst.use_count() - 1);
 				return 1;
 			}
-			lua_pushnil(L);
-			return 1;
+			
+			return 0;
 		}
 
 		int Instance::lua_readOnlyProperty(lua_State* L){
 			//Welp. This is how ROBLOX does it.
+			//We do love compatibility.
 			luaL_error(L, "can't set value");
 			return 0;
 		}
 
 		int Instance::lua_getName(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
 			if(inst){
 				lua_pushstring(L, inst->getName().c_str());
 				return 1;
 			}
+			
 			return 0;
 		}
 
 		int Instance::lua_setName(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
 			if(inst){
 				std::string desired = std::string(luaL_checkstring(L, 2));
-			    inst->setName(desired);
-				return 0;
+				inst->setName(desired);
 			}
+			
 			return 0;
 		}
 
 		int Instance::lua_getParent(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
-			if(inst){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
+			if(inst){			
 				if(inst->Parent){
 					return inst->Parent->wrap_lua(L);
 				}
+			
 				lua_pushnil(L);
 				return 1;
 			}
+
 			return 0;
 		}
 
 		int Instance::lua_setParent(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
 			if(inst){
-				bool throwErrorIf = true;
-				shared_ptr<Instance> otherInst = NULL;
-				if(lua_isnil(L, 2)){
-					throwErrorIf = false;
-				}else{
-					otherInst = checkInstance(L, 2);
+				shared_ptr<Instance> otherInst = checkInstance(L, 2, false);
+			
+				try{
+					inst->setParent(otherInst, true);
+				}catch(OBException& ex){
+					return luaL_error(L, ex.getMessage().c_str());
 				}
-				if(otherInst || !throwErrorIf){
-					try{
-						inst->setParent(otherInst, true);
-					}catch(OBException& ex){
-						return luaL_error(L, ex.getMessage().c_str());
-					}
-					return 0;
-				}else{
-					return luaL_argerror(L, 2, "Instance expected");
-				}
-				return 0;
 			}
+			
 			return 0;
 		}
 
 		int Instance::lua_getArchivable(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
 			if(inst){
 				lua_pushboolean(L, inst->getArchivable());
 				return 1;
 			}
+			
 			return 0;
 		}
 
 		int Instance::lua_setArchivable(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
 			if(inst){
 				//Again, following ROBLOX's ways....
 				bool newVal = false;
@@ -751,50 +782,62 @@ namespace OB{
 				}
 				inst->setArchivable(newVal);
 			}
+			
 			return 0;
 		}
 
 		int Instance::lua_ClearAllChildren(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				inst->ClearAllChildren();
 				return 0;
 			}
+			
 			return luaL_error(L, COLONERR, "ClearAllChildren");
 		}
 
 		int Instance::lua_Clone(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				shared_ptr<Instance> newGuy = inst->Clone();
 				if(newGuy){
 					return newGuy->wrap_lua(L);
 				}
-				return 0;
+
+				lua_pushnil(L);
+				return 1;
 			}
+			
 			return luaL_error(L, COLONERR, "Clone");
 		}
 
 		int Instance::lua_Destroy(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				inst->Destroy();
 				return 0;
 			}
+			
 			return luaL_error(L, COLONERR, "Destroy");
 		}
 
 		int Instance::lua_Remove(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				inst->Remove();
 				return 0;
 			}
+			
 			return luaL_error(L, COLONERR, "Remove");
 		}
 
 		int Instance::lua_FindFirstChild(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				const char* kidName = luaL_checkstring(L, 2);
 				bool recursive = false;
@@ -812,11 +855,13 @@ namespace OB{
 				lua_pushnil(L);
 				return 1;
 			}
+			
 			return luaL_error(L, COLONERR, "FindFirstChild");
 		}
 
 		int Instance::lua_GetChildren(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				lua_newtable(L);
 
@@ -831,21 +876,25 @@ namespace OB{
 				}
 				return 1;
 			}
+			
 			return luaL_error(L, COLONERR, "GetChildren");
 		}
 
 		int Instance::lua_GetFullName(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				std::string fullName = inst->GetFullName();
 				lua_pushstring(L, fullName.c_str());
 				return 1;
 			}
+			
 			return luaL_error(L, COLONERR, "GetFullName");
 		}
 
 		int Instance::lua_IsA(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				const char* checkName = luaL_checkstring(L, 2);
 				if(checkName){
@@ -856,59 +905,43 @@ namespace OB{
 				lua_pushboolean(L, false);
 				return 1;
 			}
+			
 			return luaL_error(L, COLONERR, "IsA");
 		}
 
 		int Instance::lua_IsAncestorOf(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
-				bool throwErrorIf = true;
-				shared_ptr<Instance> otherInst = NULL;
-				if(lua_isnil(L, 2)){
-					throwErrorIf = false;
-				}else{
-					otherInst = checkInstance(L, 2);
-				}
-				if(otherInst || !throwErrorIf){
-					bool isIt = inst->IsAncestorOf(otherInst);
-					lua_pushboolean(L, isIt);
-					return 1;
-				}else{
-					return luaL_argerror(L, 2, "Instance expected");
-				}
-				return 0;
+				shared_ptr<Instance> otherInst = checkInstance(L, 2);
+
+				lua_pushboolean(L, inst->IsAncestorOf(otherInst));
+				return 1;
 			}
+			
 			return luaL_error(L, COLONERR, "IsAncestorOf");
 		}
 
 		int Instance::lua_IsDescendantOf(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
-				bool throwErrorIf = true;
-				shared_ptr<Instance> otherInst = NULL;
-				if(lua_isnil(L, 2)){
-					throwErrorIf = false;
-				}else{
-					otherInst = checkInstance(L, 2);
-				}
-				if(otherInst || !throwErrorIf){
-					bool isIt = inst->IsDescendantOf(otherInst);
-					lua_pushboolean(L, isIt);
-					return 1;
-				}else{
-					return luaL_argerror(L, 2, "Instance expected");
-				}
-				return 0;
+				shared_ptr<Instance> otherInst = checkInstance(L, 2);
+				lua_pushboolean(L, inst->IsDescendantOf(otherInst));
+				return 1;
 			}
+			
 			return luaL_error(L, COLONERR, "IsDescendantOf");
 		}
 
 		int Instance::lua_GetNetworkID(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				lua_pushnumber(L, inst->GetNetworkID());
 				return 1;
 			}
+			
 			return luaL_error(L, COLONERR, "GetNetworkID");
 		}
 

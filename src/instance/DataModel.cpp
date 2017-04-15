@@ -120,7 +120,8 @@ namespace OB{
 		}
 
 		int DataModel::lua_Shutdown(lua_State* L){
-		    shared_ptr<Instance> inst = checkInstance(L, 1);
+		    shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(shared_ptr<DataModel> dm = dynamic_pointer_cast<DataModel>(inst)){
 				int statusCode = 0;
 				if(!lua_isnoneornil(L, 2)){
@@ -131,6 +132,7 @@ namespace OB{
 				
 				return 0;
 			}
+			
 			return luaL_error(L, COLONERR, "Shutdown");
 		}
 

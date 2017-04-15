@@ -49,6 +49,10 @@ namespace OB{
 			lua_pushcfunction(L, Instance::Instance::lua_readOnlyProperty);
 			lua_rawset(L, -3);
 
+			lua_pushstring(L, "__name");
+			lua_pushstring(L, "Enum");
+			lua_rawset(L, -3);
+
 			lua_pop(L, 1);
 		}
 		
@@ -100,41 +104,48 @@ namespace OB{
 		}
 
 		int LuaEnum::lua_getEnumItems(lua_State* L){
-		    shared_ptr<LuaEnum> itm = checkLuaEnum(L, 1);
-			if(itm != NULL){
-				lua_newtable(L);
-
-				int i = 1;
-
-				for(std::map<std::string, shared_ptr<LuaEnumItem>>::iterator it = itm->enumValues.begin(); it != itm->enumValues.end(); ++it){
-					it->second->wrap_lua(L);
-					lua_rawseti(L, -2, i);
-					i++;
-				}
-
-				return 1;
+		    shared_ptr<LuaEnum> itm = checkLuaEnum(L, 1, false);
+			if(!itm){
+				return luaL_error(L, COLONERR, "GetEnumItems");
 			}
-			return 0;
+			
+			lua_newtable(L);
+
+			int i = 1;
+
+			for(std::map<std::string, shared_ptr<LuaEnumItem>>::iterator it = itm->enumValues.begin(); it != itm->enumValues.end(); ++it){
+				it->second->wrap_lua(L);
+				lua_rawseti(L, -2, i);
+				i++;
+			}
+
+			return 1;
 		}
 
 		int LuaEnum::lua_index(lua_State* L){
-		    shared_ptr<LuaEnum> con = checkLuaEnum(L, 1);
-			if(con != NULL){
-				std::string propname = std::string(luaL_checkstring(L, 2));
-				if(propname == "GetEnumItems"){
-					lua_pushcfunction(L, lua_getEnumItems);
-					return 1;
-				}else{
-				    shared_ptr<LuaEnumItem> enm = con->enumValues[propname];
-					if(enm != NULL){
-						return enm->wrap_lua(L);
-					}
+		    shared_ptr<LuaEnum> con = checkLuaEnum(L, 1, false);
+			
+			std::string propname = std::string(luaL_checkstring(L, 2));
+			if(propname == "GetEnumItems"){
+				lua_pushcfunction(L, lua_getEnumItems);
+				return 1;
+			}else{
+				shared_ptr<LuaEnumItem> enm = con->enumValues[propname];
+				if(enm != NULL){
+					return enm->wrap_lua(L);
 				}
 			}
+			
 			return 0;
 		}
 
-	    shared_ptr<LuaEnum> checkLuaEnum(lua_State* L, int index){
+	    shared_ptr<LuaEnum> checkLuaEnum(lua_State* L, int index, bool errIfNot, bool allowNil){
+			if(allowNil){
+				if(lua_isnoneornil(L, index)){
+					return NULL;
+				}
+			}
+			
 			if(lua_isuserdata(L, index)){
 				void* udata = lua_touserdata(L, index);
 				int meta = lua_getmetatable(L, index);
@@ -146,7 +157,10 @@ namespace OB{
 					}
 					lua_pop(L, 1);
 				}
-				return NULL;
+			}
+
+			if(errIfNot){
+				luaO_typeerror(L, index, "Enum");
 			}
 			return NULL;
 		}

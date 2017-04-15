@@ -161,7 +161,8 @@ namespace OB{
 		}
 
 		int Lighting::lua_getSkyColor(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
@@ -174,32 +175,28 @@ namespace OB{
 					}
 				}
 			}
+			
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int Lighting::lua_setSkyColor(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
-				    shared_ptr<Type::Color3> col3 = Type::checkColor3(L, 2);
-					if(col3){
-						instL->setSkyColor(col3);
-					}else{
-						if(lua_isnil(L, 2)){
-							instL->setSkyColor(NULL);
-						}else{
-							return luaL_error(L, "bad argument #1 to '?' (Color3 expected, got %s)", lua_typename(L, 2));
-						}
-					}
+				    shared_ptr<Type::Color3> col3 = Type::checkColor3(L, 2, true, true);
+			    	instL->setSkyColor(col3);
 				}
 			}
+			
 			return 0;
 		}
 
 		int Lighting::lua_getFogEnabled(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
@@ -207,12 +204,14 @@ namespace OB{
 					return 1;
 				}
 			}
+			
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int Lighting::lua_setFogEnabled(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
@@ -220,11 +219,13 @@ namespace OB{
 					instL->setFogEnabled(newV);
 				}
 			}
+			
 			return 0;
 		}
 
 		int Lighting::lua_getFogColor(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
@@ -237,32 +238,28 @@ namespace OB{
 					}
 				}
 			}
+			
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int Lighting::lua_setFogColor(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
-				    shared_ptr<Type::Color3> col3 = Type::checkColor3(L, 2);
-					if(col3){
-						instL->setFogColor(col3);
-					}else{
-						if(lua_isnil(L, 2)){
-							instL->setFogColor(NULL);
-						}else{
-							return luaL_error(L, "bad argument #1 to '?' (Color3 expected, got %s)", lua_typename(L, 2));
-						}
-					}
+				    shared_ptr<Type::Color3> col3 = Type::checkColor3(L, 2, true, true);
+					instL->setFogColor(col3);
 				}
 			}
+			
 			return 0;
 		}
 
 		int Lighting::lua_getFogStart(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
@@ -270,12 +267,14 @@ namespace OB{
 					return 1;
 				}
 			}
+			
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int Lighting::lua_setFogStart(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
@@ -283,11 +282,13 @@ namespace OB{
 					instL->setFogStart(newV);
 				}
 			}
+			
 			return 0;
 		}
 
 		int Lighting::lua_getFogEnd(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
@@ -295,12 +296,14 @@ namespace OB{
 					return 1;
 				}
 			}
+			
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int Lighting::lua_setFogEnd(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
@@ -308,6 +311,7 @@ namespace OB{
 					instL->setFogEnd(newV);
 				}
 			}
+			
 			return 0;
 		}
 

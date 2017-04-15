@@ -174,7 +174,8 @@ namespace OB{
 		}
 
 		int MeshPart::lua_setMesh(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				shared_ptr<MeshPart> instMP = dynamic_pointer_cast<MeshPart>(inst);
 				if(instMP){
@@ -182,11 +183,13 @@ namespace OB{
 					instMP->setMesh(newV);
 				}
 			}
+			
 			return 0;
 		}
 
 		int MeshPart::lua_getMesh(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				shared_ptr<MeshPart> instMP = dynamic_pointer_cast<MeshPart>(inst);
 				if(instMP){
@@ -194,6 +197,7 @@ namespace OB{
 					return 1;
 				}
 			}
+			
 			lua_pushnil(L);
 			return 1;
 		}

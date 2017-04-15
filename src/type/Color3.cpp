@@ -26,7 +26,7 @@
 namespace OB{
 	namespace Type{
 		DEFINE_TYPE(Color3){
-			registerLuaType(LuaTypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
+			registerLuaType(LuaTypeName, TypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
 		}
 		
 	    Color3::Color3(){
@@ -64,31 +64,46 @@ namespace OB{
 		}
 
 		int Color3::lua_getR(lua_State* L){
-			shared_ptr<Color3> LuaColor3 = checkColor3(L, 1);
+			shared_ptr<Color3> LuaColor3 = checkColor3(L, 1, false, false);
+			if(!LuaColor3){
+				return 0;
+			}
+			
 			lua_pushnumber(L, LuaColor3->r);
 			return 1;
 		}
 
 		int Color3::lua_getG(lua_State* L){
-			shared_ptr<Color3> LuaColor3 = checkColor3(L, 1);
+			shared_ptr<Color3> LuaColor3 = checkColor3(L, 1, false, false);
+			if(!LuaColor3){
+				return 0;
+			}
+			
 			lua_pushnumber(L, LuaColor3->g);
 			return 1;
 		}
 
 		int Color3::lua_getB(lua_State* L){
-			shared_ptr<Color3> LuaColor3 = checkColor3(L, 1);
+			shared_ptr<Color3> LuaColor3 = checkColor3(L, 1, false, false);
+			if(!LuaColor3){
+				return 0;
+			}
+			
 			lua_pushnumber(L, LuaColor3->b);
 			return 1;
 		}
 
 		int Color3::lua_eq(lua_State* L){
-			shared_ptr<Color3> LuaColor3 = checkColor3(L, 1);
-			if(lua_isuserdata(L, 2)){
-				shared_ptr<Color3> OtherColor3 = checkColor3(L, 2);
-				lua_pushboolean(L, LuaColor3->equals(OtherColor3));
-			}else{
-				lua_pushboolean(L, false);
+			shared_ptr<Color3> LuaColor3 = checkColor3(L, 1, false, false);
+			if(LuaColor3){
+				if(lua_isuserdata(L, 2)){
+					shared_ptr<Color3> OtherColor3 = checkColor3(L, 2, false);
+					lua_pushboolean(L, LuaColor3->equals(OtherColor3));
+					return 1;
+				}
 			}
+			
+			lua_pushboolean(L, false);
 			return 1;
 		}
 
@@ -104,11 +119,8 @@ namespace OB{
 
 		void Color3::register_lua_property_setters(lua_State* L){
 			luaL_Reg properties[] = {
-				{"r", Instance::Instance::lua_readOnlyProperty},
 				{"R", Instance::Instance::lua_readOnlyProperty},
-				{"g", Instance::Instance::lua_readOnlyProperty},
 				{"G", Instance::Instance::lua_readOnlyProperty},
-				{"b", Instance::Instance::lua_readOnlyProperty},
 				{"B", Instance::Instance::lua_readOnlyProperty},
 				{NULL, NULL}
 			};
@@ -117,18 +129,21 @@ namespace OB{
 
 		void Color3::register_lua_property_getters(lua_State* L){
 		    luaL_Reg properties[] = {
-				{"r", lua_getR},
 				{"R", lua_getR},
-				{"g", lua_getG},
 				{"G", lua_getG},
-				{"b", lua_getB},
 				{"B", lua_getB},
 				{NULL, NULL}
 			};
 			luaL_setfuncs(L, properties, 0);
 		}
 
-	    shared_ptr<Color3> checkColor3(lua_State* L, int index){
+	    shared_ptr<Color3> checkColor3(lua_State* L, int index, bool errIfNot, bool allowNil){
+			if(allowNil){
+				if(lua_isnoneornil(L, index)){
+					return NULL;
+				}
+			}
+			
 			if(lua_isuserdata(L, index)){
 				void* udata = lua_touserdata(L, index);
 				int meta = lua_getmetatable(L, index);
@@ -140,7 +155,10 @@ namespace OB{
 					}
 					lua_pop(L, 1);
 				}
-				return NULL;
+			}
+			
+			if(errIfNot){
+				luaO_typeerror(L, index, "Color3");
 			}
 			return NULL;
 		}

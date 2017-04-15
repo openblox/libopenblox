@@ -26,6 +26,7 @@
 #endif
 
 #include "type/Color3.h"
+#include "type/Vector3.h"
 
 #ifndef OB_INST_BASEPART
 #define OB_INST_BASEPART
@@ -58,6 +59,9 @@ namespace OB{
 				void setTransparency(double transparency);
 				double getTransparency();
 
+				void setPosition(shared_ptr<Type::Vector3> position);
+				shared_ptr<Type::Vector3> getPosition();
+
 				DECLARE_LUA_METHOD(setAnchored);
 				DECLARE_LUA_METHOD(getAnchored);
 				DECLARE_LUA_METHOD(setColor);
@@ -68,6 +72,8 @@ namespace OB{
 				DECLARE_LUA_METHOD(getLocked);
 				DECLARE_LUA_METHOD(setTransparency);
 				DECLARE_LUA_METHOD(getTransparency);
+				DECLARE_LUA_METHOD(setPosition);
+				DECLARE_LUA_METHOD(getPosition);
 
 				static void register_lua_property_getters(lua_State* L);
 				static void register_lua_property_setters(lua_State* L);
@@ -79,6 +85,7 @@ namespace OB{
 				bool CanCollide;
 				bool Locked;
 				double Transparency;
+				shared_ptr<Type::Vector3> Position;
 		};
 	}
 }

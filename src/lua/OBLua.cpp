@@ -36,6 +36,7 @@
 #include "instance/LogService.h"
 
 #include "type/Color3.h"
+#include "type/Vector3.h"
 #include "type/Enum.h"
 
 namespace OB{
@@ -123,6 +124,14 @@ namespace OB{
 			};
 			luaL_setfuncs(L, color3lib, 0);
 			lua_setglobal(L, "Color3");
+
+			lua_newtable(L);
+			luaL_Reg vector3lib[] = {
+				{"new", lua_newVector3},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, vector3lib, 0);
+			lua_setglobal(L, "Vector3");
 
 			Enum::registerLuaEnums(L);
 
@@ -353,6 +362,7 @@ namespace OB{
 				
 			    return newGuy->wrap_lua(L);
 			}
+			
 			lua_pushnil(L);
 			return 1;
 		}
@@ -369,6 +379,21 @@ namespace OB{
 			}
 
 		    shared_ptr<Type::Color3> newGuy = make_shared<Type::Color3>(r, g, b);
+			return newGuy->wrap_lua(L);
+		}
+
+		int lua_newVector3(lua_State* L){
+			double x = 0;
+			double y = 0;
+			double z = 0;
+
+			if(!lua_isnone(L, 1) && !lua_isnone(L, 2) && !lua_isnone(L, 3)){
+				x = luaL_checknumber(L, 1);
+				y = luaL_checknumber(L, 2);
+				z = luaL_checknumber(L, 3);
+			}
+
+		    shared_ptr<Type::Vector3> newGuy = make_shared<Type::Vector3>(x, y, z);
 			return newGuy->wrap_lua(L);
 		}
 

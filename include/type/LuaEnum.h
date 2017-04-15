@@ -52,7 +52,7 @@ namespace OB{
 				std::string type;
 		};
 
-		shared_ptr<LuaEnum> checkLuaEnum(lua_State* L, int n);
+		shared_ptr<LuaEnum> checkLuaEnum(lua_State* L, int n, bool errIfNot = true, bool allowNil = true);
 	}
 }
 

@@ -71,43 +71,42 @@ namespace OB{
 			    char* dat = resp->getData();
 				int siz = resp->getSize();
 				if(dat && siz > 0){
-					//char* strAsset = new char[siz + 1];
-					//strncpy(strAsset, dat, siz);
-					//strAsset[siz] = '\0';
 					return dat;
 				}
 			}
-
 			
 		    return NULL;
 		}
 
 		int ContentProvider::lua_Preload(lua_State* L){
-		    shared_ptr<Instance> inst = checkInstance(L, 1);
+		    shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(shared_ptr<ContentProvider> cp = dynamic_pointer_cast<ContentProvider>(inst)){
 				std::string urlStr = std::string(luaL_checkstring(L, 2));
 				
 			    cp->Preload(urlStr);
-				
 				return 0;
 			}
+			
 			return luaL_error(L, COLONERR, "Preload");
 		}
 
 		int ContentProvider::lua_Load(lua_State* L){
-		    shared_ptr<Instance> inst = checkInstance(L, 1);
+		    shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(shared_ptr<ContentProvider> cp = dynamic_pointer_cast<ContentProvider>(inst)){
 				std::string urlStr = std::string(luaL_checkstring(L, 2));
 				
 			    cp->Load(urlStr);
-				
 				return 0;
 			}
+			
 			return luaL_error(L, COLONERR, "Load");
 		}
 
 		int ContentProvider::lua_GetAsset(lua_State* L){
-		    shared_ptr<Instance> inst = checkInstance(L, 1);
+		    shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(shared_ptr<ContentProvider> cp = dynamic_pointer_cast<ContentProvider>(inst)){
 				std::string urlStr = std::string(luaL_checkstring(L, 2));
 				
@@ -116,16 +115,17 @@ namespace OB{
 					lua_pushnil(L);
 					return 1;
 				}
-				lua_pushstring(L, strAsset);
-				//delete[] strAsset;
 				
+				lua_pushstring(L, strAsset);
 				return 1;
 			}
+			
 			return luaL_error(L, COLONERR, "GetAsset");
 		}
 
 		int ContentProvider::lua_getRequestQueueSize(lua_State* L){
-		    shared_ptr<Instance> inst = checkInstance(L, 1);
+		    shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(shared_ptr<ContentProvider> cp = dynamic_pointer_cast<ContentProvider>(inst)){
 			    OBEngine* eng = OBEngine::getInstance();
 				shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
@@ -133,6 +133,7 @@ namespace OB{
 				lua_pushinteger(L, assetLoc->getRequestQueueSize());
 				return 1;
 			}
+			
 			lua_pushnil(L);
 			return 1;
 		}

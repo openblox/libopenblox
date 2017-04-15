@@ -23,6 +23,7 @@
 #include "OBEngine.h"
 
 #include "type/Color3.h"
+#include "type/Vector3.h"
 
 #include "type/Event.h"
 #include "type/EventConnection.h"
@@ -32,9 +33,10 @@
 namespace OB{
 	namespace Type{
 	    DEFINE_TYPE(Type){
-			registerLuaType(LuaTypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
+			registerLuaType(LuaTypeName, TypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
 
 			Color3::_ob_init();
+			Vector3::_ob_init();
 			
 			Event::_ob_init();
 			EventConnection::_ob_init();
@@ -48,7 +50,7 @@ namespace OB{
 
 		Type::~Type(){}
 
-		void Type::registerLuaType(std::string typeName, luaRegisterFunc register_metamethods, luaRegisterFunc register_methods, luaRegisterFunc register_getters, luaRegisterFunc register_setters){
+		void Type::registerLuaType(std::string typeName, std::string className, luaRegisterFunc register_metamethods, luaRegisterFunc register_methods, luaRegisterFunc register_getters, luaRegisterFunc register_setters){
 			typeList.push_back(typeName);
 			
 			lua_State* L = OB::OBEngine::getInstance()->getGlobalLuaState();
@@ -86,6 +88,11 @@ namespace OB{
 			//Item set
 			lua_pushstring(L, "__newindex");
 			lua_pushcfunction(L, lua_newindex);
+			lua_rawset(L, -3);
+
+			//Set name
+			lua_pushstring(L, "__name");
+			lua_pushstring(L, className.c_str());
 			lua_rawset(L, -3);
 
 			lua_pop(L, 1);
@@ -126,7 +133,13 @@ namespace OB{
 			luaL_setfuncs(L, properties, 0);
 		}
 
-	    shared_ptr<Type> Type::checkType(lua_State* L, int index){
+	    shared_ptr<Type> Type::checkType(lua_State* L, int index, bool errIfNot, bool allowNil){
+			if(allowNil){
+				if(lua_isnoneornil(L, index)){
+					return NULL;
+				}
+			}
+			
 			if(lua_isuserdata(L, index)){
 				unsigned size = typeList.size();
 				void* udata = lua_touserdata(L, index);
@@ -141,13 +154,16 @@ namespace OB{
 						lua_pop(L, 1);
 					}
 				}
-				return NULL;
+			}
+			
+			if(errIfNot){
+				luaO_typeerror(L, index, "Type");
 			}
 			return NULL;
 		}
 
 		int Type::lua_newindex(lua_State* L){
-		    shared_ptr<Type> t = checkType(L, 1);
+		    shared_ptr<Type> t = checkType(L, 1, false);
 			if(t){
 				const char* name = luaL_checkstring(L, 2);
 				lua_getmetatable(L, 1);//-3
@@ -172,47 +188,49 @@ namespace OB{
 		}
 
 		int Type::lua_index(lua_State* L){
-		    shared_ptr<Type> t = checkType(L, 1);
-			if(t){
-				const char* name = luaL_checkstring(L, 2);
+		    shared_ptr<Type> t = checkType(L, 1, false);
+			if(!t){
+				return 0;
+			}
+			
+			const char* name = luaL_checkstring(L, 2);
 
-				lua_getmetatable(L, 1);//-3
-				lua_getfield(L, -1, "__propertygetters");//-2
+			lua_getmetatable(L, 1);//-3
+			lua_getfield(L, -1, "__propertygetters");//-2
+			lua_getfield(L, -1, name);//-1
+			if(lua_iscfunction(L, -1)){
+				lua_remove(L, -2);
+				lua_remove(L, -2);
+
+				lua_pushvalue(L, 1);
+				lua_call(L, 1, 1);
+				return 1;
+			}else{
+				lua_pop(L, 2);
+				//Check methods
+				lua_getfield(L, -1, "__methods");//-2
 				lua_getfield(L, -1, name);//-1
 				if(lua_iscfunction(L, -1)){
 					lua_remove(L, -2);
-					lua_remove(L, -2);
+					lua_remove(L, -3);
 
-					lua_pushvalue(L, 1);
-					lua_call(L, 1, 1);
 					return 1;
 				}else{
-					lua_pop(L, 2);
-					//Check methods
-					lua_getfield(L, -1, "__methods");//-2
-					lua_getfield(L, -1, name);//-1
-					if(lua_iscfunction(L, -1)){
-						lua_remove(L, -2);
-						lua_remove(L, -3);
-
-						return 1;
-					}else{
-						return luaL_error(L, "attempt to index '%s' (a nil value)", name);
-					}
+					return luaL_error(L, "attempt to index '%s' (a nil value)", name);
 				}
 			}
-			return 0;
 		}
 
 		int Type::lua_eq(lua_State* L){
-		    shared_ptr<Type> t = checkType(L, 1);
+		    shared_ptr<Type> t = checkType(L, 1, false);
 			if(t){
-			    shared_ptr<Type> ot = checkType(L, 2);
+				shared_ptr<Type> ot = checkType(L, 2, false);
 				if(ot){
 					lua_pushboolean(L, t == ot);
 					return 1;
 				}
 			}
+			
 			lua_pushboolean(L, false);
 			return 1;
 		}
@@ -239,12 +257,13 @@ namespace OB{
 		}
 
 		int Type::lua_toString(lua_State* L){
-			shared_ptr<Type> t = checkType(L, 1);
-			if(t){
-				lua_pushstring(L, t->toString().c_str());
-				return 1;
+			shared_ptr<Type> t = checkType(L, 1, false);
+			if(!t){
+				return 0;
 			}
-			return 0;
+			
+			lua_pushstring(L, t->toString().c_str());
+			return 1;
 		}
 
 		int Type::wrap_lua(lua_State* L){

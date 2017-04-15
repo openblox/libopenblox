@@ -74,7 +74,7 @@ namespace OB{
 				 *
 				 * @author John M. Harris, Jr.
 				 */
-				static void registerLuaType(std::string typeName, luaRegisterFunc register_metamethods, luaRegisterFunc register_methods, luaRegisterFunc register_getters, luaRegisterFunc register_setters);
+				static void registerLuaType(std::string typeName, std::string className, luaRegisterFunc register_metamethods, luaRegisterFunc register_methods, luaRegisterFunc register_getters, luaRegisterFunc register_setters);
 
 				/**
 				 * Returns the stringified version of this Type.
@@ -181,7 +181,7 @@ namespace OB{
 				 */
 				static void register_lua_property_getters(lua_State* L);
 
-				static shared_ptr<Type> checkType(lua_State* L, int index);
+				static shared_ptr<Type> checkType(lua_State* L, int index, bool errIfNot = true, bool allowNil = true);
 
 				DECLARE_TYPE();
 

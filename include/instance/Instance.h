@@ -159,19 +159,19 @@ protected: \
 
 #define WRAP_EVTI(Event_Name) \
 	[](lua_State* L)->int{ \
-		shared_ptr<Instance> inst = checkInstance(L, 1); \
+		shared_ptr<Instance> inst = checkInstance(L, 1, false);	\
 		if(inst){ \
-				 return inst->Event_Name->wrap_lua(L); \
+			return inst->Event_Name->wrap_lua(L); \
 		} \
 		return 0; \
 	}
 
 #define WRAP_EVT(Clazz, Event_Name) \
 	[](lua_State* L)->int{ \
-		shared_ptr<Instance> inst = checkInstance(L, 1); \
+		shared_ptr<Instance> inst = checkInstance(L, 1, false);	\
 		if(inst){ \
 			if(shared_ptr<Clazz> wi = dynamic_pointer_cast<Clazz>(inst)){ \
-				 return wi->Event_Name->wrap_lua(L); \
+				return wi->Event_Name->wrap_lua(L); \
 			} \
 		} \
 		return 0; \
@@ -398,7 +398,7 @@ namespace OB{
 				 * @author John M. Harris, Jr.
 				 * @author DigiTechs
 				 */
-				static shared_ptr<Instance> checkInstance(lua_State* L, int index);
+				static shared_ptr<Instance> checkInstance(lua_State* L, int index, bool errIfNot = true, bool allowNil = true);
 
 			    /**
 				 * Handles attempts to set properties of this Instance.

@@ -29,6 +29,32 @@ extern "C" {
 #include <string>
 
 namespace OB{
+	/*
+	 * Convenience function to handle type errors, used in check*
+	 * functions.
+	 *
+	 * Basically luaL_typeerror/luaL_typerror
+	 *
+	 * @param L Lua state
+	 * @param arg Argument
+	 * @param tname Type name expected
+	 * @author John M. Harris, Jr.
+	 */
+	inline int luaO_typeerror(lua_State* L, int arg, const char* tname){
+		const char* typearg; //Name of type of the given argument
+
+		if(luaL_getmetafield(L, arg, "__name") == LUA_TSTRING){
+			typearg = lua_tostring(L, -1); //Use given type name
+		}else if(lua_type(L, arg) == LUA_TLIGHTUSERDATA){
+			typearg = "light userdata";
+		}else{
+			typearg = luaL_typename(L, arg);
+		}
+		
+		const char* msg = lua_pushfstring(L, "%s expected, got %s", tname, typearg);
+		return luaL_argerror(L, arg, msg);
+	}
+	
 	namespace Lua{
 		struct OBLState{
 			lua_State* L;
@@ -140,6 +166,15 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		int lua_newColor3(lua_State* L);
+
+		/**
+		 * Used to create a Vector3 from Lua.
+		 *
+		 * @param L Lua state
+		 * @returns int 1
+		 * @author John M. Harris, Jr.
+		 */
+		int lua_newVector3(lua_State* L);
 
 		/**
 		 * Used to get a list of all Instance classes from Lua.

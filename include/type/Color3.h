@@ -64,7 +64,7 @@ namespace OB{
 
 		};
 
-		shared_ptr<Color3> checkColor3(lua_State* L, int n);
+		shared_ptr<Color3> checkColor3(lua_State* L, int n, bool errIfNot = true, bool allowNil = true);
 	}
 }
 

@@ -55,6 +55,11 @@ namespace OB{
 			lua_rawset(L, -3);
 			*/
 
+			//Item get
+			lua_pushstring(L, "__name");
+			lua_pushstring(L, "EnumItem");
+			lua_rawset(L, -3);
+
 			lua_pop(L, 1);
 		}
 		
@@ -87,21 +92,30 @@ namespace OB{
 		}
 
 		int LuaEnumItem::lua_index(lua_State* L){
-		    shared_ptr<LuaEnumItem> con = checkAnyLuaEnumItem(L, 1);
-			if(con != NULL){
-				std::string propname = std::string(luaL_checkstring(L, 2));
-				if(propname == "Name"){
-				    lua_pushstring(L, con->getName().c_str());
-					return 1;
-				}else if(propname == "Value"){
-				    lua_pushinteger(L, con->value);
-					return 1;
-				}
+		    shared_ptr<LuaEnumItem> con = checkAnyLuaEnumItem(L, 1, false);
+			if(!con){
+				return 0;
 			}
+			
+			std::string propname = std::string(luaL_checkstring(L, 2));
+			if(propname == "Name"){
+				lua_pushstring(L, con->getName().c_str());
+				return 1;
+			}else if(propname == "Value"){
+				lua_pushinteger(L, con->value);
+				return 1;
+			}
+			
 			return 0;
 		}
 
-	    shared_ptr<LuaEnumItem> checkAnyLuaEnumItem(lua_State* L, int index){
+	    shared_ptr<LuaEnumItem> checkAnyLuaEnumItem(lua_State* L, int index, bool errIfNot, bool allowNil){
+			if(allowNil){
+				if(lua_isnoneornil(L, index)){
+					return NULL;
+				}
+			}
+			
 			if(lua_isuserdata(L, index)){
 				void* udata = lua_touserdata(L, index);
 				int meta = lua_getmetatable(L, index);
@@ -113,7 +127,10 @@ namespace OB{
 					}
 					lua_pop(L, 1);
 				}
-				return NULL;
+			}
+
+			if(errIfNot){
+				luaO_typeerror(L, index, "EnumItem");
 			}
 			return NULL;
 		}
@@ -127,6 +144,7 @@ namespace OB{
 							return it->second;
 						}
 					}
+					luaO_typeerror(L, index, "EnumItem");
 					return NULL;
 				}
 				
@@ -135,7 +153,7 @@ namespace OB{
 				}
 			}
 			
-			return checkAnyLuaEnumItem(L, index);
+			return checkAnyLuaEnumItem(L, index, false);
 		}
 	}
 }

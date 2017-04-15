@@ -49,7 +49,7 @@ namespace OB{
 		class LuaEnum;
 
 		shared_ptr<LuaEnumItem> checkLuaEnumItem(lua_State* L, int n, shared_ptr<LuaEnum> enum_type);
-		shared_ptr<LuaEnumItem> checkAnyLuaEnumItem(lua_State* L, int n);
+		shared_ptr<LuaEnumItem> checkAnyLuaEnumItem(lua_State* L, int n, bool errIfNot = true, bool allowNil = true);
 	}
 }
 

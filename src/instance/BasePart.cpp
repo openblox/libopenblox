@@ -33,6 +33,7 @@ namespace OB{
 		    CanCollide = false;
 		    Locked = false;
 		    Transparency = 0;
+			Position = make_shared<Type::Vector3>(0, 0, 0);
 		}
 
 		BasePart::~BasePart(){}
@@ -106,8 +107,30 @@ namespace OB{
 			return Transparency;
 		}
 
+		void BasePart::setPosition(shared_ptr<Type::Vector3> position){
+			if(position == NULL){
+				shared_ptr<Type::Vector3> vec3 = make_shared<Type::Vector3>(0, 0, 0);
+				if(!vec3->equals(Position)){
+					Position = vec3;
+					
+					propertyChanged("Position");
+				}
+			}else{
+				if(!position->equals(Position)){
+					Position = position;
+
+					propertyChanged("Position");
+				}
+			}
+		}
+		
+		shared_ptr<Type::Vector3> BasePart::getPosition(){
+			return Position;
+		}
+
 		int BasePart::lua_setAnchored(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				shared_ptr<BasePart> instBP = dynamic_pointer_cast<BasePart>(inst);
 				if(instBP){
@@ -115,11 +138,13 @@ namespace OB{
 					instBP->setAnchored(newV);
 				}
 			}
+			
 			return 0;
 		}
 
 		int BasePart::lua_getAnchored(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				shared_ptr<BasePart> instBP = dynamic_pointer_cast<BasePart>(inst);
 				if(instBP){
@@ -127,32 +152,28 @@ namespace OB{
 					return 1;
 				}
 			}
+			
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int BasePart::lua_setColor(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				shared_ptr<BasePart> instBP = dynamic_pointer_cast<BasePart>(inst);
 				if(instBP){
-				    shared_ptr<Type::Color3> col3 = Type::checkColor3(L, 2);
-					if(col3){
-						instBP->setColor(col3);
-					}else{
-						if(lua_isnil(L, 2)){
-							instBP->setColor(NULL);
-						}else{
-							return luaL_error(L, "bad argument #1 to '?' (Color3 expected, got %s)", lua_typename(L, 2));
-						}
-					}
+				    shared_ptr<Type::Color3> col3 = Type::checkColor3(L, 2, true, true);
+					instBP->setColor(col3);
 				}
 			}
+			
 			return 0;
 		}
 
 		int BasePart::lua_getColor(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				shared_ptr<BasePart> instBP = dynamic_pointer_cast<BasePart>(inst);
 				if(instBP){
@@ -165,12 +186,14 @@ namespace OB{
 					}
 				}
 			}
+			
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int BasePart::lua_setCanCollide(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				shared_ptr<BasePart> instBP = dynamic_pointer_cast<BasePart>(inst);
 				if(instBP){
@@ -178,11 +201,13 @@ namespace OB{
 					instBP->setCanCollide(newV);
 				}
 			}
+			
 			return 0;
 		}
 
 		int BasePart::lua_getCanCollide(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				shared_ptr<BasePart> instBP = dynamic_pointer_cast<BasePart>(inst);
 				if(instBP){
@@ -190,12 +215,14 @@ namespace OB{
 					return 1;
 				}
 			}
+			
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int BasePart::lua_setLocked(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				shared_ptr<BasePart> instBP = dynamic_pointer_cast<BasePart>(inst);
 				if(instBP){
@@ -203,11 +230,13 @@ namespace OB{
 					instBP->setLocked(newV);
 				}
 			}
+			
 			return 0;
 		}
 
 		int BasePart::lua_getLocked(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				shared_ptr<BasePart> instBP = dynamic_pointer_cast<BasePart>(inst);
 				if(instBP){
@@ -215,12 +244,14 @@ namespace OB{
 					return 1;
 				}
 			}
+			
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int BasePart::lua_setTransparency(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				shared_ptr<BasePart> instBP = dynamic_pointer_cast<BasePart>(inst);
 				if(instBP){
@@ -228,11 +259,13 @@ namespace OB{
 					instBP->setTransparency(newV);
 				}
 			}
+			
 			return 0;
 		}
 
 		int BasePart::lua_getTransparency(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				shared_ptr<BasePart> instBP = dynamic_pointer_cast<BasePart>(inst);
 				if(instBP){
@@ -240,6 +273,41 @@ namespace OB{
 					return 1;
 				}
 			}
+			
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int BasePart::lua_setPosition(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<BasePart> instBP = dynamic_pointer_cast<BasePart>(inst);
+				if(instBP){
+				    shared_ptr<Type::Vector3> vec3 = Type::checkVector3(L, 2, true, true);
+					instBP->setPosition(vec3);
+				}
+			}
+			
+			return 0;
+		}
+
+		int BasePart::lua_getPosition(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<BasePart> instBP = dynamic_pointer_cast<BasePart>(inst);
+				if(instBP){
+				    shared_ptr<Type::Vector3> vec3 = instBP->getPosition();
+					if(vec3){
+						return vec3->wrap_lua(L);
+					}else{
+						lua_pushnil(L);
+						return 1;
+					}
+				}
+			}
+			
 			lua_pushnil(L);
 			return 1;
 		}
@@ -253,6 +321,7 @@ namespace OB{
 				{"CanCollide", lua_setCanCollide},
 				{"Locked", lua_setLocked},
 				{"Transparency", lua_setTransparency},
+				{"Position", lua_setPosition},
 				{NULL, NULL}
 			};
 			luaL_setfuncs(L, properties, 0);
@@ -267,6 +336,7 @@ namespace OB{
 				{"CanCollide", lua_getCanCollide},
 				{"Locked", lua_getLocked},
 				{"Transparency", lua_getTransparency},
+				{"Position", lua_getPosition},
 				{NULL, NULL}
 			};
 			luaL_setfuncs(L, properties, 0);

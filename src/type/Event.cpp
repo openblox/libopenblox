@@ -31,7 +31,7 @@
 namespace OB{
 	namespace Type{
 		DEFINE_TYPE(Event){
-			registerLuaType(LuaTypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
+			registerLuaType(LuaTypeName, TypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
 		}
 
 		Event::Event(std::string name, bool canFireFromLua, bool blockLogService){
@@ -114,64 +114,63 @@ namespace OB{
 		}
 
 		int Event::lua_fire(lua_State* L){
-			shared_ptr<Event> evt = checkEvent(L, 1);
+			shared_ptr<Event> evt = checkEvent(L, 1, false);
+			if(!evt){
+				return luaL_error(L, COLONERR, "Fire");
+			}
 
-			if(evt){
-				std::vector<shared_ptr<VarWrapper>> fireArgs;
+			std::vector<shared_ptr<VarWrapper>> fireArgs;
 				
-				int nargs = lua_gettop(L);
-				if(nargs > 1){
-					for(int i = 2; i <= nargs; i++){
-						int ltype = lua_type(L, i);
+			int nargs = lua_gettop(L);
+			if(nargs > 1){
+				for(int i = 2; i <= nargs; i++){
+					int ltype = lua_type(L, i);
 
-						switch(ltype){
-							case LUA_TNIL: {
-								fireArgs.push_back(make_shared<VarWrapper>((void*)NULL, TYPE_NULL));
+					switch(ltype){
+						case LUA_TNIL: {
+							fireArgs.push_back(make_shared<VarWrapper>((void*)NULL, TYPE_NULL));
+							break;
+						}
+						case LUA_TNUMBER: {
+							fireArgs.push_back(make_shared<VarWrapper>(lua_tonumber(L, i)));
+							break;
+						}
+						case LUA_TBOOLEAN: {
+							fireArgs.push_back(make_shared<VarWrapper>(lua_toboolean(L, i)));
+							break;
+						}
+						case LUA_TSTRING: {
+							const char* tmpStr = lua_tostring(L, i);
+							fireArgs.push_back(make_shared<VarWrapper>(std::string(tmpStr)));
+							break;
+						}
+						case LUA_TUSERDATA: {
+							shared_ptr<Type> tl = checkType(L, i);
+							if(tl){
+								fireArgs.push_back(make_shared<VarWrapper>(tl));
 								break;
 							}
-							case LUA_TNUMBER: {
-								fireArgs.push_back(make_shared<VarWrapper>(lua_tonumber(L, i)));
-								break;
-							}
-							case LUA_TBOOLEAN: {
-								fireArgs.push_back(make_shared<VarWrapper>(lua_toboolean(L, i)));
-								break;
-							}
-							case LUA_TSTRING: {
-								const char* tmpStr = lua_tostring(L, i);
-								fireArgs.push_back(make_shared<VarWrapper>(std::string(tmpStr)));
-								break;
-							}
-							case LUA_TUSERDATA: {
-								shared_ptr<Type> tl = checkType(L, i);
-								if(tl){
-									fireArgs.push_back(make_shared<VarWrapper>(tl));
-									break;
-								}
 
-								shared_ptr<Instance::Instance> ti = Instance::Instance::checkInstance(L, i);
-								if(ti){
-									fireArgs.push_back(make_shared<VarWrapper>(ti));
-									break;
-								}
-							}
-							case LUA_TTABLE:
-							case LUA_TFUNCTION:
-							case LUA_TTHREAD:
-							case LUA_TLIGHTUSERDATA: {
-								lua_pushvalue(L, i);
-								int ref = luaL_ref(L, LUA_REGISTRYINDEX);
-								fireArgs.push_back(make_shared<VarWrapper>(L, ref));
+							shared_ptr<Instance::Instance> ti = Instance::Instance::checkInstance(L, i);
+							if(ti){
+								fireArgs.push_back(make_shared<VarWrapper>(ti));
 								break;
 							}
 						}
+						case LUA_TTABLE:
+						case LUA_TFUNCTION:
+						case LUA_TTHREAD:
+						case LUA_TLIGHTUSERDATA: {
+							lua_pushvalue(L, i);
+							int ref = luaL_ref(L, LUA_REGISTRYINDEX);
+							fireArgs.push_back(make_shared<VarWrapper>(L, ref));
+							break;
+						}
 					}
 				}
-				
-				//TODO: Get args from Lua
-				evt->Fire(fireArgs);
 			}
-			
+			    
+			evt->Fire(fireArgs);
 			return 0;
 		}
 
@@ -226,11 +225,9 @@ namespace OB{
 		}
 		
 		int Event::lua_connect(lua_State* L){
-			shared_ptr<Event> evt = checkEvent(L, 1);
-
+			shared_ptr<Event> evt = checkEvent(L, 1, false);
 			if(!evt){
-				lua_pushnil(L);
-				return 1;
+				return luaL_error(L, COLONERR, "Connect");
 			}
 
 			luaL_checktype(L, 2, LUA_TFUNCTION);
@@ -250,7 +247,14 @@ namespace OB{
 			return evtCon->wrap_lua(L);
 		}
 		
-		int Event::lua_wait(lua_State* L){}
+		int Event::lua_wait(lua_State* L){
+			shared_ptr<Event> evt = checkEvent(L, 1, false);
+			if(!evt){
+				return luaL_error(L, COLONERR, "Wait");
+			}
+			//TODO:
+			return 0;
+		}
 
 		void Event::register_lua_methods(lua_State* L){
 			luaL_Reg methods[] = {
@@ -262,7 +266,13 @@ namespace OB{
 			luaL_setfuncs(L, methods, 0);
 		}
 
-	    shared_ptr<Event> checkEvent(lua_State* L, int index){
+	    shared_ptr<Event> checkEvent(lua_State* L, int index, bool errIfNot, bool allowNil){
+			if(allowNil){
+				if(lua_isnoneornil(L, index)){
+					return NULL;
+				}
+			}
+			
 			if(lua_isuserdata(L, index)){
 				void* udata = lua_touserdata(L, index);
 				int meta = lua_getmetatable(L, index);
@@ -274,7 +284,10 @@ namespace OB{
 					}
 					lua_pop(L, 1);
 				}
-				return NULL;
+			}
+			
+			if(errIfNot){
+				luaO_typeerror(L, index, "Event");
 			}
 			return NULL;
 		}

@@ -56,19 +56,22 @@ namespace OB{
 		}
 		
 		int CoreGui::lua_getEnabled(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				shared_ptr<CoreGui> instCG = dynamic_pointer_cast<CoreGui>(inst);
 				if(instCG){
 					lua_pushboolean(L, instCG->IsEnabled());
 				}
 			}
+			
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int CoreGui::lua_setEnabled(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(inst){
 				shared_ptr<CoreGui> instCG = dynamic_pointer_cast<CoreGui>(inst);
 				if(instCG){
@@ -76,6 +79,7 @@ namespace OB{
 					instCG->SetEnabled(newV);
 				}
 			}
+			
 			return 0;
 		}
 

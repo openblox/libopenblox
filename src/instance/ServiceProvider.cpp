@@ -57,7 +57,8 @@ namespace OB{
 		}
 
 		int ServiceProvider::lua_FindService(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(shared_ptr<ServiceProvider> sp = dynamic_pointer_cast<ServiceProvider>(inst)){
 				std::string serviceName = std::string(luaL_checkstring(L, 2));
 				shared_ptr<Instance> foundGuy = sp->FindService(serviceName);
@@ -67,11 +68,13 @@ namespace OB{
 				lua_pushnil(L);
 				return 1;
 			}
+			
 			return luaL_error(L, COLONERR, "FindService");
 		}
 
 		int ServiceProvider::lua_GetService(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1);
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
 			if(shared_ptr<ServiceProvider> sp = dynamic_pointer_cast<ServiceProvider>(inst)){
 				std::string serviceName = std::string(luaL_checkstring(L, 2));
 				shared_ptr<Instance> foundGuy = sp->GetService(serviceName);
@@ -81,6 +84,7 @@ namespace OB{
 				lua_pushnil(L);
 				return 1;
 			}
+			
 			return luaL_error(L, COLONERR, "GetService");
 		}
 

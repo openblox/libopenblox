@@ -28,7 +28,7 @@
 namespace OB{
 	namespace Type{
 		DEFINE_TYPE(EventConnection){
-			registerLuaType(LuaTypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
+			registerLuaType(LuaTypeName, TypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
 		}
 		
 		EventConnection::EventConnection(shared_ptr<Event> evt, void* ud, void (*fnc)(std::vector<shared_ptr<VarWrapper>>, void*)){
@@ -68,25 +68,24 @@ namespace OB{
 		}
 
 		int EventConnection::lua_disconnect(lua_State* L){
-			shared_ptr<EventConnection> evtCon = checkEventConnection(L, 1);
-
-			if(evtCon){
-				evtCon->Disconnect();
+			shared_ptr<EventConnection> evtCon = checkEventConnection(L, 1, false);
+			if(!evtCon){
+				return luaL_error(L, COLONERR, "Disconnect");
 			}
 
+			evtCon->Disconnect();
 		    return 0;
 		}
 
 		int EventConnection::lua_isConnected(lua_State* L){
-			shared_ptr<EventConnection> evtCon = checkEventConnection(L, 1);
-
+			shared_ptr<EventConnection> evtCon = checkEventConnection(L, 1, true);
+			
 			if(evtCon){
-			    lua_pushboolean(L, evtCon->isConnected());
-			}else{
-				lua_pushnil(L);
+				lua_pushboolean(L, evtCon->isConnected());
+				return 1;
 			}
 			
-			return 1;
+			return 0;
 		}
 
 		void EventConnection::register_lua_methods(lua_State* L){
@@ -113,7 +112,13 @@ namespace OB{
 			luaL_setfuncs(L, props, 0);
 		}
 
-		shared_ptr<EventConnection> checkEventConnection(lua_State* L, int index){
+		shared_ptr<EventConnection> checkEventConnection(lua_State* L, int index, bool errIfNot, bool allowNil){
+			if(allowNil){
+				if(lua_isnoneornil(L, index)){
+					return NULL;
+				}
+			}
+			
 			if(lua_isuserdata(L, index)){
 				void* udata = lua_touserdata(L, index);
 				int meta = lua_getmetatable(L, index);
@@ -125,7 +130,10 @@ namespace OB{
 					}
 					lua_pop(L, 1);
 				}
-				return NULL;
+			}
+			
+			if(errIfNot){
+				luaO_typeerror(L, index, "EventConnection");
 			}
 			return NULL;
 		}

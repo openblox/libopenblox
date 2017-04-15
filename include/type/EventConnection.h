@@ -52,7 +52,7 @@ namespace OB{
 			    void (*fnc)(std::vector<shared_ptr<VarWrapper>>, void*);
 		};
 
-		shared_ptr<EventConnection> checkEventConnection(lua_State* L, int n);
+		shared_ptr<EventConnection> checkEventConnection(lua_State* L, int n, bool errIfNot = true, bool allowNil = true);
 	}
 }
 

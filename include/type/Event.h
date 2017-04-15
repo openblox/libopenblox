@@ -62,7 +62,7 @@ namespace OB{
 				static void register_lua_methods(lua_State* L);
 		};
 
-		shared_ptr<Event> checkEvent(lua_State* L, int n);
+		shared_ptr<Event> checkEvent(lua_State* L, int n, bool errIfNot = true, bool allowNil = true);
 	}
 }
 
