@@ -24,6 +24,7 @@
 
 #include "type/Color3.h"
 #include "type/Vector3.h"
+#include "type/Vector2.h"
 
 #include "type/Event.h"
 #include "type/EventConnection.h"
@@ -37,6 +38,7 @@ namespace OB{
 
 			Color3::_ob_init();
 			Vector3::_ob_init();
+			Vector2::_ob_init();
 			
 			Event::_ob_init();
 			EventConnection::_ob_init();
