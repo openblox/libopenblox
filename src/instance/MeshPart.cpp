@@ -105,13 +105,14 @@ namespace OB{
 											}
 										}
 
-										irrNode = smgr->addAnimatedMeshSceneNode(realMesh);
+										irrNode = smgr->addMeshSceneNode(realMesh);
 									    if(irrNode){
-											irr::scene::IAnimatedMeshSceneNode* airrNode = (irr::scene::IAnimatedMeshSceneNode*)irrNode;
-											airrNode->setMaterialFlag(irr::video::EMF_LIGHTING, true);
-											//airrNode->setMD2Animation(irr::scene::EMAT_STAND);
+											irr::scene::IMeshSceneNode* mirrNode = (irr::scene::IMeshSceneNode*)irrNode;
+											mirrNode->setMaterialFlag(irr::video::EMF_LIGHTING, true);
 
 											updateColor();
+											updatePosition();
+										    updateRotation();
 
 											shared_ptr<Instance> parInst = Parent;
 											if(parInst){
@@ -140,28 +141,20 @@ namespace OB{
 		void MeshPart::updateColor(){
 			#if HAVE_IRRLICHT
 			if(irrNode){
-			    irr::scene::IAnimatedMeshSceneNode* mnode = (irr::scene::IAnimatedMeshSceneNode*)irrNode;
-				irr::scene::IAnimatedMesh* tMesh = mnode->getMesh();
+			    irr::scene::IMeshSceneNode* mnode = (irr::scene::IMeshSceneNode*)irrNode;
+				irr::scene::IMesh* tMesh = mnode->getMesh();
 
 				shared_ptr<Type::Color3> col3 = getColor();
 				irr::video::SColor irrCol = col3->toIrrlichtSColor(255);
 
 				std::cout << "updateColor()" << std::endl;
 				irr::video::SMaterial& thisMat = irrNode->getMaterial(0);
-				thisMat.EmissiveColor.set(255, 255, 0, 0);
+				thisMat.EmissiveColor = irrCol;
 				thisMat.DiffuseColor.set(0, 0, 0, 0);
 				thisMat.AmbientColor.set(0, 0, 0, 0);
 				thisMat.ColorMaterial = irr::video::ECM_NONE;
 			}
 			#endif
-		}
-
-		void MeshPart::propertyChanged(std::string property){
-			Instance::propertyChanged(property);
-			
-			if(property == "Color"){
-				updateColor();
-			}
 		}
 
 		bool MeshPart::assetLoaded(std::string res){

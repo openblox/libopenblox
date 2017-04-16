@@ -45,8 +45,8 @@ namespace OB{
 				std::string getMesh();
 
 				void updateMesh();
-				void updateColor();
-				virtual void propertyChanged(std::string property);
+				
+				virtual void updateColor();
 
 				virtual bool assetLoaded(std::string res);
 
