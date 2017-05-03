@@ -17,6 +17,7 @@ syslua="lua"
 
 #Options
 AC_ARG_WITH(irrlicht, AS_HELP_STRING([--without-irrlicht], [Compile without Irrlicht support.]))
+AC_ARG_WITH(bullet, AS_HELP_STRING([--without-bullet], [Compile without Bullet support.]))
 AC_ARG_WITH(curl, AS_HELP_STRING([--without-curl], [Compile without curl support.]))
 AC_ARG_WITH(enet, AS_HELP_STRING([--without-enet], [Compile without enet support.]))
 AC_ARG_WITH(lua, AS_HELP_STRING([--with-lua=LUA_VER], [Compile with a specific system Lua.]), [syslua="$withval"])
@@ -39,6 +40,10 @@ AS_IF([test "x$have_irrlicht" = "xyes"],
       [LIRRLICHT_CFLAGS=""])])
 
 AC_SUBST(LIRRLICHT_CFLAGS)
+
+AS_IF([test "x$with_bullet" != "xno"],
+	  [AX_PKG_CHECK_MODULES([LBULLET], [bullet], [], [AC_DEFINE_UNQUOTED(HAVE_BULLET, 1, [Define to 1 if you have the `bullet' library (-lbullet).])])],
+	  [have_bullet=no])
 
 AS_IF([test "x$with_curl" != "xno"],
 	  [AX_PKG_CHECK_MODULES([LCURL], [libcurl], [], [AC_DEFINE_UNQUOTED(HAVE_CURL, 1, [Define to 1 if you have the `curl' library (-lcurl).])])],

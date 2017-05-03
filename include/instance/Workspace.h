@@ -21,6 +21,12 @@
 
 #include "type/Vector3.h"
 
+#include "oblibconfig.h"
+
+#if HAVE_BULLET
+#include <btBulletDynamicsCommon.h>
+#endif
+
 #ifndef OB_INST_WORKSPACE
 #define OB_INST_WORKSPACE
 
@@ -60,6 +66,15 @@ namespace OB{
 				static void register_lua_property_setters(lua_State* L);
 
 				DECLARE_CLASS(Workspace);
+
+				void updateGravity();
+
+				#if HAVE_BULLET
+				btBroadphaseInterface* broadphase;
+				btDefaultCollisionConfiguration* collisionConfiguration;
+				btSequentialImpulseConstraintSolver* solver;
+				btDiscreteDynamicsWorld* dynamicsWorld;
+				#endif
 
 			    shared_ptr<Type::Vector3> Gravity;
 				double FallenPartsDestroyHeight;

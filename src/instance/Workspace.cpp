@@ -35,6 +35,15 @@ namespace OB{
 			FallenPartsDestroyHeight = -1000;
 			DestroyFallenParts = true;
 
+			#if HAVE_BULLET
+			broadphase = new btDbvtBroadphase();
+			collisionConfiguration = new btDefaultCollisionConfiguration();
+			btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
+			solver = new btSequentialImpulseConstraintSolver();
+			dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
+			updateGravity();
+			#endif
+
 			#if HAVE_IRRLICHT
 		    OBEngine* eng = OBEngine::getInstance();
 			if(eng){
@@ -55,10 +64,6 @@ namespace OB{
 			return NULL;
 		}
 
-	    shared_ptr<Type::Vector3> Workspace::getGravity(){
-			return Gravity;
-		}
-
 		double Workspace::getDistributedGameTime(){
 			OBEngine* eng = OBEngine::getInstance();
 
@@ -69,7 +74,11 @@ namespace OB{
 				double runTime = (double)(curTime - startTime) / 1000;
 				return runTime;
 			}
-			return 0;//TODO
+			return 0;
+		}
+
+		shared_ptr<Type::Vector3> Workspace::getGravity(){
+			return Gravity;
 		}
 		
 		void Workspace::setGravity(shared_ptr<Type::Vector3> gravity){
@@ -78,12 +87,14 @@ namespace OB{
 				if(!vec3->equals(Gravity)){
 				    Gravity = vec3;
 
+					updateGravity();
 					propertyChanged("Gravity");
 				}
 			}else{
 				if(!gravity->equals(Gravity)){
 				    Gravity = gravity;
 
+					updateGravity();
 					propertyChanged("Gravity");
 				}
 			}
@@ -111,6 +122,12 @@ namespace OB{
 				
 				propertyChanged("DestroyFallenParts");
 			}
+		}
+
+		void Workspace::updateGravity(){
+			#if HAVE_BULLET
+			dynamicsWorld->setGravity(getGravity()->toBulletVector3());
+			#endif
 		}
 
 		int Workspace::lua_getDistributedGameTime(lua_State* L){

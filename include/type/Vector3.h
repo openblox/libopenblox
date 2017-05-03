@@ -25,6 +25,10 @@
 #include <irrlicht/vector3d.h>
 #endif
 
+#if HAVE_BULLET
+#include <btBulletDynamicsCommon.h>
+#endif
+
 #ifndef OB_TYPE_VECTOR3
 #define OB_TYPE_VECTOR3
 
@@ -41,6 +45,10 @@ namespace OB{
 				irr::core::vector3d<double> toIrrlichtVector3d();
 				irr::core::vector3d<float> toIrrlichtVector3df();
 
+				#endif
+
+				#if HAVE_BULLET
+				btVector3 toBulletVector3();
 				#endif
 
 				bool equals(shared_ptr<Vector3> other);

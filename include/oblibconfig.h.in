@@ -1,5 +1,8 @@
 /* include/oblibconfig.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Define to 1 if you have the `bullet' library (-lbullet). */
+#undef HAVE_BULLET
+
 /* Define to 1 if you have the `curl' library (-lcurl). */
 #undef HAVE_CURL
 

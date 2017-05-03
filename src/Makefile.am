@@ -50,8 +50,8 @@ instance/MeshPart.cpp \
 utility.cpp
 
 # Linker options
-libopenblox_la_LDFLAGS = $(LIRRLICHT_LIBS) $(LCURL_LIBS) $(LENET_LIBS) $(LLUA_LIBS)
+libopenblox_la_LDFLAGS = $(LIRRLICHT_LIBS) $(LBULLET_LIBS) $(LCURL_LIBS) $(LENET_LIBS) $(LLUA_LIBS)
 
 # Compiler options. Here we are adding the include directory
 # to be searched for headers included in the source code.
-libopenblox_la_CPPFLAGS = -I$(top_srcdir)/include $(LCURL_CFLAGS) $(LENET_CFLAGS) $(LLUA_CFLAGS) -std=c++11 -pthread
+libopenblox_la_CPPFLAGS = -I$(top_srcdir)/include $(LBULLET_CFLAGS) $(LCURL_CFLAGS) $(LENET_CFLAGS) $(LLUA_CFLAGS) -std=c++11 -pthread

@@ -55,6 +55,12 @@ namespace OB{
 		
 		#endif
 
+		#if HAVE_BULLET
+		btVector3 Vector3::toBulletVector3(){
+			return btVector3(x, y, z);
+		}
+		#endif
+
 		bool Vector3::equals(shared_ptr<Vector3> other){
 			if(other == NULL){
 				return false;
