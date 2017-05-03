@@ -19,6 +19,8 @@
 
 #include "instance/Model.h"
 
+#include "type/Vector3.h"
+
 #ifndef OB_INST_WORKSPACE
 #define OB_INST_WORKSPACE
 
@@ -35,9 +37,33 @@ namespace OB{
 			    Workspace();
 				virtual ~Workspace();
 
+				double getDistributedGameTime();
+
+			    shared_ptr<Type::Vector3> getGravity();
+				void setGravity(shared_ptr<Type::Vector3> gravity);
+				
+				double getFallenPartsDestroyHeight();
+				void setFallenPartsDestroyHeight(double fpdh);
+
+				bool getDestroyFallenParts();
+				void setDestroyFallenParts(bool dfp);
+
+				DECLARE_LUA_METHOD(getDistributedGameTime);
+				DECLARE_LUA_METHOD(getGravity);
+				DECLARE_LUA_METHOD(setGravity);
+				DECLARE_LUA_METHOD(getFallenPartsDestroyHeight);
+				DECLARE_LUA_METHOD(setFallenPartsDestroyHeight);
+				DECLARE_LUA_METHOD(getDestroyFallenParts);
+				DECLARE_LUA_METHOD(setDestroyFallenParts);
+
+				static void register_lua_property_getters(lua_State* L);
+				static void register_lua_property_setters(lua_State* L);
+
 				DECLARE_CLASS(Workspace);
 
-				double Gravity;
+			    shared_ptr<Type::Vector3> Gravity;
+				double FallenPartsDestroyHeight;
+				bool DestroyFallenParts;
 		};
 	}
 }

@@ -456,5 +456,7 @@ namespace OB{
 			}
 			return NULL;
 		}
+
+		void doNothingBecauseWhoCares(){}
 	}
 }

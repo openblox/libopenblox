@@ -20,6 +20,7 @@
 #include "instance/Workspace.h"
 
 #include "OBEngine.h"
+#include "utility.h"
 
 namespace OB{
 	namespace Instance{
@@ -29,6 +30,10 @@ namespace OB{
 
 	    Workspace::Workspace(){
 			Name = ClassName;
+
+			Gravity = make_shared<Type::Vector3>(0, -196.2, 0);
+			FallenPartsDestroyHeight = -1000;
+			DestroyFallenParts = true;
 
 			#if HAVE_IRRLICHT
 		    OBEngine* eng = OBEngine::getInstance();
@@ -48,6 +53,197 @@ namespace OB{
 
 		shared_ptr<Instance> Workspace::cloneImpl(){
 			return NULL;
+		}
+
+	    shared_ptr<Type::Vector3> Workspace::getGravity(){
+			return Gravity;
+		}
+
+		double Workspace::getDistributedGameTime(){
+			OBEngine* eng = OBEngine::getInstance();
+
+			if(eng){
+				ob_int64 startTime = eng->getStartTime();
+				ob_int64 curTime = currentTimeMillis();
+
+				double runTime = (double)(curTime - startTime) / 1000;
+				return runTime;
+			}
+			return 0;//TODO
+		}
+		
+		void Workspace::setGravity(shared_ptr<Type::Vector3> gravity){
+			if(gravity == NULL){
+				shared_ptr<Type::Vector3> vec3 = make_shared<Type::Vector3>(0, 0, 0);
+				if(!vec3->equals(Gravity)){
+				    Gravity = vec3;
+
+					propertyChanged("Gravity");
+				}
+			}else{
+				if(!gravity->equals(Gravity)){
+				    Gravity = gravity;
+
+					propertyChanged("Gravity");
+				}
+			}
+		}
+
+		double Workspace::getFallenPartsDestroyHeight(){
+			return FallenPartsDestroyHeight;
+		}
+		
+		void Workspace::setFallenPartsDestroyHeight(double fpdh){
+			if(FallenPartsDestroyHeight != fpdh){
+				FallenPartsDestroyHeight = fpdh;
+
+				propertyChanged("FallenPartsDestroyHeight");
+			}
+		}
+
+		bool Workspace::getDestroyFallenParts(){
+			return DestroyFallenParts;
+		}
+		
+		void Workspace::setDestroyFallenParts(bool dfp){
+			if(DestroyFallenParts != dfp){
+				DestroyFallenParts = dfp;
+				
+				propertyChanged("DestroyFallenParts");
+			}
+		}
+
+		int Workspace::lua_getDistributedGameTime(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Workspace> instW = dynamic_pointer_cast<Workspace>(inst);
+				if(instW){
+				    lua_pushnumber(L, instW->getDistributedGameTime());
+					return 1;
+				}
+			}
+
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int Workspace::lua_getGravity(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Workspace> instW = dynamic_pointer_cast<Workspace>(inst);
+				if(instW){
+				    shared_ptr<Type::Vector3> vec3 = instW->getGravity();
+					if(vec3){
+						return vec3->wrap_lua(L);
+					}else{
+						lua_pushnil(L);
+						return 1;
+					}
+				}
+			}
+
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int Workspace::lua_setGravity(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Workspace> instW = dynamic_pointer_cast<Workspace>(inst);
+				if(instW){
+				    shared_ptr<Type::Vector3> vec3 = Type::checkVector3(L, 2, true, true);
+					instW->setGravity(vec3);
+				}
+			}
+			
+			return 0;
+		}
+
+		int Workspace::lua_setFallenPartsDestroyHeight(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Workspace> instW = dynamic_pointer_cast<Workspace>(inst);
+				if(instW){
+				    double newV = luaL_checknumber(L, 2);
+					instW->setFallenPartsDestroyHeight(newV);
+				}
+			}
+			
+			return 0;
+		}
+
+		int Workspace::lua_getFallenPartsDestroyHeight(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Workspace> instW = dynamic_pointer_cast<Workspace>(inst);
+				if(instW){
+					lua_pushnumber(L, instW->getFallenPartsDestroyHeight());
+					return 1;
+				}
+			}
+			
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int Workspace::lua_setDestroyFallenParts(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Workspace> instW = dynamic_pointer_cast<Workspace>(inst);
+				if(instW){
+					bool newV = lua_toboolean(L, 2);
+					instW->setDestroyFallenParts(newV);
+				}
+			}
+			
+			return 0;
+		}
+
+		int Workspace::lua_getDestroyFallenParts(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Workspace> instW = dynamic_pointer_cast<Workspace>(inst);
+				if(instW){
+					lua_pushboolean(L, instW->getDestroyFallenParts());
+					return 1;
+				}
+			}
+			
+			lua_pushnil(L);
+			return 1;
+		}
+
+		void Workspace::register_lua_property_setters(lua_State* L){
+			Instance::register_lua_property_setters(L);
+			
+			luaL_Reg properties[] = {
+				{"DistributedGameTime", lua_readOnlyProperty},
+				{"Gravity", lua_setGravity},
+				{"FallenPartsDestroyHeight", lua_setFallenPartsDestroyHeight},
+				{"DestroyFallenParts", lua_setDestroyFallenParts},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, properties, 0);
+		}
+
+		void Workspace::register_lua_property_getters(lua_State* L){
+			Instance::register_lua_property_getters(L);
+			
+			luaL_Reg properties[] = {
+			    {"DistributedGameTime", lua_getDistributedGameTime},
+				{"Gravity", lua_getGravity},
+				{"FallenPartsDestroyHeight", lua_setFallenPartsDestroyHeight},
+				{"DestroyFallenParts", lua_setDestroyFallenParts},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, properties, 0);
 		}
 	}
 }
