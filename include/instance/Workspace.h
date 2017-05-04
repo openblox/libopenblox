@@ -72,6 +72,7 @@ namespace OB{
 				#if HAVE_BULLET
 				btBroadphaseInterface* broadphase;
 				btDefaultCollisionConfiguration* collisionConfiguration;
+				btCollisionDispatcher* dispatcher;
 				btSequentialImpulseConstraintSolver* solver;
 				btDiscreteDynamicsWorld* dynamicsWorld;
 				#endif

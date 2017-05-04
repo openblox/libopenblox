@@ -38,7 +38,7 @@ namespace OB{
 			#if HAVE_BULLET
 			broadphase = new btDbvtBroadphase();
 			collisionConfiguration = new btDefaultCollisionConfiguration();
-			btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
+		    dispatcher = new btCollisionDispatcher(collisionConfiguration);
 			solver = new btSequentialImpulseConstraintSolver();
 			dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 			updateGravity();
@@ -58,7 +58,13 @@ namespace OB{
 			#endif
 		}
 
-	    Workspace::~Workspace(){}
+	    Workspace::~Workspace(){
+			delete dynamicsWorld;
+			delete solver;
+			delete dispatcher;
+			delete collisionConfiguration;
+			delete broadphase;
+		}
 
 		shared_ptr<Instance> Workspace::cloneImpl(){
 			return NULL;
