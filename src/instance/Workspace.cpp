@@ -59,11 +59,13 @@ namespace OB{
 		}
 
 	    Workspace::~Workspace(){
+			#if HAVE_BULLET
 			delete dynamicsWorld;
 			delete solver;
 			delete dispatcher;
 			delete collisionConfiguration;
 			delete broadphase;
+			#endif
 		}
 
 		shared_ptr<Instance> Workspace::cloneImpl(){
