@@ -495,7 +495,6 @@ namespace OB{
 
 				bool ParentLocked;
 
-				//TODO: Events
 				shared_ptr<Type::Event> Changed;
 				shared_ptr<Type::Event> AncestryChanged;
 				shared_ptr<Type::Event> ChildAdded;
