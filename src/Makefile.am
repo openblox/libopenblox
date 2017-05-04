@@ -43,7 +43,6 @@ instance/PlayerGui.cpp \
 instance/Workspace.cpp \
 instance/LogService.cpp \
 instance/DataModel.cpp \
-type/StatusEffect.cpp \
 instance/Humanoid.cpp \
 instance/Folder.cpp \
 instance/BasePart.cpp \

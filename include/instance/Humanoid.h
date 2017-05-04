@@ -20,7 +20,6 @@
 #include "instance/Instance.h"
 
 #include "type/Vector3.h"
-#include "type/StatusEffect.h"
 
 #ifndef OB_INST_HUMANOID
 #define OB_INST_HUMANOID
@@ -65,10 +64,6 @@ namespace OB{
 				shared_ptr<Type::Vector3> getWalkTarget();
 
 				double TakeDamage(double damage, std::string damage_metadata = "");
-				std::vector<shared_ptr<Type::StatusEffect>> GetStatusEffects();
-				void SetStatusEffects(std::vector<shared_ptr<Type::StatusEffect>> statusEffects);
-				void AddStatusEffect(shared_ptr<Type::StatusEffect> statusEffect);
-				void RemoveStatusEffect(shared_ptr<Type::StatusEffect> statusEffect);
 				void Move(shared_ptr<Type::Vector3> direction);
 				void MoveTo(shared_ptr<Type::Vector3> location);
 
@@ -90,10 +85,6 @@ namespace OB{
 				DECLARE_LUA_METHOD(getWalkTarget);
 
 				DECLARE_LUA_METHOD(TakeDamage);
-				DECLARE_LUA_METHOD(GetStatusEffects);
-				DECLARE_LUA_METHOD(SetStatusEffects);
-				DECLARE_LUA_METHOD(AddStatusEffect);
-				DECLARE_LUA_METHOD(RemoveStatusEffect);
 				DECLARE_LUA_METHOD(Move);
 				DECLARE_LUA_METHOD(MoveTo);
 
@@ -104,7 +95,7 @@ namespace OB{
 				DECLARE_CLASS(Humanoid);
 
 				shared_ptr<Type::Event> MoveToFinished; // Params: bool success
-				shared_ptr<Type::Event> HealthChanged; // Params: double previousHealth
+				shared_ptr<Type::Event> HealthChanged; // Params: double previousHealth, string metadata (nil if not damage)
 				shared_ptr<Type::Event> Died;
 
 				double Health;

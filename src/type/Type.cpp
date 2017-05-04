@@ -31,8 +31,6 @@
 #include "type/LuaEnum.h"
 #include "type/LuaEnumItem.h"
 
-#include "type/StatusEffect.h"
-
 namespace OB{
 	namespace Type{
 	    DEFINE_TYPE(Type){
@@ -46,8 +44,6 @@ namespace OB{
 			EventConnection::_ob_init();
 			LuaEnum::_ob_init();
 			LuaEnumItem::_ob_init();
-
-			StatusEffect::_ob_init();
 		}
 
 		std::vector<std::string> Type::typeList;

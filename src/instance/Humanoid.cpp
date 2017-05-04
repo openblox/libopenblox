@@ -167,15 +167,6 @@ namespace OB{
 		double Humanoid::TakeDamage(double damage, std::string damage_metadata){
 			return 0;
 		}
-		std::vector<shared_ptr<Type::StatusEffect>> Humanoid::GetStatusEffects(){
-			return std::vector<shared_ptr<Type::StatusEffect>>();
-		}
-		void Humanoid::SetStatusEffects(std::vector<shared_ptr<Type::StatusEffect>> statusEffects){
-		}
-		void Humanoid::AddStatusEffect(shared_ptr<Type::StatusEffect> statusEffect){
-		}
-		void Humanoid::RemoveStatusEffect(shared_ptr<Type::StatusEffect> statusEffect){
-		}
 		void Humanoid::Move(shared_ptr<Type::Vector3> direction){
 		}
 		void Humanoid::MoveTo(shared_ptr<Type::Vector3> location){
@@ -416,63 +407,7 @@ namespace OB{
 			
 			return luaL_error(L, COLONERR, "TakeDamage");
 		}
-
-		int Humanoid::lua_GetStatusEffects(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
-			if(inst){
-				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
-				if(instH){
-					//TODO:
-				    return 0;
-				}
-			}
-			
-			return luaL_error(L, COLONERR, "GetStatusEffects");
-		}
-
-		int Humanoid::lua_SetStatusEffects(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
-			if(inst){
-				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
-				if(instH){
-					//TODO:
-				    return 0;
-				}
-			}
-			
-			return luaL_error(L, COLONERR, "SetStatusEffects");
-		}
-
-		int Humanoid::lua_AddStatusEffect(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
-			if(inst){
-				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
-				if(instH){
-					//TODO:
-				    return 0;
-				}
-			}
-			
-			return luaL_error(L, COLONERR, "AddStatusEffect");
-		}
-
-		int Humanoid::lua_RemoveStatusEffect(lua_State* L){
-			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
-			if(inst){
-				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
-				if(instH){
-					//TODO:
-				    return 0;
-				}
-			}
-			
-			return luaL_error(L, COLONERR, "RemoveStatusEffect");
-		}
-
+		
 		int Humanoid::lua_Move(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
 			
@@ -540,10 +475,6 @@ namespace OB{
 			
 			luaL_Reg methods[] = {
 				{"TakeDamage", lua_TakeDamage},
-				{"GetStatusEffects", lua_GetStatusEffects},
-				{"SetStatusEffects", lua_SetStatusEffects},
-				{"AddStatusEffect", lua_AddStatusEffect},
-				{"RemoveStatusEffect", lua_RemoveStatusEffect},
 				{"Move", lua_Move},
 				{"MoveTo", lua_MoveTo},
 				{NULL, NULL}
