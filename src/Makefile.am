@@ -47,6 +47,7 @@ instance/Humanoid.cpp \
 instance/Folder.cpp \
 instance/BasePart.cpp \
 instance/MeshPart.cpp \
+instance/Part.cpp \
 utility.cpp
 
 # Linker options
