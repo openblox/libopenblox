@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 John M. Harris, Jr. <johnmh@openblox.org>
+ * Copyright (C) 2017 John M. Harris, Jr. <johnmh@openblox.org>
  *
  * This file is part of OpenBlox.
  *
@@ -17,33 +17,168 @@
  * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "instance/Instance.h"
-
-#ifndef OB_INST_HUMANOID
-#define OB_INST_HUMANOID
+#include "instance/Humanoid.h"
 
 namespace OB{
 	namespace Instance{
-		/**
-		 * The Humanoid class provides a simple convenience class
-		 * created with the intention of allowing you to easily create
-		 * character objects, player controlled or otherwise.
-		 *
-		 * @author John M. Harris, Jr.
-		 */
-		class Humanoid: public Instance {
-			public:
-			    Humanoid();
-				virtual ~Humanoid();
+		DEFINE_CLASS(Humanoid, true, false, Instance){
+			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+		}
 
-				DECLARE_CLASS(Humanoid);
-		};
+	    Humanoid::Humanoid(){
+			Name = ClassName;
+			
+			Health = 100;
+			MaxHealth = 100;
+			NameVisible = true;
+			HealthVisible = true;
+			JumpPower = 1;
+			WalkSpeed = 1;
+			MoveDirection = NULL;
+			State = 1;
+			WalkTarget = NULL;
+
+			MoveToFinished = make_shared<Type::Event>("MoveToFinished");
+		    HealthChanged = make_shared<Type::Event>("HealthChanged");
+		    Died = make_shared<Type::Event>("Died");
+		}
+
+	    Humanoid::~Humanoid(){}
+
+		shared_ptr<Instance> Humanoid::cloneImpl(){
+			shared_ptr<Humanoid> h = make_shared<Humanoid>();
+			h->Archivable = Archivable;
+			h->Name = Name;
+			h->ParentLocked = ParentLocked;
+
+			h->Health = Health;
+			h->MaxHealth = MaxHealth;
+			h->NameVisible = NameVisible;
+			h->HealthVisible = HealthVisible;
+			h->JumpPower = JumpPower;
+			h->WalkSpeed = WalkSpeed;
+			h->MoveDirection = MoveDirection;
+			h->State = State;
+			h->WalkTarget = WalkTarget;
+			
+			return h;
+		}
+
+		double Humanoid::getHealth(){
+			return Health;
+		}
+		void Humanoid::setHealth(double health){
+			if(health > MaxHealth){
+			    health = MaxHealth;
+			}
+
+			if(health != Health){
+				double oldHealth = Health;
+				Health = health;
+
+				propertyChanged("Health");
+			}
+		}
+
+		double Humanoid::getMaxHealth(){
+			return MaxHealth;
+		}
+		
+		void Humanoid::setMaxHealth(double maxHealth){
+			if(maxHealth != MaxHealth){
+			    MaxHealth = maxHealth;
+
+				if(Health > MaxHealth){
+					setHealth(MaxHealth);
+				}
+
+				propertyChanged("MaxHealth");
+			}
+		}
+
+		bool Humanoid::getNameVisible(){
+			return NameVisible;
+		}
+		
+		bool Humanoid::setNameVisible(bool nameVisible){
+			if(nameVisible != NameVisible){
+			    NameVisible = nameVisible;
+
+				propertyChanged("NameVisible");
+			}
+		}
+				
+		bool Humanoid::getHealthVisible(){
+			return HealthVisible;
+		}
+		
+		bool Humanoid::setHealthVisible(bool healthVisible){
+			if(healthVisible != HealthVisible){
+			    HealthVisible = healthVisible;
+
+				propertyChanged("HealthVisible");
+			}
+		}
+
+		double Humanoid::getJumpPower(){
+			return JumpPower;
+		}
+		
+		void Humanoid::setJumpPower(double jumpPower){
+			if(jumpPower != JumpPower){
+			    JumpPower = jumpPower;
+
+				propertyChanged("JumpPower");
+			}
+		}
+
+		double Humanoid::getWalkSpeed(){
+			return WalkSpeed;
+		}
+		
+		void Humanoid::setWalkSpeed(double walkSpeed){
+			if(walkSpeed != WalkSpeed){
+			    WalkSpeed = walkSpeed;
+
+				propertyChanged("WalkSpeed");
+			}
+		}
+
+		shared_ptr<Type::Vector3> Humanoid::getMoveDirection(){
+			return MoveDirection;
+		}
+
+		int Humanoid::getState(){
+			return State;
+		}
+		
+		void Humanoid::setState(int state){
+			if(state != State){
+				State = state;
+
+				propertyChanged("State");
+			}
+		}
+
+		shared_ptr<Type::Vector3> Humanoid::getWalkTarget(){
+			return WalkTarget;
+		}
+
+		double Humanoid::TakeDamage(double damage, void* damage_metadata){
+			return 0;
+		}
+		std::vector<shared_ptr<Type::StatusEffect>> Humanoid::GetStatusEffects(){
+			return std::vector<shared_ptr<Type::StatusEffect>>();
+		}
+		void Humanoid::SetStatusEffects(std::vector<shared_ptr<Type::StatusEffect>> statusEffects){
+		}
+		void Humanoid::AddStatusEffect(shared_ptr<Type::StatusEffect> statusEffect){
+		}
+		void Humanoid::RemoveStatusEffect(shared_ptr<Type::StatusEffect> statusEffect){
+		}
+		void Humanoid::Move(shared_ptr<Type::Vector3> direction){
+		}
+		void Humanoid::MoveTo(shared_ptr<Type::Vector3> location){
+		}
 	}
 }
-
-#endif // OB_INST_HUMANOID
-
-
-// Local Variables:
-// mode: c++
-// End:

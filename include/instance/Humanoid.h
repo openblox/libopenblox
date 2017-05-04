@@ -19,6 +19,9 @@
 
 #include "instance/Instance.h"
 
+#include "type/Vector3.h"
+#include "type/StatusEffect.h"
+
 #ifndef OB_INST_HUMANOID
 #define OB_INST_HUMANOID
 
@@ -31,12 +34,59 @@ namespace OB{
 		 *
 		 * @author John M. Harris, Jr.
 		 */
-		class Humanoid: public Instance {
+		class Humanoid: public Instance{
 			public:
 			    Humanoid();
 				virtual ~Humanoid();
 
+				double getHealth();
+				void setHealth(double health);
+
+				double getMaxHealth();
+				void setMaxHealth(double maxHealth);
+
+				bool getNameVisible();
+				bool setNameVisible(bool nameVisible);
+				
+				bool getHealthVisible();
+				bool setHealthVisible(bool healthVisible);
+
+				double getJumpPower();
+				void setJumpPower(double jumpPower);
+
+				double getWalkSpeed();
+				void setWalkSpeed(double walkSpeed);
+
+				shared_ptr<Type::Vector3> getMoveDirection();
+
+				int getState();
+				void setState(int state);
+
+				shared_ptr<Type::Vector3> getWalkTarget();
+
+				double TakeDamage(double damage, void* damage_metadata = NULL);
+				std::vector<shared_ptr<Type::StatusEffect>> GetStatusEffects();
+				void SetStatusEffects(std::vector<shared_ptr<Type::StatusEffect>> statusEffects);
+				void AddStatusEffect(shared_ptr<Type::StatusEffect> statusEffect);
+				void RemoveStatusEffect(shared_ptr<Type::StatusEffect> statusEffect);
+				void Move(shared_ptr<Type::Vector3> direction);
+				void MoveTo(shared_ptr<Type::Vector3> location);
+
 				DECLARE_CLASS(Humanoid);
+
+				shared_ptr<Type::Event> MoveToFinished; // Params: bool success
+				shared_ptr<Type::Event> HealthChanged; // Params: double previousHealth
+				shared_ptr<Type::Event> Died;
+
+				double Health;
+				double MaxHealth;
+				bool NameVisible;
+				bool HealthVisible;
+				double JumpPower;
+				double WalkSpeed;
+				shared_ptr<Type::Vector3> MoveDirection;
+				int State;// TODO:
+				shared_ptr<Type::Vector3> WalkTarget;
 		};
 	}
 }
