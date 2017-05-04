@@ -150,6 +150,24 @@ namespace OB{
 		int lua_wait(lua_State* L);
 
 		/**
+		 * Used to run a Lua function in another coroutine after a certain amount of time.
+		 *
+		 * @param L Lua state
+		 * @returns int 0
+		 * @author John M. Harris, Jr.
+		 */
+		int lua_delay(lua_State* L);
+
+		/**
+		 * Used to run a Lua function in another coroutine as soon as possible.
+		 *
+		 * @param L Lua state
+		 * @returns int 0
+		 * @author John M. Harris, Jr.
+		 */
+		int lua_spawn(lua_State* L);
+
+		/**
 		 * Used to create an Instance from Lua.
 		 *
 		 * @param L Lua state

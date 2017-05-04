@@ -102,7 +102,11 @@ namespace OB{
 				{"print", lua_print},
 				{"warn", lua_warn},
 				{"wait", lua_wait},
-					
+				{"Wait", lua_wait},
+				{"delay", lua_delay},
+				{"Delay", lua_delay},
+				{"spawn", lua_spawn},
+				{"Spawn", lua_spawn},
 				{NULL, NULL}
 			};
 
@@ -354,6 +358,65 @@ namespace OB{
 			tasks->enqueue(_ob_lua_wake_wait, L, at);
 
 			return lua_yield(L, 0);
+		}
+
+		//Wakes up a Lua coroutine after a delay
+		int _ob_lua_wake_delay(void* metad, ob_int64 start){
+			ob_int64 curTime = currentTimeMillis();
+
+			lua_State* L = (lua_State*)metad;
+			int ret = lua_resume(L, NULL, 0);
+
+			if(ret != LUA_OK && ret != LUA_YIELD){
+				std::string lerr = Lua::handle_errors(L);
+				std::cerr << "A Lua error occurred:" << std::endl;
+				std::cerr << lerr << std::endl;
+
+			    close_state(L);
+
+				return 0;
+			}
+
+			if(ret == LUA_OK){
+			    close_state(L);
+			}
+			
+			return 0;
+		}
+
+		int _ob_lua_processDelay(lua_State* L, double secs, int idx){
+			if(!lua_isfunction(L, idx) && !lua_iscfunction(L, idx)){
+				return luaL_argerror(L, idx, "Lua function expected");
+			}
+
+			lua_State* cL = initCoroutine(L);
+			
+			lua_pushvalue(L, idx);
+			lua_xmove(L, cL, 1);
+
+			OBEngine* eng = OBEngine::getInstance();
+		    shared_ptr<TaskScheduler> tasks = eng->getTaskScheduler();
+
+			ob_int64 curTime = currentTimeMillis();
+			ob_int64 at = curTime + (int)(secs * 1000);
+
+			tasks->enqueue(_ob_lua_wake_delay, cL, at);
+
+			return 0;
+		}
+
+		int lua_delay(lua_State* L){
+			if(lua_isnumber(L, 2)){
+				double secs = lua_tonumber(L, 2);
+			    return _ob_lua_processDelay(L, secs, 1);
+			}else{
+				double secs = luaL_checknumber(L, 1);
+				return _ob_lua_processDelay(L, secs, 2);
+			}
+		}
+
+		int lua_spawn(lua_State* L){
+		    return _ob_lua_processDelay(L, 0, 1);
 		}
 
 		int lua_newInstance(lua_State* L){
