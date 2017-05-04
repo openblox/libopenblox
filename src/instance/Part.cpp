@@ -130,7 +130,6 @@ namespace OB{
 				shared_ptr<Type::Color3> col3 = getColor();
 				irr::video::SColor irrCol = col3->toIrrlichtSColor(255);
 
-				std::cout << "updateColor()" << std::endl;
 				irr::video::SMaterial& thisMat = irrNode->getMaterial(0);
 				thisMat.EmissiveColor = irrCol;
 				thisMat.DiffuseColor.set(0, 0, 0, 0);
