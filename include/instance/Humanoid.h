@@ -44,6 +44,9 @@ namespace OB{
 				double getMaxHealth();
 				void setMaxHealth(double maxHealth);
 
+				bool getInvincible();
+				bool setInvincible(bool invincible);
+
 				bool getNameVisible();
 				bool setNameVisible(bool nameVisible);
 				
@@ -71,6 +74,8 @@ namespace OB{
 				DECLARE_LUA_METHOD(setHealth);
 				DECLARE_LUA_METHOD(getMaxHealth);
 				DECLARE_LUA_METHOD(setMaxHealth);
+				DECLARE_LUA_METHOD(getInvincible);
+				DECLARE_LUA_METHOD(setInvincible);
 				DECLARE_LUA_METHOD(getNameVisible);
 				DECLARE_LUA_METHOD(setNameVisible);
 				DECLARE_LUA_METHOD(getHealthVisible);
@@ -100,6 +105,7 @@ namespace OB{
 
 				double Health;
 				double MaxHealth;
+				bool Invincible;
 				bool NameVisible;
 				bool HealthVisible;
 				double JumpPower;

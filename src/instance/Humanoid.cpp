@@ -30,6 +30,7 @@ namespace OB{
 			
 			Health = 100;
 			MaxHealth = 100;
+			Invincible = false;
 			NameVisible = true;
 			HealthVisible = true;
 			JumpPower = 1;
@@ -53,6 +54,7 @@ namespace OB{
 
 			h->Health = Health;
 			h->MaxHealth = MaxHealth;
+			h->Invincible = Invincible;
 			h->NameVisible = NameVisible;
 			h->HealthVisible = HealthVisible;
 			h->JumpPower = JumpPower;
@@ -68,13 +70,16 @@ namespace OB{
 			return Health;
 		}
 		void Humanoid::setHealth(double health){
-			if(health > MaxHealth){
-			    health = MaxHealth;
-			}
-
-			if(health != Health){
+		    if(health != Health){
 				double oldHealth = Health;
 				Health = health;
+
+				std::vector<shared_ptr<Type::VarWrapper>> args = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(oldHealth), make_shared<Type::VarWrapper>()});
+				HealthChanged->Fire(args);
+
+				if(Health <= 0){
+					Died->Fire();
+				}
 
 				propertyChanged("Health");
 			}
@@ -93,6 +98,18 @@ namespace OB{
 				}
 
 				propertyChanged("MaxHealth");
+			}
+		}
+
+		bool Humanoid::getInvincible(){
+			return Invincible;
+		}
+		
+		bool Humanoid::setInvincible(bool invincible){
+			if(invincible != Invincible){
+			    Invincible = invincible;
+
+				propertyChanged("Invincible");
 			}
 		}
 
@@ -165,6 +182,22 @@ namespace OB{
 		}
 
 		double Humanoid::TakeDamage(double damage, std::string damage_metadata){
+			double newHealth = Health - damage;
+
+			if(!Invincible && Health != newHealth){
+				double oldHealth = Health;
+				Health = newHealth;
+
+				std::vector<shared_ptr<Type::VarWrapper>> args = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(oldHealth), make_shared<Type::VarWrapper>(damage_metadata)});
+				HealthChanged->Fire(args);
+
+				if(Health <= 0){
+				    Died->Fire();
+				}
+
+				propertyChanged("Health");
+			}
+			
 			return 0;
 		}
 		void Humanoid::Move(shared_ptr<Type::Vector3> direction){
@@ -224,6 +257,35 @@ namespace OB{
 				if(instH){
 				    double newV = luaL_checknumber(L, 2);
 					instH->setMaxHealth(newV);
+				}
+			}
+			
+			return 0;
+		}
+
+		int Humanoid::lua_getInvincible(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
+				if(instH){
+					lua_pushboolean(L, instH->getInvincible());
+					return 1;
+				}
+			}
+			
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int Humanoid::lua_setInvincible(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
+				if(instH){
+					bool newV = lua_toboolean(L, 2);
+					instH->setInvincible(newV);
 				}
 			}
 			
@@ -442,6 +504,7 @@ namespace OB{
 			luaL_Reg properties[] = {
 			    {"Health", lua_setHealth},
 				{"MaxHealth", lua_setMaxHealth},
+				{"Invincible", lua_setInvincible},
 				{"NameVisible", lua_setNameVisible},
 				{"HealthVisible", lua_setHealthVisible},
 				{"JumpPower", lua_setJumpPower},
@@ -459,6 +522,7 @@ namespace OB{
 			luaL_Reg properties[] = {
 				{"Health", lua_setHealth},
 				{"MaxHealth", lua_getMaxHealth},
+				{"Invincible", lua_getInvincible},
 				{"NameVisible", lua_getNameVisible},
 				{"HealthVisible", lua_getHealthVisible},
 				{"JumpPower", lua_getJumpPower},
