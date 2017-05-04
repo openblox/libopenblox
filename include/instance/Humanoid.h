@@ -64,13 +64,42 @@ namespace OB{
 
 				shared_ptr<Type::Vector3> getWalkTarget();
 
-				double TakeDamage(double damage, void* damage_metadata = NULL);
+				double TakeDamage(double damage, std::string damage_metadata = "");
 				std::vector<shared_ptr<Type::StatusEffect>> GetStatusEffects();
 				void SetStatusEffects(std::vector<shared_ptr<Type::StatusEffect>> statusEffects);
 				void AddStatusEffect(shared_ptr<Type::StatusEffect> statusEffect);
 				void RemoveStatusEffect(shared_ptr<Type::StatusEffect> statusEffect);
 				void Move(shared_ptr<Type::Vector3> direction);
 				void MoveTo(shared_ptr<Type::Vector3> location);
+
+				DECLARE_LUA_METHOD(getHealth);
+				DECLARE_LUA_METHOD(setHealth);
+				DECLARE_LUA_METHOD(getMaxHealth);
+				DECLARE_LUA_METHOD(setMaxHealth);
+				DECLARE_LUA_METHOD(getNameVisible);
+				DECLARE_LUA_METHOD(setNameVisible);
+				DECLARE_LUA_METHOD(getHealthVisible);
+				DECLARE_LUA_METHOD(setHealthVisible);
+				DECLARE_LUA_METHOD(getJumpPower);
+				DECLARE_LUA_METHOD(setJumpPower);
+				DECLARE_LUA_METHOD(getWalkSpeed);
+				DECLARE_LUA_METHOD(setWalkSpeed);
+				DECLARE_LUA_METHOD(getMoveDirection);
+				DECLARE_LUA_METHOD(getState);
+				DECLARE_LUA_METHOD(setState);
+				DECLARE_LUA_METHOD(getWalkTarget);
+
+				DECLARE_LUA_METHOD(TakeDamage);
+				DECLARE_LUA_METHOD(GetStatusEffects);
+				DECLARE_LUA_METHOD(SetStatusEffects);
+				DECLARE_LUA_METHOD(AddStatusEffect);
+				DECLARE_LUA_METHOD(RemoveStatusEffect);
+				DECLARE_LUA_METHOD(Move);
+				DECLARE_LUA_METHOD(MoveTo);
+
+				static void register_lua_property_getters(lua_State* L);
+				static void register_lua_property_setters(lua_State* L);
+				static void register_lua_methods(lua_State* L);
 
 				DECLARE_CLASS(Humanoid);
 

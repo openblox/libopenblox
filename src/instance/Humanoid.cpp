@@ -164,7 +164,7 @@ namespace OB{
 			return WalkTarget;
 		}
 
-		double Humanoid::TakeDamage(double damage, void* damage_metadata){
+		double Humanoid::TakeDamage(double damage, std::string damage_metadata){
 			return 0;
 		}
 		std::vector<shared_ptr<Type::StatusEffect>> Humanoid::GetStatusEffects(){
@@ -179,6 +179,376 @@ namespace OB{
 		void Humanoid::Move(shared_ptr<Type::Vector3> direction){
 		}
 		void Humanoid::MoveTo(shared_ptr<Type::Vector3> location){
+		}
+
+		int Humanoid::lua_getHealth(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
+				if(instH){
+				    lua_pushnumber(L, instH->getHealth());
+					return 1;
+				}
+			}
+			
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int Humanoid::lua_setHealth(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
+				if(instH){
+				    double newV = luaL_checknumber(L, 2);
+					instH->setHealth(newV);
+				}
+			}
+			
+			return 0;
+		}
+
+		int Humanoid::lua_getMaxHealth(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
+				if(instH){
+				    lua_pushnumber(L, instH->getMaxHealth());
+					return 1;
+				}
+			}
+			
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int Humanoid::lua_setMaxHealth(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
+				if(instH){
+				    double newV = luaL_checknumber(L, 2);
+					instH->setMaxHealth(newV);
+				}
+			}
+			
+			return 0;
+		}
+
+		int Humanoid::lua_getNameVisible(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
+				if(instH){
+					lua_pushboolean(L, instH->getNameVisible());
+					return 1;
+				}
+			}
+			
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int Humanoid::lua_setNameVisible(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
+				if(instH){
+					bool newV = lua_toboolean(L, 2);
+					instH->setNameVisible(newV);
+				}
+			}
+			
+			return 0;
+		}
+
+		int Humanoid::lua_getHealthVisible(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
+				if(instH){
+					lua_pushboolean(L, instH->getHealthVisible());
+					return 1;
+				}
+			}
+			
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int Humanoid::lua_setHealthVisible(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
+				if(instH){
+					bool newV = lua_toboolean(L, 2);
+					instH->setHealthVisible(newV);
+				}
+			}
+			
+			return 0;
+		}
+
+		int Humanoid::lua_getJumpPower(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
+				if(instH){
+				    lua_pushnumber(L, instH->getJumpPower());
+					return 1;
+				}
+			}
+			
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int Humanoid::lua_setJumpPower(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
+				if(instH){
+				    double newV = luaL_checknumber(L, 2);
+					instH->setJumpPower(newV);
+				}
+			}
+			
+			return 0;
+		}
+
+		int Humanoid::lua_getWalkSpeed(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
+				if(instH){
+				    lua_pushnumber(L, instH->getWalkSpeed());
+					return 1;
+				}
+			}
+			
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int Humanoid::lua_setWalkSpeed(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
+				if(instH){
+				    double newV = luaL_checknumber(L, 2);
+					instH->setWalkSpeed(newV);
+				}
+			}
+			
+			return 0;
+		}
+
+		int Humanoid::lua_getMoveDirection(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
+				if(instH){
+				    shared_ptr<Type::Vector3> vec3 = instH->getMoveDirection();
+					if(vec3){
+						return vec3->wrap_lua(L);
+					}else{
+						lua_pushnil(L);
+						return 1;
+					}
+				}
+			}
+			
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int Humanoid::lua_getWalkTarget(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
+				if(instH){
+				    shared_ptr<Type::Vector3> vec3 = instH->getWalkTarget();
+					if(vec3){
+						return vec3->wrap_lua(L);
+					}else{
+						lua_pushnil(L);
+						return 1;
+					}
+				}
+			}
+			
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int Humanoid::lua_TakeDamage(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
+				if(instH){
+				    double dmg = luaL_checknumber(L, 2);
+
+					std::string dmg_meta = "";
+					
+					if(!lua_isnoneornil(L, 3)){
+						dmg_meta = std::string(luaL_checkstring(L, 3));
+					}
+
+					lua_pushnumber(L, instH->TakeDamage(dmg, dmg_meta));
+					return 1;
+				}
+			}
+			
+			return luaL_error(L, COLONERR, "TakeDamage");
+		}
+
+		int Humanoid::lua_GetStatusEffects(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
+				if(instH){
+					//TODO:
+				    return 0;
+				}
+			}
+			
+			return luaL_error(L, COLONERR, "GetStatusEffects");
+		}
+
+		int Humanoid::lua_SetStatusEffects(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
+				if(instH){
+					//TODO:
+				    return 0;
+				}
+			}
+			
+			return luaL_error(L, COLONERR, "SetStatusEffects");
+		}
+
+		int Humanoid::lua_AddStatusEffect(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
+				if(instH){
+					//TODO:
+				    return 0;
+				}
+			}
+			
+			return luaL_error(L, COLONERR, "AddStatusEffect");
+		}
+
+		int Humanoid::lua_RemoveStatusEffect(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
+				if(instH){
+					//TODO:
+				    return 0;
+				}
+			}
+			
+			return luaL_error(L, COLONERR, "RemoveStatusEffect");
+		}
+
+		int Humanoid::lua_Move(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
+				if(instH){
+					//TODO:
+				    return 0;
+				}
+			}
+			
+			return luaL_error(L, COLONERR, "Move");
+		}
+
+		int Humanoid::lua_MoveTo(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
+				if(instH){
+					//TODO:
+				    return 0;
+				}
+			}
+			
+			return luaL_error(L, COLONERR, "MoveTo");
+		}
+
+		void Humanoid::register_lua_property_setters(lua_State* L){
+			Instance::register_lua_property_setters(L);
+			
+			luaL_Reg properties[] = {
+			    {"Health", lua_setHealth},
+				{"MaxHealth", lua_setMaxHealth},
+				{"NameVisible", lua_setNameVisible},
+				{"HealthVisible", lua_setHealthVisible},
+				{"JumpPower", lua_setJumpPower},
+				{"WalkSpeed", lua_setWalkSpeed},
+				{"MoveDirection", lua_readOnlyProperty},
+				{"WalkTarget", lua_readOnlyProperty},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, properties, 0);
+		}
+
+		void Humanoid::register_lua_property_getters(lua_State* L){
+			Instance::register_lua_property_getters(L);
+			
+			luaL_Reg properties[] = {
+				{"Health", lua_setHealth},
+				{"MaxHealth", lua_getMaxHealth},
+				{"NameVisible", lua_getNameVisible},
+				{"HealthVisible", lua_getHealthVisible},
+				{"JumpPower", lua_getJumpPower},
+				{"WalkSpeed", lua_getWalkSpeed},
+				{"MoveDirection", lua_getMoveDirection},
+				{"WalkTarget", lua_getWalkTarget},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, properties, 0);
+		}
+
+		void Humanoid::register_lua_methods(lua_State* L){
+			Instance::register_lua_property_getters(L);
+			
+			luaL_Reg methods[] = {
+				{"TakeDamage", lua_TakeDamage},
+				{"GetStatusEffects", lua_GetStatusEffects},
+				{"SetStatusEffects", lua_SetStatusEffects},
+				{"AddStatusEffect", lua_AddStatusEffect},
+				{"RemoveStatusEffect", lua_RemoveStatusEffect},
+				{"Move", lua_Move},
+				{"MoveTo", lua_MoveTo},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, methods, 0);
 		}
 	}
 }
