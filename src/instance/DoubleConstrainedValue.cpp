@@ -74,39 +74,39 @@ namespace OB{
 		}
 
 		shared_ptr<Instance> DoubleConstrainedValue::cloneImpl(){
-			shared_ptr<DoubleConstrainedValue> dcv = make_shared<DoubleConstrainedValue>();
-			dcv->Archivable = Archivable;
-			dcv->Name = Name;
-			dcv->ParentLocked = ParentLocked;
+			shared_ptr<IntConstrainedValue> icv = make_shared<IntConstrainedValue>();
+			icv->Archivable = Archivable;
+			icv->Name = Name;
+			icv->ParentLocked = ParentLocked;
 
-			dcv->MinValue = MinValue;
-			dcv->MaxValue = MaxValue;
-			dcv->Value = Value;
+			icv->MinValue = MinValue;
+			icv->MaxValue = MaxValue;
+			icv->Value = Value;
 			
-			return dcv;
+			return icv;
 		}
 
-		int DoubleConstrainedValue::lua_setMinValue(lua_State* L){
+		int IntConstrainedValue::lua_setMinValue(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
 			
 			if(inst){
-				shared_ptr<DoubleConstrainedValue> instDCV = dynamic_pointer_cast<DoubleConstrainedValue>(inst);
-				if(instDCV){
-				    double newV = luaL_checknumber(L, 2);
-					instDCV->setMinValue(newV);
+				shared_ptr<IntConstrainedValue> instICV = dynamic_pointer_cast<IntConstrainedValue>(inst);
+				if(instICV){
+				    int newV = luaL_checkinteger(L, 2);
+					instICV->setMinValue(newV);
 				}
 			}
 			
 			return 0;
 		}
 
-		int DoubleConstrainedValue::lua_getMinValue(lua_State* L){
+		int IntConstrainedValue::lua_getMinValue(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
 			
 			if(inst){
-				shared_ptr<DoubleConstrainedValue> instDCV = dynamic_pointer_cast<DoubleConstrainedValue>(inst);
-				if(instDCV){
-					lua_pushnumber(L, instDCV->getMinValue());
+				shared_ptr<IntConstrainedValue> instICV = dynamic_pointer_cast<IntConstrainedValue>(inst);
+				if(instICV){
+					lua_pushinteger(L, instICV->getMinValue());
 					return 1;
 				}
 			}
@@ -115,27 +115,27 @@ namespace OB{
 			return 1;
 		}
 
-		int DoubleConstrainedValue::lua_setMaxValue(lua_State* L){
+		int IntConstrainedValue::lua_setMaxValue(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
 			
 			if(inst){
-				shared_ptr<DoubleConstrainedValue> instDCV = dynamic_pointer_cast<DoubleConstrainedValue>(inst);
-				if(instDCV){
-				    double newV = luaL_checknumber(L, 2);
-					instDCV->setMaxValue(newV);
+				shared_ptr<IntConstrainedValue> instICV = dynamic_pointer_cast<IntConstrainedValue>(inst);
+				if(instICV){
+				    int newV = luaL_checkinteger(L, 2);
+					instICV->setMaxValue(newV);
 				}
 			}
 			
 			return 0;
 		}
 
-		int DoubleConstrainedValue::lua_getMaxValue(lua_State* L){
+		int IntConstrainedValue::lua_getMaxValue(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
 			
 			if(inst){
-				shared_ptr<DoubleConstrainedValue> instDCV = dynamic_pointer_cast<DoubleConstrainedValue>(inst);
-				if(instDCV){
-					lua_pushnumber(L, instDCV->getMaxValue());
+				shared_ptr<IntConstrainedValue> instICV = dynamic_pointer_cast<IntConstrainedValue>(inst);
+				if(instICV){
+					lua_pushinteger(L, instICV->getMaxValue());
 					return 1;
 				}
 			}
@@ -144,13 +144,13 @@ namespace OB{
 			return 1;
 		}
 
-		int DoubleConstrainedValue::lua_setValue(lua_State* L){
+		int IntConstrainedValue::lua_setValue(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
 			
 			if(inst){
-				shared_ptr<DoubleConstrainedValue> instDCV = dynamic_pointer_cast<DoubleConstrainedValue>(inst);
-				if(instDCV){
-				    double newV = luaL_checknumber(L, 2);
+				shared_ptr<IntConstrainedValue> instICV = dynamic_pointer_cast<IntConstrainedValue>(inst);
+				if(instICV){
+				    int newV = luaL_checkinteger(L, 2);
 					instDCV->setValue(newV);
 				}
 			}
@@ -158,13 +158,13 @@ namespace OB{
 			return 0;
 		}
 
-		int DoubleConstrainedValue::lua_getValue(lua_State* L){
+		int IntConstrainedValue::lua_getValue(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
 			
 			if(inst){
-				shared_ptr<DoubleConstrainedValue> instDCV = dynamic_pointer_cast<DoubleConstrainedValue>(inst);
-				if(instDCV){
-					lua_pushnumber(L, instDCV->getValue());
+				shared_ptr<IntConstrainedValue> instICV = dynamic_pointer_cast<IntConstrainedValue>(inst);
+				if(instICV){
+					lua_pushinteger(L, instDCV->getValue());
 					return 1;
 				}
 			}
@@ -173,7 +173,7 @@ namespace OB{
 			return 1;
 		}
 
-	    void DoubleConstrainedValue::register_lua_property_setters(lua_State* L){
+	    void IntConstrainedValue::register_lua_property_setters(lua_State* L){
 			Instance::register_lua_property_setters(L);
 			
 			luaL_Reg properties[] = {
@@ -185,7 +185,7 @@ namespace OB{
 			luaL_setfuncs(L, properties, 0);
 		}
 
-		void DoubleConstrainedValue::register_lua_property_getters(lua_State* L){
+		void IntConstrainedValue::register_lua_property_getters(lua_State* L){
 			Instance::register_lua_property_getters(L);
 			
 			luaL_Reg properties[] = {
