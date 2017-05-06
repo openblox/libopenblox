@@ -38,6 +38,12 @@ namespace OB{
 			return NULL;
 		}
 
+		void RunService::tick(){
+			Stepped->Fire();
+			
+			tickChildren();
+		}
+
 		void RunService::register_lua_events(lua_State* L){
 			Instance::register_lua_events(L);
 			

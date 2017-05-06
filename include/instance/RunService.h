@@ -37,11 +37,13 @@ namespace OB{
 			    RunService();
 				virtual ~RunService();
 
+				virtual void tick();
+
 				static void register_lua_events(lua_State* L);
 				
 				DECLARE_CLASS(RunService);
 
-				shared_ptr<Type::Event> MessageOut;
+				shared_ptr<Type::Event> Stepped;
 		};
 	}
 }
