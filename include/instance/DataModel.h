@@ -28,6 +28,7 @@ namespace OB{
 		class Lighting;
 		class ContentProvider;
 		class LogService;
+		class RunService;
 		
 		/**
 		 * DataModel is the root singleton of the OpenBlox engine.
@@ -78,6 +79,14 @@ namespace OB{
 				shared_ptr<LogService> getLogService();
 
 				/**
+				 * Returns the RunService service.
+				 *
+				 * @returns RunService
+				 * @author John M. Harris, Jr.
+				 */
+				shared_ptr<RunService> getRunService();
+
+				/**
 				 * Reimplementation of ServiceProvider's GetService,
 				 * this time calling ClassFactory's createService with
 				 * the isDataModel parameter being true.
@@ -114,6 +123,7 @@ namespace OB{
 				shared_ptr<Lighting> lighting;
 				shared_ptr<ContentProvider> contentProvider;
 				shared_ptr<LogService> logService;
+				shared_ptr<RunService> runService;
 
 				DECLARE_LUA_METHOD(Shutdown);
 
