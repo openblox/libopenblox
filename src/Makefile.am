@@ -39,6 +39,7 @@ instance/ContentProvider.cpp \
 instance/BasePlayerGui.cpp \
 instance/CoreGui.cpp \
 instance/StarterGui.cpp \
+instance/RunService.cpp \
 instance/PlayerGui.cpp \
 instance/Workspace.cpp \
 instance/LogService.cpp \
