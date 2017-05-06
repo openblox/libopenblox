@@ -53,6 +53,7 @@ instance/BoolValue.cpp \
 instance/DoubleConstrainedValue.cpp \
 instance/Color3Value.cpp \
 instance/IntConstrainedValue.cpp \
+instance/IntValue.cpp \
 utility.cpp
 
 # Linker options
