@@ -43,7 +43,7 @@ namespace OB{
 		    if(Value != value){
 				Value = value;
 
-				propertyChanged("BoolValue");
+				propertyChanged("Value");
 			}
 		}
 
