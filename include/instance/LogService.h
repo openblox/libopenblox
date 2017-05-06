@@ -27,7 +27,7 @@
 namespace OB{
 	namespace Instance{
 		/**
-		 * Lighting provides access to game logs, including
+		 * LogService provides access to game logs, including
 		 * print, warn and error calls from Lua.
 		 *
 		 * @author John M. Harris, Jr.
