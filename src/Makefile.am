@@ -50,6 +50,7 @@ instance/BasePart.cpp \
 instance/MeshPart.cpp \
 instance/Part.cpp \
 instance/BoolValue.cpp \
+instance/DoubleConstrainedValue.cpp \
 utility.cpp
 
 # Linker options
