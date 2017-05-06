@@ -49,6 +49,7 @@ instance/Folder.cpp \
 instance/BasePart.cpp \
 instance/MeshPart.cpp \
 instance/Part.cpp \
+instance/BoolValue.cpp \
 utility.cpp
 
 # Linker options
