@@ -35,6 +35,9 @@ namespace OB{
 			    RunService();
 				virtual ~RunService();
 
+				bool IsClient();
+				bool IsServer();
+
 				virtual void tick();
 
 				static void register_lua_events(lua_State* L);

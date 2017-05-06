@@ -26,6 +26,7 @@
 #include "instance/Lighting.h"
 #include "instance/ContentProvider.h"
 #include "instance/LogService.h"
+#include "instance/RunService.h"
 
 namespace OB{
 	namespace Instance{
@@ -66,6 +67,10 @@ namespace OB{
 			logService = make_shared<LogService>();
 			logService->setParent(sharedThis, false);
 			logService->ParentLocked = true;
+
+		    runService = make_shared<RunService>();
+		    runService->setParent(sharedThis, false);
+		    runService->ParentLocked = true;
 		}
 
 		shared_ptr<Workspace> DataModel::getWorkspace(){
@@ -82,6 +87,10 @@ namespace OB{
 
 		shared_ptr<LogService> DataModel::getLogService(){
 			return logService;
+		}
+
+		shared_ptr<RunService> DataModel::getRunService(){
+			return runService;
 		}
 
 		shared_ptr<Instance> DataModel::cloneImpl(){

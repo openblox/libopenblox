@@ -37,6 +37,14 @@ namespace OB{
 			return NULL;
 		}
 
+		bool RunService::IsClient(){
+			return !IsServer();
+		}
+
+		bool RunService::IsServer(){
+			return false;//TODO:
+		}
+
 		void RunService::tick(){
 			Stepped->Fire();
 			
