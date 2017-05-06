@@ -151,7 +151,7 @@ namespace OB{
 				shared_ptr<IntConstrainedValue> instICV = dynamic_pointer_cast<IntConstrainedValue>(inst);
 				if(instICV){
 				    int newV = luaL_checkinteger(L, 2);
-					instDCV->setValue(newV);
+					instICV->setValue(newV);
 				}
 			}
 			
@@ -164,7 +164,7 @@ namespace OB{
 			if(inst){
 				shared_ptr<IntConstrainedValue> instICV = dynamic_pointer_cast<IntConstrainedValue>(inst);
 				if(instICV){
-					lua_pushinteger(L, instDCV->getValue());
+					lua_pushinteger(L, instICV->getValue());
 					return 1;
 				}
 			}
