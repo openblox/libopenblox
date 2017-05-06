@@ -22,8 +22,6 @@
 #ifndef OB_INST_RUNSERVICE
 #define OB_INST_RUNSERVICE
 
-#include "type/Enum.h"
-
 namespace OB{
 	namespace Instance{
 		/**

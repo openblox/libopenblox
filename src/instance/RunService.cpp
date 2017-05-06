@@ -29,7 +29,6 @@ namespace OB{
 			Name = ClassName;
 
 		    Stepped = make_shared<Type::Event>("Stepped");
-			RenderStepped = make_shared<Type::Event>("RenderStepped");
 		}
 
 	    RunService::~RunService(){}
@@ -49,7 +48,6 @@ namespace OB{
 			
 			luaL_Reg events[] = {
 				{"Stepped", WRAP_EVT(RunService, Stepped)},
-				{"RenderStepped", WRAP_EVT(RunService, RenderStepped)},
 				{NULL, NULL}
 			};
 			luaL_setfuncs(L, events, 0);
