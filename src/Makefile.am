@@ -51,6 +51,8 @@ instance/MeshPart.cpp \
 instance/Part.cpp \
 instance/BoolValue.cpp \
 instance/DoubleConstrainedValue.cpp \
+instance/Color3Value.cpp \
+instance/IntConstrainedValue.cpp \
 utility.cpp
 
 # Linker options
