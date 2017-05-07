@@ -31,7 +31,7 @@ namespace OB{
 			    NetworkClient();
 				virtual ~NetworkClient();
 
-				void tick();
+			    virtual void tick();
 
 				int getPort();
 

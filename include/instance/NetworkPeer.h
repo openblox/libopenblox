@@ -27,9 +27,6 @@
 #ifndef OB_INST_NETWORKPEER
 #define OB_INST_NETWORKPEER
 
-#define OB_NET_MAX_PEERS 300
-#define OB_NET_CHANNELS 3
-
 namespace OB{
 	namespace Instance{
 		class NetworkPeer: public Instance{

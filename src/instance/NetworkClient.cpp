@@ -45,30 +45,19 @@ namespace OB{
 		void NetworkClient::tick(){
 			if(enet_host){
 				ENetEvent evt;
-				int numEvts = enet_host_check_events(enet_host, &evt);
-				if(numEvts > 0){
-				    processEvent(evt);
-
-					if(numEvts > 1){
-						for(int i = 0; i > numEvts - 1; i++){
-							int r = enet_host_check_events(enet_host, &evt);
-							if(r >= 0){
-								processEvent(evt);
-							}
-						}
-					}
+			    while(enet_host_service(enet_host, &evt, 10) > 0){
+					processEvent(evt);
 				}
 			}
+			
+			tickChildren();
 		}
 
 		void NetworkClient::Connect(std::string server, int serverPort, int clientPort){
 			if(!enet_host){
 				ENetAddress address;
 				address.host = ENET_HOST_ANY;
-
-				if(clientPort != 0){
-					address.port = clientPort;
-				}
+				address.port = clientPort;
 
 				enet_host = enet_host_create(&address, 1, OB_NET_CHANNELS, 0, 0);
 				if(!enet_host){
@@ -81,12 +70,27 @@ namespace OB{
 
 			    server_peer = enet_host_connect(enet_host, &servAddr, OB_NET_CHANNELS, 0);
 				if(!server_peer){
+					enet_host_destroy(enet_host);
+					enet_host = NULL;
 					throw new OBException("No available peers for connection attempt.");
 				}
 			}
 		}
 
 		void NetworkClient::Disconnect(int blockDuration){
+			if(enet_host){
+				enet_peer_disconnect(server_peer, 0);
+
+				ENetEvent evt;
+				while(enet_host_service(enet_host, &evt, blockDuration) > 0){
+					processEvent(evt);
+				}
+
+				
+			    server_peer = NULL;
+				enet_host_destroy(enet_host);
+				enet_host = NULL;
+			}
 		}
 
 		void NetworkClient::processEvent(ENetEvent evt){
@@ -111,11 +115,11 @@ namespace OB{
 			
 			if(shared_ptr<NetworkClient> nc = dynamic_pointer_cast<NetworkClient>(inst)){
 				std::string servAddr = std::string(luaL_checkstring(L, 2));
-				int servPort = luaL_checkinteger(L, 4);
+				int servPort = luaL_checkinteger(L, 3);
 				
 				try{
-					if(!lua_isnoneornil(L, 2)){
-						nc->Connect(servAddr, servPort, luaL_checkinteger(L, 5));
+					if(!lua_isnoneornil(L, 4)){
+						nc->Connect(servAddr, servPort, luaL_checkinteger(L, 4));
 					}else{
 						nc->Connect(servAddr, servPort);
 					}

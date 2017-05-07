@@ -43,22 +43,14 @@ namespace OB{
 		}
 
 		void NetworkServer::tick(){
-			if(enet_host){
-				ENetEvent evt;
-				int numEvts = enet_host_check_events(enet_host, &evt);
-				if(numEvts > 0){
-				    processEvent(evt);
-
-					if(numEvts > 1){
-						for(int i = 0; i > numEvts - 1; i++){
-							int r = enet_host_check_events(enet_host, &evt);
-							if(r >= 0){
-								processEvent(evt);
-							}
-						}
-					}
+		    if(enet_host){
+			    ENetEvent evt;
+			    while(enet_host_service(enet_host, &evt, 10) > 0){
+					processEvent(evt);
 				}
 			}
+			
+			tickChildren();
 		}
 
 		int NetworkServer::getPort(){
@@ -69,10 +61,7 @@ namespace OB{
 			if(!enet_host){
 				ENetAddress address;
 				address.host = ENET_HOST_ANY;
-
-				if(port != 0){
-					address.port = port;
-				}
+				address.port = port;
 
 				//Hard coded max peer count! Eww!
 				enet_host = enet_host_create(&address, OB_NET_MAX_PEERS, OB_NET_CHANNELS, 0, 0);
@@ -82,9 +71,22 @@ namespace OB{
 			}
 		}
 
-		void NetworkServer::Stop(int port){
+		void NetworkServer::Stop(int blockDuration){
 			if(enet_host){
-			
+			    for(int i = 0; i > enet_host->connectedPeers; i++){
+					ENetPeer* peer = &(enet_host->peers[i]);
+					if(peer){
+						enet_peer_disconnect(peer, 0);
+					}
+				}
+				
+				ENetEvent evt;
+				while(enet_host_service(enet_host, &evt, blockDuration) > 0){
+					processEvent(evt);
+				}
+				
+				enet_host_destroy(enet_host);
+				enet_host = NULL;
 			}
 		}
 

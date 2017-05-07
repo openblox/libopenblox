@@ -31,7 +31,7 @@ namespace OB{
 			    NetworkServer();
 				virtual ~NetworkServer();
 
-				void tick();
+			    virtual void tick();
 
 				int getPort();
 
