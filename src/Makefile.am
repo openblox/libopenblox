@@ -56,6 +56,8 @@ instance/IntConstrainedValue.cpp \
 instance/IntValue.cpp \
 instance/NumberValue.cpp \
 instance/NetworkPeer.cpp \
+instance/NetworkServer.cpp \
+instance/NetworkClient.cpp \
 utility.cpp
 
 # Linker options

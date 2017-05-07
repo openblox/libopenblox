@@ -27,8 +27,14 @@ namespace OB{
 
 		NetworkPeer::NetworkPeer(){
 			Name = ClassName;
+
+			enet_host = NULL;
 		}
 
-	    NetworkPeer::~NetworkPeer(){}
+	    NetworkPeer::~NetworkPeer(){
+			if(enet_host != NULL){
+				enet_host_destroy(enet_host);
+			}
+		}
 	}
 }

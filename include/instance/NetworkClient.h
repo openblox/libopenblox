@@ -17,34 +17,42 @@
  * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "instance/Instance.h"
-
-#include "oblibconfig.h"
+#include "instance/NetworkPeer.h"
 
 #if HAVE_ENET
-#include <enet/enet.h>
 
-#ifndef OB_INST_NETWORKPEER
-#define OB_INST_NETWORKPEER
-
-#define OB_NET_MAX_PEERS 300
-#define OB_NET_CHANNELS 3
+#ifndef OB_INST_NETWORKCLIENT
+#define OB_INST_NETWORKCLIENT
 
 namespace OB{
 	namespace Instance{
-		class NetworkPeer: public Instance{
+		class NetworkClient: public NetworkPeer{
 			public:
-			    NetworkPeer();
-				virtual ~NetworkPeer();
+			    NetworkClient();
+				virtual ~NetworkClient();
 
-				DECLARE_CLASS(NetworkPeer);
+				void tick();
 
-				ENetHost* enet_host;
+				int getPort();
+
+				void Connect(std::string server, int serverPort, int clientPort = 0);
+				void Disconnect(int blockDuration = 1000);
+
+				DECLARE_LUA_METHOD(Connect);
+				DECLARE_LUA_METHOD(Disconnect);
+
+				void processEvent(ENetEvent evt);
+
+				static void register_lua_methods(lua_State* L);
+
+				DECLARE_CLASS(NetworkClient);
+
+				ENetPeer* server_peer;
 		};
 	}
 }
 
-#endif // OB_INST_NETWORKPEER
+#endif // OB_INST_NETWORKCLIENT
 
 #endif // HAVE_ENET
 

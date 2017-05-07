@@ -38,6 +38,10 @@
 
 #include <unistd.h>
 
+#if HAVE_ENET
+#include <enet/enet.h>
+#endif
+
 namespace OB{
 	OBEngine* OBEngine::inst = NULL;
 
@@ -68,9 +72,18 @@ namespace OB{
 		irrSceneMgr = NULL;
 		
 		#endif
+
+		#if HAVE_ENET
+		enet_initialize();
+		#endif
 	}
 
-	OBEngine::~OBEngine(){}
+	OBEngine::~OBEngine(){
+		//Assumptions like this are bad, oh well.
+		#if HAVE_ENET
+		enet_deinitialize();
+		#endif
+	}
 
 	OBEngine* OBEngine::getInstance(){
 		return inst;
