@@ -27,6 +27,7 @@
 #include "instance/ContentProvider.h"
 #include "instance/LogService.h"
 #include "instance/RunService.h"
+#include "instance/ReplicatedFirst.h"
 
 namespace OB{
 	namespace Instance{
