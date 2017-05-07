@@ -47,6 +47,9 @@ typedef unsigned long long int ob_uint64;
 #define OB_NETID_START 200
 #define OB_NETID_UNASSIGNED 0
 
+#define OB_NET_MAX_PEERS 300
+#define OB_NET_CHANNELS 3
+
 #endif // OB_OBTYPE
 
 // Local Variables:
