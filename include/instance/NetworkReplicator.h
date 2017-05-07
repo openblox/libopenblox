@@ -37,6 +37,9 @@ namespace OB{
 				NetworkReplicator(ENetPeer* peer);
 				virtual ~NetworkReplicator();
 
+				void _initReplicator();
+				void _dropPeer();
+
 			    int getHighestRoundTripTimeVariance();
 				int getLastReceiveTime();
 				int getLastRoundTripTime();

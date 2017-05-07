@@ -40,6 +40,26 @@ namespace OB{
 
 	    NetworkReplicator::~NetworkReplicator(){}
 
+		void NetworkReplicator::_initReplicator(){
+			shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
+			
+			void* udata = malloc(sizeof(shared_ptr<Instance>));
+			new(udata) shared_ptr<Instance>(sharedThis);
+
+			enet_peer->data = udata;
+		}
+
+		void NetworkReplicator::_dropPeer(){
+			if(enet_peer->data){
+				(*static_cast<shared_ptr<Instance>*>(enet_peer->data)).reset();
+				enet_peer->data = NULL;
+			}
+			enet_peer = NULL;
+
+			ParentLocked = false;
+			Destroy();
+		}
+
 		int NetworkReplicator::getHighestRoundTripTimeVariance(){
 		    if(enet_peer){
 			    return enet_peer->highestRoundTripTimeVariance;

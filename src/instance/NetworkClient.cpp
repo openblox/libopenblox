@@ -23,6 +23,8 @@
 
 #include "OBException.h"
 
+#include "instance/ClientReplicator.h"
+
 #if HAVE_ENET
 namespace OB{
 	namespace Instance{
@@ -97,6 +99,13 @@ namespace OB{
 			switch(evt.type){
 				case ENET_EVENT_TYPE_CONNECT: {
 					puts("Connect");
+
+					shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
+					
+					shared_ptr<ClientReplicator> cliRep = make_shared<ClientReplicator>(evt.peer);
+					cliRep->_initReplicator();
+					cliRep->setParent(sharedThis, false);
+					cliRep->ParentLocked = true;
 					break;
 				}
 				case ENET_EVENT_TYPE_RECEIVE: {
@@ -105,6 +114,15 @@ namespace OB{
 				}
 				case ENET_EVENT_TYPE_DISCONNECT: {
 					puts("Disconnect");
+
+				    ENetPeer* peer = evt.peer;
+					if(peer->data){
+						shared_ptr<Instance> dataInst = (*static_cast<shared_ptr<Instance>*>(peer->data));
+
+						if(shared_ptr<NetworkReplicator> netRep = dynamic_pointer_cast<NetworkReplicator>(dataInst)){
+							netRep->_dropPeer();
+						}
+					}
 					break;
 				}
 			}
