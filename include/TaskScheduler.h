@@ -92,6 +92,30 @@ namespace OB{
 			void SetSortsTasks(bool sortsTasks);
 
 			/**
+			 * Returns the number of sleeping jobs.
+			 * 
+			 * Any job that is currently waiting to run, but will not
+			 * be run on this tick is considered to be "sleeping".
+			 *
+			 * @returns int, number of sleeping jobs
+			 */
+			int GetNumSleepingJobs();
+
+			/**
+			 * Returns the number of waiting jobs.
+			 * 
+			 * Any job that is currently waiting to run, and will be
+			 * run by the end of this tick is "waiting".
+			 *
+			 * Some jobs can make the TaskScheduler skip remaining
+			 * waiting jobs, so don't rely on this for anything
+			 * important.
+			 *
+			 * @returns int, number of waiting jobs
+			 */
+			int GetNumWaitingJobs();
+
+			/**
 			 * Runs the task scheduler one time, handles any pending
 			 * tasks and then returns. This operation can add more
 			 * tasks to the queue.
@@ -121,6 +145,9 @@ namespace OB{
 			 * @author John M. Harris, Jr.
 			 */
 			void sortTasks();
+
+			int numSleeping;
+			int numWaiting;
 	};
 }
 

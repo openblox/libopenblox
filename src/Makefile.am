@@ -40,6 +40,7 @@ instance/BasePlayerGui.cpp \
 instance/CoreGui.cpp \
 instance/StarterGui.cpp \
 instance/RunService.cpp \
+instance/TaskScheduler.cpp \
 instance/PlayerGui.cpp \
 instance/Workspace.cpp \
 instance/LogService.cpp \

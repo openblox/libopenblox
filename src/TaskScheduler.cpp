@@ -27,6 +27,9 @@
 namespace OB{
 	TaskScheduler::TaskScheduler(){
 	    SortsTasks = true;
+
+		numSleeping = 0;
+		numWaiting = 0;
 	}
 
 	TaskScheduler::~TaskScheduler(){}
@@ -43,6 +46,14 @@ namespace OB{
 		SortsTasks = sortsTasks;
 	}
 
+	int TaskScheduler::GetNumSleepingJobs(){
+		return tasks.size();
+	}
+
+	int TaskScheduler::GetNumWaitingJobs(){
+		return numWaiting;
+	}
+
 	void TaskScheduler::tick(){
 		if(!tasks.empty()){
 			/* This vector contains tasks that returned response code
@@ -54,34 +65,56 @@ namespace OB{
 			std::vector<_ob_waiting_task> tmpPopped;
 			
 			bool stopProcTasks = false;
+
+			std::vector<_ob_waiting_task> runThisTick;
+
+			ob_int64 curTime = currentTimeMillis();
+			while(!tasks.empty()){
+				_ob_waiting_task t = tasks.back();
+				
+				if(t.at < curTime){
+					runThisTick.push_back(t);
+					tasks.pop_back();
+				}else{
+				    break;
+				}
+			}
+
+			numWaiting = runThisTick.size();
 			
-			while(!tasks.empty() && !stopProcTasks){
+			while(!runThisTick.empty() && !stopProcTasks){
 				ob_int64 curTime = currentTimeMillis();
 
-				_ob_waiting_task t = tasks.back();
-
-				if(t.at < curTime){
-					tasks.pop_back();
-					
-					int retCode = t.task_fnc(t.metad, t.start);
-					
-					switch(retCode){
-						case 1: {
-							tmpPopped.push_back(t);
-							break;
-						}
-						case 2: {
-							stopProcTasks = true;
-							break;
-						}
-						case 3: {
-							tmpPopped.push_back(t);
-							stopProcTasks = true;
-							break;
-						}
+				_ob_waiting_task t = runThisTick.back();
+				runThisTick.pop_back();
+				numWaiting--;
+				
+				int retCode = t.task_fnc(t.metad, t.start);
+				
+				switch(retCode){
+					case 1: {
+						tmpPopped.push_back(t);
+						break;
 					}
-				}else{
-				    stopProcTasks = true;
+					case 2: {
+						stopProcTasks = true;
+						break;
+					}
+					case 3: {
+						tmpPopped.push_back(t);
+						stopProcTasks = true;
+						break;
+					}
+				}
+			}
+
+			if(!runThisTick.empty()){
+				while(!runThisTick.empty()){
+					tasks.push_back(runThisTick.back());
+					runThisTick.pop_back();
+				}
+				if(SortsTasks){
+					sortTasks();
 				}
 			}
 
