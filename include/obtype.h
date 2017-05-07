@@ -66,6 +66,7 @@ typedef unsigned long long int ob_uint64;
 
 #define OB_NET_PKT_CREATE_INSTANCE 4
 #define OB_NET_PKT_SET_PARENT 5
+#define OB_NET_PKT_SET_PROPERTY 6
 
 #endif // OB_OBTYPE
 

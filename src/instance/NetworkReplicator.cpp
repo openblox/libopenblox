@@ -198,6 +198,16 @@ namespace OB{
 				enet_peer_send(enet_peer, channel, pkt);
 			}
 		}
+
+		void NetworkReplicator::sendSetPropertyPacket(ob_uint64 netId, std::string prop, shared_ptr<Type::VarWrapper> val){
+			shared_ptr<BitStream> bs = make_shared<BitStream>();
+		    bs->writeSizeT(OB_NET_PKT_SET_PROPERTY);
+			bs->writeUInt64(netId);
+			bs->writeString(prop);
+		    bs->writeVar(val);
+
+			Send(OB_NET_CHAN_REPLICATION, bs);
+		}
 	}
 }
 #endif

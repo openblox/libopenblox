@@ -34,7 +34,7 @@ namespace OB{
 		 *
 		 * @author John M. Harris, Jr.
 		 */
-	    enum VarType{
+	    enum VarType: size_t{
 			TYPE_INT,
 			TYPE_DOUBLE,
 			TYPE_FLOAT,

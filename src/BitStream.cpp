@@ -19,6 +19,11 @@
 
 #include "BitStream.h"
 
+#include "OBEngine.h"
+#include "instance/DataModel.h"
+
+#include <sstream>
+
 namespace OB{
 	BitStream::BitStream(unsigned char* data, size_t length){
 		this->data = data;
@@ -189,5 +194,163 @@ namespace OB{
 		free(strDat);
 
 		return tstr;
+	}
+
+	size_t BitStream::writeDouble(double var){
+		std::string numberAsString = ((std::ostringstream&)(std::ostringstream() << std::dec << var)).str();
+		return writeString(numberAsString);
+	}
+
+	double BitStream::readDouble(){
+		return atof(readString().c_str());
+	}
+
+    size_t BitStream::writeLong(long var){
+		return write((unsigned char*)&var, sizeof(long));
+	}
+
+    long BitStream::readLong(){
+	    long* longData = (long*)read(sizeof(long));
+		if(longData){
+			return (long)(*longData);
+		}else{
+		    throw new OBException("No data returned from stream");
+		}
+	}
+
+	size_t BitStream::writeULong(unsigned long var){
+		return write((unsigned char*)&var, sizeof(unsigned long));
+	}
+
+    unsigned long BitStream::readULong(){
+	    unsigned long* longData = (unsigned long*)read(sizeof(unsigned long));
+		if(longData){
+			return (unsigned long)(*longData);
+		}else{
+		    throw new OBException("No data returned from stream");
+		}
+	}
+
+	size_t BitStream::writeBool(bool var){
+		unsigned char tmpVar = 0;
+		if(var){
+			tmpVar = 1;
+		}
+		return write((unsigned char*)&tmpVar, sizeof(unsigned char));
+	}
+
+    bool BitStream::readBool(){
+	    unsigned char* uCharData = read(sizeof(unsigned char));
+		if(uCharData){
+			return ((unsigned char)(*uCharData)) == 1;
+		}else{
+		    throw new OBException("No data returned from stream");
+		}
+	}
+
+	shared_ptr<Type::VarWrapper> BitStream::readVar(){
+		size_t varType = readSizeT();
+
+		switch(varType){
+			case Type::TYPE_INT: {
+			    return make_shared<Type::VarWrapper>(readInt());
+			}
+			case Type::TYPE_DOUBLE: {
+				return make_shared<Type::VarWrapper>(readDouble());
+			}
+			case Type::TYPE_FLOAT: {
+				return make_shared<Type::VarWrapper>((float)readDouble());
+			}
+			case Type::TYPE_LONG: {
+				return make_shared<Type::VarWrapper>(readLong());
+			}
+			case Type::TYPE_UNSIGNED_LONG: {
+				return make_shared<Type::VarWrapper>(readULong());
+			}
+			case Type::TYPE_BOOL: {
+				return make_shared<Type::VarWrapper>(readBool());
+			}
+			case Type::TYPE_STRING: {
+				return make_shared<Type::VarWrapper>(readString());
+			}
+			case Type::TYPE_INSTANCE: {
+			    ob_uint64 netId = readUInt64();
+
+				OBEngine* eng = OBEngine::getInstance();
+				if(eng){
+					shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+					if(dm){
+					    weak_ptr<Instance::Instance> weakInst = dm->lookupInstance(netId);
+						if(!weakInst.expired()){
+							return make_shared<Type::VarWrapper>(weakInst.lock());
+						}
+					}
+				}
+				
+			    return make_shared<Type::VarWrapper>(shared_ptr<Instance::Instance>(NULL));
+			}
+			case Type::TYPE_TYPE:
+			case Type::TYPE_LUA_OBJECT:
+			case Type::TYPE_NULL:
+			case Type::TYPE_UNKNOWN: {
+			    return NULL;
+			}
+		}
+		
+		return NULL;
+	}
+
+	void BitStream::writeVar(shared_ptr<Type::VarWrapper> var){
+	    if(!var || var->type == Type::TYPE_UNKNOWN || var->type == Type::TYPE_NULL){
+			writeSizeT(Type::TYPE_NULL);
+		}else{
+			writeSizeT(var->type);
+
+		    switch(var->type){
+				case Type::TYPE_INT: {
+				    writeInt(static_cast<Type::IntWrapper*>(var->wrapped)->val);
+					break;
+				}
+				case Type::TYPE_DOUBLE: {
+				    writeDouble(static_cast<Type::DoubleWrapper*>(var->wrapped)->val);
+					break;
+				}
+				case Type::TYPE_FLOAT: {
+				    writeDouble(static_cast<Type::FloatWrapper*>(var->wrapped)->val);
+					break;
+				}
+				case Type::TYPE_LONG: {
+				    writeLong(static_cast<Type::LongWrapper*>(var->wrapped)->val);
+					break;
+				}
+				case Type::TYPE_UNSIGNED_LONG: {
+				    writeULong(static_cast<Type::UnsignedLongWrapper*>(var->wrapped)->val);
+					break;
+				}
+				case Type::TYPE_BOOL: {
+				    writeBool(static_cast<Type::BoolWrapper*>(var->wrapped)->val);
+					break;
+				}
+				case Type::TYPE_STRING: {
+				    writeString(static_cast<Type::StringWrapper*>(var->wrapped)->val);
+					break;
+				}
+				case Type::TYPE_INSTANCE: {
+					shared_ptr<Instance::Instance> inst = *static_cast<shared_ptr<Instance::Instance>*>(var->wrapped);
+					if(inst){
+						writeUInt64(inst->GetNetworkID());
+					}else{
+						writeUInt64(OB_NETID_NULL);
+					}
+					break;
+				}
+				case Type::TYPE_TYPE:
+				case Type::TYPE_LUA_OBJECT:
+				case Type::TYPE_NULL:
+				case Type::TYPE_UNKNOWN: {
+					break;
+				}
+			}
+		}
 	}
 }

@@ -58,6 +58,8 @@ namespace OB{
 				void Reset();
 				void Send(enet_uint8 channel, shared_ptr<BitStream> bs);
 
+				void sendSetPropertyPacket(ob_uint64 netId, std::string prop, shared_ptr<Type::VarWrapper> val);
+
 				DECLARE_CLASS(NetworkReplicator);
 
 				ENetPeer* enet_peer;

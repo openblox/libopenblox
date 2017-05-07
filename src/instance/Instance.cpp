@@ -275,8 +275,12 @@ namespace OB{
 				return;
 			}
 
+			if(netId < OB_NETID_DATAMODEL){
+				return;
+			}
+
 			{
-				shared_ptr<BitStream> bsOut;
+				shared_ptr<BitStream> bsOut = make_shared<BitStream>();
 				bsOut->writeSizeT(OB_NET_PKT_CREATE_INSTANCE);
 				bsOut->writeUInt64(netId);
 				bsOut->writeString(ClassName);
@@ -285,7 +289,7 @@ namespace OB{
 			}
 
 			{
-				shared_ptr<BitStream> bsOut;
+				shared_ptr<BitStream> bsOut = make_shared<BitStream>();
 				bsOut->writeSizeT(OB_NET_PKT_SET_PARENT);
 				bsOut->writeUInt64(netId);
 				if(Parent){
@@ -295,6 +299,24 @@ namespace OB{
 				}
 
 				peer->Send(OB_NET_CHAN_REPLICATION, bsOut);
+			}
+
+			replicateProperties(peer);
+			replicateChildren(peer);
+		}
+
+		void Instance::replicateProperties(shared_ptr<NetworkReplicator> peer){
+			peer->sendSetPropertyPacket(netId, "Name", make_shared<Type::VarWrapper>(Name));
+		}
+
+		void Instance::replicateChildren(shared_ptr<NetworkReplicator> peer){
+			std::vector<shared_ptr<Instance>> kids = GetChildren();
+			
+			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
+				shared_ptr<Instance> kid = kids[i];
+				if(kid){
+					kid->replicate(peer);
+				}
 			}
 		}
 		#endif

@@ -23,6 +23,8 @@
 #include "OBException.h"
 #include "obtype.h"
 
+#include "type/VarWrapper.h"
+
 #include <cstdlib>
 #include <cstring>
 
@@ -259,6 +261,104 @@ namespace OB{
 			 * @author John M. Harris, Jr.
 			 */
 			std::string readString();
+
+			/**
+			 * Convenience function to write a double to a
+			 * stream.
+			 *
+			 * @param var double to write
+			 * @returns Same as write
+			 * @author John M. Harris, Jr.
+			 */
+			size_t writeDouble(double var);
+
+			/**
+			 * Convenience function to read a double from a
+			 * stream.
+			 *
+			 * @returns double
+			 * @throws OBException
+			 * @author John M. Harris, Jr.
+			 */
+			double readDouble();
+
+			/**
+			 * Convenience function to write a long to a
+			 * stream.
+			 *
+			 * @param var long to write
+			 * @returns Same as write
+			 * @author John M. Harris, Jr.
+			 */
+			size_t writeLong(long var);
+
+			/**
+			 * Convenience function to read a long from a
+			 * stream.
+			 *
+			 * @returns long
+			 * @throws OBException
+			 * @author John M. Harris, Jr.
+			 */
+		    long readLong();
+
+		    /**
+			 * Convenience function to write an unsigned long to a
+			 * stream.
+			 *
+			 * @param var unsigned long to write
+			 * @returns Same as write
+			 * @author John M. Harris, Jr.
+			 */
+			size_t writeULong(unsigned long var);
+
+			/**
+			 * Convenience function to read an unsigned long from a
+			 * stream.
+			 *
+			 * @returns unsigned long
+			 * @throws OBException
+			 * @author John M. Harris, Jr.
+			 */
+		    unsigned long readULong();
+
+			/**
+			 * Convenience function to write a bool to a
+			 * stream.
+			 *
+			 * @param var bool to write
+			 * @returns Same as write
+			 * @author John M. Harris, Jr.
+			 */
+			size_t writeBool(bool var);
+
+			/**
+			 * Convenience function to read a bool from a
+			 * stream.
+			 *
+			 * @returns bool
+			 * @throws OBException
+			 * @author John M. Harris, Jr.
+			 */
+		    bool readBool();
+
+			/**
+			 * Convenience function to read a Type::VarWrapper from a
+			 * stream.
+			 * 
+			 * @returns shared_ptr<Type::VarWrapper> or NULL
+			 * @author John M. Harris, Jr.
+			 */
+			shared_ptr<Type::VarWrapper> readVar();
+
+			/**
+			 * Convenience function to write a Type::VarWrapper to a
+			 * stream.
+			 * 
+			 * @param var shared_ptr<Type::VarWrapper> or NULL
+			 * @author John M. Harris, Jr.
+			 */
+			void writeVar(shared_ptr<Type::VarWrapper> var);
 			
 		private:
 			unsigned char* data;
