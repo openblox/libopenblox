@@ -48,7 +48,17 @@ namespace OB{
 			DescendantRemoving = make_shared<Type::Event>("DescendantRemoving");
 		}
 
-		Instance::~Instance(){}
+		Instance::~Instance(){
+			if(netId >= OB_NETID_START){
+				OBEngine* eng = OBEngine::getInstance();
+				if(eng){
+					shared_ptr<DataModel> dm = eng->getDataModel();
+					if(dm){
+						dm->dropInstance(netId);
+					}
+				}
+			}
+		}
 
 		void Instance::setName(std::string name){
 		    if(Name != name){
@@ -232,8 +242,46 @@ namespace OB{
 		}
 
 		void Instance::setNetworkID(ob_int64 netId){
-			this->netId = netId;
+			if(netId >= OB_NETID_START){
+				OBEngine* eng = OBEngine::getInstance();
+				if(eng){
+					shared_ptr<DataModel> dm = eng->getDataModel();
+					if(dm){
+						this->netId = netId;
+						dm->putInstance(shared_from_this());
+					}
+				}
+			}else{
+				this->netId = netId;
+			}
 		}
+
+		void Instance::generateNetworkID(){
+		    OBEngine* eng = OBEngine::getInstance();
+			if(eng){
+			    shared_ptr<DataModel> dm = eng->getDataModel();
+				if(dm){
+					setNetworkID(dm->nextNetworkID());
+				}
+			}
+		}
+
+		#if HAVE_ENET
+		void Instance::replicate(shared_ptr<NetworkReplicator> peer){
+			if(!peer){
+				return;
+			}
+
+			{
+				shared_ptr<BitStream> bsOut;
+				bsOut.writeSizeT(OB_NET_PKT_CREATE_INSTANCE);
+				bsOut.writeUInt64(netId);
+				bsOut.writeString(ClassName);
+
+				peer->Send(OB_NET_CHAN_REPLICATION, bsOut);
+			}
+		}
+		#endif
 		
 		void Instance::tick(){
 			tickChildren();

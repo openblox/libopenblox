@@ -24,7 +24,6 @@
 #include "BitStream.h"
 
 #if HAVE_ENET
-#include <enet/enet.h>
 
 #ifndef OB_INST_NETWORKREPLICATOR
 #define OB_INST_NETWORKREPLICATOR

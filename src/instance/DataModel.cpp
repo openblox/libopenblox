@@ -36,8 +36,9 @@ namespace OB{
 
 	    DataModel::DataModel(){
 			Name = "Game";
-			
-			netIdStartIdx = (rand() % (7001 - OB_NETID_START)) + OB_NETID_START;
+
+			netId = OB_NETID_DATAMODEL;
+			netIdStartIdx = (rand() % (101 - OB_NETID_START)) + OB_NETID_START;
 			netIdNextIdx = netIdStartIdx;
 		}
 
@@ -111,12 +112,63 @@ namespace OB{
 		}
 
 		weak_ptr<Instance> DataModel::lookupInstance(ob_uint64 netId){
-			return instMap[netId];
+			if(netId >= OB_NETID_START){
+				return instMap[netId];
+			}else{
+				switch(netId){
+					case OB_NETID_DATAMODEL: {
+						return std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
+					}
+					case OB_NETID_WORKSPACE: {
+						return workspace;
+					}
+					case OB_NETID_LIGHTING: {
+						return lighting;
+					}
+				}
+			}
+		}
+
+		void DataModel::putInstance(shared_ptr<Instance> inst){
+			if(inst){
+				ob_uint64 reqNetId = inst->GetNetworkID();
+				if(reqNetId >= OB_NETID_START){
+				    auto findIt = instMap.find(reqNetId);
+					if(findIt != instMap.end()){
+						inst->setNetworkID(OB_NETID_UNASSIGNED);
+						return;
+					}
+
+					instMap[reqNetId] = weak_ptr<Instance>(inst);
+				}
+			}
+		}
+
+		void DataModel::dropInstance(ob_uint64 reqNetId){
+			if(reqNetId > OB_NETID_START){
+				auto findIt = instMap.find(reqNetId);
+				if(findIt != instMap.end()){
+					instMap.erase(findIt);
+
+					// This way we aren't wasting memory unless
+					// there's already an insane number of instances.
+					if(netIdNextIdx > (ULONG_MAX / 2)){
+						freedNetIDs.push_back(reqNetId);
+					}
+				}
+			}
 		}
 
 		ob_uint64 DataModel::nextNetworkID(){
 			if(netIdNextIdx == OB_NETID_UNASSIGNED){
-				return OB_NETID_UNASSIGNED;
+				// This will probably never happen, but why not be
+				// prepared?
+				if(!freedNetIDs.empty()){
+					ob_uint64 tmpID = freedNetIDs.back();
+					freedNetIDs.pop_back();
+					return tmpID;
+				}
+				goto nextIsUnassigned;
 			}
 			
 		    netIdNextIdx++;
@@ -126,6 +178,10 @@ namespace OB{
 			}
 
 			return netIdNextIdx;
+
+		  nextIsUnassigned:
+			std::cout << "Ran out of free network IDs." << std::endl;
+			return OB_NETID_UNASSIGNED;
 		}
 
 		int DataModel::lua_Shutdown(lua_State* L){

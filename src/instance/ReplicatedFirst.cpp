@@ -27,6 +27,8 @@ namespace OB{
 
 	    ReplicatedFirst::ReplicatedFirst(){
 			Name = ClassName;
+
+			netId = OB_NETID_REPLICATEDFIRST;
 		}
 
 	    ReplicatedFirst::~ReplicatedFirst(){}

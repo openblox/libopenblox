@@ -30,6 +30,12 @@
 
 #include <iostream>
 
+#include "oblibconfig.h"
+
+#if HAVE_ENET
+#include <enet/enet.h>
+#endif
+
 #ifndef OB_INST_INSTANCE
 #define OB_INST_INSTANCE
 
@@ -334,6 +340,27 @@ namespace OB{
 				 * @author John M. Harris, Jr.
 				 */
 				void setNetworkID(ob_int64 netId);
+
+				/**
+				 * Generates a unique network ID for this Instance.
+				 * 
+				 * This should only be called on servers. It's useless
+				 * to assign network IDs on client-only objects, which
+				 * is why I leave them as OB_NETID_UNASSIGNED.
+				 *
+				 * @author John M. Harris, Jr.
+				 */
+				void generateNetworkID();
+
+				#if HAVE_ENET
+				/**
+				 * Replicates this Instance.
+				 * 
+				 * @param peer Peer
+				 * @author John M. Harris, Jr.
+				 */
+				void replicate(ENetPeer* peer);
+				#endif
 
 				/**
 				 * Called internally every tick.

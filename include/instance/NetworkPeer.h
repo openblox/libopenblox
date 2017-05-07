@@ -22,7 +22,6 @@
 #include "oblibconfig.h"
 
 #if HAVE_ENET
-#include <enet/enet.h>
 
 #ifndef OB_INST_NETWORKPEER
 #define OB_INST_NETWORKPEER

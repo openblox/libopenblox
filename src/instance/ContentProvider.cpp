@@ -29,6 +29,7 @@ namespace OB{
 
 	    ContentProvider::ContentProvider(){
 			Name = ClassName;
+			netId = OB_NETID_NOT_REPLICATED;
 
 			AssetLoaded = make_shared<Type::Event>("AssetLoaded");
 			AssetLoadFailed = make_shared<Type::Event>("AssetLoadFailed");

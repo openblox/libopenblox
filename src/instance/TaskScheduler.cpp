@@ -30,6 +30,7 @@ namespace OB{
 
 	    TaskScheduler::TaskScheduler(){
 			Name = ClassName;
+			netId = OB_NETID_NOT_REPLICATED;
 		}
 
 	    TaskScheduler::~TaskScheduler(){}

@@ -34,6 +34,7 @@ namespace OB{
 
 	    NetworkServer::NetworkServer(){
 			Name = ClassName;
+			netId = OB_NETID_NOT_REPLICATED;
 
 			Port = -1;
 		}

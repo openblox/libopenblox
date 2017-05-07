@@ -44,11 +44,26 @@ typedef long long int ob_int64;
  */
 typedef unsigned long long int ob_uint64;
 
-#define OB_NETID_START 200
+#define OB_NETID_START 100
+
 #define OB_NETID_UNASSIGNED 0
+#define OB_NETID_NOT_REPLICATED 1
+
+#define OB_NETID_DATAMODEL 5
+#define OB_NETID_WORKSPACE 6
+#define OB_NETID_LIGHTING 7
+#define OB_NETID_REPLICATEDFIRST 8
+#define OB_NETID_REPLICATEDSTORAGE 9
+#define OB_NETID_STARTERGUI 10
 
 #define OB_NET_MAX_PEERS 300
 #define OB_NET_CHANNELS 3
+
+#define OB_NET_CHAN_PROTCOL 0
+#define OB_NET_CHAN_REPLICATION 1
+#define OB_NET_CHAN_LUA 2
+
+#define OB_NET_PKT_CREATE_INSTANCE 4
 
 #endif // OB_OBTYPE
 

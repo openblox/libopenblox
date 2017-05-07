@@ -30,6 +30,7 @@ namespace OB{
 
 	    RunService::RunService(){
 			Name = ClassName;
+			netId = OB_NETID_NOT_REPLICATED;
 
 		    Stepped = make_shared<Type::Event>("Stepped");
 		}

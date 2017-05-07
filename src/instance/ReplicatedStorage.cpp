@@ -27,6 +27,7 @@ namespace OB{
 
 	    ReplicatedStorage::ReplicatedStorage(){
 			Name = ClassName;
+			netId = OB_NETID_REPLICATEDSTORAGE;
 		}
 
 	    ReplicatedStorage::~ReplicatedStorage(){}

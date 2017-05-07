@@ -29,6 +29,7 @@ namespace OB{
 
 	    LogService::LogService(){
 			Name = ClassName;
+			netId = OB_NETID_NOT_REPLICATED;
 
 			//These pointers are initialized to keep postLog going as quickly as possible. No lookup should be done there.
 			MessageOutput = Enum::LuaMessageType->getEnumItem((int)Enum::MessageType::MessageOutput);

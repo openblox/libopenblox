@@ -108,6 +108,9 @@ namespace OB{
 				 */
 			    weak_ptr<Instance> lookupInstance(ob_uint64 netId);
 
+				void putInstance(shared_ptr<Instance> inst);
+				void dropInstance(ob_uint64 reqNetId);
+
 				/**
 				 * Returns the next network ID.
 				 *
@@ -130,6 +133,7 @@ namespace OB{
 				ob_uint64 netIdStartIdx;
 				ob_uint64 netIdNextIdx;
 				std::map<ob_uint64, weak_ptr<Instance>> instMap;
+				std::vector<ob_uint64> freedNetIDs;
 				
 				static void register_lua_methods(lua_State* L);
 		};

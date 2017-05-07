@@ -28,10 +28,12 @@ namespace OB{
 
 	    ClientReplicator::ClientReplicator(){
 			Name = ClassName;
+			netId = OB_NETID_NOT_REPLICATED;
 		}
 
 	    ClientReplicator::ClientReplicator(ENetPeer* peer) : NetworkReplicator(peer){
 			Name = ClassName;
+		    netId = OB_NETID_NOT_REPLICATED;
 		}
 
 	    ClientReplicator::~ClientReplicator(){}

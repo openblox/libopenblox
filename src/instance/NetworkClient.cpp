@@ -34,6 +34,7 @@ namespace OB{
 
 	    NetworkClient::NetworkClient(){
 			Name = ClassName;
+			netId = OB_NETID_NOT_REPLICATED;
 
 			server_peer = NULL;
 		}

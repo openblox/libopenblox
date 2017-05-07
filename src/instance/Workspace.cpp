@@ -30,6 +30,7 @@ namespace OB{
 
 	    Workspace::Workspace(){
 			Name = ClassName;
+			netId = OB_NETID_WORKSPACE;
 
 			Gravity = make_shared<Type::Vector3>(0, -196.2, 0);
 			FallenPartsDestroyHeight = -1000;

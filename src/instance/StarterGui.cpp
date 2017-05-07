@@ -33,6 +33,8 @@ namespace OB{
 
 	    StarterGui::StarterGui(){
 			Name = ClassName;
+
+			netId = OB_NETID_STARTERGUI;
 		}
 
 	    StarterGui::~StarterGui(){}

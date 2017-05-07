@@ -33,6 +33,7 @@ namespace OB{
 
 	    Lighting::Lighting(){
 			Name = ClassName;
+			netId = OB_NETID_LIGHTING;
 			
 			FogEnabled = false;
 		}
