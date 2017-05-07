@@ -28,7 +28,6 @@ namespace OB{
 	TaskScheduler::TaskScheduler(){
 	    SortsTasks = true;
 
-		numSleeping = 0;
 		numWaiting = 0;
 	}
 

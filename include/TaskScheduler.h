@@ -146,7 +146,6 @@ namespace OB{
 			 */
 			void sortTasks();
 
-			int numSleeping;
 			int numWaiting;
 	};
 }
