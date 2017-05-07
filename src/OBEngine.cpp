@@ -232,6 +232,7 @@ namespace OB{
 		#endif
 		
 	    taskSched->tick();
+		dm->tick();
 
 		if(!doRendering){
 			//If we aren't rendering, there's no wait and we end up in a busy loop doing nothing.
