@@ -55,6 +55,7 @@ instance/Color3Value.cpp \
 instance/IntConstrainedValue.cpp \
 instance/IntValue.cpp \
 instance/NumberValue.cpp \
+instance/NetworkPeer.cpp \
 utility.cpp
 
 # Linker options
