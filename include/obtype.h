@@ -48,6 +48,7 @@ typedef unsigned long long int ob_uint64;
 
 #define OB_NETID_UNASSIGNED 0
 #define OB_NETID_NOT_REPLICATED 1
+#define OB_NETID_NULL 2
 
 #define OB_NETID_DATAMODEL 5
 #define OB_NETID_WORKSPACE 6
@@ -64,6 +65,7 @@ typedef unsigned long long int ob_uint64;
 #define OB_NET_CHAN_LUA 2
 
 #define OB_NET_PKT_CREATE_INSTANCE 4
+#define OB_NET_PKT_SET_PARENT 5
 
 #endif // OB_OBTYPE
 

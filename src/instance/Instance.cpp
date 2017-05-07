@@ -23,6 +23,9 @@
 
 #include "OBException.h"
 #include "OBEngine.h"
+#include "BitStream.h"
+
+#include "instance/NetworkReplicator.h"
 
 #include <iostream>
 
@@ -274,9 +277,22 @@ namespace OB{
 
 			{
 				shared_ptr<BitStream> bsOut;
-				bsOut.writeSizeT(OB_NET_PKT_CREATE_INSTANCE);
-				bsOut.writeUInt64(netId);
-				bsOut.writeString(ClassName);
+				bsOut->writeSizeT(OB_NET_PKT_CREATE_INSTANCE);
+				bsOut->writeUInt64(netId);
+				bsOut->writeString(ClassName);
+
+				peer->Send(OB_NET_CHAN_REPLICATION, bsOut);
+			}
+
+			{
+				shared_ptr<BitStream> bsOut;
+				bsOut->writeSizeT(OB_NET_PKT_SET_PARENT);
+				bsOut->writeUInt64(netId);
+				if(Parent){
+					bsOut->writeUInt64(Parent->GetNetworkID());
+				}else{
+					bsOut->writeUInt64(OB_NETID_NULL);
+				}
 
 				peer->Send(OB_NET_CHAN_REPLICATION, bsOut);
 			}

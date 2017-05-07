@@ -185,6 +185,8 @@ protected: \
 
 namespace OB{
 	namespace Instance{
+		class NetworkReplicator;
+		
 		/**
 		 * Instance is the base class of all world objects in OpenBlox.
 		 * @author John M. Harris, Jr.
@@ -359,7 +361,7 @@ namespace OB{
 				 * @param peer Peer
 				 * @author John M. Harris, Jr.
 				 */
-				void replicate(ENetPeer* peer);
+				void replicate(shared_ptr<NetworkReplicator> peer);
 				#endif
 
 				/**
