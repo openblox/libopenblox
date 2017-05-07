@@ -41,6 +41,8 @@ instance/CoreGui.cpp \
 instance/StarterGui.cpp \
 instance/RunService.cpp \
 instance/TaskScheduler.cpp \
+instance/ReplicatedStorage.cpp \
+instance/ReplicatedFirst.cpp \
 instance/PlayerGui.cpp \
 instance/Workspace.cpp \
 instance/LogService.cpp \
