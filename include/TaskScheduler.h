@@ -88,7 +88,24 @@ namespace OB{
 		    TaskScheduler();
 			virtual ~TaskScheduler();
 
+			/*
+			 * Returns whether or not this TaskScheduler sorts tasks.
+			 *
+			 * If true, tasks enqueued will be sorted by the time
+			 * they're meant to run at.
+			 *
+			 * @returns bool, true if tasks are to be sorted
+			 * @author John M. Harris, Jr.
+			 */
 			bool GetSortsTasks();
+
+			/*
+			 * Sets whether or not this TaskScheduler sorts tasks.
+			 *
+			 * @param sortsTasks Whether or not tasks are to be sorted
+			 * @sa TaskScheduler::GetSortsTasks
+			 * @author John M. Harris, Jr.
+			 */
 			void SetSortsTasks(bool sortsTasks);
 
 			/**
