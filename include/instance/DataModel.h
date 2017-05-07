@@ -29,6 +29,7 @@ namespace OB{
 		class ContentProvider;
 		class LogService;
 		class RunService;
+		class ReplicatedFirst;
 		
 		/**
 		 * DataModel is the root singleton of the OpenBlox engine.
@@ -119,6 +120,24 @@ namespace OB{
 				 * @author John M. Harris, Jr.
 				 */
 				ob_uint64 nextNetworkID();
+
+				#if HAVE_ENET
+				/**
+				 * Replicates properties of this Instance.
+				 * 
+				 * @param peer Peer
+				 * @author John M. Harris, Jr.
+				 */
+				virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
+
+				/**
+				 * Replicates children of this Instance.
+				 * 
+				 * @param peer Peer
+				 * @author John M. Harris, Jr.
+				 */
+				virtual void replicateChildren(shared_ptr<NetworkReplicator> peer);
+				#endif
 				
 				DECLARE_CLASS(DataModel);
 
@@ -127,6 +146,7 @@ namespace OB{
 				shared_ptr<ContentProvider> contentProvider;
 				shared_ptr<LogService> logService;
 				shared_ptr<RunService> runService;
+				shared_ptr<ReplicatedFirst> replicatedFirst;
 
 				DECLARE_LUA_METHOD(Shutdown);
 

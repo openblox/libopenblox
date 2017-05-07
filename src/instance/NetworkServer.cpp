@@ -104,6 +104,14 @@ namespace OB{
 					servRep->_initReplicator();
 				    servRep->setParent(sharedThis, false);
 				    servRep->ParentLocked = true;
+
+					OBEngine* eng = OBEngine::getInstance();
+					if(eng){
+						shared_ptr<DataModel> dm = eng->getDataModel();
+						if(dm){
+							dm->replicate(servRep);
+						}
+					}
 					break;
 				}
 				case ENET_EVENT_TYPE_RECEIVE: {

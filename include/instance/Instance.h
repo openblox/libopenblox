@@ -361,7 +361,7 @@ namespace OB{
 				 * @param peer Peer
 				 * @author John M. Harris, Jr.
 				 */
-				void replicate(shared_ptr<NetworkReplicator> peer);
+				virtual void replicate(shared_ptr<NetworkReplicator> peer);
 
 				/**
 				 * Replicates properties of this Instance.
@@ -369,7 +369,7 @@ namespace OB{
 				 * @param peer Peer
 				 * @author John M. Harris, Jr.
 				 */
-				void replicateProperties(shared_ptr<NetworkReplicator> peer);
+				virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
 
 				/**
 				 * Replicates children of this Instance.
@@ -377,7 +377,7 @@ namespace OB{
 				 * @param peer Peer
 				 * @author John M. Harris, Jr.
 				 */
-				void replicateChildren(shared_ptr<NetworkReplicator> peer);
+				virtual void replicateChildren(shared_ptr<NetworkReplicator> peer);
 				#endif
 
 				/**

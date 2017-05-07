@@ -72,6 +72,10 @@ namespace OB{
 		    runService = make_shared<RunService>();
 		    runService->setParent(sharedThis, false);
 		    runService->ParentLocked = true;
+
+		    replicatedFirst = make_shared<ReplicatedFirst>();
+		    replicatedFirst->setParent(sharedThis, false);
+		    replicatedFirst->ParentLocked = true;
 		}
 
 		shared_ptr<Workspace> DataModel::getWorkspace(){
@@ -182,6 +186,23 @@ namespace OB{
 		  nextIsUnassigned:
 			std::cout << "Ran out of free network IDs." << std::endl;
 			return OB_NETID_UNASSIGNED;
+		}
+
+		void DataModel::replicateProperties(shared_ptr<NetworkReplicator> peer){
+			Instance::replicateProperties(peer);
+		}
+
+		void DataModel::replicateChildren(shared_ptr<NetworkReplicator> peer){
+			replicatedFirst->replicate(peer);
+			
+			std::vector<shared_ptr<Instance>> kids = GetChildren();
+			
+			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
+				shared_ptr<Instance> kid = kids[i];
+				if(kid && kid != replicatedFirst){
+					kid->replicate(peer);
+				}
+			}
 		}
 
 		int DataModel::lua_Shutdown(lua_State* L){
