@@ -55,6 +55,9 @@ instance/Color3Value.cpp \
 instance/IntConstrainedValue.cpp \
 instance/IntValue.cpp \
 instance/NumberValue.cpp \
+instance/NetworkReplicator.cpp \
+instance/ClientReplicator.cpp \
+instance/ServerReplicator.cpp \
 instance/NetworkPeer.cpp \
 instance/NetworkServer.cpp \
 instance/NetworkClient.cpp \
