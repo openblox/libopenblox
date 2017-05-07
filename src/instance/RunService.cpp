@@ -19,6 +19,9 @@
 
 #include "instance/RunService.h"
 
+#include "OBEngine.h"
+#include "instance/DataModel.h"
+
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(RunService, false, isDataModel, Instance){
@@ -42,7 +45,12 @@ namespace OB{
 		}
 
 		bool RunService::IsServer(){
-			return false;//TODO:
+			OBEngine* eng = OBEngine::getInstance();
+			if(eng){
+				shared_ptr<DataModel> dm = eng->getDataModel();
+				return dm->FindService("NetworkServer") != NULL;
+			}
+			return false;
 		}
 
 		void RunService::tick(){
