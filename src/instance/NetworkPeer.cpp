@@ -19,6 +19,7 @@
 
 #include "instance/NetworkPeer.h"
 
+#if HAVE_ENET
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS_ABS_WCLONE(NetworkPeer, Instance){
@@ -38,3 +39,4 @@ namespace OB{
 		}
 	}
 }
+#endif
