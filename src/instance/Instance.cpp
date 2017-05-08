@@ -320,6 +320,20 @@ namespace OB{
 			}
 		}
 		#endif
+
+		std::map<std::string, std::string> Instance::getProperties(){
+			std::map<std::string, std::string> propMap;
+			propMap["Name"] = "string";
+			propMap["Archivable"] = "bool";
+
+			return propMap;
+		}
+
+		void Instance::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
+			if(prop == "Name"){
+			    setName(val->asString());
+			}
+		}
 		
 		void Instance::tick(){
 			tickChildren();

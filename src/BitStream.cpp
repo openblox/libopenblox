@@ -26,7 +26,8 @@
 
 namespace OB{
 	BitStream::BitStream(unsigned char* data, size_t length){
-		this->data = data;
+		this->data = (unsigned char*)malloc(length);
+		memcpy(this->data, data, length);
 		this->length = length;
 		idx = 0;
 	}
@@ -58,7 +59,7 @@ namespace OB{
 			return 0;
 		}
 		
-	    unsigned char* tmpDat = (unsigned char*)realloc(dat, length + size);
+	    unsigned char* tmpDat = (unsigned char*)realloc(data, length + size);
 		if(tmpDat){
 			data = tmpDat;
 
@@ -70,7 +71,7 @@ namespace OB{
 		}
 	}
 
-	size_t BitStream::writeStream(BitStream* stream, size_t size){
+	size_t BitStream::writeStream(shared_ptr<BitStream> stream, size_t size){
 		if(!stream){
 			return 0;
 		}
@@ -83,11 +84,17 @@ namespace OB{
 	}
 
 	unsigned char* BitStream::read(size_t size){
-		if(!data || length == 0 || idx + size > length){
+		std::cout << "read(" << size << ")" << std::endl;
+		if(size == 0){
+			return NULL;
+		}
+		
+		if(!data || length == 0 || (idx + size) > length){
 			return NULL;
 		}
 		
 		idx += size;
+		
 		return data + idx;
 	}
 
@@ -96,7 +103,7 @@ namespace OB{
 	}
 
 	size_t BitStream::readSizeT(){
-		unsigned char* intData = read(sizeof(size_t));
+	    size_t* intData = (size_t*)read(sizeof(size_t));
 		if(intData){
 			return (size_t)(*intData);
 		}else{
@@ -109,7 +116,7 @@ namespace OB{
 	}
 
 	int BitStream::readInt(){
-		unsigned char* intData = read(sizeof(int));
+	    int* intData = (int*)read(sizeof(int));
 		if(intData){
 			return (int)(*intData);
 		}else{
@@ -122,7 +129,7 @@ namespace OB{
 	}
 
 	unsigned int BitStream::readUInt(){
-		unsigned char* intData = read(sizeof(unsigned int));
+		unsigned int* intData = (unsigned int*)read(sizeof(unsigned int));
 		if(intData){
 			return (unsigned int)(*intData);
 		}else{
@@ -135,7 +142,7 @@ namespace OB{
 	}
 
 	ob_int64 BitStream::readInt64(){
-		unsigned char* intData = read(sizeof(ob_int64));
+	    ob_int64* intData = (ob_int64*)read(sizeof(ob_int64));
 		if(intData){
 			return (ob_int64)(*intData);
 		}else{
@@ -148,7 +155,7 @@ namespace OB{
 	}
 
 	ob_uint64 BitStream::readUInt64(){
-		unsigned char* intData = read(sizeof(ob_uint64));
+	    ob_uint64* intData = (ob_uint64*)read(sizeof(ob_uint64));
 		if(intData){
 			return (ob_uint64)(*intData);
 		}else{
@@ -156,16 +163,18 @@ namespace OB{
 		}
 	}
 
-	size_t BitStream::writeCString(char* var, size_t size){
+	size_t BitStream::writeCString(char* var, int size){
 		if(size == -1){
 			size = strlen(var);
 		}
+
+		size_t writeBegin = writeInt(size);
 		
-		return write((unsigned char*)var, sizeof(*var));
+	    return writeBegin + write((unsigned char*)var, (size + 1) * sizeof(char));
 	}
 
     char* BitStream::readCString(){
-		size_t strLen = readSizeT();
+	    int strLen = readInt();
 		
 		unsigned char* strData = read(strLen);
 		if(strData){
@@ -177,6 +186,11 @@ namespace OB{
 			newDat[strLen] = '\0';
 			return newDat;
 		}else{
+			if(strLen == 0){
+				char* newDat = (char*)malloc(1);
+				newDat[0] = '\0';
+				return newDat;
+			}
 		    throw new OBException("No data returned from stream");
 		}
 	}
@@ -324,7 +338,7 @@ namespace OB{
 					break;
 				}
 				case Type::TYPE_UNSIGNED_LONG: {
-				    writeULong(static_cast<Type::UnsignedLongWrapper*>(var->wrapped)->val);
+				    writeULong(static_cast<Type::LongWrapper*>(var->wrapped)->val);
 					break;
 				}
 				case Type::TYPE_BOOL: {

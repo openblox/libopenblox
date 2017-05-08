@@ -117,8 +117,12 @@ namespace OB{
 		}
 
 		weak_ptr<Instance> DataModel::lookupInstance(ob_uint64 netId){
+			std::cout << "Net ID: " << netId << std::endl;
 			if(netId >= OB_NETID_START){
-				return instMap[netId];
+				auto findIt = instMap.find(netId);
+				if(findIt != instMap.end()){
+					return findIt->second;
+				}
 			}else{
 				switch(netId){
 					case OB_NETID_DATAMODEL: {
@@ -132,6 +136,8 @@ namespace OB{
 					}
 				}
 			}
+
+			return shared_ptr<Instance>(NULL);
 		}
 
 		void DataModel::putInstance(shared_ptr<Instance> inst){

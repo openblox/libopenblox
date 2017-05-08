@@ -20,8 +20,9 @@
 #include "instance/NetworkClient.h"
 
 #include "OBEngine.h"
-
 #include "OBException.h"
+
+#include "utility.h"
 
 #include "instance/ClientReplicator.h"
 
@@ -50,6 +51,20 @@ namespace OB{
 				ENetEvent evt;
 			    while(enet_host_service(enet_host, &evt, 10) > 0){
 					processEvent(evt);
+				}
+			}
+
+			if(!heldInstances.empty()){
+				ob_int64 curTime = currentTimeMillis();
+				
+				while(!heldInstances.empty()){
+					HeldInstance hi = heldInstances.front();
+					if(hi.holdEnd < curTime){
+						hi.inst.reset();
+						heldInstances.pop();
+					}else{
+						break;
+					}
 				}
 			}
 			
@@ -96,12 +111,113 @@ namespace OB{
 			}
 		}
 
+		void NetworkClient::processPacket(ENetEvent evt, shared_ptr<BitStream> bs){
+			size_t pkt_type = bs->readSizeT();
+
+			switch(pkt_type){
+				case OB_NET_PKT_CREATE_INSTANCE: {
+					puts("Create inst");
+					ob_uint64 netId = bs->readUInt64();
+					std::string className = bs->readString();
+
+					OBEngine* eng = OBEngine::getInstance();
+					if(eng){
+						shared_ptr<DataModel> dm = eng->getDataModel();
+						if(dm){
+							weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
+							if(lookedUpInst.expired()){
+								shared_ptr<Instance> createdInst = ClassFactory::createReplicate(className);
+								if(createdInst){
+									createdInst->setNetworkID(netId);
+
+									HeldInstance hi;
+									// We hold instances for up to 10 seconds
+									hi.holdEnd = currentTimeMillis() + (10 * 1000);
+									hi.inst = createdInst;
+
+									heldInstances.push(hi);
+								}
+							}
+						}
+					}
+					break;
+				}
+				case OB_NET_PKT_SET_PARENT: {
+					puts("Set parent");
+					
+					ob_uint64 netId = bs->readUInt64();
+					ob_uint64 parentNetId = bs->readUInt64();
+
+					OBEngine* eng = OBEngine::getInstance();
+					if(eng){
+						shared_ptr<DataModel> dm = eng->getDataModel();
+						if(dm){
+							weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
+
+							if(lookedUpInst.expired()){
+								return;
+							}
+
+							if(shared_ptr<Instance> kid = lookedUpInst.lock()){
+								bool wasParentLocked = false;
+								if(kid->ParentLocked){
+									wasParentLocked = true;
+									kid->ParentLocked = false;
+								}
+
+								if(parentNetId > OB_NETID_NULL){
+									weak_ptr<Instance> lookedUpParent = dm->lookupInstance(parentNetId);
+									if(lookedUpParent.expired()){
+										return;
+									}
+
+									if(shared_ptr<Instance> par = lookedUpParent.lock()){
+										kid->setParent(par, true);
+									}
+								}else{
+									kid->setParent(NULL, true);
+								}
+
+								if(wasParentLocked){
+									kid->ParentLocked = true;
+								}
+							}
+						}
+					}
+					break;
+				}
+				case OB_NET_PKT_SET_PROPERTY: {
+					puts("Set property");
+					ob_uint64 netId = bs->readUInt64();
+					std::string prop = bs->readString();
+					shared_ptr<Type::VarWrapper> val = bs->readVar();
+
+					OBEngine* eng = OBEngine::getInstance();
+					if(eng){
+						shared_ptr<DataModel> dm = eng->getDataModel();
+						if(dm){
+							weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
+							if(lookedUpInst.expired()){
+								return;
+							}
+
+							if(shared_ptr<Instance> kid = lookedUpInst.lock()){
+								kid->setProperty(prop, val);
+							}
+						}
+					}
+					break;
+				}
+				default: {
+					printf("Unknown packet type: %i\n", pkt_type);
+				}
+			}
+		}
+
 		void NetworkClient::processEvent(ENetEvent evt){
 			switch(evt.type){
 				case ENET_EVENT_TYPE_CONNECT: {
-					puts("Connect");
-
-					shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
+				    shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
 					
 					shared_ptr<ClientReplicator> cliRep = make_shared<ClientReplicator>(evt.peer);
 					cliRep->_initReplicator();
@@ -110,13 +226,22 @@ namespace OB{
 					break;
 				}
 				case ENET_EVENT_TYPE_RECEIVE: {
-					puts("Recv");
+					puts("Got packet");
+					ENetPacket* pkt = evt.packet;
+
+					shared_ptr<BitStream> bs = make_shared<BitStream>(pkt->data, pkt->dataLength);
+
+					try{
+						processPacket(evt, bs);
+					}catch(OBException* ex){
+						printf("Error reading packet: %s\n", ex->getMessage().c_str());
+					}
+					
+				    enet_packet_destroy(pkt);
 					break;
 				}
 				case ENET_EVENT_TYPE_DISCONNECT: {
-					puts("Disconnect");
-
-				    ENetPeer* peer = evt.peer;
+					ENetPeer* peer = evt.peer;
 					if(peer->data){
 						shared_ptr<Instance> dataInst = (*static_cast<shared_ptr<Instance>*>(peer->data));
 

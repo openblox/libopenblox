@@ -136,10 +136,67 @@ namespace OB{
 			wrapped = NULL;
 		}
 
+		int VarWrapper::asInt(){
+			if(type == TYPE_INT){
+				return static_cast<IntWrapper*>(wrapped)->val;
+			}
+			return -1;
+		}
+		
+		double VarWrapper::asDouble(){
+			if(type == TYPE_DOUBLE){
+				return static_cast<DoubleWrapper*>(wrapped)->val;
+			}
+			return -1;
+		}
+		
+		float VarWrapper::asFloat(){
+			if(type == TYPE_FLOAT){
+				return static_cast<FloatWrapper*>(wrapped)->val;
+			}
+			return -1;
+		}
+		
+		long VarWrapper::asLong(){
+			if(type == TYPE_LONG){
+				return static_cast<LongWrapper*>(wrapped)->val;
+			}
+			return -1;
+		}
+		
+		unsigned long VarWrapper::asULong(){
+			if(type == TYPE_UNSIGNED_LONG){
+				return static_cast<UnsignedLongWrapper*>(wrapped)->val;
+			}
+			return 0;
+		}
+		
+		bool VarWrapper::asBool(){
+			if(type == TYPE_BOOL){
+				return static_cast<BoolWrapper*>(wrapped)->val;
+			}
+			return false;
+		}
+
+		std::string VarWrapper::asString(){
+			if(type == TYPE_STRING){
+				return static_cast<StringWrapper*>(wrapped)->val;
+			}
+			return "";
+		}
+
 		shared_ptr<Instance::Instance> VarWrapper::asInstance(){
 			if(type == TYPE_INSTANCE){
 				shared_ptr<Instance::Instance> inst = *static_cast<shared_ptr<Instance::Instance>*>(wrapped);
 			    return inst;
+			}
+			return NULL;
+		}
+
+		shared_ptr<Type> VarWrapper::asType(){
+			if(type == TYPE_TYPE){
+				shared_ptr<Type> tp = *static_cast<shared_ptr<Type>*>(wrapped);
+				return tp;
 			}
 			return NULL;
 		}
@@ -189,10 +246,7 @@ namespace OB{
 				    lua_rawgeti(L, LUA_REGISTRYINDEX, lrw->ref);
 					break;
 				}
-				case TYPE_NULL: {
-					lua_pushnil(L);
-					break;
-				}
+				case TYPE_NULL:
 				case TYPE_UNKNOWN: {
 					lua_pushnil(L);
 					break;

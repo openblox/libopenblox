@@ -109,7 +109,7 @@ namespace OB{
 			 * @returns Same as write
 			 * @author John M. Harris, Jr.
 			 */
-			size_t writeStream(BitStream* stream, size_t size = 0);
+			size_t writeStream(shared_ptr<BitStream> stream, size_t size = 0);
 
 			/**
 			 * Reads arbitrary data from this BitStream.
@@ -227,7 +227,7 @@ namespace OB{
 			 * @returns Same as write
 			 * @author John M. Harris, Jr.
 			 */
-			size_t writeCString(char* var, size_t size = -1);
+			size_t writeCString(char* var, int size = -1);
 
 			/**
 			 * Convenience function to read a C string from a
@@ -302,7 +302,7 @@ namespace OB{
 			 */
 		    long readLong();
 
-		    /**
+			/**
 			 * Convenience function to write an unsigned long to a
 			 * stream.
 			 *

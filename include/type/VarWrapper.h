@@ -98,7 +98,15 @@ namespace OB{
 				VarWrapper(lua_State* L, int ref);
 				~VarWrapper();
 
+				int asInt();
+				double asDouble();
+				float asFloat();
+				long asLong();
+				unsigned long asULong();
+				bool asBool();
+				std::string asString();
 				shared_ptr<Instance::Instance> asInstance();
+				shared_ptr<Type> asType();
 
 				void wrap_lua(lua_State* L);
 

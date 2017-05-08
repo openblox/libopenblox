@@ -183,17 +183,10 @@ namespace OB{
 
 		void NetworkReplicator::Send(enet_uint8 channel, shared_ptr<BitStream> bs){
 			if(enet_peer){
-				ENetPacket* pkt = enet_packet_create(NULL, bs->getLength(), ENET_PACKET_FLAG_RELIABLE | ENET_PACKET_FLAG_NO_ALLOCATE);
+				ENetPacket* pkt = enet_packet_create(bs->getData(), bs->getLength(), ENET_PACKET_FLAG_RELIABLE);
 				if(!pkt){
 					throw new OBException("Failed to create ENet packet.");
 				}
-
-			    void* udata = malloc(sizeof(shared_ptr<BitStream>));
-				new(udata) shared_ptr<BitStream>(bs);
-				
-				pkt->data = bs->getData();
-				pkt->userData = udata;
-				pkt->freeCallback = _ob_networking_packet_free_cb;
 			    
 				enet_peer_send(enet_peer, channel, pkt);
 			}
@@ -205,6 +198,15 @@ namespace OB{
 			bs->writeUInt64(netId);
 			bs->writeString(prop);
 		    bs->writeVar(val);
+
+			shared_ptr<BitStream> tmpBs = make_shared<BitStream>(bs->getData(), bs->getLength());
+			puts("------------------------");
+			printf("Packet type sent: %o vs %o\nNet ID: %o vs %o\nProp: %s vs %s\n",
+				   tmpBs->readSizeT(), OB_NET_PKT_SET_PROPERTY,
+				   tmpBs->readUInt64(), netId,
+				   tmpBs->readString(), prop.c_str());
+			
+			puts("------------------------");
 
 			Send(OB_NET_CHAN_REPLICATION, bs);
 		}
