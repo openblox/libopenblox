@@ -56,7 +56,7 @@ namespace OB{
 				void Disconnect();
 				void Ping();
 				void Reset();
-				void Send(enet_uint8 channel, shared_ptr<BitStream> bs);
+				void Send(enet_uint8 channel, BitStream &bs);
 
 				void sendSetPropertyPacket(ob_uint64 netId, std::string prop, shared_ptr<Type::VarWrapper> val);
 

@@ -19,6 +19,8 @@
 
 #include "instance/NetworkPeer.h"
 
+#include "BitStream.h"
+
 #if HAVE_ENET
 
 #ifndef OB_INST_NETWORKSERVER
@@ -37,6 +39,8 @@ namespace OB{
 
 				void Start(int port = 0);
 				void Stop(int blockDuration = 1000);
+
+				void broadcast(enet_uint8 channel, BitStream &bs);
 
 				DECLARE_LUA_METHOD(Start);
 				DECLARE_LUA_METHOD(Stop);

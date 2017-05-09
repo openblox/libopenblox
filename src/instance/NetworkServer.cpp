@@ -84,21 +84,47 @@ namespace OB{
 				}
 				
 				ENetEvent evt;
-				while(enet_host_service(enet_host, &evt, blockDuration) > 0){
+				while(enet_host && enet_host_service(enet_host, &evt, blockDuration) > 0){
 					processEvent(evt);
 				}
-				
-				enet_host_destroy(enet_host);
-				enet_host = NULL;
+
+			    if(enet_host){
+					for(int i = 0; i > enet_host->connectedPeers; i++){
+						ENetPeer* peer = &(enet_host->peers[i]);
+						if(peer){
+							if(peer->data){
+								shared_ptr<Instance> dataInst = (*static_cast<shared_ptr<Instance>*>(peer->data));
+
+								if(shared_ptr<NetworkReplicator> netRep = dynamic_pointer_cast<NetworkReplicator>(dataInst)){
+									netRep->_dropPeer();
+								}
+							}
+						}
+					}
+					
+					enet_host_destroy(enet_host);
+					enet_host = NULL;
+				}
+			}
+		}
+
+		void NetworkServer::broadcast(enet_uint8 channel, BitStream &bs){
+			puts("broadcast");
+			if(enet_host){
+				puts("enet_host");
+				ENetPacket* pkt = enet_packet_create(bs.getData(), bs.getNumBytesUsed(), ENET_PACKET_FLAG_RELIABLE);
+				if(!pkt){
+					throw new OBException("Failed to create ENet packet.");
+				}
+			    
+				enet_host_broadcast(enet_host, channel, pkt);
 			}
 		}
 
 		void NetworkServer::processEvent(ENetEvent evt){
 		    switch(evt.type){
 				case ENET_EVENT_TYPE_CONNECT: {
-					puts("Connect");
-
-					shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
+				    shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
 					
 					shared_ptr<ServerReplicator> servRep = make_shared<ServerReplicator>(evt.peer);
 					servRep->_initReplicator();
@@ -115,12 +141,9 @@ namespace OB{
 					break;
 				}
 				case ENET_EVENT_TYPE_RECEIVE: {
-					puts("Recv");
 					break;
 				}
 				case ENET_EVENT_TYPE_DISCONNECT: {
-					puts("Disconnect");
-
 				    ENetPeer* peer = evt.peer;
 					if(peer->data){
 						shared_ptr<Instance> dataInst = (*static_cast<shared_ptr<Instance>*>(peer->data));

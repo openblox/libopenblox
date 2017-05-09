@@ -20,275 +20,450 @@
 #include "BitStream.h"
 
 #include "OBEngine.h"
+#include "OBException.h"
 #include "instance/DataModel.h"
 
 #include <sstream>
 
 namespace OB{
-	BitStream::BitStream(unsigned char* data, size_t length){
-		this->data = (unsigned char*)malloc(length);
-		memcpy(this->data, data, length);
-		this->length = length;
-		idx = 0;
+	BitStream::BitStream() : BitStream(1){}
+	
+	BitStream::BitStream(int bytesToAlloc){
+		numberBitsUsed = 0;
+		readOffset = 0;
+		
+		if(bytesToAlloc > 0){
+			_data = (unsigned char*)malloc(bytesToAlloc);
+			numberBitsAlloc = bytesToAlloc << 3;
+		}else{
+			_data = NULL;
+			numberBitsAlloc = 0;
+		}
+
+		_copyData = true;
+	}
+	
+	BitStream::BitStream(unsigned char* data, unsigned int lenBytes, bool _copyData){
+	    numberBitsUsed = lenBytes << 3;
+		readOffset = 0;
+		this->_copyData = _copyData;
+		numberBitsAlloc = lenBytes << 3;
+
+		if(_copyData){
+			if(lenBytes > 0){
+			    _data = (unsigned char*)malloc(lenBytes);
+				if(data){
+					memcpy(_data, data, lenBytes);
+				}
+			}else{
+				_data = NULL;
+			}
+		}else{
+			_data = data;
+		}
 	}
 
 	BitStream::~BitStream(){
-		if(data){
-			free(data);
+		if(_copyData && _data){
+			free(_data);
 		}
+	}
+
+	BitStream::BitStream(const BitStream &bs){
+		throw new OBException("BitStream does not work by copy constructor.");
+	}
+
+	void BitStream::reset(){
+		numberBitsUsed = 0;
+		readOffset = 0;
+	}
+
+	void BitStream::_addBits(uint32_t numBits){
+		uint32_t newBitsAlloc = numBits + numberBitsUsed;
+
+		if(newBitsAlloc > 0 && ((numberBitsAlloc - 1) >> 3) < ((newBitsAlloc - 1) >> 3)){
+		    newBitsAlloc *= 2;
+			if(newBitsAlloc - (numBits + numberBitsUsed) > 1048576){
+			    newBitsAlloc = numBits + numberBitsUsed + 1048576;
+			}
+
+			uint32_t amountToAlloc = BITS_TO_BYTES(newBitsAlloc) + 1;
+		    _data = (unsigned char*)realloc(_data, (size_t)amountToAlloc);
+		}
+
+		if(newBitsAlloc > numberBitsAlloc){
+		    numberBitsAlloc = newBitsAlloc;
+		}
+	}
+
+	uint32_t BitStream::getNumBitsAlloc(){
+		return numberBitsAlloc;
+	}
+
+	uint32_t BitStream::getNumBitsUsed(){
+		return numberBitsUsed;
+	}
+
+	uint32_t BitStream::getReadOffset(){
+		return readOffset;
+	}
+
+	void BitStream::padToByteLength(unsigned int bytes){
+		if(getNumBytesUsed() < bytes){
+			alignWriteToByteBoundary();
+			unsigned int numToWrite = bytes - getNumBytesUsed();
+			_addBits(BYTES_TO_BITS(numToWrite));
+			memset(_data + BITS_TO_BYTES(numberBitsUsed), 0, (size_t)numToWrite);
+			numberBitsUsed += BYTES_TO_BITS(numToWrite);
+		}
+	}
+
+	void BitStream::ignoreBits(uint32_t numBits){
+		readOffset += numBits;
+	}
+	
+	void BitStream::ignoreBytes(unsigned int numBytes){
+		ignoreBits(BYTES_TO_BITS(numBytes));
+	}
+
+	void BitStream::setWriteOffset(uint32_t offset){
+		numberBitsUsed = offset;
+	}
+
+	bool BitStream::isNetOrderInternal(){
+		static unsigned long htonlVal = htonl(12345);
+		return htonlVal == 12345;
+	}
+
+	void BitStream::write0(){
+		_addBits(1);
+
+		if((numberBitsUsed & 7) == 0){
+			_data[numberBitsUsed >> 3] = 0;
+		}
+
+		numberBitsUsed++;
+	}
+	
+	void BitStream::write1(){
+		_addBits(1);
+
+		uint32_t numberBitsMod8 = numberBitsUsed & 7;
+
+		if(numberBitsMod8 == 0){
+			_data[numberBitsUsed >> 3] = 0x80;
+		}else{
+			_data[numberBitsUsed >> 3] |= 0x80 >> (numberBitsMod8);
+		}
+
+		numberBitsUsed++;
+	}
+	
+	bool BitStream::readBit(){
+		bool result = (_data[readOffset >> 3] & (0x80 >> (readOffset & 7))) != 0;
+		readOffset++;
+		return result;
 	}
 
 	unsigned char* BitStream::getData(){
-		return data;
+		return _data;
+	}
+
+	unsigned char* BitStream::copyData(){
+		size_t dataLen = getNumBytesUsed();
+		
+		unsigned char* dataCopy = (unsigned char*)malloc(dataLen);
+		if(dataCopy){
+			memcpy(dataCopy, _data, dataLen);
+		}
+		return dataCopy;
+	}
+
+	void BitStream::writeBits(unsigned char* inByteArray, uint32_t numToWrite, bool rightAligned){
+		_addBits(numToWrite);
+
+		uint32_t numBitsUsedMod8 = numberBitsUsed & 7;
+
+		/*
+	    if(numBitsUsedMod8 == 0 && (numToWrite & 7) == 0){
+			printf("numBitsUsed: %i\n", numberBitsUsed);
+			printf("numBitsAlloc: %i\n", numberBitsAlloc);
+			printf("Setting at: %i\n", numberBitsUsed >> 3);
+			printf("ToWrite: %i\n", numToWrite >> 3);
+			memcpy(&_data[numberBitsUsed >> 3], inByteArray, numToWrite >> 3);
+			numberBitsUsed += numToWrite;
+			return;
+		}*/
+
+		unsigned char dataByte;
+		unsigned char* inPtr = inByteArray;
+
+		while(numToWrite > 0){
+			dataByte = *(inPtr++);
+
+			if(numToWrite < 8 && rightAligned){
+				dataByte <<= 8 - numToWrite;
+			}
+
+			if(numBitsUsedMod8 == 0){
+				*(&_data[numberBitsUsed >> 3]) = dataByte;
+			}else{
+				*(&_data[numberBitsUsed >> 3]) |= dataByte >> (numBitsUsedMod8);
+
+				if(8 - (numBitsUsedMod8) < 8 && 8 - (numBitsUsedMod8) < numToWrite){
+					*(&_data[(numberBitsUsed >> 3) + 1]) = (unsigned char)(dataByte << (8 - (numBitsUsedMod8)));
+				}
+			}
+
+			if(numToWrite >= 8){
+				numberBitsUsed += 8;
+				numToWrite -= 8;
+			}else{
+				numberBitsUsed += numToWrite;
+				numToWrite = 0;
+			}
+		}
+	}
+
+	void BitStream::write(char* inByteArray, unsigned int numToWrite){
+		if(numToWrite == 0){
+			return;
+		}
+
+		if((numberBitsUsed & 7) == 0){
+			_addBits(BYTES_TO_BITS(numToWrite));
+			memcpy(&_data[BITS_TO_BYTES(numberBitsUsed)], inByteArray, (size_t)numToWrite);
+			numberBitsUsed += BYTES_TO_BITS(numToWrite);
+		}else{
+			writeBits((unsigned char*)inByteArray, numToWrite * 8, true);
+		}
+	}
+
+    bool BitStream::read(char* outByteArray, unsigned int numToRead){
+		if((readOffset & 7) == 0){
+			if(readOffset + (numToRead << 3) > numberBitsUsed){
+				return false;
+			}
+
+			memcpy(outByteArray, &_data[readOffset >> 3], (size_t)numToRead);
+
+			readOffset += numToRead << 3;
+			return true;
+		}else{
+			return readBits((unsigned char*)outByteArray, numToRead * 8);
+		}
+	}
+
+	void BitStream::writeAlignedBytes(unsigned char* inByteArray, unsigned int numToWrite){
+		alignWriteToByteBoundary();
+		write((char*)inByteArray, numToWrite);
+	}
+
+	bool BitStream::readAlignedBytes(unsigned char* outByteArray, unsigned int numToRead){
+	    if(numToRead <= 0){
+			return false;
+		}
+
+		alignReadToByteBoundary();
+
+		if(readOffset + (numToRead << 3) > numberBitsUsed){
+			return false;
+		}
+
+		memcpy(outByteArray, _data + (readOffset >> 3), (size_t)numToRead);
+
+		readOffset += numToRead << 3;
+		
+		return true;
+	}
+
+	bool BitStream::readBits(unsigned char* outByteArray, uint32_t numToRead, bool rightAligned){
+		if(numToRead <= 0){
+			return false;
+		}
+
+		if(readOffset + numToRead > numberBitsUsed){
+			return false;
+		}
+
+		uint32_t readOffsetMod8 = readOffset & 7;
+
+		if(readOffsetMod8 == 0 && (numToRead & 7) == 0){
+			memcpy(outByteArray, &_data[readOffset >> 3], numToRead >> 3);
+			readOffset += numToRead;
+			return true;
+		}
+
+		uint32_t offset = 0;
+		//memset(outByteArray, 0, (size_t)BITS_TO_BYTES(numToRead));
+
+		while(numToRead > 0){
+			*(outByteArray + offset) |= *(_data + (readOffset >> 3)) << (readOffsetMod8);
+
+			if(readOffsetMod8 > 0 && numToRead > 8 - (readOffsetMod8)){
+				*(outByteArray + offset) |= *(_data + (readOffset > 3) + 1) >> (8 - (readOffsetMod8));
+			}
+
+			if(numToRead >= 8){
+				numToRead -= 8;
+				readOffset += 8;
+				offset++;
+			}else{
+				int neg = (int)numToRead - 8;
+				if(neg < 0){
+					if(rightAligned){
+						*(outByteArray + offset) >>= -neg;
+					}
+
+					readOffset += 8 + neg;
+				}else{
+					readOffset += 8;
+				}
+
+				offset++;
+
+				numToRead = 0;
+			}
+		}
+		return true;
+	}
+
+	void BitStream::reverseBytes(unsigned char* inByteArray, unsigned char* outByteArray, unsigned int len){
+		for(uint32_t i = 0; i < len; i++){
+			outByteArray[i] = inByteArray[len - i - 1];
+		}
 	}
 	
-	size_t BitStream::getLength(){
-		return length;
-	}
-
-	size_t BitStream::getIndex(){
-		return idx;
-	}
-
-	void BitStream::setIndex(size_t idx){
-	    this->idx = idx;
-	}
-
-    size_t BitStream::write(unsigned char* dat, size_t size){
-		if(!dat || size == 0){
-			return 0;
-		}
-		
-	    unsigned char* tmpDat = (unsigned char*)realloc(data, length + size);
-		if(tmpDat){
-			data = tmpDat;
-
-			memcpy(data + idx, dat, size);
-			idx += size;
-			length += size;
-		}else{
-			return -1;
+	void BitStream::reverseBytesInPlace(unsigned char* inByteArray, unsigned int len){
+		unsigned char temp;
+		uint32_t i;
+		for(i = 0; i < (len >> 1); i++){
+			temp = inByteArray[i];
+			inByteArray[i] = inByteArray[len - i - 1];
+			inByteArray[len - i - 1] = temp;
 		}
 	}
 
-	size_t BitStream::writeStream(shared_ptr<BitStream> stream, size_t size){
-		if(!stream){
-			return 0;
+	void BitStream::writeCString(char* cstr){
+	    unsigned short len = strlen(cstr);
+
+		write<unsigned short>(len);
+	    writeAlignedBytes((unsigned char*)cstr, len);
+	}
+
+	void BitStream::writeString(std::string str){
+		writeCString((char*)str.c_str());
+	}
+
+	char* BitStream::readCString(){
+	    unsigned short len = read<unsigned short>();
+
+		char* cstr = (char*)malloc(len + 1);
+		readAlignedBytes((unsigned char*)cstr, len);
+		cstr[len] = '\0';
+	    return cstr;
+	}
+
+	std::string BitStream::readString(){
+		char* cstr = readCString();
+		if(!cstr){
+			return "";
 		}
-
-		if(size == 0){
-			size = stream->getLength();
-		}
-
-		return write(stream->getData(), size);
+		std::string str(cstr);
+		free(cstr);
+		return str;
 	}
 
-	unsigned char* BitStream::read(size_t size){
-		std::cout << "read(" << size << ")" << std::endl;
-		if(size == 0){
-			return NULL;
-		}
-		
-		if(!data || length == 0 || (idx + size) > length){
-			return NULL;
-		}
-		
-		idx += size;
-		
-		return data + idx;
-	}
-
-	size_t BitStream::writeSizeT(size_t var){
-		return write((unsigned char*)&var, sizeof(size_t));
-	}
-
-	size_t BitStream::readSizeT(){
-	    size_t* intData = (size_t*)read(sizeof(size_t));
-		if(intData){
-			return (size_t)(*intData);
-		}else{
-		    throw new OBException("No data returned from stream");
-		}
-	}
-
-	size_t BitStream::writeInt(int var){
-		return write((unsigned char*)&var, sizeof(int));
-	}
-
-	int BitStream::readInt(){
-	    int* intData = (int*)read(sizeof(int));
-		if(intData){
-			return (int)(*intData);
-		}else{
-		    throw new OBException("No data returned from stream");
-		}
-	}
-
-	size_t BitStream::writeUInt(unsigned int var){
-		return write((unsigned char*)&var, sizeof(unsigned int));
-	}
-
-	unsigned int BitStream::readUInt(){
-		unsigned int* intData = (unsigned int*)read(sizeof(unsigned int));
-		if(intData){
-			return (unsigned int)(*intData);
-		}else{
-		    throw new OBException("No data returned from stream");
-		}
-	}
-
-	size_t BitStream::writeInt64(ob_int64 var){
-		return write((unsigned char*)&var, sizeof(ob_int64));
-	}
-
-	ob_int64 BitStream::readInt64(){
-	    ob_int64* intData = (ob_int64*)read(sizeof(ob_int64));
-		if(intData){
-			return (ob_int64)(*intData);
-		}else{
-		    throw new OBException("No data returned from stream");
-		}
-	}
-
-	size_t BitStream::writeUInt64(ob_uint64 var){
-		return write((unsigned char*)&var, sizeof(ob_uint64));
-	}
-
-	ob_uint64 BitStream::readUInt64(){
-	    ob_uint64* intData = (ob_uint64*)read(sizeof(ob_uint64));
-		if(intData){
-			return (ob_uint64)(*intData);
-		}else{
-		    throw new OBException("No data returned from stream");
-		}
-	}
-
-	size_t BitStream::writeCString(char* var, int size){
-		if(size == -1){
-			size = strlen(var);
-		}
-
-		size_t writeBegin = writeInt(size);
-		
-	    return writeBegin + write((unsigned char*)var, (size + 1) * sizeof(char));
-	}
-
-    char* BitStream::readCString(){
-	    int strLen = readInt();
-		
-		unsigned char* strData = read(strLen);
-		if(strData){
-			char* newDat = (char*)malloc(strLen + 1);
-			if(!newDat){
-				throw new OBException("Failed to allocate C string");
-			}
-			memcpy(newDat, strData, strLen);
-			newDat[strLen] = '\0';
-			return newDat;
-		}else{
-			if(strLen == 0){
-				char* newDat = (char*)malloc(1);
-				newDat[0] = '\0';
-				return newDat;
-			}
-		    throw new OBException("No data returned from stream");
-		}
-	}
-
-	size_t BitStream::writeString(std::string var){
-		size_t strLen = var.length();
-		
-		return writeCString((char*)var.c_str(), strLen);
-	}
-
-    std::string BitStream::readString(){
-		char* strDat = readCString();
-
-		std::string tstr = std::string(strDat);
-		free(strDat);
-
-		return tstr;
-	}
-
-	size_t BitStream::writeDouble(double var){
-		std::string numberAsString = ((std::ostringstream&)(std::ostringstream() << std::dec << var)).str();
-		return writeString(numberAsString);
-	}
-
-	double BitStream::readDouble(){
-		return atof(readString().c_str());
-	}
-
-    size_t BitStream::writeLong(long var){
-		return write((unsigned char*)&var, sizeof(long));
-	}
-
-    long BitStream::readLong(){
-	    long* longData = (long*)read(sizeof(long));
-		if(longData){
-			return (long)(*longData);
-		}else{
-		    throw new OBException("No data returned from stream");
-		}
-	}
-
-	size_t BitStream::writeULong(unsigned long var){
-		return write((unsigned char*)&var, sizeof(unsigned long));
-	}
-
-    unsigned long BitStream::readULong(){
-	    unsigned long* longData = (unsigned long*)read(sizeof(unsigned long));
-		if(longData){
-			return (unsigned long)(*longData);
-		}else{
-		    throw new OBException("No data returned from stream");
-		}
-	}
-
-	size_t BitStream::writeBool(bool var){
-		unsigned char tmpVar = 0;
+	void BitStream::writeVar(shared_ptr<Type::VarWrapper> var){
+		size_t var_type = var->type;
 		if(var){
-			tmpVar = 1;
-		}
-		return write((unsigned char*)&tmpVar, sizeof(unsigned char));
-	}
-
-    bool BitStream::readBool(){
-	    unsigned char* uCharData = read(sizeof(unsigned char));
-		if(uCharData){
-			return ((unsigned char)(*uCharData)) == 1;
+		    switch(var_type){
+				case Type::TYPE_INT: {
+					write<size_t>(var_type);
+				    write<int>(static_cast<Type::IntWrapper*>(var->wrapped)->val);
+					break;
+				}
+				case Type::TYPE_DOUBLE: {
+					write<size_t>(var_type);
+				    write<double>(static_cast<Type::DoubleWrapper*>(var->wrapped)->val);
+					break;
+				}
+				case Type::TYPE_FLOAT: {
+					write<size_t>(var_type);
+				    write<float>(static_cast<Type::FloatWrapper*>(var->wrapped)->val);
+					break;
+				}
+				case Type::TYPE_LONG: {
+					write<size_t>(var_type);
+				    write<long>(static_cast<Type::LongWrapper*>(var->wrapped)->val);
+					break;
+				}
+				case Type::TYPE_UNSIGNED_LONG: {
+					write<size_t>(var_type);
+				    write<unsigned long>(static_cast<Type::UnsignedLongWrapper*>(var->wrapped)->val);
+					break;
+				}
+				case Type::TYPE_BOOL: {
+					write<size_t>(var_type);
+				    write<bool>(static_cast<Type::BoolWrapper*>(var->wrapped)->val);
+					break;
+				}
+				case Type::TYPE_STRING: {
+					write<size_t>(var_type);
+				    writeString(static_cast<Type::StringWrapper*>(var->wrapped)->val);
+					break;
+				}
+				case Type::TYPE_INSTANCE: {
+					write<size_t>(var_type);
+					
+					shared_ptr<Instance::Instance> inst = *static_cast<shared_ptr<Instance::Instance>*>(var->wrapped);
+				    ob_uint64 netId = inst->GetNetworkID();
+					write<ob_uint64>(netId);
+				    
+					break;
+				}
+				case Type::TYPE_TYPE: {
+					//TODO, passthrough until then
+				}
+				case Type::TYPE_LUA_OBJECT:
+				case Type::TYPE_NULL:
+				case Type::TYPE_UNKNOWN: {
+					write<size_t>(Type::TYPE_NULL);
+					break;
+				}
+			}
 		}else{
-		    throw new OBException("No data returned from stream");
+			write<size_t>(Type::TYPE_NULL);
 		}
 	}
 
 	shared_ptr<Type::VarWrapper> BitStream::readVar(){
-		size_t varType = readSizeT();
+		size_t var_type = read<size_t>();
 
-		switch(varType){
+	    switch(var_type){
 			case Type::TYPE_INT: {
-			    return make_shared<Type::VarWrapper>(readInt());
+			    return make_shared<Type::VarWrapper>(read<int>());
 			}
 			case Type::TYPE_DOUBLE: {
-				return make_shared<Type::VarWrapper>(readDouble());
+			    return make_shared<Type::VarWrapper>(read<double>());
 			}
 			case Type::TYPE_FLOAT: {
-				return make_shared<Type::VarWrapper>((float)readDouble());
+			    return make_shared<Type::VarWrapper>(read<float>());
 			}
 			case Type::TYPE_LONG: {
-				return make_shared<Type::VarWrapper>(readLong());
+				return make_shared<Type::VarWrapper>(read<long>());
 			}
 			case Type::TYPE_UNSIGNED_LONG: {
-				return make_shared<Type::VarWrapper>(readULong());
+			    return make_shared<Type::VarWrapper>(read<unsigned long>());
 			}
 			case Type::TYPE_BOOL: {
-				return make_shared<Type::VarWrapper>(readBool());
+			    return make_shared<Type::VarWrapper>(read<bool>());
 			}
 			case Type::TYPE_STRING: {
-				return make_shared<Type::VarWrapper>(readString());
+			    return make_shared<Type::VarWrapper>(readString());
 			}
 			case Type::TYPE_INSTANCE: {
-			    ob_uint64 netId = readUInt64();
+				ob_uint64 netId = read<ob_uint64>();
 
 				OBEngine* eng = OBEngine::getInstance();
 				if(eng){
@@ -303,68 +478,15 @@ namespace OB{
 				
 			    return make_shared<Type::VarWrapper>(shared_ptr<Instance::Instance>(NULL));
 			}
-			case Type::TYPE_TYPE:
+			case Type::TYPE_TYPE: {
+				//TODO, for now passthrough to NULL
+			}
 			case Type::TYPE_LUA_OBJECT:
 			case Type::TYPE_NULL:
 			case Type::TYPE_UNKNOWN: {
-			    return NULL;
+			    return make_shared<Type::VarWrapper>();
 			}
 		}
-		
-		return NULL;
-	}
-
-	void BitStream::writeVar(shared_ptr<Type::VarWrapper> var){
-	    if(!var || var->type == Type::TYPE_UNKNOWN || var->type == Type::TYPE_NULL){
-			writeSizeT(Type::TYPE_NULL);
-		}else{
-			writeSizeT(var->type);
-
-		    switch(var->type){
-				case Type::TYPE_INT: {
-				    writeInt(static_cast<Type::IntWrapper*>(var->wrapped)->val);
-					break;
-				}
-				case Type::TYPE_DOUBLE: {
-				    writeDouble(static_cast<Type::DoubleWrapper*>(var->wrapped)->val);
-					break;
-				}
-				case Type::TYPE_FLOAT: {
-				    writeDouble(static_cast<Type::FloatWrapper*>(var->wrapped)->val);
-					break;
-				}
-				case Type::TYPE_LONG: {
-				    writeLong(static_cast<Type::LongWrapper*>(var->wrapped)->val);
-					break;
-				}
-				case Type::TYPE_UNSIGNED_LONG: {
-				    writeULong(static_cast<Type::LongWrapper*>(var->wrapped)->val);
-					break;
-				}
-				case Type::TYPE_BOOL: {
-				    writeBool(static_cast<Type::BoolWrapper*>(var->wrapped)->val);
-					break;
-				}
-				case Type::TYPE_STRING: {
-				    writeString(static_cast<Type::StringWrapper*>(var->wrapped)->val);
-					break;
-				}
-				case Type::TYPE_INSTANCE: {
-					shared_ptr<Instance::Instance> inst = *static_cast<shared_ptr<Instance::Instance>*>(var->wrapped);
-					if(inst){
-						writeUInt64(inst->GetNetworkID());
-					}else{
-						writeUInt64(OB_NETID_NULL);
-					}
-					break;
-				}
-				case Type::TYPE_TYPE:
-				case Type::TYPE_LUA_OBJECT:
-				case Type::TYPE_NULL:
-				case Type::TYPE_UNKNOWN: {
-					break;
-				}
-			}
-		}
+		return make_shared<Type::VarWrapper>();
 	}
 }

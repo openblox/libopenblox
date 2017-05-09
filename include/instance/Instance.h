@@ -39,6 +39,33 @@
 #ifndef OB_INST_INSTANCE
 #define OB_INST_INSTANCE
 
+#if HAVE_ENET
+	#define REPLICATE_PROPERTY_CHANGE(__repl_prop) \
+	{ \
+		if(netId > 4){ \
+			OB::OBEngine* __repl_eng = OB::OBEngine::getInstance();	\
+			if(__repl_eng){ \
+				shared_ptr<OB::Instance::DataModel> __repl_dm = __repl_eng->getDataModel(); \
+				if(__repl_dm){ \
+					if((netId < OB_NETID_WORKSPACE) || IsDescendantOf(__repl_dm)){ \
+						shared_ptr<OB::Instance::Instance> __repl_nsInst = __repl_dm->FindService("NetworkServer"); \
+						if(shared_ptr<OB::Instance::NetworkServer> __repl_ns = dynamic_pointer_cast<OB::Instance::NetworkServer>(__repl_nsInst)){ \
+							BitStream __repl_bs; \
+				    		__repl_bs.write<size_t>(OB_NET_PKT_SET_PROPERTY); \
+							__repl_bs.write<ob_uint64>(netId); \
+							__repl_bs.writeString(#__repl_prop); \
+		    				__repl_bs.writeVar(make_shared<Type::VarWrapper>(__repl_prop)); \
+							__repl_ns->broadcast(OB_NET_CHAN_REPLICATION, __repl_bs); \
+						} \
+					} \
+				} \
+			} \
+		} \
+	}
+#else
+#define REPLICATE_PROPERTY_CHANGE(__repl_prop)
+#endif
+
 typedef void (*luaRegisterFunc)(lua_State* L);
 
 #define COLONERR "Expected ':' not '.' calling member function %s"

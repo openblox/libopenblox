@@ -26,6 +26,7 @@
 #include "BitStream.h"
 
 #include "instance/NetworkReplicator.h"
+#include "instance/NetworkServer.h"
 
 #include <iostream>
 
@@ -67,9 +68,7 @@ namespace OB{
 		    if(Name != name){
 			    Name = name;
 
-				//TODO:
-				//REPLICATE_PROPERTY_CHANGE(inst, "Name", Name);
-
+				REPLICATE_PROPERTY_CHANGE(Name);
 				propertyChanged("Name");
 			}
 		}
@@ -82,6 +81,7 @@ namespace OB{
 			if(Archivable != archivable){
 			    Archivable = archivable;
 
+				REPLICATE_PROPERTY_CHANGE(Archivable);
 				propertyChanged("Archivable");
 			}
 		}
@@ -279,27 +279,24 @@ namespace OB{
 				return;
 			}
 
-			{
-				shared_ptr<BitStream> bsOut = make_shared<BitStream>();
-				bsOut->writeSizeT(OB_NET_PKT_CREATE_INSTANCE);
-				bsOut->writeUInt64(netId);
-				bsOut->writeString(ClassName);
+		    BitStream bsOut;
+			bsOut.write<size_t>(OB_NET_PKT_CREATE_INSTANCE);
+			bsOut.write<ob_uint64>(netId);
+			bsOut.writeString(getClassName());
 
-				peer->Send(OB_NET_CHAN_REPLICATION, bsOut);
+			peer->Send(OB_NET_CHAN_REPLICATION, bsOut);
+
+			bsOut.reset();
+
+			bsOut.write<size_t>(OB_NET_PKT_SET_PARENT);
+			bsOut.write<ob_uint64>(netId);
+			if(Parent){
+				bsOut.write<ob_uint64>(Parent->GetNetworkID());
+			}else{
+				bsOut.write<ob_uint64>(OB_NETID_NULL);
 			}
 
-			{
-				shared_ptr<BitStream> bsOut = make_shared<BitStream>();
-				bsOut->writeSizeT(OB_NET_PKT_SET_PARENT);
-				bsOut->writeUInt64(netId);
-				if(Parent){
-					bsOut->writeUInt64(Parent->GetNetworkID());
-				}else{
-					bsOut->writeUInt64(OB_NETID_NULL);
-				}
-
-				peer->Send(OB_NET_CHAN_REPLICATION, bsOut);
-			}
+			peer->Send(OB_NET_CHAN_REPLICATION, bsOut);
 
 			replicateProperties(peer);
 			replicateChildren(peer);
@@ -307,6 +304,7 @@ namespace OB{
 
 		void Instance::replicateProperties(shared_ptr<NetworkReplicator> peer){
 			peer->sendSetPropertyPacket(netId, "Name", make_shared<Type::VarWrapper>(Name));
+			peer->sendSetPropertyPacket(netId, "Archivable", make_shared<Type::VarWrapper>(Archivable));
 		}
 
 		void Instance::replicateChildren(shared_ptr<NetworkReplicator> peer){
@@ -315,7 +313,9 @@ namespace OB{
 			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
 				shared_ptr<Instance> kid = kids[i];
 				if(kid){
-					kid->replicate(peer);
+					if(kid->GetNetworkID() >= OB_NETID_DATAMODEL){
+						kid->replicate(peer);
+					}
 				}
 			}
 		}
@@ -330,8 +330,11 @@ namespace OB{
 		}
 
 		void Instance::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
+			printf("Instance::setProperty(%s)\n", prop.c_str());
 			if(prop == "Name"){
 			    setName(val->asString());
+			}else if(prop == "Archivable"){
+				setArchivable(val->asBool());
 			}
 		}
 		
@@ -423,15 +426,13 @@ namespace OB{
 				return;
 			}
 			if(ParentLocked){
-				std::string errMsg = "The Parent property of ";
-				errMsg = errMsg + Name + " is locked.";
-				throw OBException(errMsg.c_str());
+				std::string errMsg = "The Parent property of " + Name + " is locked.";
+				throw OBException(errMsg);
 				return;
 			}
 			if(parent == shared_from_this()){
-				std::string errMsg = "Attempt to set ";
-				errMsg = errMsg + GetFullName() + " as its own parent";
-				throw OBException(errMsg.c_str());
+				std::string errMsg = "Attempt to set " + GetFullName() + " as its own parent";
+				throw OBException(errMsg);
 				return;
 			}
 
@@ -442,34 +443,41 @@ namespace OB{
 			if(Parent){
 				Parent->addChild(shared_from_this());
 
-				//TODO: Just look at this cruft!
-
-#ifdef OPENBLOX_SERVER
+				#ifdef HAVE_ENET
 				if(useDMNotify){
-					OpenBlox::OBGame* game = OpenBlox::OBGame::getInstance();
-					if(game){
-						ob_instance::DataModel* dm = game->getDataModel();
+				    OBEngine* eng = OBEngine::getInstance();
+					if(eng){
+						shared_ptr<DataModel> dm = eng->getDataModel();
 						if(dm){
-							if(dm->isServer()){
-								if(this->IsDescendantOf(dm)){
-									shared_ptr<Instance> nsInst = dm->FindService("NetworkServer");
-									if(ob_instance::NetworkServer* ns = dynamic_cast<ob_instance::NetworkServer*>(nsInst)){
-										ns->sendCreateInstancePacket(GetNetworkID(), RakNet::RakString(getClassName().toStdString().c_str()));
+							if(IsDescendantOf(dm)){
+								shared_ptr<Instance> nsInst = dm->FindService("NetworkServer");
+								if(shared_ptr<NetworkServer> ns = dynamic_pointer_cast<NetworkServer>(nsInst)){
+									BitStream bsOut;
+									bsOut.write<size_t>(OB_NET_PKT_CREATE_INSTANCE);
+									bsOut.write<ob_uint64>(netId);
+									bsOut.writeString(getClassName());
 
-										OB_SetParentPacket spp;
-										spp.net_id = GetNetworkID();
-										spp.parent_net_id = Parent->GetNetworkID();
+									ns->broadcast(OB_NET_CHAN_REPLICATION, bsOut);
 
-										ns->sendPacket(OB_SET_PARENT, spp);
+									bsOut.reset();
+
+								    bsOut.write<size_t>(OB_NET_PKT_SET_PARENT);
+									bsOut.write<ob_uint64>(netId);
+									if(Parent){
+										bsOut.write<ob_uint64>(Parent->GetNetworkID());
+									}else{
+										bsOut.write<ob_uint64>(OB_NETID_NULL);
 									}
+
+									ns->broadcast(OB_NET_CHAN_REPLICATION, bsOut);
 								}
 							}
 						}
 					}
 				}
-#else
+				#else
 				(void)useDMNotify;
-#endif
+				#endif
 			}
 
 			fireAncestryChanged(std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(std::enable_shared_from_this<Instance>::shared_from_this()), make_shared<Type::VarWrapper>(Parent)}));

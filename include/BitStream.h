@@ -29,6 +29,9 @@
 #include <cstring>
 
 namespace OB{
+	#define BITS_TO_BYTES(x) (((x)+7)>>3)
+	#define BYTES_TO_BITS(x) ((x)<<3)
+	
 	/**
 	 * This is a convenience class used to make crafting packets
 	 * easy.
@@ -38,333 +41,142 @@ namespace OB{
 	 */
 	class BitStream{
 		public:
-		    BitStream(unsigned char* data = NULL, size_t length = 0);
+		    BitStream();
+			BitStream(int bytesToAlloc);
+			BitStream(unsigned char* dat, unsigned int lenBytes, bool _copyData);
+			BitStream(const BitStream &bs);
 			virtual ~BitStream();
 
-			/**
-			 * Returns a pointer to the current data of this
-			 * BitStream.
-			 *
-			 * @returns data
-			 * @author John M. Harris, Jr.
-			 */
+			void reset();
+
+			void _addBits(uint32_t numBits);
+			uint32_t getNumBitsAlloc();
+			uint32_t getNumBitsUsed();
+			uint32_t getReadOffset();
+			void padToByteLength(unsigned int bytes);
+			void ignoreBits(uint32_t numBits);
+			void ignoreBytes(unsigned int numBytes);
+			void setWriteOffset(uint32_t offset);
+			bool isNetOrderInternal();
+
+			void write0();
+			void write1();
+			bool readBit();
+
 			unsigned char* getData();
+			unsigned char* copyData();
 
-			/**
-			 * Returns the current length of this BitStream.
-			 *
-			 * @returns length
-			 * @author John M. Harris, Jr.
-			 */
-			size_t getLength();
+			void writeBits(unsigned char* inByteArray, uint32_t numToWrite, bool rightAligned = true);
+		    void write(char* inByteArray, unsigned int numToWrite);
+			bool read(char* outBytearray, unsigned int numToRead);
+			void writeAlignedBytes(unsigned char* inByteArray, unsigned int numToWrite);
+			bool readAlignedBytes(unsigned char* outByteArray, unsigned int numToRead);
+			bool readBits(unsigned char* outByteArray, uint32_t numToRead, bool rightAligned = true);
+			void reverseBytes(unsigned char* inByteArray, unsigned char* outByteArray, unsigned int len);
+			void reverseBytesInPlace(unsigned char* inByteArray, unsigned int len);
 
-			/**
-			 * Returns the current index of this BitStream.
-			 *
-			 * The index is the point in the allocated block that the
-			 * BitStream will write to, or read from.
-			 *
-			 * @returns index
-			 * @author John M. Harris, Jr.
-			 */
-			size_t getIndex();
-
-			/**
-			 * Sets the index of this BitStream.
-			 *
-			 * If the index is greater than the length, you will not
-			 * be able to read anything, and buffer overflows will
-			 * occur when writing. Be careful with this. There are
-			 * no checks for this on purpose.
-			 *
-			 * @param idx Index
-			 * @author John M. Harris, Jr.
-			 */
-			void setIndex(size_t idx);
-
-			/**
-			 * Writes arbitrary data to this BitStream.
-			 *
-			 * If dat is NULL or size is 0, this is no-op, and 0 will
-			 * be returned.
-			 * 
-			 * @param dat Data to write
-			 * @param size Size of the data to be written
-			 * @returns Size written, -1 on error.
-			 * @author John M. Harris, Jr.
-			 */
-		    size_t write(unsigned char* dat, size_t size);
-
-			/**
-			 * Convenience function to write data from one BitStream
-			 * to another.
-			 *
-			 * One major difference between this and the write
-			 * function is that if size is 0, it is assumed that
-			 * all of the data from the source stream will be
-			 * written to this stream.
-			 *
-			 * @param stream Source BitStream
-			 * @param size Size of the data to write
-			 * @returns Same as write
-			 * @author John M. Harris, Jr.
-			 */
-			size_t writeStream(shared_ptr<BitStream> stream, size_t size = 0);
-
-			/**
-			 * Reads arbitrary data from this BitStream.
-			 * 
-			 * If size is 0, or more data is requested than the stream
-			 * contains, NULL is returned.
-			 *
-			 * @param size Size of the data to read
-			 * @returns Pointer to data or NULL
-			 * @author John M. Harris, Jr.
-			 */
-			unsigned char* read(size_t size);
-
-			/**
-			 * Convenience function to write a size_t to a stream.
-			 *
-			 * @param var size_t to write
-			 * @returns Same as write
-			 * @author John M. Harris, Jr.
-			 */
-			size_t writeSizeT(size_t var);
-
-			/**
-			 * Convenience function to read a size_t from a stream.
-			 *
-			 * @returns size_t
-			 * @throws OBException
-			 * @author John M. Harris, Jr.
-			 */
-		    size_t readSizeT();
-
-			/**
-			 * Convenience function to write an int to a stream.
-			 *
-			 * @param var Integer to write
-			 * @returns Same as write
-			 * @author John M. Harris, Jr.
-			 */
-			size_t writeInt(int var);
-
-			/**
-			 * Convenience function to read an int from a stream.
-			 *
-			 * @returns Integer
-			 * @throws OBException
-			 * @author John M. Harris, Jr.
-			 */
-		    int readInt();
-
-			/**
-			 * Convenience function to write an unsigned int to a
-			 * stream.
-			 *
-			 * @param var Unsigned Integer to write
-			 * @returns Same as write
-			 * @author John M. Harris, Jr.
-			 */
-			size_t writeUInt(unsigned int var);
-
-			/**
-			 * Convenience function to read an int from a stream.
-			 *
-			 * @returns Unsigned Integer
-			 * @throws OBException
-			 * @author John M. Harris, Jr.
-			 */
-		    unsigned int readUInt();
-
-			/**
-			 * Convenience function to write an ob_int64 to a stream.
-			 *
-			 * @param var ob_int64 to write
-			 * @returns Same as write
-			 * @author John M. Harris, Jr.
-			 */
-			size_t writeInt64(ob_int64 var);
-
-			/**
-			 * Convenience function to read an ob_int64 from a stream.
-			 *
-			 * @returns ob_int64
-			 * @throws OBException
-			 * @author John M. Harris, Jr.
-			 */
-		    ob_int64 readInt64();
-
-			/**
-			 * Convenience function to write an ob_uint64 to a stream.
-			 *
-			 * @param var ob_uint64 to write
-			 * @returns Same as write
-			 * @author John M. Harris, Jr.
-			 */
-			size_t writeUInt64(ob_uint64 var);
-
-			/**
-			 * Convenience function to read an ob_uint64 from a
-			 * stream.
-			 *
-			 * @returns ob_uint64
-			 * @throws OBException
-			 * @author John M. Harris, Jr.
-			 */
-		    ob_uint64 readUInt64();
-
-			/**
-			 * Convenience function to write an C string to a
-			 * stream.
-			 *
-			 * If size is -1, the size of the string will be
-			 * detected.
-			 *
-			 * @param var char* to write
-			 * @param size Size of the string
-			 * @returns Same as write
-			 * @author John M. Harris, Jr.
-			 */
-			size_t writeCString(char* var, int size = -1);
-
-			/**
-			 * Convenience function to read a C string from a
-			 * stream.
-			 *
-			 * The data returned is malloc'd, and will need to be 
-			 * later free'd.
-			 *
-			 * @returns Null-terminated C string
-			 * @throws OBException
-			 * @author John M. Harris, Jr.
-			 */
-		    char* readCString();
-
-			/**
-			 * Convenience function to write an std::string to a
-			 * stream.
-			 *
-			 * @param var std::string to write
-			 * @returns Same as write
-			 * @author John M. Harris, Jr.
-			 */
-			size_t writeString(std::string var);
-
-			/**
-			 * Convenience function to read an std::string from a
-			 * stream.
-			 *
-			 * @returns std::string
-			 * @throws OBException
-			 * @author John M. Harris, Jr.
-			 */
+			void writeCString(char* str);
+			void writeString(std::string str);
+			char* readCString();
 			std::string readString();
 
-			/**
-			 * Convenience function to write a double to a
-			 * stream.
-			 *
-			 * @param var double to write
-			 * @returns Same as write
-			 * @author John M. Harris, Jr.
-			 */
-			size_t writeDouble(double var);
-
-			/**
-			 * Convenience function to read a double from a
-			 * stream.
-			 *
-			 * @returns double
-			 * @throws OBException
-			 * @author John M. Harris, Jr.
-			 */
-			double readDouble();
-
-			/**
-			 * Convenience function to write a long to a
-			 * stream.
-			 *
-			 * @param var long to write
-			 * @returns Same as write
-			 * @author John M. Harris, Jr.
-			 */
-			size_t writeLong(long var);
-
-			/**
-			 * Convenience function to read a long from a
-			 * stream.
-			 *
-			 * @returns long
-			 * @throws OBException
-			 * @author John M. Harris, Jr.
-			 */
-		    long readLong();
-
-			/**
-			 * Convenience function to write an unsigned long to a
-			 * stream.
-			 *
-			 * @param var unsigned long to write
-			 * @returns Same as write
-			 * @author John M. Harris, Jr.
-			 */
-			size_t writeULong(unsigned long var);
-
-			/**
-			 * Convenience function to read an unsigned long from a
-			 * stream.
-			 *
-			 * @returns unsigned long
-			 * @throws OBException
-			 * @author John M. Harris, Jr.
-			 */
-		    unsigned long readULong();
-
-			/**
-			 * Convenience function to write a bool to a
-			 * stream.
-			 *
-			 * @param var bool to write
-			 * @returns Same as write
-			 * @author John M. Harris, Jr.
-			 */
-			size_t writeBool(bool var);
-
-			/**
-			 * Convenience function to read a bool from a
-			 * stream.
-			 *
-			 * @returns bool
-			 * @throws OBException
-			 * @author John M. Harris, Jr.
-			 */
-		    bool readBool();
-
-			/**
-			 * Convenience function to read a Type::VarWrapper from a
-			 * stream.
-			 * 
-			 * @returns shared_ptr<Type::VarWrapper> or NULL
-			 * @author John M. Harris, Jr.
-			 */
+		    void writeVar(shared_ptr<Type::VarWrapper> var);
 			shared_ptr<Type::VarWrapper> readVar();
 
-			/**
-			 * Convenience function to write a Type::VarWrapper to a
-			 * stream.
-			 * 
-			 * @param var shared_ptr<Type::VarWrapper> or NULL
-			 * @author John M. Harris, Jr.
-			 */
-			void writeVar(shared_ptr<Type::VarWrapper> var);
+			template<class T> T read(T &outVar);
+			template<class T> T read();
+			template<class T> void write(T data);
+
+			inline bool doEndianSwap(){
+				return !isNetOrderInternal();
+			}
+			
+			inline void alignWriteToByteBoundary(){
+				numberBitsUsed += 8 - (((numberBitsUsed - 1) & 7) + 1);
+			}
+
+			inline void alignReadToByteBoundary(){
+				readOffset += 8 - (((readOffset - 1) & 7) + 1);
+			}
+
+			inline uint32_t getNumBytesUsed() const{
+				return BITS_TO_BYTES(numberBitsUsed);
+			}
 			
 		private:
-			unsigned char* data;
-			size_t length;
-			size_t idx;
+		    unsigned char* _data;
+			bool _copyData;
+			uint32_t numberBitsUsed;
+			uint32_t numberBitsAlloc;
+			uint32_t readOffset;
 	};
+
+	#ifndef BITSTREAM_SPECIALIZATION
+	#define BITSTREAM_SPECIALIZATION
+	template<class T> inline T BitStream::read(T &outVar){
+		size_t sot = sizeof(T);
+		
+		unsigned char output[sot];
+		if(readAlignedBytes(output, sot)){
+			outVar = *((T*)(output));
+		}else{
+			outVar = 0;
+		}
+
+		return outVar;
+	}
+
+	template<class T> inline T BitStream::read(){
+		T tVar = 0;
+		return read<T>(tVar);
+	}
+			
+	template<class T> inline void BitStream::write(T data){
+		size_t sot = sizeof(T);
+
+		writeAlignedBytes((unsigned char*)&data, sot);
+	}
+	
+	template<> inline bool BitStream::read(bool &outVar){
+		return readBit();
+	}
+
+	template<> inline void BitStream::write(bool data){
+		if(data){
+			write1();
+		}else{
+			write0();
+		}
+	}
+
+	template<> inline void BitStream::write(std::string data){
+	    writeString(data);
+	}
+
+	template<> inline std::string BitStream::read(){
+	    return readString();
+	}
+
+	template<> inline void BitStream::write(shared_ptr<Type::VarWrapper> data){
+	    writeVar(data);
+	}
+
+	template<> inline shared_ptr<Type::VarWrapper> BitStream::read(){
+	    return readVar();
+	}
+	#endif
+
+	template<class T> BitStream& operator<<(BitStream& out, T& c){
+		out.write(c);
+		return out;
+	}
+
+	template<class T> BitStream& operator>>(BitStream& in, T& c){
+		bool success = in.read(c);
+		(void)success;
+				
+		return in;
+	}
 }
 
 #endif // OB_BITSTREAM

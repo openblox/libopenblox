@@ -117,8 +117,7 @@ namespace OB{
 		}
 
 		weak_ptr<Instance> DataModel::lookupInstance(ob_uint64 netId){
-			std::cout << "Net ID: " << netId << std::endl;
-			if(netId >= OB_NETID_START){
+		    if(netId >= OB_NETID_START){
 				auto findIt = instMap.find(netId);
 				if(findIt != instMap.end()){
 					return findIt->second;

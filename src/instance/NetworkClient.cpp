@@ -49,7 +49,7 @@ namespace OB{
 		void NetworkClient::tick(){
 			if(enet_host){
 				ENetEvent evt;
-			    while(enet_host_service(enet_host, &evt, 10) > 0){
+			    while(enet_host && enet_host_service(enet_host, &evt, 10) > 0){
 					processEvent(evt);
 				}
 			}
@@ -96,29 +96,30 @@ namespace OB{
 		}
 
 		void NetworkClient::Disconnect(int blockDuration){
-			if(enet_host){
+			if(enet_host && server_peer){
 				enet_peer_disconnect(server_peer, 0);
 
 				ENetEvent evt;
-				while(enet_host_service(enet_host, &evt, blockDuration) > 0){
+				while(enet_host && enet_host_service(enet_host, &evt, blockDuration) > 0){
 					processEvent(evt);
 				}
 
 				
 			    server_peer = NULL;
-				enet_host_destroy(enet_host);
-				enet_host = NULL;
+				if(enet_host){
+					enet_host_destroy(enet_host);
+					enet_host = NULL;
+				}
 			}
 		}
 
-		void NetworkClient::processPacket(ENetEvent evt, shared_ptr<BitStream> bs){
-			size_t pkt_type = bs->readSizeT();
+		void NetworkClient::processPacket(ENetEvent evt, BitStream &bs){
+			size_t pkt_type = bs.read<size_t>();
 
 			switch(pkt_type){
 				case OB_NET_PKT_CREATE_INSTANCE: {
-					puts("Create inst");
-					ob_uint64 netId = bs->readUInt64();
-					std::string className = bs->readString();
+					ob_uint64 netId = bs.read<ob_uint64>();
+					std::string className = bs.readString();
 
 					OBEngine* eng = OBEngine::getInstance();
 					if(eng){
@@ -143,10 +144,8 @@ namespace OB{
 					break;
 				}
 				case OB_NET_PKT_SET_PARENT: {
-					puts("Set parent");
-					
-					ob_uint64 netId = bs->readUInt64();
-					ob_uint64 parentNetId = bs->readUInt64();
+					ob_uint64 netId = bs.read<ob_uint64>();
+					ob_uint64 parentNetId = bs.read<ob_uint64>();
 
 					OBEngine* eng = OBEngine::getInstance();
 					if(eng){
@@ -187,10 +186,10 @@ namespace OB{
 					break;
 				}
 				case OB_NET_PKT_SET_PROPERTY: {
-					puts("Set property");
-					ob_uint64 netId = bs->readUInt64();
-					std::string prop = bs->readString();
-					shared_ptr<Type::VarWrapper> val = bs->readVar();
+					puts("set prop");
+				    ob_uint64 netId = bs.read<ob_uint64>();
+					std::string prop = bs.readString();
+					shared_ptr<Type::VarWrapper> val = bs.readVar();
 
 					OBEngine* eng = OBEngine::getInstance();
 					if(eng){
@@ -200,7 +199,8 @@ namespace OB{
 							if(lookedUpInst.expired()){
 								return;
 							}
-
+							puts("got inst");
+							
 							if(shared_ptr<Instance> kid = lookedUpInst.lock()){
 								kid->setProperty(prop, val);
 							}
@@ -226,10 +226,9 @@ namespace OB{
 					break;
 				}
 				case ENET_EVENT_TYPE_RECEIVE: {
-					puts("Got packet");
 					ENetPacket* pkt = evt.packet;
 
-					shared_ptr<BitStream> bs = make_shared<BitStream>(pkt->data, pkt->dataLength);
+				    BitStream bs(pkt->data, pkt->dataLength, true);
 
 					try{
 						processPacket(evt, bs);
@@ -249,6 +248,10 @@ namespace OB{
 							netRep->_dropPeer();
 						}
 					}
+
+					enet_host_destroy(enet_host);
+					enet_host = NULL;
+					server_peer = NULL;
 					break;
 				}
 			}

@@ -45,7 +45,7 @@ namespace OB{
 				DECLARE_LUA_METHOD(Connect);
 				DECLARE_LUA_METHOD(Disconnect);
 
-				void processPacket(ENetEvent evt, shared_ptr<BitStream> bs);
+				void processPacket(ENetEvent evt, BitStream &bs);
 				void processEvent(ENetEvent evt);
 
 				static void register_lua_methods(lua_State* L);

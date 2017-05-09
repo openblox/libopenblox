@@ -169,21 +169,9 @@ namespace OB{
 			}
 		}
 
-		void _ob_networking_packet_free_cb(ENetPacket* pkt){
-			if(pkt){
-				pkt->data = NULL;
-
-			    if(pkt->userData){
-					(*static_cast<shared_ptr<BitStream>*>(pkt->userData)).reset();
-					free(pkt->userData);
-					pkt->userData = NULL;
-				}
-			}
-		}
-
-		void NetworkReplicator::Send(enet_uint8 channel, shared_ptr<BitStream> bs){
+		void NetworkReplicator::Send(enet_uint8 channel, BitStream &bs){
 			if(enet_peer){
-				ENetPacket* pkt = enet_packet_create(bs->getData(), bs->getLength(), ENET_PACKET_FLAG_RELIABLE);
+				ENetPacket* pkt = enet_packet_create(bs.getData(), bs.getNumBytesUsed(), ENET_PACKET_FLAG_RELIABLE);
 				if(!pkt){
 					throw new OBException("Failed to create ENet packet.");
 				}
@@ -193,20 +181,11 @@ namespace OB{
 		}
 
 		void NetworkReplicator::sendSetPropertyPacket(ob_uint64 netId, std::string prop, shared_ptr<Type::VarWrapper> val){
-			shared_ptr<BitStream> bs = make_shared<BitStream>();
-		    bs->writeSizeT(OB_NET_PKT_SET_PROPERTY);
-			bs->writeUInt64(netId);
-			bs->writeString(prop);
-		    bs->writeVar(val);
-
-			shared_ptr<BitStream> tmpBs = make_shared<BitStream>(bs->getData(), bs->getLength());
-			puts("------------------------");
-			printf("Packet type sent: %o vs %o\nNet ID: %o vs %o\nProp: %s vs %s\n",
-				   tmpBs->readSizeT(), OB_NET_PKT_SET_PROPERTY,
-				   tmpBs->readUInt64(), netId,
-				   tmpBs->readString(), prop.c_str());
-			
-			puts("------------------------");
+		    BitStream bs;
+		    bs.write<size_t>(OB_NET_PKT_SET_PROPERTY);
+			bs.write<ob_uint64>(netId);
+			bs.writeString(prop);
+		    bs.writeVar(val);
 
 			Send(OB_NET_CHAN_REPLICATION, bs);
 		}
