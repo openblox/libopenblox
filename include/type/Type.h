@@ -34,6 +34,7 @@ typedef void (*luaRegisterFunc)(lua_State* L);
 #define COLONERR "Expected ':' not '.' calling member function %s"
 
 #define DECLARE_TYPE() \
+	virtual std::string getClassName(); \
 	virtual std::string getLuaClassName(); \
 	static void _ob_init(); \
 protected: \
@@ -43,6 +44,9 @@ protected: \
 #define DEFINE_TYPE(Type_Name) \
    	std::string Type_Name::TypeName = #Type_Name; \
 	std::string Type_Name::LuaTypeName = "luaL_Type_" #Type_Name; \
+	std::string Type_Name::getClassName(){ \
+		return TypeName; \
+	} \
 	std::string Type_Name::getLuaClassName(){ \
 		return LuaTypeName; \
 	} \

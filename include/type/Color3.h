@@ -36,6 +36,10 @@ namespace OB{
 			    Color3(double r, double g, double b);
 				virtual ~Color3();
 
+				double getR();
+				double getG();
+				double getB();
+
 				#if HAVE_IRRLICHT
 				
 				irr::video::SColor toIrrlichtSColor(unsigned int alpha = 255);

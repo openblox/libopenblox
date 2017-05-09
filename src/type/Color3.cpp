@@ -43,6 +43,18 @@ namespace OB{
 
 		Color3::~Color3(){}
 
+		double Color3::getR(){
+			return r;
+		}
+		
+		double Color3::getG(){
+			return g;
+		}
+		
+		double Color3::getB(){
+			return b;
+		}
+
 		#if HAVE_IRRLICHT
 		
 		irr::video::SColor Color3::toIrrlichtSColor(unsigned int alpha){

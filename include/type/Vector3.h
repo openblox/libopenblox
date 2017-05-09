@@ -40,6 +40,10 @@ namespace OB{
 			    Vector3(double x, double y, double z);
 				virtual ~Vector3();
 
+				double getX();
+				double getY();
+				double getZ();
+
 				#if HAVE_IRRLICHT
 				
 				irr::core::vector3d<double> toIrrlichtVector3d();

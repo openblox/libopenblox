@@ -21,6 +21,8 @@
 
 #include "OBEngine.h"
 
+#include "instance/NetworkReplicator.h"
+
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(Color3Value, true, false, Instance){
@@ -56,6 +58,19 @@ namespace OB{
 			cv->Value = Value;
 			
 			return cv;
+		}
+
+		void Color3Value::replicateProperties(shared_ptr<NetworkReplicator> peer){
+			Instance::replicateProperties(peer);
+			
+			peer->sendSetPropertyPacket(netId, "Value", make_shared<Type::VarWrapper>(Value));
+		}
+
+		std::map<std::string, std::string> Color3Value::getProperties(){
+			std::map<std::string, std::string> propMap = Instance::getProperties();
+			propMap["Value"] = "Color3";
+
+			return propMap;
 		}
 
 		int Color3Value::lua_setValue(lua_State* L){

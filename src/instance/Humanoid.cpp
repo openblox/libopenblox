@@ -19,6 +19,8 @@
 
 #include "instance/Humanoid.h"
 
+#include "instance/NetworkReplicator.h"
+
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(Humanoid, true, false, Instance){
@@ -203,6 +205,37 @@ namespace OB{
 		void Humanoid::Move(shared_ptr<Type::Vector3> direction){
 		}
 		void Humanoid::MoveTo(shared_ptr<Type::Vector3> location){
+		}
+
+		void Humanoid::replicateProperties(shared_ptr<NetworkReplicator> peer){
+			Instance::replicateProperties(peer);
+			
+			peer->sendSetPropertyPacket(netId, "Health", make_shared<Type::VarWrapper>(Health));
+			peer->sendSetPropertyPacket(netId, "MaxHealth", make_shared<Type::VarWrapper>(MaxHealth));
+			peer->sendSetPropertyPacket(netId, "Invincible", make_shared<Type::VarWrapper>(Invincible));
+			peer->sendSetPropertyPacket(netId, "NameVisible", make_shared<Type::VarWrapper>(NameVisible));
+			peer->sendSetPropertyPacket(netId, "HealthVisible", make_shared<Type::VarWrapper>(HealthVisible));
+			peer->sendSetPropertyPacket(netId, "JumpPower", make_shared<Type::VarWrapper>(JumpPower));
+			peer->sendSetPropertyPacket(netId, "WalkSpeed", make_shared<Type::VarWrapper>(WalkSpeed));
+			peer->sendSetPropertyPacket(netId, "MoveDirection", make_shared<Type::VarWrapper>(MoveDirection));
+			peer->sendSetPropertyPacket(netId, "State", make_shared<Type::VarWrapper>(State));
+			peer->sendSetPropertyPacket(netId, "WalkTarget", make_shared<Type::VarWrapper>(WalkTarget));
+		}
+
+		std::map<std::string, std::string> Humanoid::getProperties(){
+			std::map<std::string, std::string> propMap = Instance::getProperties();
+			propMap["Health"] = "double";
+			propMap["MaxHealth"] = "double";
+			propMap["Invincible"] = "bool";
+			propMap["NameVisible"] = "bool";
+			propMap["HealthVisible"] = "bool";
+			propMap["JumpPower"] = "double";
+			propMap["WalkSpeed"] = "double";
+			propMap["MoveDirection"] = "Vector3";
+			propMap["State"] = "int";
+			propMap["WalkTarget"] = "Vector3";
+
+			return propMap;
 		}
 
 		int Humanoid::lua_getHealth(lua_State* L){

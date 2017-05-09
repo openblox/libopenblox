@@ -21,6 +21,8 @@
 
 #include "OBEngine.h"
 
+#include "instance/NetworkReplicator.h"
+
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(BoolValue, true, false, Instance){
@@ -56,6 +58,19 @@ namespace OB{
 			bv->Value = Value;
 			
 			return bv;
+		}
+
+		void BoolValue::replicateProperties(shared_ptr<NetworkReplicator> peer){
+			Instance::replicateProperties(peer);
+			
+			peer->sendSetPropertyPacket(netId, "Value", make_shared<Type::VarWrapper>(Value));
+		}
+
+		std::map<std::string, std::string> BoolValue::getProperties(){
+			std::map<std::string, std::string> propMap = Instance::getProperties();
+			propMap["Value"] = "bool";
+
+			return propMap;
 		}
 
 		int BoolValue::lua_setValue(lua_State* L){

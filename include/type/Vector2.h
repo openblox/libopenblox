@@ -36,6 +36,9 @@ namespace OB{
 			    Vector2(double x, double y);
 				virtual ~Vector2();
 
+				double getX();
+				double getY();
+
 				#if HAVE_IRRLICHT
 				
 				irr::core::vector2d<double> toIrrlichtVector2d();

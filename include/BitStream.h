@@ -29,6 +29,14 @@
 #include <cstring>
 
 namespace OB{
+	namespace Type{
+		class Color3;
+		class Vector3;
+		class Vector2;
+		class LuaEnum;
+		class LuaEnumItem;
+	}
+	
 	#define BITS_TO_BYTES(x) (((x)+7)>>3)
 	#define BYTES_TO_BITS(x) ((x)<<3)
 	
@@ -82,6 +90,21 @@ namespace OB{
 
 		    void writeVar(shared_ptr<Type::VarWrapper> var);
 			shared_ptr<Type::VarWrapper> readVar();
+
+			void writeColor3(shared_ptr<Type::Color3> var);
+			shared_ptr<Type::Color3> readColor3();
+
+			void writeVector3(shared_ptr<Type::Vector3> var);
+			shared_ptr<Type::Vector3> readVector3();
+
+			void writeVector2(shared_ptr<Type::Vector2> var);
+			shared_ptr<Type::Vector2> readVector2();
+
+			void writeLuaEnum(shared_ptr<Type::LuaEnum> var);
+			shared_ptr<Type::LuaEnum> readLuaEnum();
+
+			void writeLuaEnumItem(shared_ptr<Type::LuaEnumItem> var);
+			shared_ptr<Type::LuaEnumItem> readLuaEnumItem();
 
 			template<class T> T read(T &outVar);
 			template<class T> T read();
@@ -163,6 +186,46 @@ namespace OB{
 
 	template<> inline shared_ptr<Type::VarWrapper> BitStream::read(){
 	    return readVar();
+	}
+
+	template<> inline void BitStream::write(shared_ptr<Type::Color3> data){
+	    writeColor3(data);
+	}
+
+	template<> inline shared_ptr<Type::Color3> BitStream::read(){
+	    return readColor3();
+	}
+
+	template<> inline void BitStream::write(shared_ptr<Type::Vector3> data){
+	    writeVector3(data);
+	}
+
+	template<> inline shared_ptr<Type::Vector3> BitStream::read(){
+	    return readVector3();
+	}
+	
+	template<> inline void BitStream::write(shared_ptr<Type::Vector2> data){
+	    writeVector2(data);
+	}
+
+	template<> inline shared_ptr<Type::Vector2> BitStream::read(){
+	    return readVector2();
+	}
+
+	template<> inline void BitStream::write(shared_ptr<Type::LuaEnum> data){
+	    writeLuaEnum(data);
+	}
+
+	template<> inline shared_ptr<Type::LuaEnum> BitStream::read(){
+	    return readLuaEnum();
+	}
+
+	template<> inline void BitStream::write(shared_ptr<Type::LuaEnumItem> data){
+	    writeLuaEnumItem(data);
+	}
+
+	template<> inline shared_ptr<Type::LuaEnumItem> BitStream::read(){
+	    return readLuaEnumItem();
 	}
 	#endif
 

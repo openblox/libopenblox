@@ -19,6 +19,8 @@
 
 #include "instance/BasePart.h"
 
+#include "instance/NetworkReplicator.h"
+
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS_ABS_WCLONE(BasePart, PVInstance){
@@ -172,6 +174,31 @@ namespace OB{
 				irrNode->setRotation(getRotation()->toIrrlichtVector3df());
 			}
 			#endif
+		}
+
+		void BasePart::replicateProperties(shared_ptr<NetworkReplicator> peer){
+			Instance::replicateProperties(peer);
+			
+			peer->sendSetPropertyPacket(netId, "Anchored", make_shared<Type::VarWrapper>(Anchored));
+			peer->sendSetPropertyPacket(netId, "Color", make_shared<Type::VarWrapper>(Color));
+			peer->sendSetPropertyPacket(netId, "CanCollide", make_shared<Type::VarWrapper>(CanCollide));
+			peer->sendSetPropertyPacket(netId, "Locked", make_shared<Type::VarWrapper>(Locked));
+			peer->sendSetPropertyPacket(netId, "Transparency", make_shared<Type::VarWrapper>(Transparency));
+			peer->sendSetPropertyPacket(netId, "Position", make_shared<Type::VarWrapper>(Position));
+			peer->sendSetPropertyPacket(netId, "Rotation", make_shared<Type::VarWrapper>(Rotation));
+		}
+
+		std::map<std::string, std::string> BasePart::getProperties(){
+			std::map<std::string, std::string> propMap = Instance::getProperties();
+			propMap["Anchored"] = "bool";
+			propMap["Color"] = "Color3";
+			propMap["CanCollide"] = "bool";
+			propMap["Locked"] = "bool";
+			propMap["Transparency"] = "double";
+			propMap["Position"] = "Vector3";
+			propMap["Rotation"] = "Vector3";
+
+			return propMap;
 		}
 
 		int BasePart::lua_setAnchored(lua_State* L){

@@ -70,6 +70,18 @@ namespace OB{
 				void Move(shared_ptr<Type::Vector3> direction);
 				void MoveTo(shared_ptr<Type::Vector3> location);
 
+				#if HAVE_ENET
+				/**
+				 * Replicates properties of this Instance.
+				 * 
+				 * @param peer Peer
+				 * @author John M. Harris, Jr.
+				 */
+				virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
+				#endif
+
+				virtual std::map<std::string, std::string> getProperties();
+
 				DECLARE_LUA_METHOD(getHealth);
 				DECLARE_LUA_METHOD(setHealth);
 				DECLARE_LUA_METHOD(getMaxHealth);

@@ -43,6 +43,18 @@ namespace OB{
 
 	    Vector3::~Vector3(){}
 
+		double Vector3::getX(){
+			return x;
+		}
+		
+		double Vector3::getY(){
+			return y;
+		}
+		
+		double Vector3::getZ(){
+			return z;
+		}
+
 		#if HAVE_IRRLICHT
 		
 		irr::core::vector3d<double> Vector3::toIrrlichtVector3d(){

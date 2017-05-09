@@ -21,6 +21,8 @@
 
 #include "OBEngine.h"
 
+#include "instance/NetworkReplicator.h"
+
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(DoubleConstrainedValue, true, false, Instance){
@@ -84,6 +86,23 @@ namespace OB{
 			dcv->Value = Value;
 			
 			return dcv;
+		}
+
+		void DoubleConstrainedValue::replicateProperties(shared_ptr<NetworkReplicator> peer){
+			Instance::replicateProperties(peer);
+			
+			peer->sendSetPropertyPacket(netId, "Value", make_shared<Type::VarWrapper>(Value));
+			peer->sendSetPropertyPacket(netId, "MinValue", make_shared<Type::VarWrapper>(Value));
+			peer->sendSetPropertyPacket(netId, "MaxValue", make_shared<Type::VarWrapper>(Value));
+		}
+
+		std::map<std::string, std::string> DoubleConstrainedValue::getProperties(){
+			std::map<std::string, std::string> propMap = Instance::getProperties();
+			propMap["Value"] = "double";
+			propMap["MinValue"] = "double";
+			propMap["MaxValue"] = "double";
+
+			return propMap;
 		}
 
 		int DoubleConstrainedValue::lua_setMinValue(lua_State* L){

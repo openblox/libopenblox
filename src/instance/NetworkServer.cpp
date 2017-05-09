@@ -109,9 +109,7 @@ namespace OB{
 		}
 
 		void NetworkServer::broadcast(enet_uint8 channel, BitStream &bs){
-			puts("broadcast");
 			if(enet_host){
-				puts("enet_host");
 				ENetPacket* pkt = enet_packet_create(bs.getData(), bs.getNumBytesUsed(), ENET_PACKET_FLAG_RELIABLE);
 				if(!pkt){
 					throw new OBException("Failed to create ENet packet.");

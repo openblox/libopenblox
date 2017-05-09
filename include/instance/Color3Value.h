@@ -39,6 +39,18 @@ namespace OB{
 				shared_ptr<Type::Color3> getValue();
 				void setValue(shared_ptr<Type::Color3> value);
 
+				#if HAVE_ENET
+				/**
+				 * Replicates properties of this Instance.
+				 * 
+				 * @param peer Peer
+				 * @author John M. Harris, Jr.
+				 */
+				virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
+				#endif
+
+				virtual std::map<std::string, std::string> getProperties();
+
 				DECLARE_LUA_METHOD(setValue);
 				DECLARE_LUA_METHOD(getValue);
 

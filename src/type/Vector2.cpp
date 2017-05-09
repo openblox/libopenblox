@@ -41,6 +41,14 @@ namespace OB{
 
 	    Vector2::~Vector2(){}
 
+		double Vector2::getX(){
+			return x;
+		}
+		
+		double Vector2::getY(){
+			return y;
+		}
+
 		#if HAVE_IRRLICHT
 		
 		irr::core::vector2d<double> Vector2::toIrrlichtVector2d(){

@@ -407,7 +407,7 @@ namespace OB{
 				virtual void replicateChildren(shared_ptr<NetworkReplicator> peer);
 				#endif
 
-				std::map<std::string, std::string> getProperties();
+				virtual std::map<std::string, std::string> getProperties();
 
 				void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
 

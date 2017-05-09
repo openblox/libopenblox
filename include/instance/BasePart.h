@@ -69,6 +69,18 @@ namespace OB{
 				virtual void updatePosition();
 				virtual void updateRotation();
 
+				#if HAVE_ENET
+				/**
+				 * Replicates properties of this Instance.
+				 * 
+				 * @param peer Peer
+				 * @author John M. Harris, Jr.
+				 */
+				virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
+				#endif
+
+				virtual std::map<std::string, std::string> getProperties();
+
 				DECLARE_LUA_METHOD(setAnchored);
 				DECLARE_LUA_METHOD(getAnchored);
 				DECLARE_LUA_METHOD(setColor);

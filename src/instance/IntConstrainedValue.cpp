@@ -21,6 +21,8 @@
 
 #include "OBEngine.h"
 
+#include "instance/NetworkReplicator.h"
+
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(IntConstrainedValue, true, false, Instance){
@@ -84,6 +86,23 @@ namespace OB{
 			icv->Value = Value;
 			
 			return icv;
+		}
+
+		void IntConstrainedValue::replicateProperties(shared_ptr<NetworkReplicator> peer){
+			Instance::replicateProperties(peer);
+			
+			peer->sendSetPropertyPacket(netId, "Value", make_shared<Type::VarWrapper>(Value));
+			peer->sendSetPropertyPacket(netId, "MinValue", make_shared<Type::VarWrapper>(Value));
+			peer->sendSetPropertyPacket(netId, "MaxValue", make_shared<Type::VarWrapper>(Value));
+		}
+
+		std::map<std::string, std::string> IntConstrainedValue::getProperties(){
+			std::map<std::string, std::string> propMap = Instance::getProperties();
+			propMap["Value"] = "int";
+			propMap["MinValue"] = "int";
+			propMap["MaxValue"] = "int";
+
+			return propMap;
 		}
 
 		int IntConstrainedValue::lua_setMinValue(lua_State* L){

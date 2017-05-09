@@ -25,6 +25,15 @@
 
 #include <sstream>
 
+#include "type/Color3.h"
+#include "type/Vector3.h"
+#include "type/Vector2.h"
+
+#include "type/Event.h"
+#include "type/EventConnection.h"
+#include "type/LuaEnum.h"
+#include "type/LuaEnumItem.h"
+
 namespace OB{
 	BitStream::BitStream() : BitStream(1){}
 	
@@ -423,7 +432,31 @@ namespace OB{
 					break;
 				}
 				case Type::TYPE_TYPE: {
-					//TODO, passthrough until then
+					shared_ptr<Type::Type> typ = *static_cast<shared_ptr<Type::Type>*>(var->wrapped);
+					if(typ){
+						std::string typName = typ->getClassName();
+
+						if(typName == "Color3"){
+							write<size_t>(OB_NET_TYPE_COLOR3);
+							writeColor3(dynamic_pointer_cast<Type::Color3>(typ));
+						}else if(typName == "Vector3"){
+							write<size_t>(OB_NET_TYPE_VECTOR3);
+							writeVector3(dynamic_pointer_cast<Type::Vector3>(typ));
+						}else if(typName == "Vector2"){
+							write<size_t>(OB_NET_TYPE_VECTOR2);
+							writeVector2(dynamic_pointer_cast<Type::Vector2>(typ));
+						}else if(typName == "LuaEnum"){
+							write<size_t>(OB_NET_TYPE_LUAENUM);
+							writeLuaEnum(dynamic_pointer_cast<Type::LuaEnum>(typ));
+						}else if(typName == "LuaEnumItem"){
+							write<size_t>(OB_NET_TYPE_LUAENUMITEM);
+							writeLuaEnumItem(dynamic_pointer_cast<Type::LuaEnumItem>(typ));
+						}
+					}else{
+					    write<size_t>(1);
+					}
+					
+				    break;
 				}
 				case Type::TYPE_LUA_OBJECT:
 				case Type::TYPE_NULL:
@@ -479,7 +512,27 @@ namespace OB{
 			    return make_shared<Type::VarWrapper>(shared_ptr<Instance::Instance>(NULL));
 			}
 			case Type::TYPE_TYPE: {
-				//TODO, for now passthrough to NULL
+			    size_t typeType = read<size_t>();
+
+				switch(typeType){
+					case OB_NET_TYPE_COLOR3: {
+						return make_shared<Type::VarWrapper>(readColor3());
+					}
+					case OB_NET_TYPE_VECTOR3: {
+						return make_shared<Type::VarWrapper>(readVector3());
+					}
+					case OB_NET_TYPE_VECTOR2: {
+						return make_shared<Type::VarWrapper>(readVector3());
+					}
+					case OB_NET_TYPE_LUAENUM: {
+						return make_shared<Type::VarWrapper>(readLuaEnum());
+					}
+					case OB_NET_TYPE_LUAENUMITEM: {
+						return make_shared<Type::VarWrapper>(readLuaEnumItem());
+					}
+				}
+				
+			    return make_shared<Type::VarWrapper>();
 			}
 			case Type::TYPE_LUA_OBJECT:
 			case Type::TYPE_NULL:
@@ -488,5 +541,108 @@ namespace OB{
 			}
 		}
 		return make_shared<Type::VarWrapper>();
+	}
+
+	void BitStream::writeColor3(shared_ptr<Type::Color3> var){
+		if(var){
+			write<double>(var->getR());
+			write<double>(var->getG());
+			write<double>(var->getB());
+		}else{
+			write<double>(0);
+			write<double>(0);
+			write<double>(0);
+		}
+	}
+	
+	shared_ptr<Type::Color3> BitStream::readColor3(){
+		double r = read<double>();
+		double g = read<double>();
+		double b = read<double>();
+
+		return make_shared<Type::Color3>(r, g, b);
+	}
+
+	void BitStream::writeVector3(shared_ptr<Type::Vector3> var){
+		if(var){
+			write<double>(var->getX());
+			write<double>(var->getY());
+			write<double>(var->getZ());
+		}else{
+			write<double>(0);
+			write<double>(0);
+			write<double>(0);
+		}
+	}
+	
+	shared_ptr<Type::Vector3> BitStream::readVector3(){
+		double x = read<double>();
+		double y = read<double>();
+		double z = read<double>();
+
+		return make_shared<Type::Vector3>(x, y, z);
+	}
+
+	void BitStream::writeVector2(shared_ptr<Type::Vector2> var){
+		if(var){
+			write<double>(var->getX());
+			write<double>(var->getY());
+		}else{
+			write<double>(0);
+			write<double>(0);
+		}
+	}
+	
+	shared_ptr<Type::Vector2> BitStream::readVector2(){
+		double x = read<double>();
+		double y = read<double>();
+
+		return make_shared<Type::Vector2>(x, y);
+	}
+
+	void BitStream::writeLuaEnum(shared_ptr<Type::LuaEnum> var){
+		if(var){
+			writeString(var->getType());
+		}else{
+			writeString(" ");//Prevents an error, and lets the other end detect this error
+		}
+	}
+	
+	shared_ptr<Type::LuaEnum> BitStream::readLuaEnum(){
+		if(!Type::LuaEnum::enums){
+			return NULL;
+		}
+		
+		std::string enumType = readString();
+		if(enumType.length() > 0 && enumType != " "){
+			return Type::LuaEnum::enums->at(enumType);
+		}
+		return NULL;
+	}
+
+	void BitStream::writeLuaEnumItem(shared_ptr<Type::LuaEnumItem> var){
+		if(var){
+			writeString(var->getType()); 
+			writeString(var->getName());
+		}else{
+			writeString(" ");//Prevents an error, and lets the other end detect this error
+			writeString(" ");
+		}
+	}
+	
+	shared_ptr<Type::LuaEnumItem> BitStream::readLuaEnumItem(){
+		if(!Type::LuaEnum::enums){
+			return NULL;
+		}
+		
+		std::string enumType = readString();
+		std::string enumName = readString();
+		if(enumType.length() > 0 && enumType != " " && enumName.length() > 0 && enumName != " "){
+		    shared_ptr<Type::LuaEnum> lEn = Type::LuaEnum::enums->at(enumType);
+			if(lEn){
+				return lEn->enumValues.at(enumName);
+			}
+		}
+		return NULL;
 	}
 }
