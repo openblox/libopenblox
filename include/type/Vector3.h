@@ -55,7 +55,7 @@ namespace OB{
 				btVector3 toBulletVector3();
 				#endif
 
-				bool equals(shared_ptr<Vector3> other);
+				virtual bool equals(shared_ptr<Type> other);
 
 				double getLength();
 				double getLengthSquared();

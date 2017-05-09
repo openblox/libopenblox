@@ -73,12 +73,13 @@ namespace OB{
 		}
 		#endif
 
-		bool Vector3::equals(shared_ptr<Vector3> other){
-			if(other == NULL){
+		bool Vector3::equals(shared_ptr<Type> other){
+			shared_ptr<Vector3> co = dynamic_pointer_cast<Vector3>(other);
+			if(!co){
 				return false;
 			}
 			
-			return other->x == x && other->y == y && other->z == z;
+			return co->x == x && co->y == y && co->z == z;
 		}
 
 		double Vector3::getLength(){

@@ -71,6 +71,15 @@ namespace OB{
 
 	    LuaEnumItem::~LuaEnumItem(){}
 
+		bool LuaEnumItem::equals(shared_ptr<Type> other){
+			shared_ptr<LuaEnumItem> co = dynamic_pointer_cast<LuaEnumItem>(other);
+			if(!co){
+				return false;
+			}
+
+			return (co->getType() == type) && (co->getName() == name);
+		}
+
 		std::string LuaEnumItem::getType(){
 			return type;
 		}

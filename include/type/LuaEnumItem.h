@@ -29,6 +29,8 @@ namespace OB{
 			    LuaEnumItem(std::string type, std::string name, int value);
 				virtual ~LuaEnumItem();
 
+				virtual bool equals(shared_ptr<Type> other);
+
 				virtual std::string toString();
 
 				std::string getType();

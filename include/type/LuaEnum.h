@@ -33,6 +33,8 @@ namespace OB{
 			    LuaEnum(std::string type, va_list args);
 				virtual ~LuaEnum();
 
+				virtual bool equals(shared_ptr<Type> other);
+
 				static shared_ptr<LuaEnum> createLuaEnum(std::string type, ...);
 
 				virtual std::string toString();

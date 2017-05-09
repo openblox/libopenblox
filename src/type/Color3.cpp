@@ -63,12 +63,13 @@ namespace OB{
 		
 		#endif
 
-		bool Color3::equals(shared_ptr<Color3> other){
-			if(other == NULL){
+		bool Color3::equals(shared_ptr<Type> other){
+			shared_ptr<Color3> co = dynamic_pointer_cast<Color3>(other);
+			if(!co){
 				return false;
 			}
 			
-			return other->r == r && other->g == g && other->b == b;
+			return co->r == r && co->g == g && co->b == b;
 		}
 
 	    std::string Color3::toString(){

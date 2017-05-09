@@ -115,6 +115,8 @@ namespace OB{
 				shared_ptr<Vector2> asVector2();
 				shared_ptr<Color3> asColor3();
 
+				bool valueEquals(shared_ptr<VarWrapper> other);
+
 				void wrap_lua(lua_State* L);
 
 				void* wrapped;

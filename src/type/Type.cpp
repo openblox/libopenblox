@@ -52,6 +52,10 @@ namespace OB{
 
 		Type::~Type(){}
 
+		bool Type::equals(shared_ptr<Type> other){
+			return false;
+		}
+
 		void Type::registerLuaType(std::string typeName, std::string className, luaRegisterFunc register_metamethods, luaRegisterFunc register_methods, luaRegisterFunc register_getters, luaRegisterFunc register_setters){
 			typeList.push_back(typeName);
 			

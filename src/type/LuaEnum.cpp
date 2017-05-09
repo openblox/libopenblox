@@ -73,6 +73,15 @@ namespace OB{
 
 	    LuaEnum::~LuaEnum(){}
 
+		bool LuaEnum::equals(shared_ptr<Type> other){
+			shared_ptr<LuaEnum> co = dynamic_pointer_cast<LuaEnum>(other);
+			if(!co){
+				return false;
+			}
+
+			return co->getType() == type;
+		}
+
 		shared_ptr<LuaEnum> LuaEnum::createLuaEnum(std::string type, ...){
 			if(enums == NULL){
 				enums = new std::map<std::string, shared_ptr<LuaEnum>>();

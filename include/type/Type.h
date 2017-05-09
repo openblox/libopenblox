@@ -72,6 +72,8 @@ namespace OB{
 				Type();
 				virtual ~Type();
 
+				virtual bool equals(shared_ptr<Type> other);
+
 				/**
 				 * Convenience method to register this class as a
 				 * Type class.

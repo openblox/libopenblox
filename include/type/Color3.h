@@ -46,7 +46,7 @@ namespace OB{
 
 				#endif
 
-				bool equals(shared_ptr<Color3> other);
+				virtual bool equals(shared_ptr<Type> other);
 
 				virtual std::string toString();
 

@@ -229,6 +229,59 @@ namespace OB{
 			return NULL;
 		}
 
+		bool VarWrapper::valueEquals(shared_ptr<VarWrapper> other){
+			if(!other || other->type != type){
+				return false;
+			}
+			switch(type){
+				case TYPE_INT: {
+				    return static_cast<IntWrapper*>(wrapped)->val == static_cast<IntWrapper*>(other->wrapped)->val;
+				}
+				case TYPE_DOUBLE: {
+					return static_cast<DoubleWrapper*>(wrapped)->val == static_cast<DoubleWrapper*>(other->wrapped)->val;
+				}
+				case TYPE_FLOAT: {
+					return static_cast<FloatWrapper*>(wrapped)->val == static_cast<FloatWrapper*>(other->wrapped)->val;
+					break;
+				}
+				case TYPE_LONG: {
+					return static_cast<LongWrapper*>(wrapped)->val == static_cast<LongWrapper*>(other->wrapped)->val;
+				}
+				case TYPE_UNSIGNED_LONG: {
+					return static_cast<UnsignedLongWrapper*>(wrapped)->val == static_cast<UnsignedLongWrapper*>(other->wrapped)->val;
+				}
+				case TYPE_BOOL: {
+					return static_cast<BoolWrapper*>(wrapped)->val == static_cast<BoolWrapper*>(other->wrapped)->val;
+				}
+				case TYPE_STRING: {
+					return static_cast<StringWrapper*>(wrapped)->val == static_cast<StringWrapper*>(other->wrapped)->val;
+				}
+				case TYPE_INSTANCE: {
+				    shared_ptr<Instance::Instance> inst = *static_cast<shared_ptr<Instance::Instance>*>(wrapped);
+					shared_ptr<Instance::Instance> oinst = *static_cast<shared_ptr<Instance::Instance>*>(other->wrapped);
+				    return oinst == inst;
+				}
+				case TYPE_TYPE: {
+					shared_ptr<Type> tp = *static_cast<shared_ptr<Type>*>(wrapped);
+					shared_ptr<Type> otp = *static_cast<shared_ptr<Type>*>(other->wrapped);
+
+				    if(tp){
+						return tp->equals(otp);
+					}else{
+						return tp == otp;
+					}
+				}
+				case TYPE_LUA_OBJECT: {
+					return false;//This shouldn't really be seeing any equality tests..
+				}
+				case TYPE_NULL:
+				case TYPE_UNKNOWN: {
+				    return true;
+				}
+			}
+			return false;
+		}
+
 		void VarWrapper::wrap_lua(lua_State* L){
 			switch(type){
 				case TYPE_INT: {

@@ -46,7 +46,7 @@ namespace OB{
 
 				#endif
 
-				bool equals(shared_ptr<Vector2> other);
+				virtual bool equals(shared_ptr<Type> other);
 
 				double getLength();
 				double getLengthSquared();
