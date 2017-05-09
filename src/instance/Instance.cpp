@@ -330,12 +330,25 @@ namespace OB{
 		}
 
 		void Instance::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
-			printf("Instance::setProperty(%s)\n", prop.c_str());
-			if(prop == "Name"){
+		    if(prop == "Name"){
 			    setName(val->asString());
-			}else if(prop == "Archivable"){
-				setArchivable(val->asBool());
+				return;
 			}
+			if(prop == "Archivable"){
+				setArchivable(val->asBool());
+				return;
+			}
+		}
+
+		shared_ptr<Type::VarWrapper> Instance::getProperty(std::string prop){
+			if(prop == "Name"){
+				return make_shared<Type::VarWrapper>(getName());
+			}
+			if(prop == "Archivable"){
+				return make_shared<Type::VarWrapper>(getArchivable());
+			}
+			
+			return NULL;
 		}
 		
 		void Instance::tick(){

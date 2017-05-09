@@ -28,6 +28,10 @@ namespace OB{
 	};
 	
 	namespace Type{
+		class Vector3;
+		class Vector2;
+		class Color3;
+		
 		/**
 		 * Describes the type of the wrapped variable for conversion
 		 * to Lua.
@@ -107,6 +111,9 @@ namespace OB{
 				std::string asString();
 				shared_ptr<Instance::Instance> asInstance();
 				shared_ptr<Type> asType();
+				shared_ptr<Vector3> asVector3();
+				shared_ptr<Vector2> asVector2();
+				shared_ptr<Color3> asColor3();
 
 				void wrap_lua(lua_State* L);
 

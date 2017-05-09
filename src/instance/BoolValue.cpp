@@ -22,6 +22,7 @@
 #include "OBEngine.h"
 
 #include "instance/NetworkReplicator.h"
+#include "instance/NetworkServer.h"
 
 namespace OB{
 	namespace Instance{
@@ -45,6 +46,7 @@ namespace OB{
 		    if(Value != value){
 				Value = value;
 
+				REPLICATE_PROPERTY_CHANGE(Value);
 				propertyChanged("Value");
 			}
 		}
@@ -71,6 +73,23 @@ namespace OB{
 			propMap["Value"] = "bool";
 
 			return propMap;
+		}
+
+		void BoolValue::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
+		    if(prop == "Value"){
+				setValue(val->asBool());
+				return;
+			}
+
+			Instance::setProperty(prop, val);
+		}
+
+		shared_ptr<Type::VarWrapper> BoolValue::getProperty(std::string prop){
+			if(prop == "Value"){
+				return make_shared<Type::VarWrapper>(getValue());
+			}
+			
+			return Instance::getProperty(prop);
 		}
 
 		int BoolValue::lua_setValue(lua_State* L){

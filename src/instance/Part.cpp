@@ -21,6 +21,9 @@
 
 #include "OBEngine.h"
 
+#include "instance/NetworkReplicator.h"
+#include "instance/NetworkServer.h"
+
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(Part, true, false, BasePart){
@@ -91,6 +94,7 @@ namespace OB{
 					Size = vec3;
 
 					updateSize();
+					REPLICATE_PROPERTY_CHANGE(Size);
 					propertyChanged("Size");
 				}
 			}else{
@@ -98,6 +102,7 @@ namespace OB{
 				    Size = size;
 
 					updateSize();
+					REPLICATE_PROPERTY_CHANGE(Size);
 					propertyChanged("Size");
 				}
 			}
@@ -137,6 +142,36 @@ namespace OB{
 				thisMat.ColorMaterial = irr::video::ECM_NONE;
 			}
 			#endif
+		}
+
+		void Part::replicateProperties(shared_ptr<NetworkReplicator> peer){
+		    BasePart::replicateProperties(peer);
+		    
+			peer->sendSetPropertyPacket(netId, "Size", make_shared<Type::VarWrapper>(Size));
+		}
+
+		std::map<std::string, std::string> Part::getProperties(){
+			std::map<std::string, std::string> propMap = BasePart::getProperties();
+			propMap["Size"] = "Vector3";
+
+			return propMap;
+		}
+
+		void Part::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
+		    if(prop == "Size"){
+			    setSize(val->asVector3());
+				return;
+			}
+
+		    BasePart::setProperty(prop, val);
+		}
+
+		shared_ptr<Type::VarWrapper> Part::getProperty(std::string prop){
+			if(prop == "Size"){
+				return make_shared<Type::VarWrapper>(getSize());
+			}
+			
+			return BasePart::getProperty(prop);
 		}
 		
 		int Part::lua_setSize(lua_State* L){

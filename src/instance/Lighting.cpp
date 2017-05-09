@@ -21,6 +21,9 @@
 
 #include "OBEngine.h"
 
+#include "instance/NetworkReplicator.h"
+#include "instance/NetworkServer.h"
+
 #if HAVE_IRRLICHT
 #include <irrlicht/irrlicht.h>
 #endif
@@ -53,13 +56,15 @@ namespace OB{
 				shared_ptr<Type::Color3> col3 = make_shared<Type::Color3>();
 				if(!col3->equals(SkyColor)){
 					SkyColor = col3;
-					
+
+					REPLICATE_PROPERTY_CHANGE(SkyColor);
 					propertyChanged("SkyColor");
 				}
 			}else{
 				if(!skyColor->equals(SkyColor)){
 					SkyColor = skyColor;
 
+					REPLICATE_PROPERTY_CHANGE(SkyColor);
 					propertyChanged("SkyColor");
 				}
 			}
@@ -102,6 +107,7 @@ namespace OB{
 			if(FogEnabled != fogEnabled){
 				FogEnabled = fogEnabled;
 
+				REPLICATE_PROPERTY_CHANGE(FogEnabled);
 				propertyChanged("FogEnabled");
 
 				updateFog();
@@ -118,6 +124,7 @@ namespace OB{
 				if(!col3->equals(FogColor)){
 					FogColor = col3;
 
+					REPLICATE_PROPERTY_CHANGE(FogColor);
 					propertyChanged("FogColor");
 
 					updateFog();
@@ -126,6 +133,7 @@ namespace OB{
 				if(!fogColor->equals(FogColor)){
 					FogColor = fogColor;
 
+					REPLICATE_PROPERTY_CHANGE(FogColor);
 					propertyChanged("FogColor");
 					
 					updateFog();
@@ -141,6 +149,7 @@ namespace OB{
 			if(fogStart != FogStart){
 				FogStart = fogStart;
 
+				REPLICATE_PROPERTY_CHANGE(FogStart);
 				propertyChanged("FogStart");
 				
 				updateFog();
@@ -155,10 +164,77 @@ namespace OB{
 			if(fogEnd != FogEnd){
 				FogEnd = fogEnd;
 
+				REPLICATE_PROPERTY_CHANGE(FogEnd);
 				propertyChanged("FogEnd");
 				
 				updateFog();
 			}
+		}
+
+		void Lighting::replicateProperties(shared_ptr<NetworkReplicator> peer){
+			Instance::replicateProperties(peer);
+			
+			peer->sendSetPropertyPacket(netId, "SkyColor", make_shared<Type::VarWrapper>(SkyColor));
+			peer->sendSetPropertyPacket(netId, "FogEnabled", make_shared<Type::VarWrapper>(FogEnabled));
+			peer->sendSetPropertyPacket(netId, "FogColor", make_shared<Type::VarWrapper>(FogColor));
+			peer->sendSetPropertyPacket(netId, "FogStart", make_shared<Type::VarWrapper>(FogStart));
+			peer->sendSetPropertyPacket(netId, "FogEnd", make_shared<Type::VarWrapper>(FogEnd));
+		}
+
+		std::map<std::string, std::string> Lighting::getProperties(){
+			std::map<std::string, std::string> propMap = Instance::getProperties();
+			propMap["SkyColor"] = "Color3";
+			propMap["FogEnabled"] = "bool";
+			propMap["FogColor"] = "Color3";
+			propMap["FogStart"] = "float";
+			propMap["FogEnd"] = "float";
+
+			return propMap;
+		}
+
+		void Lighting::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
+		    if(prop == "SkyColor"){
+			    setSkyColor(val->asColor3());
+				return;
+			}
+			if(prop == "FogEnabled"){
+			    setFogEnabled(val->asBool());
+				return;
+			}
+			if(prop == "FogColor"){
+			    setFogColor(val->asColor3());
+				return;
+			}
+			if(prop == "FogStart"){
+			    setFogStart(val->asFloat());
+				return;
+			}
+			if(prop == "FogEnd"){
+			    setFogEnd(val->asFloat());
+				return;
+			}
+
+			Instance::setProperty(prop, val);
+		}
+
+		shared_ptr<Type::VarWrapper> Lighting::getProperty(std::string prop){
+			if(prop == "SkyColor"){
+				return make_shared<Type::VarWrapper>(getSkyColor());
+			}
+			if(prop == "FogEnabled"){
+				return make_shared<Type::VarWrapper>(isFogEnabled());
+			}
+			if(prop == "FogColor"){
+				return make_shared<Type::VarWrapper>(getFogColor());
+			}
+			if(prop == "FogStart"){
+				return make_shared<Type::VarWrapper>(getFogStart());
+			}
+			if(prop == "FogEnd"){
+				return make_shared<Type::VarWrapper>(getFogEnd());
+			}
+			
+			return Instance::getProperty(prop);
 		}
 
 		int Lighting::lua_getSkyColor(lua_State* L){

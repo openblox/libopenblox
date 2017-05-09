@@ -19,6 +19,9 @@
 
 #include "instance/NetworkPeer.h"
 
+#include "OBEngine.h"
+#include "instance/DataModel.h"
+
 #include "BitStream.h"
 
 #if HAVE_ENET

@@ -22,6 +22,9 @@
 #include "OBEngine.h"
 #include "utility.h"
 
+#include "instance/NetworkReplicator.h"
+#include "instance/NetworkServer.h"
+
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(Workspace, false, isDataModel, Model){
@@ -97,6 +100,7 @@ namespace OB{
 				    Gravity = vec3;
 
 					updateGravity();
+					REPLICATE_PROPERTY_CHANGE(Gravity);
 					propertyChanged("Gravity");
 				}
 			}else{
@@ -104,6 +108,7 @@ namespace OB{
 				    Gravity = gravity;
 
 					updateGravity();
+					REPLICATE_PROPERTY_CHANGE(Gravity);
 					propertyChanged("Gravity");
 				}
 			}
@@ -117,6 +122,7 @@ namespace OB{
 			if(FallenPartsDestroyHeight != fpdh){
 				FallenPartsDestroyHeight = fpdh;
 
+				REPLICATE_PROPERTY_CHANGE(FallenPartsDestroyHeight);
 				propertyChanged("FallenPartsDestroyHeight");
 			}
 		}
@@ -128,7 +134,8 @@ namespace OB{
 		void Workspace::setDestroyFallenParts(bool dfp){
 			if(DestroyFallenParts != dfp){
 				DestroyFallenParts = dfp;
-				
+
+				REPLICATE_PROPERTY_CHANGE(DestroyFallenParts);
 				propertyChanged("DestroyFallenParts");
 			}
 		}
@@ -137,6 +144,54 @@ namespace OB{
 			#if HAVE_BULLET
 			dynamicsWorld->setGravity(getGravity()->toBulletVector3());
 			#endif
+		}
+
+		void Workspace::replicateProperties(shared_ptr<NetworkReplicator> peer){
+		    Instance::replicateProperties(peer);
+		    
+			peer->sendSetPropertyPacket(netId, "Gravity", make_shared<Type::VarWrapper>(Gravity));
+			peer->sendSetPropertyPacket(netId, "FallenPartsDestroyHeight", make_shared<Type::VarWrapper>(FallenPartsDestroyHeight));
+			peer->sendSetPropertyPacket(netId, "DestroyFallenParts", make_shared<Type::VarWrapper>(DestroyFallenParts));
+		}
+
+		std::map<std::string, std::string> Workspace::getProperties(){
+			std::map<std::string, std::string> propMap = Instance::getProperties();
+			propMap["Gravity"] = "Vector3";
+			propMap["FallenPartsDestroyHeight"] = "double";
+			propMap["DestroyFallenParts"] = "bool";
+
+			return propMap;
+		}
+
+		void Workspace::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
+		    if(prop == "Gravity"){
+			    setGravity(val->asVector3());
+				return;
+			}
+			if(prop == "FallenPartsDestroyHeight"){
+				setFallenPartsDestroyHeight(val->asDouble());
+				return;
+			}
+			if(prop == "DestroyFallenParts"){
+			    setDestroyFallenParts(val->asBool());
+				return;
+			}
+
+			Instance::setProperty(prop, val);
+		}
+
+		shared_ptr<Type::VarWrapper> Workspace::getProperty(std::string prop){
+			if(prop == "Gravity"){
+				return make_shared<Type::VarWrapper>(getGravity());
+			}
+			if(prop == "FallenPartsDestroyHeight"){
+				return make_shared<Type::VarWrapper>(getFallenPartsDestroyHeight());
+			}
+			if(prop == "DestroyFallenParts"){
+				return make_shared<Type::VarWrapper>(getDestroyFallenParts());
+			}
+			
+			return Instance::getProperty(prop);
 		}
 
 		int Workspace::lua_getDistributedGameTime(lua_State* L){

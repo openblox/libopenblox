@@ -48,6 +48,8 @@ namespace OB{
 				#endif
 
 				virtual std::map<std::string, std::string> getProperties();
+				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
+				virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
 
 				DECLARE_LUA_METHOD(setValue);
 				DECLARE_LUA_METHOD(getValue);

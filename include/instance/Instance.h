@@ -409,7 +409,8 @@ namespace OB{
 
 				virtual std::map<std::string, std::string> getProperties();
 
-				void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
+				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
+				virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
 
 				/**
 				 * Called internally every tick.

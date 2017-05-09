@@ -21,6 +21,9 @@
 
 #include "OBEngine.h"
 
+#include "instance/NetworkReplicator.h"
+#include "instance/NetworkServer.h"
+
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(MeshPart, true, false, BasePart){
@@ -73,6 +76,7 @@ namespace OB{
 					}
 				}
 
+				REPLICATE_PROPERTY_CHANGE(Mesh);
 				propertyChanged("Mesh");
 			}
 		}
@@ -163,6 +167,36 @@ namespace OB{
 			}
 			
 			return false;
+		}
+
+		void MeshPart::replicateProperties(shared_ptr<NetworkReplicator> peer){
+		    BasePart::replicateProperties(peer);
+			
+			peer->sendSetPropertyPacket(netId, "Mesh", make_shared<Type::VarWrapper>(Mesh));
+		}
+
+		std::map<std::string, std::string> MeshPart::getProperties(){
+			std::map<std::string, std::string> propMap = BasePart::getProperties();
+			propMap["Mesh"] = "string";
+
+			return propMap;
+		}
+
+		void MeshPart::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
+		    if(prop == "Mesh"){
+			    setMesh(val->asString());
+				return;
+			}
+
+		    BasePart::setProperty(prop, val);
+		}
+
+		shared_ptr<Type::VarWrapper> MeshPart::getProperty(std::string prop){
+			if(prop == "Mesh"){
+				return make_shared<Type::VarWrapper>(getMesh());
+			}
+			
+			return BasePart::getProperty(prop);
 		}
 
 		int MeshPart::lua_setMesh(lua_State* L){

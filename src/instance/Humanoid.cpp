@@ -20,6 +20,7 @@
 #include "instance/Humanoid.h"
 
 #include "instance/NetworkReplicator.h"
+#include "instance/NetworkServer.h"
 
 namespace OB{
 	namespace Instance{
@@ -83,6 +84,7 @@ namespace OB{
 					Died->Fire();
 				}
 
+				REPLICATE_PROPERTY_CHANGE(Health);
 				propertyChanged("Health");
 			}
 		}
@@ -99,6 +101,7 @@ namespace OB{
 					setHealth(MaxHealth);
 				}
 
+				REPLICATE_PROPERTY_CHANGE(MaxHealth);
 				propertyChanged("MaxHealth");
 			}
 		}
@@ -111,6 +114,7 @@ namespace OB{
 			if(invincible != Invincible){
 			    Invincible = invincible;
 
+				REPLICATE_PROPERTY_CHANGE(Invincible);
 				propertyChanged("Invincible");
 			}
 		}
@@ -123,6 +127,7 @@ namespace OB{
 			if(nameVisible != NameVisible){
 			    NameVisible = nameVisible;
 
+				REPLICATE_PROPERTY_CHANGE(NameVisible);
 				propertyChanged("NameVisible");
 			}
 		}
@@ -135,6 +140,7 @@ namespace OB{
 			if(healthVisible != HealthVisible){
 			    HealthVisible = healthVisible;
 
+				REPLICATE_PROPERTY_CHANGE(HealthVisible);
 				propertyChanged("HealthVisible");
 			}
 		}
@@ -147,6 +153,7 @@ namespace OB{
 			if(jumpPower != JumpPower){
 			    JumpPower = jumpPower;
 
+				REPLICATE_PROPERTY_CHANGE(JumpPower);
 				propertyChanged("JumpPower");
 			}
 		}
@@ -159,6 +166,7 @@ namespace OB{
 			if(walkSpeed != WalkSpeed){
 			    WalkSpeed = walkSpeed;
 
+				REPLICATE_PROPERTY_CHANGE(WalkSpeed);
 				propertyChanged("WalkSpeed");
 			}
 		}
@@ -175,6 +183,7 @@ namespace OB{
 			if(state != State){
 				State = state;
 
+				REPLICATE_PROPERTY_CHANGE(State);
 				propertyChanged("State");
 			}
 		}
@@ -197,6 +206,7 @@ namespace OB{
 				    Died->Fire();
 				}
 
+				REPLICATE_PROPERTY_CHANGE(Health);
 				propertyChanged("Health");
 			}
 			
@@ -236,6 +246,81 @@ namespace OB{
 			propMap["WalkTarget"] = "Vector3";
 
 			return propMap;
+		}
+
+		void Humanoid::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
+		    if(prop == "Health"){
+				setHealth(val->asDouble());
+				return;
+			}
+			if(prop == "MaxHealth"){
+				setMaxHealth(val->asDouble());
+				return;
+			}
+			if(prop == "Invincible"){
+				setInvincible(val->asBool());
+				return;
+			}
+			if(prop == "NameVisible"){
+			    setNameVisible(val->asBool());
+				return;
+			}
+			if(prop == "HealthVisible"){
+			    setHealthVisible(val->asBool());
+				return;
+			}
+			if(prop == "JumpPower"){
+				setJumpPower(val->asDouble());
+				return;
+			}
+			if(prop == "WalkSpeed"){
+				setWalkSpeed(val->asDouble());
+				return;
+			}
+			if(prop == "State"){
+				setState(val->asInt());
+				return;
+			}
+			if(prop == "WalkTarget" || prop == "MoveDirection"){
+				// TODO: Detect whether from replication or
+				// other, allow replication to set read-only
+			    throw new OBException(prop + " is a read-only property.");
+				return;
+			}
+
+			Instance::setProperty(prop, val);
+		}
+
+		shared_ptr<Type::VarWrapper> Humanoid::getProperty(std::string prop){
+			if(prop == "Health"){
+				return make_shared<Type::VarWrapper>(getHealth());
+			}
+			if(prop == "MaxHealth"){
+				return make_shared<Type::VarWrapper>(getMaxHealth());
+			}
+			if(prop == "Invincible"){
+				return make_shared<Type::VarWrapper>(getInvincible());
+			}
+			if(prop == "NameVisible"){
+				return make_shared<Type::VarWrapper>(getNameVisible());
+			}
+			if(prop == "JumpPower"){
+				return make_shared<Type::VarWrapper>(getJumpPower());
+			}
+			if(prop == "WalkSpeed"){
+				return make_shared<Type::VarWrapper>(getWalkSpeed());
+			}
+			if(prop == "MoveDirection"){
+				return make_shared<Type::VarWrapper>(getMoveDirection());
+			}
+			if(prop == "State"){
+				return make_shared<Type::VarWrapper>(getState());
+			}
+			if(prop == "WalkTarget"){
+				return make_shared<Type::VarWrapper>(getWalkTarget());
+			}
+			
+			return Instance::getProperty(prop);
 		}
 
 		int Humanoid::lua_getHealth(lua_State* L){
@@ -568,7 +653,7 @@ namespace OB{
 		}
 
 		void Humanoid::register_lua_methods(lua_State* L){
-			Instance::register_lua_property_getters(L);
+			Instance::register_lua_methods(L);
 			
 			luaL_Reg methods[] = {
 				{"TakeDamage", lua_TakeDamage},

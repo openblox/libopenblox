@@ -21,6 +21,9 @@
 
 #include "OBEngine.h"
 
+#include "instance/NetworkReplicator.h"
+#include "instance/NetworkServer.h"
+
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(NumberValue, true, false, Instance){
@@ -43,6 +46,7 @@ namespace OB{
 		    if(Value != value){
 				Value = value;
 
+				REPLICATE_PROPERTY_CHANGE(Value);
 				propertyChanged("Value");
 			}
 		}
@@ -56,6 +60,36 @@ namespace OB{
 			nv->Value = Value;
 			
 			return nv;
+		}
+
+		void NumberValue::replicateProperties(shared_ptr<NetworkReplicator> peer){
+			Instance::replicateProperties(peer);
+		    
+			peer->sendSetPropertyPacket(netId, "Value", make_shared<Type::VarWrapper>(Value));
+		}
+
+		std::map<std::string, std::string> NumberValue::getProperties(){
+			std::map<std::string, std::string> propMap = Instance::getProperties();
+			propMap["Value"] = "double";
+
+			return propMap;
+		}
+
+		void NumberValue::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
+		    if(prop == "Value"){
+			    setValue(val->asDouble());
+				return;
+			}
+
+			Instance::setProperty(prop, val);
+		}
+
+		shared_ptr<Type::VarWrapper> NumberValue::getProperty(std::string prop){
+			if(prop == "Value"){
+				return make_shared<Type::VarWrapper>(getValue());
+			}
+			
+			return Instance::getProperty(prop);
 		}
 
 		int NumberValue::lua_setValue(lua_State* L){

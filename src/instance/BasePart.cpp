@@ -20,6 +20,7 @@
 #include "instance/BasePart.h"
 
 #include "instance/NetworkReplicator.h"
+#include "instance/NetworkServer.h"
 
 namespace OB{
 	namespace Instance{
@@ -60,6 +61,7 @@ namespace OB{
 					Color = col3;
 
 					updateColor();
+					REPLICATE_PROPERTY_CHANGE(Color);
 					propertyChanged("Color");
 				}
 			}else{
@@ -67,6 +69,7 @@ namespace OB{
 					Color = color;
 
 					updateColor();
+					REPLICATE_PROPERTY_CHANGE(Color);
 					propertyChanged("Color");
 				}
 			}
@@ -80,6 +83,7 @@ namespace OB{
 			if(cancollide != CanCollide){
 				CanCollide = cancollide;
 
+				REPLICATE_PROPERTY_CHANGE(CanCollide);
 				propertyChanged("CanCollide");
 			}
 		}
@@ -92,6 +96,7 @@ namespace OB{
 			if(locked != Locked){
 				Locked = locked;
 
+				REPLICATE_PROPERTY_CHANGE(Locked);
 				propertyChanged("Locked");
 			}
 		}
@@ -103,7 +108,8 @@ namespace OB{
 		void BasePart::setTransparency(double transparency){
 			if(transparency != Transparency){
 				Transparency = transparency;
-				
+
+				REPLICATE_PROPERTY_CHANGE(Transparency);
 				propertyChanged("Transparency");
 			}
 		}
@@ -119,6 +125,7 @@ namespace OB{
 					Position = vec3;
 
 					updatePosition();
+					REPLICATE_PROPERTY_CHANGE(Position);
 					propertyChanged("Position");
 				}
 			}else{
@@ -126,6 +133,7 @@ namespace OB{
 					Position = position;
 
 					updatePosition();
+					REPLICATE_PROPERTY_CHANGE(Position);
 					propertyChanged("Position");
 				}
 			}
@@ -142,6 +150,7 @@ namespace OB{
 					Rotation = vec3;
 
 					updateRotation();
+					REPLICATE_PROPERTY_CHANGE(Rotation);
 					propertyChanged("Rotation");
 				}
 			}else{
@@ -149,6 +158,7 @@ namespace OB{
 					Rotation = rotation;
 
 					updateRotation();
+					REPLICATE_PROPERTY_CHANGE(Rotation);
 					propertyChanged("Rotation");
 				}
 			}
@@ -199,6 +209,68 @@ namespace OB{
 			propMap["Rotation"] = "Vector3";
 
 			return propMap;
+		}
+
+		void BasePart::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
+		    if(prop == "Anchored"){
+			    setAnchored(val->asBool());
+				return;
+			}
+			if(prop == "Color"){
+				setColor(val->asColor3());
+				return;
+			}
+			if(prop == "CanCollide"){
+				setCanCollide(val->asBool());
+				return;
+			}
+			if(prop == "Locked"){
+				setLocked(val->asBool());
+				return;
+			}
+			if(prop == "Transparency"){
+			    setTransparency(val->asDouble());
+				return;
+			}
+			if(prop == "Position"){
+				setPosition(val->asVector3());
+				return;
+			}
+			if(prop == "Rotation"){
+				setRotation(val->asVector3());
+				return;
+			}
+
+		    Instance::setProperty(prop, val);
+		}
+
+		shared_ptr<Type::VarWrapper> BasePart::getProperty(std::string prop){
+			if(prop == "Name"){
+				return make_shared<Type::VarWrapper>(getName());
+			}
+		    if(prop == "Anchored"){
+			    return make_shared<Type::VarWrapper>(getAnchored());
+			}
+			if(prop == "Color"){
+			    return make_shared<Type::VarWrapper>(getColor());
+			}
+			if(prop == "CanCollide"){
+			    return make_shared<Type::VarWrapper>(getCanCollide());
+			}
+			if(prop == "Locked"){
+			    return make_shared<Type::VarWrapper>(getLocked());
+			}
+			if(prop == "Transparency"){
+			    return make_shared<Type::VarWrapper>(getTransparency());
+			}
+			if(prop == "Position"){
+			    return make_shared<Type::VarWrapper>(getPosition());
+			}
+			if(prop == "Rotation"){
+			    return make_shared<Type::VarWrapper>(getRotation());
+			}
+			
+			return Instance::getProperty(prop);
 		}
 
 		int BasePart::lua_setAnchored(lua_State* L){

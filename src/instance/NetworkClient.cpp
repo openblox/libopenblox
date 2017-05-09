@@ -118,6 +118,7 @@ namespace OB{
 
 			switch(pkt_type){
 				case OB_NET_PKT_CREATE_INSTANCE: {
+					puts("createInst");
 					ob_uint64 netId = bs.read<ob_uint64>();
 					std::string className = bs.readString();
 
@@ -127,6 +128,7 @@ namespace OB{
 						if(dm){
 							weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
 							if(lookedUpInst.expired()){
+								printf("Attempting to create %s with ID %u\n", className.c_str(), netId);
 								shared_ptr<Instance> createdInst = ClassFactory::createReplicate(className);
 								if(createdInst){
 									createdInst->setNetworkID(netId);
@@ -138,6 +140,8 @@ namespace OB{
 
 									heldInstances.push(hi);
 								}
+							}else{
+								puts("exits, not expired");
 							}
 						}
 					}

@@ -22,6 +22,7 @@
 #include "OBEngine.h"
 
 #include "instance/NetworkReplicator.h"
+#include "instance/NetworkServer.h"
 
 namespace OB{
 	namespace Instance{
@@ -45,6 +46,7 @@ namespace OB{
 		    if(!Value->equals(value)){
 				Value = value;
 
+				REPLICATE_PROPERTY_CHANGE(Value);
 				propertyChanged("Value");
 			}
 		}
@@ -71,6 +73,23 @@ namespace OB{
 			propMap["Value"] = "Color3";
 
 			return propMap;
+		}
+
+		void Color3Value::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
+		    if(prop == "Value"){
+				setValue(val->asColor3());
+				return;
+			}
+
+			Instance::setProperty(prop, val);
+		}
+
+		shared_ptr<Type::VarWrapper> Color3Value::getProperty(std::string prop){
+			if(prop == "Value"){
+				return make_shared<Type::VarWrapper>(getValue());
+			}
+			
+			return Instance::getProperty(prop);
 		}
 
 		int Color3Value::lua_setValue(lua_State* L){

@@ -21,6 +21,10 @@
 
 #include "instance/Instance.h"
 
+#include "type/Vector3.h"
+#include "type/Vector2.h"
+#include "type/Color3.h"
+
 namespace OB{
 	namespace Type{
 		VarWrapper::VarWrapper(){
@@ -197,6 +201,30 @@ namespace OB{
 			if(type == TYPE_TYPE){
 				shared_ptr<Type> tp = *static_cast<shared_ptr<Type>*>(wrapped);
 				return tp;
+			}
+			return NULL;
+		}
+
+		shared_ptr<Vector3> VarWrapper::asVector3(){
+			if(type == TYPE_TYPE){
+				shared_ptr<Type> tp = *static_cast<shared_ptr<Type>*>(wrapped);
+				return dynamic_pointer_cast<Vector3>(tp);
+			}
+			return NULL;
+		}
+
+		shared_ptr<Vector2> VarWrapper::asVector2(){
+			if(type == TYPE_TYPE){
+				shared_ptr<Type> tp = *static_cast<shared_ptr<Type>*>(wrapped);
+				return dynamic_pointer_cast<Vector2>(tp);
+			}
+			return NULL;
+		}
+
+		shared_ptr<Color3> VarWrapper::asColor3(){
+			if(type == TYPE_TYPE){
+				shared_ptr<Type> tp = *static_cast<shared_ptr<Type>*>(wrapped);
+				return dynamic_pointer_cast<Color3>(tp);
 			}
 			return NULL;
 		}

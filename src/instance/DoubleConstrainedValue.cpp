@@ -22,6 +22,7 @@
 #include "OBEngine.h"
 
 #include "instance/NetworkReplicator.h"
+#include "instance/NetworkServer.h"
 
 namespace OB{
 	namespace Instance{
@@ -47,6 +48,7 @@ namespace OB{
 		    if(Value != value){
 				Value = value;
 
+				REPLICATE_PROPERTY_CHANGE(Value);
 				propertyChanged("Value");
 			}
 		}
@@ -59,6 +61,7 @@ namespace OB{
 		    if(MaxValue != maxValue){
 				MaxValue = maxValue;
 
+				REPLICATE_PROPERTY_CHANGE(MaxValue);
 				propertyChanged("MaxValue");
 			}
 		}
@@ -71,6 +74,7 @@ namespace OB{
 		    if(MinValue != minValue){
 				MinValue = minValue;
 
+				REPLICATE_PROPERTY_CHANGE(MinValue);
 				propertyChanged("MinValue");
 			}
 		}
@@ -103,6 +107,37 @@ namespace OB{
 			propMap["MaxValue"] = "double";
 
 			return propMap;
+		}
+
+		void DoubleConstrainedValue::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
+		    if(prop == "Value"){
+				setValue(val->asDouble());
+				return;
+			}
+			if(prop == "MinValue"){
+				setMinValue(val->asDouble());
+				return;
+			}
+			if(prop == "MaxValue"){
+				setMaxValue(val->asDouble());
+				return;
+			}
+
+			Instance::setProperty(prop, val);
+		}
+
+		shared_ptr<Type::VarWrapper> DoubleConstrainedValue::getProperty(std::string prop){
+			if(prop == "Value"){
+				return make_shared<Type::VarWrapper>(getValue());
+			}
+			if(prop == "MinValue"){
+				return make_shared<Type::VarWrapper>(getMinValue());
+			}
+			if(prop == "MaxValue"){
+				return make_shared<Type::VarWrapper>(getMaxValue());
+			}
+			
+			return Instance::getProperty(prop);
 		}
 
 		int DoubleConstrainedValue::lua_setMinValue(lua_State* L){
