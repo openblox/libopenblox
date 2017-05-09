@@ -216,9 +216,9 @@ namespace OB{
 
 		struct _PropertyInfo{
 			public:
-				std::string Type;
+				std::string type;
 				bool readOnly;
-				bool showInStudio;
+				bool isPublic;
 		};
 		
 		/**
