@@ -42,6 +42,8 @@ namespace OB{
 				void block();
 				void unblock();
 
+				shared_ptr<Type::Event> getMessageOut();
+				
 				static void register_lua_events(lua_State* L);
 				
 				DECLARE_CLASS(LogService);

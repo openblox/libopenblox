@@ -92,6 +92,10 @@ namespace OB{
 			blocked = false;
 		}
 
+		shared_ptr<Type::Event> LogService::getMessageOut(){
+			return MessageOut;
+		}
+
 		void LogService::register_lua_events(lua_State* L){
 			Instance::register_lua_events(L);
 			
