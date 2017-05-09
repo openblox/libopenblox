@@ -463,26 +463,31 @@ namespace OB{
 						shared_ptr<DataModel> dm = eng->getDataModel();
 						if(dm){
 							if(IsDescendantOf(dm)){
-								shared_ptr<Instance> nsInst = dm->FindService("NetworkServer");
-								if(shared_ptr<NetworkServer> ns = dynamic_pointer_cast<NetworkServer>(nsInst)){
-									BitStream bsOut;
-									bsOut.write<size_t>(OB_NET_PKT_CREATE_INSTANCE);
-									bsOut.write<ob_uint64>(netId);
-									bsOut.writeString(getClassName());
+								if(netId == OB_NETID_UNASSIGNED){
+									generateNetworkID();
+								}
+								if(netId >= OB_NETID_DATAMODEL){
+									shared_ptr<Instance> nsInst = dm->FindService("NetworkServer");
+									if(shared_ptr<NetworkServer> ns = dynamic_pointer_cast<NetworkServer>(nsInst)){
+										BitStream bsOut;
+										bsOut.write<size_t>(OB_NET_PKT_CREATE_INSTANCE);
+										bsOut.write<ob_uint64>(netId);
+										bsOut.writeString(getClassName());
 
-									ns->broadcast(OB_NET_CHAN_REPLICATION, bsOut);
+										ns->broadcast(OB_NET_CHAN_REPLICATION, bsOut);
 
-									bsOut.reset();
+										bsOut.reset();
 
-								    bsOut.write<size_t>(OB_NET_PKT_SET_PARENT);
-									bsOut.write<ob_uint64>(netId);
-									if(Parent){
-										bsOut.write<ob_uint64>(Parent->GetNetworkID());
-									}else{
-										bsOut.write<ob_uint64>(OB_NETID_NULL);
+										bsOut.write<size_t>(OB_NET_PKT_SET_PARENT);
+										bsOut.write<ob_uint64>(netId);
+										if(Parent){
+											bsOut.write<ob_uint64>(Parent->GetNetworkID());
+										}else{
+											bsOut.write<ob_uint64>(OB_NETID_NULL);
+										}
+
+										ns->broadcast(OB_NET_CHAN_REPLICATION, bsOut);
 									}
-
-									ns->broadcast(OB_NET_CHAN_REPLICATION, bsOut);
 								}
 							}
 						}
