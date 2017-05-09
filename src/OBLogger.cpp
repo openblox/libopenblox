@@ -19,6 +19,9 @@
 
 #include "OBLogger.h"
 
+#include "OBEngine.h"
+#include "instance/LogService.h"
+
 #include <iostream>
 
 namespace OB{
@@ -39,38 +42,63 @@ namespace OB{
 	void OBLogger::log(std::string text, std::string extra, OBLogLevel logLevel){
 		std::string logLevelStr = "";
 
+		shared_ptr<Instance::LogService> ls;
+		OBEngine* eng = OBEngine::getInstance();
+		if(eng){
+			shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+			if(dm){
+				ls = dm->getLogService();
+			}
+		}
+
+		std::string textMsg = text;
+
+		if(extra.length() > 0){
+		    textMsg = textMsg + " :" + extra;
+		}
+
+		if(logLevel == OLL_None){
+			if(ls){
+				ls->postLog(textMsg, Enum::MessageType::MessageOutput);
+			}
+		}
+
 		switch(logLevel){
 			case OLL_Debug: {
 				logLevelStr = "[DEBUG] ";
+				if(ls){
+					ls->postLog(textMsg, Enum::MessageType::MessageOutput);
+				}
 				break;
 			}
 			case OLL_Information: {
 				logLevelStr = "[INFO] ";
+				if(ls){
+					ls->postLog(textMsg, Enum::MessageType::MessageInfo);
+				}
 				break;
 			}
 			case OLL_Warning: {
 				logLevelStr = "[WARN] ";
+				if(ls){
+					ls->postLog(textMsg, Enum::MessageType::MessageWarning);
+				}
 				break;
 			}
 			case OLL_Error: {
 				logLevelStr = "[ERROR ]";
+				if(ls){
+					ls->postLog(textMsg, Enum::MessageType::MessageError);
+				}
 				break;
 			}
 		}
 
 		if(logLevel >= _logLevel){
 			if(logLevel == OLL_Error){
-				if(extra.length() > 0){
-					std::cerr << logLevelStr << text << " :" << extra << std::endl;
-				}else{
-					std::cerr << logLevelStr << text << std::endl;
-				}
+				std::cerr << logLevelStr << textMsg << std::endl;
 			}else{
-				if(extra.length() > 0){
-					std::cout << logLevelStr << text << " :" << extra << std::endl;
-				}else{
-					std::cout << logLevelStr << text << std::endl;
-				}
+			    std::cout << logLevelStr << textMsg << std::endl;
 			}
 		}
 	}

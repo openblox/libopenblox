@@ -226,7 +226,8 @@ namespace OB{
 		
 		std::string handle_errors(lua_State* L){
 			std::string lerr = std::string(lua_tostring(L, -1));
-
+			OBLogger::log(lerr, OLL_Error);
+			
 			lua_pop(L, 1);//Pop the error off the stack like it never happened.
 			
 			return lerr;
@@ -260,17 +261,7 @@ namespace OB{
 				output = output + std::string(s);
 			}
 
-		    OBEngine* eng = OBEngine::getInstance();
-			if(eng){
-				shared_ptr<Instance::DataModel> dm = eng->getDataModel();
-				if(dm){
-					shared_ptr<Instance::LogService> ls = dm->getLogService();
-					if(ls){
-					    ls->postLog(output, Enum::MessageType::MessageOutput);
-					}
-				}
-			}
-		    puts(output.c_str());
+		    OBLogger::log(output, OLL_None);
 			
 			return 0;
 		}
@@ -301,17 +292,7 @@ namespace OB{
 				output = output + std::string(s);
 			}
 
-		    OBEngine* eng = OBEngine::getInstance();
-			if(eng){
-				shared_ptr<Instance::DataModel> dm = eng->getDataModel();
-				if(dm){
-					shared_ptr<Instance::LogService> ls = dm->getLogService();
-					if(ls){
-					    ls->postLog(output, Enum::MessageType::MessageWarning);
-					}
-				}
-			}
-		    puts(output.c_str());
+			OBLogger::log(output, OLL_Warning);
 			
 			return 0;
 		}
