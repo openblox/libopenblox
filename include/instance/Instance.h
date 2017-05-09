@@ -213,6 +213,13 @@ protected: \
 namespace OB{
 	namespace Instance{
 		class NetworkReplicator;
+
+		struct _PropertyInfo{
+			public:
+				std::string Type;
+				bool readOnly;
+				bool showInStudio;
+		};
 		
 		/**
 		 * Instance is the base class of all world objects in OpenBlox.
@@ -407,7 +414,7 @@ namespace OB{
 				virtual void replicateChildren(shared_ptr<NetworkReplicator> peer);
 				#endif
 
-				virtual std::map<std::string, std::string> getProperties();
+				virtual std::map<std::string, _PropertyInfo> getProperties();
 
 				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
 				virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);

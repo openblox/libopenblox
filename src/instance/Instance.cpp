@@ -321,10 +321,10 @@ namespace OB{
 		}
 		#endif
 
-		std::map<std::string, std::string> Instance::getProperties(){
-			std::map<std::string, std::string> propMap;
-			propMap["Name"] = "string";
-			propMap["Archivable"] = "bool";
+		std::map<std::string, _PropertyInfo> Instance::getProperties(){
+			std::map<std::string, _PropertyInfo> propMap;
+			propMap["Name"] = {"string", false, true};
+			propMap["Archivable"] = {"bool", false, true};
 
 			return propMap;
 		}

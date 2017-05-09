@@ -68,9 +68,9 @@ namespace OB{
 			peer->sendSetPropertyPacket(netId, "Value", make_shared<Type::VarWrapper>(Value));
 		}
 
-		std::map<std::string, std::string> IntValue::getProperties(){
-			std::map<std::string, std::string> propMap = Instance::getProperties();
-			propMap["Value"] = "int";
+		std::map<std::string, _PropertyInfo> IntValue::getProperties(){
+			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
+			propMap["Value"] = {"int", false, true};
 
 			return propMap;
 		}

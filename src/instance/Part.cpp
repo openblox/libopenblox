@@ -150,9 +150,9 @@ namespace OB{
 			peer->sendSetPropertyPacket(netId, "Size", make_shared<Type::VarWrapper>(Size));
 		}
 
-		std::map<std::string, std::string> Part::getProperties(){
-			std::map<std::string, std::string> propMap = BasePart::getProperties();
-			propMap["Size"] = "Vector3";
+		std::map<std::string, _PropertyInfo> Part::getProperties(){
+			std::map<std::string, _PropertyInfo> propMap = BasePart::getProperties();
+			propMap["Size"] = {"Vector3", false, true};
 
 			return propMap;
 		}

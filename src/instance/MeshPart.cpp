@@ -175,9 +175,9 @@ namespace OB{
 			peer->sendSetPropertyPacket(netId, "Mesh", make_shared<Type::VarWrapper>(Mesh));
 		}
 
-		std::map<std::string, std::string> MeshPart::getProperties(){
-			std::map<std::string, std::string> propMap = BasePart::getProperties();
-			propMap["Mesh"] = "string";
+		std::map<std::string, _PropertyInfo> MeshPart::getProperties(){
+			std::map<std::string, _PropertyInfo> propMap = BasePart::getProperties();
+			propMap["Mesh"] = {"string", false, true};
 
 			return propMap;
 		}

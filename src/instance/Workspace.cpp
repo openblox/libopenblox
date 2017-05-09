@@ -154,11 +154,11 @@ namespace OB{
 			peer->sendSetPropertyPacket(netId, "DestroyFallenParts", make_shared<Type::VarWrapper>(DestroyFallenParts));
 		}
 
-		std::map<std::string, std::string> Workspace::getProperties(){
-			std::map<std::string, std::string> propMap = Instance::getProperties();
-			propMap["Gravity"] = "Vector3";
-			propMap["FallenPartsDestroyHeight"] = "double";
-			propMap["DestroyFallenParts"] = "bool";
+		std::map<std::string, _PropertyInfo> Workspace::getProperties(){
+			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
+			propMap["Gravity"] = {"Vector3", false, true};
+			propMap["FallenPartsDestroyHeight"] = {"double", false, true};
+			propMap["DestroyFallenParts"] = {"bool", false, true};
 
 			return propMap;
 		}

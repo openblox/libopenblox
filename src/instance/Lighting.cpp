@@ -181,13 +181,13 @@ namespace OB{
 			peer->sendSetPropertyPacket(netId, "FogEnd", make_shared<Type::VarWrapper>(FogEnd));
 		}
 
-		std::map<std::string, std::string> Lighting::getProperties(){
-			std::map<std::string, std::string> propMap = Instance::getProperties();
-			propMap["SkyColor"] = "Color3";
-			propMap["FogEnabled"] = "bool";
-			propMap["FogColor"] = "Color3";
-			propMap["FogStart"] = "float";
-			propMap["FogEnd"] = "float";
+		std::map<std::string, _PropertyInfo> Lighting::getProperties(){
+			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
+			propMap["SkyColor"] = {"Color3", false, true};
+			propMap["FogEnabled"] = {"bool", false, true};
+			propMap["FogColor"] = {"Color3", false, true};
+			propMap["FogStart"] = {"float", false, true};
+			propMap["FogEnd"] = {"float", false, true};
 
 			return propMap;
 		}

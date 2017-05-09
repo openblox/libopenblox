@@ -80,7 +80,7 @@ namespace OB{
 				virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
 				#endif
 
-				virtual std::map<std::string, std::string> getProperties();
+				virtual std::map<std::string, _PropertyInfo> getProperties();
 				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
 				virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
 

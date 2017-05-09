@@ -198,15 +198,15 @@ namespace OB{
 			peer->sendSetPropertyPacket(netId, "Rotation", make_shared<Type::VarWrapper>(Rotation));
 		}
 
-		std::map<std::string, std::string> BasePart::getProperties(){
-			std::map<std::string, std::string> propMap = Instance::getProperties();
-			propMap["Anchored"] = "bool";
-			propMap["Color"] = "Color3";
-			propMap["CanCollide"] = "bool";
-			propMap["Locked"] = "bool";
-			propMap["Transparency"] = "double";
-			propMap["Position"] = "Vector3";
-			propMap["Rotation"] = "Vector3";
+		std::map<std::string, _PropertyInfo> BasePart::getProperties(){
+			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
+			propMap["Anchored"] = {"bool", false, true};
+			propMap["Color"] = {"Color3", false, true};
+			propMap["CanCollide"] = {"bool", false, true};
+			propMap["Locked"] = {"bool", false, true};
+			propMap["Transparency"] = {"double", false, true};
+			propMap["Position"] = {"Vector3", false, true};
+			propMap["Rotation"] = {"Vector3", false, true};
 
 			return propMap;
 		}

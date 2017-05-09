@@ -100,11 +100,11 @@ namespace OB{
 			peer->sendSetPropertyPacket(netId, "MaxValue", make_shared<Type::VarWrapper>(Value));
 		}
 
-		std::map<std::string, std::string> DoubleConstrainedValue::getProperties(){
-			std::map<std::string, std::string> propMap = Instance::getProperties();
-			propMap["Value"] = "double";
-			propMap["MinValue"] = "double";
-			propMap["MaxValue"] = "double";
+		std::map<std::string, _PropertyInfo> DoubleConstrainedValue::getProperties(){
+			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
+			propMap["Value"] = {"double", false, true};
+			propMap["MinValue"] = {"double", false, true};
+			propMap["MaxValue"] = {"double", false, true};
 
 			return propMap;
 		}

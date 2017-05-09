@@ -232,18 +232,18 @@ namespace OB{
 			peer->sendSetPropertyPacket(netId, "WalkTarget", make_shared<Type::VarWrapper>(WalkTarget));
 		}
 
-		std::map<std::string, std::string> Humanoid::getProperties(){
-			std::map<std::string, std::string> propMap = Instance::getProperties();
-			propMap["Health"] = "double";
-			propMap["MaxHealth"] = "double";
-			propMap["Invincible"] = "bool";
-			propMap["NameVisible"] = "bool";
-			propMap["HealthVisible"] = "bool";
-			propMap["JumpPower"] = "double";
-			propMap["WalkSpeed"] = "double";
-			propMap["MoveDirection"] = "Vector3";
-			propMap["State"] = "int";
-			propMap["WalkTarget"] = "Vector3";
+		std::map<std::string, _PropertyInfo> Humanoid::getProperties(){
+			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
+			propMap["Health"] = {"double", false, true};
+			propMap["MaxHealth"] = {"double", false, true};
+			propMap["Invincible"] = {"bool", false, true};
+			propMap["NameVisible"] = {"bool", false, true};
+			propMap["HealthVisible"] = {"bool", false, true};
+			propMap["JumpPower"] = {"double", false, true};
+			propMap["WalkSpeed"] = {"double", false, true};
+			propMap["MoveDirection"] = {"Vector3", true, true};
+			propMap["State"] = {"int", false, true};
+			propMap["WalkTarget"] = {"Vector3", true, true};
 
 			return propMap;
 		}
