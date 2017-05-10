@@ -113,6 +113,15 @@ namespace OB{
 			}else if(propname == "Value"){
 				lua_pushinteger(L, con->value);
 				return 1;
+			}else if(propname == "EnumType"){
+				if(LuaEnum::enums){
+					shared_ptr<LuaEnum> lEn = LuaEnum::enums->at(con->type);
+					if(lEn){
+						return lEn->wrap_lua(L);
+					}
+				}
+				lua_pushnil(L);
+				return 1;
 			}
 			
 			return 0;
