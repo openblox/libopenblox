@@ -41,6 +41,23 @@ namespace OB{
 			this->b = b;
 		}
 
+		Color3::Color3(int r, int g, int b){
+			double rr = r / 255;
+			double gg = g / 255;
+			double bb = b / 255;
+
+		    if(rr > 1){ rr = 1; }
+			if(gg > 1){ gg = 1; }
+			if(bb > 1){ bb = 1; }
+			if(rr < 0){ rr = 0; }
+			if(gg < 0){ gg = 0; }
+			if(bb < 0){ bb = 0; }
+
+			this->r = rr;
+			this->g = gg;
+			this->b = bb;
+		}
+
 		Color3::~Color3(){}
 
 		double Color3::getR(){
@@ -55,10 +72,31 @@ namespace OB{
 			return b;
 		}
 
+	    int Color3::getRi(){
+			int rr = r * 255;
+			if(rr > 255){ rr = 255; }
+			if(rr < 0){ rr = 0; }
+			return rr;
+		}
+		
+	    int Color3::getGi(){
+		    int gg = g * 255;
+			if(gg > 255){ gg = 255; }
+			if(gg < 0){ gg = 0; }
+			return gg;
+		}
+		
+	    int Color3::getBi(){
+			int bb = b * 255;
+			if(bb > 255){ bb = 255; }
+			if(bb < 0){ bb = 0; }
+			return bb;
+		}
+
 		#if HAVE_IRRLICHT
 		
 		irr::video::SColor Color3::toIrrlichtSColor(unsigned int alpha){
-			return irr::video::SColor(alpha, r * 255, g * 255, b * 255);
+			return irr::video::SColor(alpha, getRi(), getRi(), getBi());
 		}
 		
 		#endif
@@ -73,7 +111,7 @@ namespace OB{
 		}
 
 	    std::string Color3::toString(){
-		    return ((std::ostringstream&)(std::ostringstream() << std::dec << r)).str() + ", " + ((std::ostringstream&)(std::ostringstream() << std::dec << g)).str() + ", " + ((std::ostringstream&)(std::ostringstream() << std::dec << b)).str();
+		    return std::to_string(r) + ", " + std::to_string(g) + ", " + std::to_string(b);
 		}
 
 		int Color3::lua_getR(lua_State* L){

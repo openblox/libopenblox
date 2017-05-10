@@ -34,11 +34,16 @@ namespace OB{
 			public:
 			    Color3();
 			    Color3(double r, double g, double b);
+				Color3(int r, int g, int b);
 				virtual ~Color3();
 
 				double getR();
 				double getG();
 				double getB();
+
+			    int getRi();
+			    int getGi();
+				int getBi();
 
 				#if HAVE_IRRLICHT
 				
