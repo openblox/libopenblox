@@ -47,6 +47,10 @@ namespace OB{
 	 * @author John M. Harris, Jr.
 	 */
 	bool ob_str_startsWith(std::string str, std::string prefix);
+
+	#ifdef _WIN32
+	char* realpath(const char* path, char resolved_path[PATH_MAX]);
+	#endif
 }
 
 #endif // OB_UTILITY
