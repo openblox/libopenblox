@@ -43,6 +43,9 @@ namespace OB{
 		}
 
 		void Color3Value::setValue(shared_ptr<Type::Color3> value){
+			if(!value){
+				value = make_shared<Type::Color3>();
+			}
 		    if(!Value->equals(value)){
 				Value = value;
 

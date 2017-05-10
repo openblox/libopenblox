@@ -545,20 +545,20 @@ namespace OB{
 
 	void BitStream::writeColor3(shared_ptr<Type::Color3> var){
 		if(var){
-			write<double>(var->getR());
-			write<double>(var->getG());
-			write<double>(var->getB());
+			write<int>(var->getRi());
+			write<int>(var->getGi());
+			write<int>(var->getBi());
 		}else{
-			write<double>(0);
-			write<double>(0);
-			write<double>(0);
+			write<int>(0);
+			write<int>(0);
+			write<int>(0);
 		}
 	}
 	
 	shared_ptr<Type::Color3> BitStream::readColor3(){
-		double r = read<double>();
-		double g = read<double>();
-		double b = read<double>();
+	    int r = read<int>();
+	    int g = read<int>();
+	    int b = read<int>();
 
 		return make_shared<Type::Color3>(r, g, b);
 	}

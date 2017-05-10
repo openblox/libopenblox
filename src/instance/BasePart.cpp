@@ -46,6 +46,7 @@ namespace OB{
 			if(anchored != Anchored){
 				Anchored = anchored;
 
+				REPLICATE_PROPERTY_CHANGE(Anchored);
 				propertyChanged("Anchored");
 			}
 		}
@@ -55,7 +56,7 @@ namespace OB{
 		}
 				
 		void BasePart::setColor(shared_ptr<Type::Color3> color){
-			if(color == NULL){
+			if(!color){
 				shared_ptr<Type::Color3> col3 = make_shared<Type::Color3>();
 				if(!col3->equals(Color)){
 					Color = col3;
