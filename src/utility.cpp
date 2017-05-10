@@ -53,7 +53,7 @@ namespace OB{
 			if(resolved_path){
 				return_path = resolved_path;
 			}else{
-				return_path = malloc(PATH_MAX);
+				return_path = (char*)malloc(PATH_MAX);
 			}
 			if(return_path){
 				size_t size = GetFullPathNameA(path, PATH_MAX, return_path, 0);
@@ -63,7 +63,7 @@ namespace OB{
 						size_t new_size;
 
 						free(return_path);
-						return_path = malloc(size);
+						return_path = (char*)malloc(size);
 
 						if(return_path){
 							new_size = GetFullPathNameA(path, size, return_path, 0);
