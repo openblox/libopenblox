@@ -42,9 +42,9 @@ namespace OB{
 		}
 
 		Color3::Color3(int r, int g, int b){
-			double rr = r / 255;
-			double gg = g / 255;
-			double bb = b / 255;
+			double rr = ((double)r) / 255;
+			double gg = ((double)g) / 255;
+			double bb = ((double)b) / 255;
 
 		    if(rr > 1){ rr = 1; }
 			if(gg > 1){ gg = 1; }
