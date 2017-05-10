@@ -39,6 +39,8 @@ namespace OB{
 			netId = OB_NETID_LIGHTING;
 			
 			FogEnabled = false;
+			FogStart = 0;
+			FogEnd = 0;
 		}
 
 	    Lighting::~Lighting(){}
