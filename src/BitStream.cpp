@@ -432,6 +432,8 @@ namespace OB{
 					break;
 				}
 				case Type::TYPE_TYPE: {
+					write<size_t>(var_type);
+					
 					shared_ptr<Type::Type> typ = *static_cast<shared_ptr<Type::Type>*>(var->wrapped);
 					if(typ){
 						std::string typName = typ->getClassName();
