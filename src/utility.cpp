@@ -132,5 +132,10 @@ namespace OB{
 
 		return return_path;
 	}
+
+	char* get_current_dir_name(){
+		char* path = malloc(FILENAME_MAX);
+		return _getcwd(path, FILENAME_MAX);
+	}
 	#endif
 }
