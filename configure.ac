@@ -53,7 +53,7 @@ AS_IF([test "x$with_enet" != "xno"],
 	  [AX_PKG_CHECK_MODULES([LENET], [libenet], [], [AC_DEFINE_UNQUOTED(HAVE_ENET, 1, [Define to 1 if you have the `enet' library (-lenet).])])],
 	  [have_enet=no])
 
-LT_INIT
+LT_INIT([win32-dll])
 
 AC_CONFIG_FILES(Makefile
                 src/Makefile
