@@ -96,7 +96,7 @@ namespace OB{
 		#if HAVE_IRRLICHT
 		
 		irr::video::SColor Color3::toIrrlichtSColor(unsigned int alpha){
-			return irr::video::SColor(alpha, getRi(), getRi(), getBi());
+			return irr::video::SColor(alpha, getRi(), getGi(), getBi());
 		}
 		
 		#endif
