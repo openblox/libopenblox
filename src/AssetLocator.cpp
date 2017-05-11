@@ -153,7 +153,7 @@ namespace OB{
 
 			char* ccanonPath = realpath(furl.c_str(), NULL);
 			if(!ccanonPath){
-				char* ccanonPath = realpath(("res/" + furl).c_str(), NULL);
+			    ccanonPath = realpath(("res/" + furl).c_str(), NULL);
 			}
 			
 			if(ccanonPath){
