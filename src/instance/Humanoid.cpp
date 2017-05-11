@@ -110,7 +110,7 @@ namespace OB{
 			return Invincible;
 		}
 		
-		bool Humanoid::setInvincible(bool invincible){
+	    void Humanoid::setInvincible(bool invincible){
 			if(invincible != Invincible){
 			    Invincible = invincible;
 
@@ -123,7 +123,7 @@ namespace OB{
 			return NameVisible;
 		}
 		
-		bool Humanoid::setNameVisible(bool nameVisible){
+	    void Humanoid::setNameVisible(bool nameVisible){
 			if(nameVisible != NameVisible){
 			    NameVisible = nameVisible;
 
@@ -136,7 +136,7 @@ namespace OB{
 			return HealthVisible;
 		}
 		
-		bool Humanoid::setHealthVisible(bool healthVisible){
+	    void Humanoid::setHealthVisible(bool healthVisible){
 			if(healthVisible != HealthVisible){
 			    HealthVisible = healthVisible;
 

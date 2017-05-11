@@ -45,13 +45,13 @@ namespace OB{
 				void setMaxHealth(double maxHealth);
 
 				bool getInvincible();
-				bool setInvincible(bool invincible);
+			    void setInvincible(bool invincible);
 
 				bool getNameVisible();
-				bool setNameVisible(bool nameVisible);
+			    void setNameVisible(bool nameVisible);
 				
 				bool getHealthVisible();
-				bool setHealthVisible(bool healthVisible);
+			    void setHealthVisible(bool healthVisible);
 
 				double getJumpPower();
 				void setJumpPower(double jumpPower);
