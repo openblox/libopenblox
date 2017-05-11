@@ -29,7 +29,9 @@
 #include "obtype.h"
 #include <string>
 
-
+#ifdef _MSC_VER
+#include <winsock2.h>
+#endif
 
 #ifndef OB_UTILITY
 #define OB_UTILITY
@@ -57,6 +59,8 @@ namespace OB{
 	char* get_current_dir_name();
 
 	void usleep(__int64 usec);
+
+	int gettimeofday(struct timeval* tp, void* tzp);
 	#endif
 }
 
