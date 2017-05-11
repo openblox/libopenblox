@@ -23,6 +23,8 @@
 
 #include <sstream>
 
+#include <math.h>
+
 namespace OB{
 	namespace Type{
 		DEFINE_TYPE(Vector3){
