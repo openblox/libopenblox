@@ -194,6 +194,7 @@ namespace OB{
 			return OB_NETID_UNASSIGNED;
 		}
 
+		#if HAVE_ENET
 		void DataModel::replicateProperties(shared_ptr<NetworkReplicator> peer){
 			Instance::replicateProperties(peer);
 		}
@@ -210,6 +211,7 @@ namespace OB{
 				}
 			}
 		}
+		#endif
 
 		int DataModel::lua_Shutdown(lua_State* L){
 		    shared_ptr<Instance> inst = checkInstance(L, 1, false);
