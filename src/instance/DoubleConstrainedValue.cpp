@@ -92,6 +92,7 @@ namespace OB{
 			return dcv;
 		}
 
+		#if HAVE_ENET
 		void DoubleConstrainedValue::replicateProperties(shared_ptr<NetworkReplicator> peer){
 			Instance::replicateProperties(peer);
 			
@@ -99,6 +100,7 @@ namespace OB{
 			peer->sendSetPropertyPacket(netId, "MinValue", make_shared<Type::VarWrapper>(Value));
 			peer->sendSetPropertyPacket(netId, "MaxValue", make_shared<Type::VarWrapper>(Value));
 		}
+		#endif
 
 		std::map<std::string, _PropertyInfo> DoubleConstrainedValue::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();

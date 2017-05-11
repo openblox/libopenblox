@@ -144,11 +144,13 @@ namespace OB{
 			#endif
 		}
 
+		#if HAVE_ENET
 		void Part::replicateProperties(shared_ptr<NetworkReplicator> peer){
 		    BasePart::replicateProperties(peer);
 		    
 			peer->sendSetPropertyPacket(netId, "Size", make_shared<Type::VarWrapper>(Size));
 		}
+		#endif
 
 		std::map<std::string, _PropertyInfo> Part::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = BasePart::getProperties();

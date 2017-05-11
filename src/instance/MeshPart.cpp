@@ -169,11 +169,13 @@ namespace OB{
 			return false;
 		}
 
+		#if HAVE_ENET
 		void MeshPart::replicateProperties(shared_ptr<NetworkReplicator> peer){
 		    BasePart::replicateProperties(peer);
 			
 			peer->sendSetPropertyPacket(netId, "Mesh", make_shared<Type::VarWrapper>(Mesh));
 		}
+		#endif
 
 		std::map<std::string, _PropertyInfo> MeshPart::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = BasePart::getProperties();

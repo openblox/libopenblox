@@ -187,6 +187,7 @@ namespace OB{
 			#endif
 		}
 
+		#if HAVE_ENET
 		void BasePart::replicateProperties(shared_ptr<NetworkReplicator> peer){
 			Instance::replicateProperties(peer);
 			
@@ -198,6 +199,7 @@ namespace OB{
 			peer->sendSetPropertyPacket(netId, "Position", make_shared<Type::VarWrapper>(Position));
 			peer->sendSetPropertyPacket(netId, "Rotation", make_shared<Type::VarWrapper>(Rotation));
 		}
+		#endif
 
 		std::map<std::string, _PropertyInfo> BasePart::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();

@@ -217,6 +217,7 @@ namespace OB{
 		void Humanoid::MoveTo(shared_ptr<Type::Vector3> location){
 		}
 
+		#if HAVE_ENET
 		void Humanoid::replicateProperties(shared_ptr<NetworkReplicator> peer){
 			Instance::replicateProperties(peer);
 			
@@ -231,6 +232,7 @@ namespace OB{
 			peer->sendSetPropertyPacket(netId, "State", make_shared<Type::VarWrapper>(State));
 			peer->sendSetPropertyPacket(netId, "WalkTarget", make_shared<Type::VarWrapper>(WalkTarget));
 		}
+		#endif
 
 		std::map<std::string, _PropertyInfo> Humanoid::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();

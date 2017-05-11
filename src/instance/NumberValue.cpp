@@ -62,11 +62,13 @@ namespace OB{
 			return nv;
 		}
 
+		#if HAVE_ENET
 		void NumberValue::replicateProperties(shared_ptr<NetworkReplicator> peer){
 			Instance::replicateProperties(peer);
 		    
 			peer->sendSetPropertyPacket(netId, "Value", make_shared<Type::VarWrapper>(Value));
 		}
+		#endif
 
 		std::map<std::string, _PropertyInfo> NumberValue::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();

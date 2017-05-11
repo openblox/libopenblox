@@ -146,6 +146,7 @@ namespace OB{
 			#endif
 		}
 
+		#if HAVE_ENET
 		void Workspace::replicateProperties(shared_ptr<NetworkReplicator> peer){
 		    Instance::replicateProperties(peer);
 		    
@@ -153,6 +154,7 @@ namespace OB{
 			peer->sendSetPropertyPacket(netId, "FallenPartsDestroyHeight", make_shared<Type::VarWrapper>(FallenPartsDestroyHeight));
 			peer->sendSetPropertyPacket(netId, "DestroyFallenParts", make_shared<Type::VarWrapper>(DestroyFallenParts));
 		}
+		#endif
 
 		std::map<std::string, _PropertyInfo> Workspace::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();

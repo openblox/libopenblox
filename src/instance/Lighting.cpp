@@ -173,6 +173,7 @@ namespace OB{
 			}
 		}
 
+		#if HAVE_ENET
 		void Lighting::replicateProperties(shared_ptr<NetworkReplicator> peer){
 			Instance::replicateProperties(peer);
 			
@@ -182,6 +183,7 @@ namespace OB{
 			peer->sendSetPropertyPacket(netId, "FogStart", make_shared<Type::VarWrapper>(FogStart));
 			peer->sendSetPropertyPacket(netId, "FogEnd", make_shared<Type::VarWrapper>(FogEnd));
 		}
+		#endif
 
 		std::map<std::string, _PropertyInfo> Lighting::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
