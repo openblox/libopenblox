@@ -51,6 +51,8 @@ namespace OB{
 	#ifdef _WIN32
 	char* realpath(const char* path, char resolved_path[PATH_MAX]);
 	char* get_current_dir_name();
+
+	#define PATH_MAX MAX_PATH
 	#endif
 }
 
