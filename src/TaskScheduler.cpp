@@ -82,8 +82,6 @@ namespace OB{
 			numWaiting = runThisTick.size();
 			
 			while(!runThisTick.empty() && !stopProcTasks){
-				ob_int64 curTime = currentTimeMillis();
-
 				_ob_waiting_task t = runThisTick.back();
 				runThisTick.pop_back();
 				numWaiting--;

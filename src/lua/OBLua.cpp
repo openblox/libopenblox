@@ -43,6 +43,8 @@
 
 namespace OB{
 	namespace Lua{
+	    OBLState* globalOBLState = NULL;
+		
 		void* l_alloc(void* ud, void* ptr, size_t osize, size_t nsize){
 			(void)ud;
 			(void)osize;

@@ -64,7 +64,7 @@ namespace OB{
 			OBLState* parent;
 		};
 
-		static OBLState* globalOBLState = NULL;
+	    extern OBLState* globalOBLState;
 
 		/**
 		 * Returns a global Lua state, which is only used to handle
