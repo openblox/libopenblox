@@ -34,6 +34,8 @@
 #include "type/LuaEnum.h"
 #include "type/LuaEnumItem.h"
 
+#include <arpa/inet.h>
+
 namespace OB{
 	BitStream::BitStream() : BitStream(1){}
 	
