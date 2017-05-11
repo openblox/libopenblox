@@ -137,5 +137,17 @@ namespace OB{
 		char* path = (char*)malloc(FILENAME_MAX);
 		return _getcwd(path, FILENAME_MAX);
 	}
+
+	void usleep(__int64 usec){
+		HANDLE timer;
+		LARGE_INTEGER ft;
+
+		ft.QuadPart = -(10*usec);
+
+		timer = CreateWaitableTimer(NULL, TRUE, NULL);
+		SetWaitableTimer(timer, &ft, 0, NULL, NULL, 0);
+		WaitForSingleObject(timer, INFINITE);
+		CloseHandle(timer);
+	}
 	#endif
 }

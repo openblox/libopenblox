@@ -36,7 +36,11 @@
 #include "type/Type.h"
 #include "type/Color3.h"
 
+#ifndef _MSC_VER
 #include <unistd.h>
+#else
+#include <windows.h>
+#endif
 
 #if HAVE_ENET
 #include <enet/enet.h>

@@ -53,6 +53,7 @@ namespace OB{
 	char* get_current_dir_name();
 
 	#define PATH_MAX MAX_PATH
+	void usleep(__int64 usec);
 	#endif
 }
 
