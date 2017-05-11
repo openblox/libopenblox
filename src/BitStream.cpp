@@ -34,7 +34,7 @@
 #include "type/LuaEnum.h"
 #include "type/LuaEnumItem.h"
 
-#ifndef _MSC_VER
+#ifndef _WIN32
 #include <arpa/inet.h>
 #else
 #include <winsock2.h>
