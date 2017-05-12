@@ -114,11 +114,11 @@ namespace OB{
 		}
 
 		void NetworkClient::processPacket(ENetEvent evt, BitStream &bs){
-			size_t pkt_type = bs.read<size_t>();
+			size_t pkt_type = bs.readSizeT();
 
 			switch(pkt_type){
 				case OB_NET_PKT_CREATE_INSTANCE: {
-					ob_uint64 netId = bs.read<ob_uint64>();
+					ob_uint64 netId = bs.readUInt64();
 					std::string className = bs.readString();
 
 					OBEngine* eng = OBEngine::getInstance();
@@ -144,8 +144,8 @@ namespace OB{
 					break;
 				}
 				case OB_NET_PKT_SET_PARENT: {
-					ob_uint64 netId = bs.read<ob_uint64>();
-					ob_uint64 parentNetId = bs.read<ob_uint64>();
+					ob_uint64 netId = bs.readUInt64();
+					ob_uint64 parentNetId = bs.readUInt64();
 
 					OBEngine* eng = OBEngine::getInstance();
 					if(eng){
@@ -186,7 +186,7 @@ namespace OB{
 					break;
 				}
 				case OB_NET_PKT_SET_PROPERTY: {
-				    ob_uint64 netId = bs.read<ob_uint64>();
+				    ob_uint64 netId = bs.readUInt64();
 					std::string prop = bs.readString();
 					shared_ptr<Type::VarWrapper> val = bs.readVar();
 

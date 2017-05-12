@@ -280,20 +280,20 @@ namespace OB{
 			}
 
 		    BitStream bsOut;
-			bsOut.write<size_t>(OB_NET_PKT_CREATE_INSTANCE);
-			bsOut.write<ob_uint64>(netId);
+			bsOut.writeSizeT(OB_NET_PKT_CREATE_INSTANCE);
+			bsOut.writeUInt64(netId);
 			bsOut.writeString(getClassName());
 
 			peer->Send(OB_NET_CHAN_REPLICATION, bsOut);
 
 			bsOut.reset();
 
-			bsOut.write<size_t>(OB_NET_PKT_SET_PARENT);
-			bsOut.write<ob_uint64>(netId);
+			bsOut.writeSizeT(OB_NET_PKT_SET_PARENT);
+			bsOut.writeUInt64(netId);
 			if(Parent){
-				bsOut.write<ob_uint64>(Parent->GetNetworkID());
+				bsOut.writeUInt64(Parent->GetNetworkID());
 			}else{
-				bsOut.write<ob_uint64>(OB_NETID_NULL);
+				bsOut.writeUInt64(OB_NETID_NULL);
 			}
 
 			peer->Send(OB_NET_CHAN_REPLICATION, bsOut);
@@ -470,20 +470,20 @@ namespace OB{
 									shared_ptr<Instance> nsInst = dm->FindService("NetworkServer");
 									if(shared_ptr<NetworkServer> ns = dynamic_pointer_cast<NetworkServer>(nsInst)){
 										BitStream bsOut;
-										bsOut.write<size_t>(OB_NET_PKT_CREATE_INSTANCE);
-										bsOut.write<ob_uint64>(netId);
+										bsOut.writeSizeT(OB_NET_PKT_CREATE_INSTANCE);
+										bsOut.writeUInt64(netId);
 										bsOut.writeString(getClassName());
 
 										ns->broadcast(OB_NET_CHAN_REPLICATION, bsOut);
 
 										bsOut.reset();
 
-										bsOut.write<size_t>(OB_NET_PKT_SET_PARENT);
-										bsOut.write<ob_uint64>(netId);
+										bsOut.writeSizeT(OB_NET_PKT_SET_PARENT);
+										bsOut.writeUInt64(netId);
 										if(Parent){
-											bsOut.write<ob_uint64>(Parent->GetNetworkID());
+											bsOut.writeUInt64(Parent->GetNetworkID());
 										}else{
-											bsOut.write<ob_uint64>(OB_NETID_NULL);
+											bsOut.writeUInt64(OB_NETID_NULL);
 										}
 
 										ns->broadcast(OB_NET_CHAN_REPLICATION, bsOut);

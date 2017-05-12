@@ -106,9 +106,25 @@ namespace OB{
 			void writeLuaEnumItem(shared_ptr<Type::LuaEnumItem> var);
 			shared_ptr<Type::LuaEnumItem> readLuaEnumItem();
 
-			template<class T> T read(T &outVar);
-			template<class T> T read();
-			template<class T> void write(T data);
+			size_t readSizeT();
+			int readInt();
+			double readDouble();
+			float readFloat();
+			long readLong();
+			unsigned long readULong();
+		    ob_uint64 readUInt64();
+			ob_int64 readInt64();
+			bool readBool();
+
+			void writeSizeT(size_t val);
+			void writeInt(int val);
+			void writeDouble(double val);
+			void writeFloat(float val);
+			void writeLong(long val);
+			void writeULong(unsigned long val);
+			void writeUInt64(ob_uint64 val);
+			void writeInt64(ob_int64 val);
+			void writeBool(bool val);
 
 			inline bool doEndianSwap(){
 				return !isNetOrderInternal();
@@ -133,113 +149,6 @@ namespace OB{
 			uint32_t numberBitsAlloc;
 			uint32_t readOffset;
 	};
-
-	#ifndef BITSTREAM_SPECIALIZATION
-	#define BITSTREAM_SPECIALIZATION
-	template<class T> inline T BitStream::read(T &outVar){
-		size_t sot = sizeof(T);
-		
-		unsigned char output[sot];
-		if(readAlignedBytes(output, sot)){
-			outVar = *((T*)(output));
-		}else{
-			outVar = 0;
-		}
-
-		return outVar;
-	}
-
-	template<class T> inline T BitStream::read(){
-		T tVar = 0;
-		return read<T>(tVar);
-	}
-			
-	template<class T> inline void BitStream::write(T data){
-		size_t sot = sizeof(T);
-
-		writeAlignedBytes((unsigned char*)&data, sot);
-	}
-	
-	template<> inline bool BitStream::read(bool &outVar){
-		return readBit();
-	}
-
-	template<> inline void BitStream::write(bool data){
-		if(data){
-			write1();
-		}else{
-			write0();
-		}
-	}
-
-	template<> inline void BitStream::write(std::string data){
-	    writeString(data);
-	}
-
-	template<> inline std::string BitStream::read(){
-	    return readString();
-	}
-
-	template<> inline void BitStream::write(shared_ptr<Type::VarWrapper> data){
-	    writeVar(data);
-	}
-
-	template<> inline shared_ptr<Type::VarWrapper> BitStream::read(){
-	    return readVar();
-	}
-
-	template<> inline void BitStream::write(shared_ptr<Type::Color3> data){
-	    writeColor3(data);
-	}
-
-	template<> inline shared_ptr<Type::Color3> BitStream::read(){
-	    return readColor3();
-	}
-
-	template<> inline void BitStream::write(shared_ptr<Type::Vector3> data){
-	    writeVector3(data);
-	}
-
-	template<> inline shared_ptr<Type::Vector3> BitStream::read(){
-	    return readVector3();
-	}
-	
-	template<> inline void BitStream::write(shared_ptr<Type::Vector2> data){
-	    writeVector2(data);
-	}
-
-	template<> inline shared_ptr<Type::Vector2> BitStream::read(){
-	    return readVector2();
-	}
-
-	template<> inline void BitStream::write(shared_ptr<Type::LuaEnum> data){
-	    writeLuaEnum(data);
-	}
-
-	template<> inline shared_ptr<Type::LuaEnum> BitStream::read(){
-	    return readLuaEnum();
-	}
-
-	template<> inline void BitStream::write(shared_ptr<Type::LuaEnumItem> data){
-	    writeLuaEnumItem(data);
-	}
-
-	template<> inline shared_ptr<Type::LuaEnumItem> BitStream::read(){
-	    return readLuaEnumItem();
-	}
-	#endif
-
-	template<class T> BitStream& operator<<(BitStream& out, T& c){
-		out.write(c);
-		return out;
-	}
-
-	template<class T> BitStream& operator>>(BitStream& in, T& c){
-		bool success = in.read(c);
-		(void)success;
-				
-		return in;
-	}
 }
 
 #endif // OB_BITSTREAM

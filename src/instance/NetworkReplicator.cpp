@@ -182,8 +182,8 @@ namespace OB{
 
 		void NetworkReplicator::sendSetPropertyPacket(ob_uint64 netId, std::string prop, shared_ptr<Type::VarWrapper> val){
 		    BitStream bs;
-		    bs.write<size_t>(OB_NET_PKT_SET_PROPERTY);
-			bs.write<ob_uint64>(netId);
+		    bs.writeSizeT(OB_NET_PKT_SET_PROPERTY);
+			bs.writeUInt64(netId);
 			bs.writeString(prop);
 		    bs.writeVar(val);
 

@@ -51,8 +51,8 @@
 						shared_ptr<OB::Instance::Instance> __repl_nsInst = __repl_dm->FindService("NetworkServer"); \
 						if(shared_ptr<OB::Instance::NetworkServer> __repl_ns = dynamic_pointer_cast<OB::Instance::NetworkServer>(__repl_nsInst)){ \
 							BitStream __repl_bs; \
-				    		__repl_bs.write<size_t>(OB_NET_PKT_SET_PROPERTY); \
-							__repl_bs.write<ob_uint64>(netId); \
+				    		__repl_bs.writeSizeT(OB_NET_PKT_SET_PROPERTY); \
+							__repl_bs.writeUInt64(netId); \
 							__repl_bs.writeString(#__repl_prop); \
 		    				__repl_bs.writeVar(make_shared<Type::VarWrapper>(__repl_prop)); \
 							__repl_ns->broadcast(OB_NET_CHAN_REPLICATION, __repl_bs); \
