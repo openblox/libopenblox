@@ -29,6 +29,10 @@
 #include "obtype.h"
 #include <string>
 
+#ifdef _MSC_VER
+#include <winsock2.h>
+#endif
+
 #ifndef OB_UTILITY
 #define OB_UTILITY
 
@@ -49,8 +53,14 @@ namespace OB{
 	bool ob_str_startsWith(std::string str, std::string prefix);
 
 	#ifdef _WIN32
+	#define PATH_MAX 260
+	
 	char* realpath(const char* path, char resolved_path[PATH_MAX]);
 	char* get_current_dir_name();
+
+	void usleep(__int64 usec);
+
+	int gettimeofday(struct timeval* tp, void* tzp);
 	#endif
 }
 

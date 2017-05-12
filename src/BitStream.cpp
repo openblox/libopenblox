@@ -34,7 +34,11 @@
 #include "type/LuaEnum.h"
 #include "type/LuaEnumItem.h"
 
+#ifndef _WIN32
 #include <arpa/inet.h>
+#else
+#include <winsock2.h>
+#endif
 
 namespace OB{
 	BitStream::BitStream() : BitStream(1){}
