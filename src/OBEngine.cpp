@@ -333,6 +333,14 @@ namespace OB{
 		windowId = wId;
 	}
 
+	void OBEngine::resized(int width, int height){
+		#if HAVE_IRRLICHT
+		if(irrDriv){
+		    irrDriv->OnResize(irr::core::dimension2d<irr::u32>(width, height));
+		}
+		#endif
+	}
+
 	#if HAVE_IRRLICHT
 	
 	irr::IrrlichtDevice* OBEngine::getIrrlichtDevice(){

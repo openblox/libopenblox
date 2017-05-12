@@ -269,6 +269,17 @@ namespace OB{
 			 */
 			void setWindowId(void* wId);
 
+			/**
+			 * Used to inform the engine that a resize has occurred,
+			 * this is only necessary (and should only be used) when
+			 * OpenBlox is embedded in an external window.
+			 *
+			 * @param width
+			 * @param height
+			 * @author John M. Harris, Jr.
+			 */
+			void resized(int width, int height);
+
 			#if HAVE_IRRLICHT
 
 			/**
