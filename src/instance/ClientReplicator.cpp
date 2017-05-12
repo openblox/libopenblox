@@ -22,7 +22,7 @@
 #if HAVE_ENET
 namespace OB{
 	namespace Instance{
-		DEFINE_CLASS(ClientReplicator, false, false, Instance){
+		DEFINE_CLASS(ClientReplicator, false, false, NetworkReplicator){
 			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
