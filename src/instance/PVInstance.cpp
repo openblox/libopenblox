@@ -88,10 +88,7 @@ namespace OB{
 		}
 
 		void PVInstance::removeIrrlichtNode(){
-			if(irrNode){
-				irrNode->remove();
-				irrNode = NULL;
-			}
+			std::cout << GetFullName() << " called removeIrrlichtNode" << std::endl;
 
 			for(int i = 0; i < children.size(); i++){
 				shared_ptr<Instance> oInst = children.at(i);
@@ -99,16 +96,34 @@ namespace OB{
 					_ob_pvinstance_removeIrrlichtNode(oInst);
 				}
 			}
+			
+			if(irrNode){
+				irrNode->remove();
+				irrNode = NULL;
+			}
 		}
 		
 		void PVInstance::removeChild(shared_ptr<Instance> kid){
 			if(kid){
 				if(shared_ptr<PVInstance> oInst = dynamic_pointer_cast<PVInstance>(kid)){
-					if(irrNode && oInst->irrNode){
-						oInst->removeIrrlichtNode();
-					}
+					oInst->removeIrrlichtNode();
 				}
 				Instance::removeChild(kid);
+			}
+		}
+
+		void _ob_pvinstance_newIrrlichtNode(shared_ptr<PVInstance> thisNode){
+			std::vector<shared_ptr<Instance>> children = thisNode->GetChildren();
+			for(int i = 0; i < children.size(); i++){
+				shared_ptr<Instance> oInst = children.at(i);
+				if(oInst){
+					shared_ptr<PVInstance> poInst = dynamic_pointer_cast<PVInstance>(oInst);
+					if(poInst){
+						poInst->newIrrlichtNode();
+						poInst->getIrrNode()->setParent(thisNode->getIrrNode());
+						_ob_pvinstance_newIrrlichtNode(poInst);
+					}
+				}
 			}
 		}
 
@@ -118,6 +133,7 @@ namespace OB{
 					if(irrNode){
 						oInst->newIrrlichtNode();
 					    oInst->irrNode->setParent(irrNode);
+						_ob_pvinstance_newIrrlichtNode(oInst);
 					}
 				}
 				Instance::addChild(kid);
