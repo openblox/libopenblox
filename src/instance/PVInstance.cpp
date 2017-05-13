@@ -105,8 +105,7 @@ namespace OB{
 			if(kid){
 				if(shared_ptr<PVInstance> oInst = dynamic_pointer_cast<PVInstance>(kid)){
 					if(irrNode && oInst->irrNode){
-						oInst->irrNode->remove();
-						oInst->irrNode = NULL;
+						oInst->removeIrrNode();
 					}
 				}
 				Instance::removeChild(kid);
