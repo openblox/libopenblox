@@ -132,8 +132,10 @@ namespace OB{
 				if(shared_ptr<PVInstance> oInst = dynamic_pointer_cast<PVInstance>(kid)){
 					if(irrNode){
 						oInst->newIrrlichtNode();
-					    oInst->irrNode->setParent(irrNode);
-						_ob_pvinstance_newIrrlichtNode(oInst);
+						if(oInst->irrNode){
+							oInst->irrNode->setParent(irrNode);
+							_ob_pvinstance_newIrrlichtNode(oInst);
+						}
 					}
 				}
 				Instance::addChild(kid);
