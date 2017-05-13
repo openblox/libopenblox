@@ -120,8 +120,10 @@ namespace OB{
 					shared_ptr<PVInstance> poInst = dynamic_pointer_cast<PVInstance>(oInst);
 					if(poInst){
 						poInst->newIrrlichtNode();
-						poInst->getIrrNode()->setParent(thisNode->getIrrNode());
-						_ob_pvinstance_newIrrlichtNode(poInst);
+						if(poInst->getIrrNode()){
+							poInst->getIrrNode()->setParent(thisNode->getIrrNode());
+							_ob_pvinstance_newIrrlichtNode(poInst);
+						}
 					}
 				}
 			}
