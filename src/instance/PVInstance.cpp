@@ -90,6 +90,7 @@ namespace OB{
 		void PVInstance::removeIrrlichtNode(){
 			if(irrNode){
 				irrNode->remove();
+				irrNode = NULL;
 			}
 
 			for(int i = 0; i < children.size(); i++){
