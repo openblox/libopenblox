@@ -88,9 +88,7 @@ namespace OB{
 		}
 
 		void PVInstance::removeIrrlichtNode(){
-			std::cout << GetFullName() << " called removeIrrlichtNode" << std::endl;
-
-			for(int i = 0; i < children.size(); i++){
+		    for(int i = 0; i < children.size(); i++){
 				shared_ptr<Instance> oInst = children.at(i);
 				if(oInst){
 					_ob_pvinstance_removeIrrlichtNode(oInst);
