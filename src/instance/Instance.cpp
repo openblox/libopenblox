@@ -348,7 +348,7 @@ namespace OB{
 				return make_shared<Type::VarWrapper>(getArchivable());
 			}
 			
-			return NULL;
+			return make_shared<Type::VarWrapper>();
 		}
 		
 		void Instance::tick(){
