@@ -38,6 +38,8 @@ namespace OB{
 			MessageError = Enum::LuaMessageType->getEnumItem((int)Enum::MessageType::MessageError);
 			
 		    MessageOut = make_shared<Type::Event>("MessageOut");
+
+			blocked = false;
 		}
 
 	    LogService::~LogService(){}
