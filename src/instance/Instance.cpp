@@ -348,6 +348,9 @@ namespace OB{
 			if(prop == "Archivable"){
 				return make_shared<Type::VarWrapper>(getArchivable());
 			}
+			if(prop == "ClassName"){
+				return make_shared<Type::VarWrapper>(getClassName());
+			}
 			
 			return make_shared<Type::VarWrapper>();
 		}
