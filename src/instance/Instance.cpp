@@ -325,6 +325,7 @@ namespace OB{
 			std::map<std::string, _PropertyInfo> propMap;
 			propMap["Name"] = {"string", false, true};
 			propMap["Archivable"] = {"bool", false, true};
+			propMa["ClassName"] = {"string", true, true};
 
 			return propMap;
 		}
