@@ -137,6 +137,7 @@ namespace OB{
 							updateColor();
 							updatePosition();
 							updateRotation();
+							updateSize();
 						}
 					}
 				}
