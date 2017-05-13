@@ -306,6 +306,9 @@ namespace OB{
 			if(prop == "NameVisible"){
 				return make_shared<Type::VarWrapper>(getNameVisible());
 			}
+			if(prop == "HealthVisible"){
+				return make_shared<Type::VarWrapper>(getNameVisible());
+			}
 			if(prop == "JumpPower"){
 				return make_shared<Type::VarWrapper>(getJumpPower());
 			}
