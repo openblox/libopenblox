@@ -43,6 +43,8 @@ namespace OB{
 
 				#if HAVE_IRRLICHT
 				virtual irr::scene::ISceneNode* getIrrNode();
+				virtual void newIrrlichtNode();
+				virtual void removeIrrlichtNode();
 				
 				virtual void removeChild(shared_ptr<Instance> kid);
 				virtual void addChild(shared_ptr<Instance> kid);

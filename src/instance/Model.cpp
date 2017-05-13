@@ -29,19 +29,6 @@ namespace OB{
 
 		Model::Model(){
 			Name = ClassName;
-
-			#if HAVE_IRRLICHT
-		    OBEngine* eng = OBEngine::getInstance();
-			if(eng){
-				irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
-				if(irrDev){
-					irr::scene::ISceneManager* sceneMgr = irrDev->getSceneManager();
-					if(sceneMgr){
-						irrNode = sceneMgr->addEmptySceneNode();
-					}
-				}
-			}
-			#endif
 		}
 
 	    Model::~Model(){}

@@ -52,6 +52,15 @@ namespace OB{
 			
 			mp->Mesh = Mesh;
 			mp->updateMesh();
+			shared_ptr<Instance> parInst = Parent;
+			if(parInst){
+				if(shared_ptr<PVInstance> oInst = dynamic_pointer_cast<PVInstance>(parInst)){
+					irr::scene::ISceneNode* parIrrNode = oInst->getIrrNode();
+					if(parIrrNode){
+						parIrrNode->addChild(mp->irrNode);
+					}
+				}
+			}
 			
 			return mp;
 		}
@@ -67,6 +76,15 @@ namespace OB{
 						if(assetLoc){
 							if(assetLoc->hasAsset(Mesh)){
 								updateMesh();
+								shared_ptr<Instance> parInst = Parent;
+								if(parInst){
+									if(shared_ptr<PVInstance> oInst = dynamic_pointer_cast<PVInstance>(parInst)){
+										irr::scene::ISceneNode* parIrrNode = oInst->getIrrNode();
+										if(parIrrNode){
+											parIrrNode->addChild(irrNode);
+										}
+									}
+								}
 							}else{
 								shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
 								assetLoc->addWaitingInstance(sharedThis);
@@ -103,10 +121,7 @@ namespace OB{
 									if(realMesh){
 										irr::scene::ISceneNode* oldNode = irrNode;
 										if(oldNode){
-											irr::scene::ISceneNode* irrPar = irrNode->getParent();
-											if(irrPar){
-												irrPar->removeChild(oldNode);
-											}
+										    oldNode->remove();
 										}
 
 										irrNode = smgr->addMeshSceneNode(realMesh);
@@ -117,20 +132,6 @@ namespace OB{
 											updateColor();
 											updatePosition();
 										    updateRotation();
-
-											shared_ptr<Instance> parInst = Parent;
-											if(parInst){
-												if(shared_ptr<PVInstance> oInst = dynamic_pointer_cast<PVInstance>(parInst)){
-													irr::scene::ISceneNode* parIrrNode = oInst->getIrrNode();
-													if(parIrrNode){
-													    parIrrNode->addChild(irrNode);
-													}
-												}
-											}
-										}
-
-										if(oldNode){
-										    oldNode->drop();
 										}
 									}
 								}
@@ -163,6 +164,15 @@ namespace OB{
 		bool MeshPart::assetLoaded(std::string res){
 			if(res == Mesh){
 				updateMesh();
+				shared_ptr<Instance> parInst = Parent;
+				if(parInst){
+					if(shared_ptr<PVInstance> oInst = dynamic_pointer_cast<PVInstance>(parInst)){
+						irr::scene::ISceneNode* parIrrNode = oInst->getIrrNode();
+						if(parIrrNode){
+							parIrrNode->addChild(irrNode);
+						}
+					}
+				}
 				return true;
 			}
 			
@@ -174,6 +184,12 @@ namespace OB{
 		    BasePart::replicateProperties(peer);
 			
 			peer->sendSetPropertyPacket(netId, "Mesh", make_shared<Type::VarWrapper>(Mesh));
+		}
+		#endif
+
+		#if HAVE_IRRLICHT
+		void MeshPart::newIrrlichtNode(){
+			updateMesh();
 		}
 		#endif
 

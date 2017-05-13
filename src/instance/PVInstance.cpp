@@ -19,6 +19,8 @@
 
 #include "instance/PVInstance.h"
 
+#include "OBEngine.h"
+
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS_ABS_WCLONE(PVInstance, Instance){
@@ -56,14 +58,54 @@ namespace OB{
 		irr::scene::ISceneNode* PVInstance::getIrrNode(){
 			return irrNode;
 		}
+
+		void PVInstance::newIrrlichtNode(){
+		    OBEngine* eng = OBEngine::getInstance();
+			if(eng){
+				irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
+				if(irrDev){
+					irr::scene::ISceneManager* sceneMgr = irrDev->getSceneManager();
+					if(sceneMgr){
+						irrNode = sceneMgr->addEmptySceneNode();
+					}
+				}
+			}
+		}
+
+		void _ob_pvinstance_removeIrrlichtNode(shared_ptr<Instance> thisNode){
+			std::vector<shared_ptr<Instance>> children = thisNode->GetChildren();
+			for(int i = 0; i < children.size(); i++){
+				shared_ptr<Instance> oInst = children.at(i);
+				if(oInst){
+					shared_ptr<PVInstance> poInst = dynamic_pointer_cast<PVInstance>(oInst);
+					if(poInst){
+						poInst->removeIrrlichtNode();
+					}else{
+						_ob_pvinstance_removeIrrlichtNode(oInst);
+					}
+				}
+			}
+		}
+
+		void PVInstance::removeIrrlichtNode(){
+			if(irrNode){
+				irrNode->remove();
+			}
+
+			for(int i = 0; i < children.size(); i++){
+				shared_ptr<Instance> oInst = children.at(i);
+				if(oInst){
+					_ob_pvinstance_removeIrrlichtNode(oInst);
+				}
+			}
+		}
 		
 		void PVInstance::removeChild(shared_ptr<Instance> kid){
 			if(kid){
 				if(shared_ptr<PVInstance> oInst = dynamic_pointer_cast<PVInstance>(kid)){
 					if(irrNode && oInst->irrNode){
-						if(oInst->irrNode->getParent() == irrNode){
-							irrNode->removeChild(oInst->irrNode);
-						}
+						oInst->irrNode->remove();
+						oInst->irrNode = NULL;
 					}
 				}
 				Instance::removeChild(kid);
@@ -73,8 +115,9 @@ namespace OB{
 		void PVInstance::addChild(shared_ptr<Instance> kid){
 			if(kid){
 				if(shared_ptr<PVInstance> oInst = dynamic_pointer_cast<PVInstance>(kid)){
-					if(irrNode && oInst->irrNode){
-				        oInst->irrNode->setParent(irrNode);
+					if(irrNode){
+						oInst->newIrrlichtNode();
+					    oInst->irrNode->setParent(irrNode);
 					}
 				}
 				Instance::addChild(kid);

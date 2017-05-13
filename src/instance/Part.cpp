@@ -34,38 +34,6 @@ namespace OB{
 			Name = ClassName;
 
 		    Size = make_shared<Type::Vector3>(1, 1, 1);
-
-			#if HAVE_IRRLICHT
-			OBEngine* eng = OBEngine::getInstance();
-			if(eng){
-				irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
-				if(irrDev){
-					irr::scene::ISceneManager* smgr = irrDev->getSceneManager();
-					if(smgr){
-						irrNode = smgr->addCubeSceneNode(1);
-						
-						if(irrNode){
-							irr::scene::IMeshSceneNode* mirrNode = (irr::scene::IMeshSceneNode*)irrNode;
-							mirrNode->setMaterialFlag(irr::video::EMF_LIGHTING, true);
-
-							updateColor();
-							updatePosition();
-							updateRotation();
-
-							shared_ptr<Instance> parInst = Parent;
-							if(parInst){
-								if(shared_ptr<PVInstance> oInst = dynamic_pointer_cast<PVInstance>(parInst)){
-									irr::scene::ISceneNode* parIrrNode = oInst->getIrrNode();
-									if(parIrrNode){
-										parIrrNode->addChild(irrNode);
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-			#endif
 		}
 
 	    Part::~Part(){}
@@ -149,6 +117,30 @@ namespace OB{
 		    BasePart::replicateProperties(peer);
 		    
 			peer->sendSetPropertyPacket(netId, "Size", make_shared<Type::VarWrapper>(Size));
+		}
+		#endif
+
+		#if HAVE_IRRLICHT
+		void Part::newIrrlichtNode(){
+			OBEngine* eng = OBEngine::getInstance();
+			if(eng){
+				irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
+				if(irrDev){
+					irr::scene::ISceneManager* smgr = irrDev->getSceneManager();
+					if(smgr){
+						irrNode = smgr->addCubeSceneNode(1);
+						
+						if(irrNode){
+							irr::scene::IMeshSceneNode* mirrNode = (irr::scene::IMeshSceneNode*)irrNode;
+							mirrNode->setMaterialFlag(irr::video::EMF_LIGHTING, true);
+
+							updateColor();
+							updatePosition();
+							updateRotation();
+						}
+					}
+				}
+			}
 		}
 		#endif
 
