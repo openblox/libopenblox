@@ -26,6 +26,10 @@
 
 #include <algorithm>
 
+#ifdef _MSC_VER
+#include <winsock2.h>
+#endif
+
 #ifdef _WIN32
 #include <windows.h>
 #include <stdlib.h>
@@ -47,7 +51,7 @@ namespace OB{
 	}
 
 	// Windows compat
-	#ifdef _WIN32
+    #ifdef _MSC_VER
 	char* realpath(const char* path, char resolved_path[PATH_MAX]){
 		char* return_path = 0;
 

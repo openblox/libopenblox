@@ -52,13 +52,13 @@ namespace OB{
 	 */
 	bool ob_str_startsWith(std::string str, std::string prefix);
 
-	#ifdef _WIN32
+	#ifdef _MSC_VER
 	#define PATH_MAX 260
 	
 	char* realpath(const char* path, char resolved_path[PATH_MAX]);
 	char* get_current_dir_name();
-
-	void usleep(__int64 usec);
+	
+	void usleep(ob_int64 usec);
 
 	int gettimeofday(struct timeval* tp, void* tzp);
 	#endif
