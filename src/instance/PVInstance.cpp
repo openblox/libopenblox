@@ -61,7 +61,9 @@ namespace OB{
 			if(kid){
 				if(shared_ptr<PVInstance> oInst = dynamic_pointer_cast<PVInstance>(kid)){
 					if(irrNode && oInst->irrNode){
-						irrNode->removeChild(oInst->irrNode);
+						if(oInst->irrNode->getParent() == irrNode){
+							irrNode->removeChild(oInst->irrNode);
+						}
 					}
 				}
 				Instance::removeChild(kid);
@@ -72,7 +74,7 @@ namespace OB{
 			if(kid){
 				if(shared_ptr<PVInstance> oInst = dynamic_pointer_cast<PVInstance>(kid)){
 					if(irrNode && oInst->irrNode){
-				    	irrNode->addChild(oInst->irrNode);
+				        oInst->irrNode->setParent(irrNode);
 					}
 				}
 				Instance::addChild(kid);
