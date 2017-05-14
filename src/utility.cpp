@@ -32,6 +32,7 @@
 #include <limits.h>
 #include <errno.h>
 #include <sys/stat.h>
+#include <direct.h>
 #endif
 
 namespace OB{
