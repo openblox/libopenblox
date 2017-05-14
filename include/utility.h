@@ -52,7 +52,7 @@ namespace OB{
 	 */
 	bool ob_str_startsWith(std::string str, std::string prefix);
 
-	#ifdef _MSC_VER
+	#ifdef _WIN32
 	#define PATH_MAX 260
 	
 	char* realpath(const char* path, char resolved_path[PATH_MAX]);

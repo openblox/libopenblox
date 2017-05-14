@@ -51,7 +51,7 @@ namespace OB{
 	}
 
 	// Windows compat
-    #ifdef _MSC_VER
+    #ifdef _WIN32
 	char* realpath(const char* path, char resolved_path[PATH_MAX]){
 		char* return_path = 0;
 
