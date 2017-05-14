@@ -76,7 +76,6 @@ namespace OB{
 		if(!newClassMetadata){
 			throw new OBException("newClassMetadata cannot be NULL.");
 		}
-		printf("Adding class %s\n", className.c_str());
 		metadataTable.insert(std::make_pair(className, newClassMetadata));
 	}
 
