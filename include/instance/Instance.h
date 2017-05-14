@@ -75,6 +75,7 @@ typedef void (*luaRegisterFunc)(lua_State* L);
 	virtual std::string getClassName(); \
 	virtual std::string getLuaClassName(); \
 	static OB::ClassMetadata* _ob_classmetadata; \
+	static void registerClass(); \
 	static void _ob_init(); \
 protected: \
 	static std::string ClassName; \
@@ -89,13 +90,14 @@ protected: \
 	std::string Class_Name::getLuaClassName(){ \
 		return LuaClassName; \
 	} \
-	OB::ClassMetadata* Class_Name::_ob_classmetadata = new Class_Name##ClassMetadata; \
+	OB::ClassMetadata* Class_Name::_ob_classmetadata = NULL; \
+    void Class_Name::registerClass(){ _ob_classmetadata = new Class_Name##_ClassMetadata; } \
 	void Class_Name::_ob_init()
 
 #define DEFINE_CLASS(Class_Name, isInstable, isAService, ParentClass) \
-	class Class_Name##ClassMetadata: public OB::ClassMetadata{ \
+	class Class_Name##_ClassMetadata: public OB::ClassMetadata{ \
 		public: \
-		Class_Name##ClassMetadata(){ \
+		Class_Name##_ClassMetadata(){ \
 			OB::ClassFactory::addClass(#Class_Name, this); \
 		} \
 		virtual shared_ptr<OB::Instance::Instance> newInstance(){ \
@@ -124,9 +126,9 @@ protected: \
     _OB_DEFCLASS_SHARED(Class_Name)
 
 #define DEFINE_CLASS_ABS(Class_Name, ParentClass) \
-    class Class_Name##ClassMetadata: public OB::ClassMetadata{ \
+    class Class_Name##_ClassMetadata: public OB::ClassMetadata{ \
 		public: \
-		Class_Name##ClassMetadata(){ \
+		Class_Name##_ClassMetadata(){ \
 			OB::ClassFactory::addClass(#Class_Name, this); \
 		} \
 		virtual shared_ptr<OB::Instance::Instance> newInstance(){ \
@@ -155,9 +157,9 @@ protected: \
 	_OB_DEFCLASS_SHARED(Class_Name)
 
 #define DEFINE_CLASS_ABS_WCLONE(Class_Name, ParentClass) \
-    class Class_Name##ClassMetadata: public OB::ClassMetadata{ \
+    class Class_Name##_ClassMetadata: public OB::ClassMetadata{ \
 		public: \
-		Class_Name##ClassMetadata(){ \
+		Class_Name##_ClassMetadata(){ \
 			OB::ClassFactory::addClass(#Class_Name, this); \
 		} \
 		virtual shared_ptr<OB::Instance::Instance> newInstance(){ \

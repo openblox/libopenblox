@@ -132,9 +132,23 @@ namespace OB{
 			 * @author John M. Harris, Jr.
 			 */
 			static void initClasses();
+
+			/**
+			 * Registers core classes with the ClassFactory.
+			 * This is safe to call at any time. It is suggested that,
+			 * if you want to register your own instance classes, you
+			 * call this before the creation of OBEngine. However, 
+			 * this is not a requirement, as the constructor for
+			 * OBEngine calls this function, and you can register a
+			 * class at any point in the execution of a program.
+			 *
+			 * @author John M. Harris, Jr.
+			 */
+			static void registerCoreClasses();
 			
 		private:
 			static std::map<std::string, ClassMetadata*> metadataTable;
+			static bool isInitialized;
 	};
 }
 

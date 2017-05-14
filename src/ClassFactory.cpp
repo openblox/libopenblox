@@ -21,8 +21,46 @@
 
 #include "OBException.h"
 
+//Alllllll Instances
+#include "instance/Instance.h"
+#include "instance/PVInstance.h"
+#include "instance/Model.h"
+#include "instance/BindableEvent.h"
+#include "instance/ServiceProvider.h"
+#include "instance/Lighting.h"
+#include "instance/ContentProvider.h"
+#include "instance/BasePlayerGui.h"
+#include "instance/CoreGui.h"
+#include "instance/StarterGui.h"
+#include "instance/RunService.h"
+#include "instance/TaskScheduler.h"
+#include "instance/ReplicatedStorage.h"
+#include "instance/ReplicatedFirst.h"
+#include "instance/PlayerGui.h"
+#include "instance/Workspace.h"
+#include "instance/LogService.h"
+#include "instance/DataModel.h"
+#include "instance/Humanoid.h"
+#include "instance/Folder.h"
+#include "instance/BasePart.h"
+#include "instance/MeshPart.h"
+#include "instance/Part.h"
+#include "instance/BoolValue.h"
+#include "instance/DoubleConstrainedValue.h"
+#include "instance/Color3Value.h"
+#include "instance/IntConstrainedValue.h"
+#include "instance/IntValue.h"
+#include "instance/NumberValue.h"
+#include "instance/NetworkReplicator.h"
+#include "instance/ClientReplicator.h"
+#include "instance/ServerReplicator.h"
+#include "instance/NetworkPeer.h"
+#include "instance/NetworkServer.h"
+#include "instance/NetworkClient.h"
+
 namespace OB{
 	std::map<std::string, ClassMetadata*> ClassFactory::metadataTable;
+	bool ClassFactory::isInitialized = false;
 
 	std::vector<std::string> ClassFactory::getRegisteredClasses(){
 		std::vector<std::string> regged;
@@ -98,5 +136,48 @@ namespace OB{
 		for(std::map<std::string, ClassMetadata*>::iterator it = metadataTable.begin(); it != metadataTable.end(); ++it){
 			it->second->getInitFunc()();
 		}
+	}
+
+    void ClassFactory::registerCoreClasses(){
+		if(isInitialized){
+			return;
+		}
+		isInitialized = true;
+		
+		Instance::Instance::registerClass();
+		Instance::PVInstance::registerClass();
+		Instance::Model::registerClass();
+	    Instance::BindableEvent::registerClass();
+		Instance::ServiceProvider::registerClass();
+		Instance::Lighting::registerClass();
+		Instance::ContentProvider::registerClass();
+		Instance::BasePlayerGui::registerClass();
+		Instance::CoreGui::registerClass();
+		Instance::StarterGui::registerClass();
+		Instance::RunService::registerClass();
+		Instance::TaskScheduler::registerClass();
+		Instance::ReplicatedStorage::registerClass();
+		Instance::ReplicatedFirst::registerClass();
+		Instance::PlayerGui::registerClass();
+		Instance::Workspace::registerClass();
+		Instance::LogService::registerClass();
+		Instance::DataModel::registerClass();
+		Instance::Humanoid::registerClass();
+		Instance::Folder::registerClass();
+		Instance::BasePart::registerClass();
+		Instance::MeshPart::registerClass();
+		Instance::Part::registerClass();
+		Instance::BoolValue::registerClass();
+		Instance::DoubleConstrainedValue::registerClass();
+		Instance::Color3Value::registerClass();
+		Instance::IntConstrainedValue::registerClass();
+		Instance::IntValue::registerClass();
+		Instance::NumberValue::registerClass();
+		Instance::NetworkReplicator::registerClass();
+		Instance::ClientReplicator::registerClass();
+		Instance::ServerReplicator::registerClass();
+		Instance::NetworkPeer::registerClass();
+		Instance::NetworkServer::registerClass();
+		Instance::NetworkClient::registerClass();
 	}
 }

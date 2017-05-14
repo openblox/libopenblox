@@ -55,6 +55,8 @@ namespace OB{
 		}
 		inst = this;
 
+		ClassFactory::registerCoreClasses();
+
 		initialized = false;
 		startTime = currentTimeMillis();
 		_isRunning = false;
