@@ -39,7 +39,7 @@ namespace OB{
 			throw new OBException("newClassMetadata cannot be NULL.");
 		}
 		printf("Adding class %s\n", className.c_str());
-		metadataTable.emplace(std::make_pair(className, newClassMetadata));
+		metadataTable.insert(std::make_pair(className, newClassMetadata));
 	}
 
 	bool ClassFactory::canCreate(std::string className){
