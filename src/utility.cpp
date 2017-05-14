@@ -152,6 +152,7 @@ namespace OB{
 		CloseHandle(timer);
 	}
 
+	#ifdef _MSC_VER
 	int gettimeofday(struct timeval* tp, void* tzp){
 		// Note: some broken versions only have 8 trailing zero's, the correct epoch has 9 trailing zero's
 		// This magic number is the number of 100 nanosecond intervals since January 1, 1601 (UTC)
@@ -171,5 +172,6 @@ namespace OB{
 		tp->tv_usec = (long) (system_time.wMilliseconds * 1000);
 		return 0;
 	}
+	#endif
 	#endif
 }

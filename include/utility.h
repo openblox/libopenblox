@@ -60,7 +60,9 @@ namespace OB{
 	
 	void usleep(ob_int64 usec);
 
+	#ifdef _MSC_VER
 	int gettimeofday(struct timeval* tp, void* tzp);
+	#endif
 	#endif
 }
 
