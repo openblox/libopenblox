@@ -67,7 +67,7 @@ instance/NetworkClient.cpp \
 utility.cpp
 
 # Linker options
-libopenblox_la_LDFLAGS = $(LIRRLICHT_LIBS) $(LBULLET_LIBS) $(LCURL_LIBS) $(LENET_LIBS) $(LLUA_LIBS)
+libopenblox_la_LDFLAGS = $(LIRRLICHT_LIBS) $(LPUGIXML_LIBS) $(LBULLET_LIBS) $(LCURL_LIBS) $(LENET_LIBS) $(LLUA_LIBS)
 
 # Compiler options. Here we are adding the include directory
 # to be searched for headers included in the source code.
