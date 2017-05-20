@@ -64,7 +64,7 @@ namespace OB{
 
 			void tick();
 
-			void loadAssetSync(std::string url, bool decCount = false);
+			void loadAssetSync(std::string url, bool decCount = false, bool allowFile = false);
 			static int loadAssetAsyncTask(void* metad, ob_int64 startTime);
 			void loadAsset(std::string url);
 			shared_ptr<AssetResponse> getAsset(std::string url, bool loadIfNotPresent = false);

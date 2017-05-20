@@ -125,7 +125,7 @@ namespace OB{
 		return n;
 	}
 
-    void AssetLocator::loadAssetSync(std::string url, bool decCount){
+    void AssetLocator::loadAssetSync(std::string url, bool decCount, bool allowFile){
 	    pthread_mutex_lock(&mmutex);
 		
 		if(url.empty()){
@@ -136,7 +136,7 @@ namespace OB{
 			return;
 		}
 
-		if(ob_str_startsWith(url, "file://")){
+		if(!allowFile && ob_str_startsWith(url, "file://")){
 			if(decCount){
 			    requestQueueSize--;
 			}

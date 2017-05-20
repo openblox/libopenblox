@@ -55,6 +55,10 @@ namespace OB{
 		}
 		inst = this;
 
+	    #if HAVE_PUGIXML
+		serializer = make_shared<OBSerializer>(this);
+		#endif
+
 		ClassFactory::registerCoreClasses();
 
 		initialized = false;
@@ -101,6 +105,10 @@ namespace OB{
 
 	shared_ptr<TaskScheduler> OBEngine::getSecondaryTaskScheduler(){
 		return secondaryTaskSched;
+	}
+
+    shared_ptr<OBSerializer> OBEngine::getSerializer(){
+		return serializer;
 	}
 
 	void* _ob_eng_secondaryTaskThread(void* vobEng){

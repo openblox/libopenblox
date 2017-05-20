@@ -11,3 +11,6 @@
 
 /* Define to 1 if you have the `Irrlicht' library (-lIrrlicht). */
 #undef HAVE_IRRLICHT
+
+/* Define to 1 if you have the `pugixml' library (-lpugixml). */
+#undef HAVE_PUGIXML

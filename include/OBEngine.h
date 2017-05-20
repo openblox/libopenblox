@@ -36,6 +36,7 @@
 
 #include "OBLogger.h"
 #include "AssetLocator.h"
+#include "OBSerializer.h"
 
 #include <lua/OBLua.h>
 
@@ -51,7 +52,7 @@ namespace OB{
 	#ifndef OB_TASKSCHEDULER
 	class TaskScheduler;
 	#endif
-	
+
 	/**
 	 * This is the main class of the OpenBlox engine. This class is
 	 * the hierarchical parent of everything else in the engine,
@@ -88,6 +89,14 @@ namespace OB{
 			 * @author John M. Harris, Jr.
 			 */
 			shared_ptr<TaskScheduler> getSecondaryTaskScheduler();
+
+			/**
+			 * Returns the serializer.
+			 *
+			 * @returns Instance of OBSerializer
+			 * @author John M. Harris, Jr.
+			 */
+			shared_ptr<OBSerializer> getSerializer();
 
 			/**
 			 * Initializes the OpenBlox engine.
@@ -336,6 +345,7 @@ namespace OB{
 			shared_ptr<TaskScheduler> taskSched;
 			shared_ptr<TaskScheduler> secondaryTaskSched;
 			shared_ptr<AssetLocator> assetLocator;
+			shared_ptr<OBSerializer> serializer;
 			shared_ptr<Instance::DataModel> dm;
 
 			static OBEngine* inst;

@@ -64,6 +64,7 @@ instance/ServerReplicator.cpp \
 instance/NetworkPeer.cpp \
 instance/NetworkServer.cpp \
 instance/NetworkClient.cpp \
+OBSerializer.cpp \
 utility.cpp
 
 # Linker options
