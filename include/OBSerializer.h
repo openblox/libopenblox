@@ -23,8 +23,14 @@
 #include "instance/Instance.h"
 #endif
 
+#include <string>
+#include <map>
+
 #ifndef OB_OBSERIALIZER
 #define OB_OBSERIALIZER
+
+// We're on version 1 of the XML format
+#define OB_SERIALIZER_XML_CURRENT_VERSION_ID 1
 
 namespace OB{
 	class OBEngine;
@@ -34,15 +40,22 @@ namespace OB{
 			OBSerializer(OBEngine* eng);
 			
 			#if HAVE_PUGIXML
-			shared_ptr<Instance::Instance> LoadInstance(std::string resURI);
+			shared_ptr<Instance::Instance> LoadModel(std::string resURI);
 			shared_ptr<Instance::Instance> Load(std::string resURI);
-		    bool SaveInstance(shared_ptr<Instance::Instance> inst, std::string file);
+		    bool SaveModel(shared_ptr<Instance::Instance> model, std::string file);
+			std::string SaveModelInMemory(shared_ptr<Instance::Instance> model);
 			bool Save(std::string file);
 			std::string SaveInMemory();
 			#endif
+
+			std::string GetID(shared_ptr<Instance::Instance> inst);
+			void SetID(shared_ptr<Instance::Instance> inst, std::string newId);
 			
 		private:
 			OBEngine* eng;
+			
+			std::map<shared_ptr<Instance::Instance>, std::string> instanceMap;
+			int dynamic_instance_count;
 	};
 }
 

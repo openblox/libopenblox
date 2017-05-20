@@ -225,6 +225,14 @@ namespace OB{
 		}
 		
 	    void DataModel::deserialize(pugi::xml_node thisNode){}
+
+	    std::string DataModel::serializedID(){
+			OBEngine* eng = OBEngine::getInstance();
+			shared_ptr<OBSerializer> serializer = eng->getSerializer();
+			serializer->SetID(shared_from_this(), "game");
+			
+			return Instance::serializedID();
+		}
 		#endif
 
 		int DataModel::lua_Shutdown(lua_State* L){

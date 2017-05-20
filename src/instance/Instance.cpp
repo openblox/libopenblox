@@ -331,6 +331,7 @@ namespace OB{
 				pugi::xml_node thisNode = parentNode.append_child(pugi::node_element);
 				thisNode.set_name("instance");
 			    thisNode.append_attribute("type").set_value(getClassName().c_str());
+				thisNode.append_attribute("id").set_value(serializedID().c_str());
 
 				serializeProperties(thisNode);
 				serializeChildren(thisNode);
@@ -363,42 +364,42 @@ namespace OB{
 					propNode.append_attribute("type").set_value(pi.type.c_str());
 
 					if(pi.type == "string"){
-						propNode.append_attribute("value").set_value(getProperty(name)->asString().c_str());
+						propNode.text().set(getProperty(name)->asString().c_str());
 					}
 					if(pi.type == "int"){
-						propNode.append_attribute("value").set_value(getProperty(name)->asInt());
+						propNode.text().set(getProperty(name)->asInt());
 					}
 					if(pi.type == "bool"){
-						propNode.append_attribute("value").set_value(getProperty(name)->asBool());
+						propNode.text().set(getProperty(name)->asBool());
 					}
 					if(pi.type == "double"){
-						propNode.append_attribute("value").set_value(getProperty(name)->asDouble());
+						propNode.text().set(getProperty(name)->asDouble());
 					}
 					if(pi.type == "float"){
-						propNode.append_attribute("value").set_value(getProperty(name)->asFloat());
+						propNode.text().set(getProperty(name)->asFloat());
 					}
 					if(pi.type == "Color3"){
 						shared_ptr<Type::Color3> vval = getProperty(name)->asColor3();
 						if(vval){
-							propNode.append_attribute("value").set_value(vval->toString().c_str());
+							propNode.text().set(vval->toString().c_str());
 						}else{
-							propNode.append_attribute("value").set_value("0, 0, 0");
+							propNode.text().set("0, 0, 0");
 						}
 					}
 					if(pi.type == "Vector2"){
 						shared_ptr<Type::Vector2> vval = getProperty(name)->asVector2();
 						if(vval){
-							propNode.append_attribute("value").set_value(vval->toString().c_str());
+							propNode.text().set(vval->toString().c_str());
 						}else{
-							propNode.append_attribute("value").set_value("0, 0");
+							propNode.text().set("0, 0");
 						}
 					}
 					if(pi.type == "Vector3"){
 						shared_ptr<Type::Vector3> vval = getProperty(name)->asVector3();
 						if(vval){
-							propNode.append_attribute("value").set_value(vval->toString().c_str());
+							propNode.text().set(vval->toString().c_str());
 						}else{
-							propNode.append_attribute("value").set_value("0, 0, 0");
+							propNode.text().set("0, 0, 0");
 						}
 					}
 				}
@@ -406,6 +407,12 @@ namespace OB{
 		}
 		
 		void Instance::deserialize(pugi::xml_node thisNode){}
+
+		std::string Instance::serializedID(){
+			OBEngine* eng = OBEngine::getInstance();
+		    shared_ptr<OBSerializer> serializer = eng->getSerializer();
+			return serializer->GetID(shared_from_this());
+		}
 		#endif
 
 		std::map<std::string, _PropertyInfo> Instance::getProperties(){

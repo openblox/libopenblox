@@ -426,6 +426,7 @@ namespace OB{
 				virtual void serializeChildren(pugi::xml_node parentNode);
 				virtual void serializeProperties(pugi::xml_node thisNode);
 				virtual void deserialize(pugi::xml_node thisNode);
+				virtual std::string serializedID();
 				#endif
 
 				virtual std::map<std::string, _PropertyInfo> getProperties();
