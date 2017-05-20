@@ -213,6 +213,20 @@ namespace OB{
 		}
 		#endif
 
+		#if HAVE_PUGIXML
+	    void DataModel::serialize(pugi::xml_node parentNode){
+			if(Archivable){
+				pugi::xml_node thisNode = parentNode.append_child(pugi::node_element);
+				thisNode.set_name("game");
+
+				serializeProperties(thisNode);
+				serializeChildren(thisNode);
+			}
+		}
+		
+	    void DataModel::deserialize(pugi::xml_node thisNode){}
+		#endif
+
 		int DataModel::lua_Shutdown(lua_State* L){
 		    shared_ptr<Instance> inst = checkInstance(L, 1, false);
 			

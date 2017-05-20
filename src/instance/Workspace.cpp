@@ -158,9 +158,9 @@ namespace OB{
 
 		std::map<std::string, _PropertyInfo> Workspace::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
-			propMap["Gravity"] = {"Vector3", false, true};
-			propMap["FallenPartsDestroyHeight"] = {"double", false, true};
-			propMap["DestroyFallenParts"] = {"bool", false, true};
+			propMap["Gravity"] = {"Vector3", false, true, true};
+			propMap["FallenPartsDestroyHeight"] = {"double", false, true, true};
+			propMap["DestroyFallenParts"] = {"bool", false, true, true};
 
 			return propMap;
 		}

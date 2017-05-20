@@ -72,7 +72,7 @@ namespace OB{
 
 		std::map<std::string, _PropertyInfo> NumberValue::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
-			propMap["Value"] = {"double", false, true};
+			propMap["Value"] = {"double", false, true, true};
 
 			return propMap;
 		}

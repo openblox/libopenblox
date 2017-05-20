@@ -195,7 +195,7 @@ namespace OB{
 
 		std::map<std::string, _PropertyInfo> MeshPart::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = BasePart::getProperties();
-			propMap["Mesh"] = {"string", false, true};
+			propMap["Mesh"] = {"string", false, true, true};
 
 			return propMap;
 		}

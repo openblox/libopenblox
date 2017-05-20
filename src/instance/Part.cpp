@@ -147,7 +147,7 @@ namespace OB{
 
 		std::map<std::string, _PropertyInfo> Part::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = BasePart::getProperties();
-			propMap["Size"] = {"Vector3", false, true};
+			propMap["Size"] = {"Vector3", false, true, true};
 
 			return propMap;
 		}

@@ -75,7 +75,7 @@ namespace OB{
 
 		std::map<std::string, _PropertyInfo> Color3Value::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
-			propMap["Value"] = {"Color3", false, true};
+			propMap["Value"] = {"Color3", false, true, true};
 
 			return propMap;
 		}

@@ -36,6 +36,10 @@
 #include <enet/enet.h>
 #endif
 
+#if HAVE_PUGIXML
+#include <pugixml.hpp>
+#endif
+
 #ifndef OB_INST_INSTANCE
 #define OB_INST_INSTANCE
 
@@ -221,6 +225,7 @@ namespace OB{
 				std::string type;
 				bool readOnly;
 				bool isPublic;
+				bool isSerialized;
 		};
 		
 		/**
@@ -414,6 +419,13 @@ namespace OB{
 				 * @author John M. Harris, Jr.
 				 */
 				virtual void replicateChildren(shared_ptr<NetworkReplicator> peer);
+				#endif
+
+				#if HAVE_PUGIXML
+				virtual void serialize(pugi::xml_node parentNode);
+				virtual void serializeChildren(pugi::xml_node parentNode);
+				virtual void serializeProperties(pugi::xml_node thisNode);
+				virtual void deserialize(pugi::xml_node thisNode);
 				#endif
 
 				virtual std::map<std::string, _PropertyInfo> getProperties();

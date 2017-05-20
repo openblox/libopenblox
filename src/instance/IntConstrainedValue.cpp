@@ -104,9 +104,9 @@ namespace OB{
 
 		std::map<std::string, _PropertyInfo> IntConstrainedValue::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
-			propMap["Value"] = {"int", false, true};
-			propMap["MinValue"] = {"int", false, true};
-			propMap["MaxValue"] = {"int", false, true};
+			propMap["Value"] = {"int", false, true, true};
+			propMap["MinValue"] = {"int", false, true, true};
+			propMap["MaxValue"] = {"int", false, true, true};
 
 			return propMap;
 		}

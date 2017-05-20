@@ -138,6 +138,11 @@ namespace OB{
 				 */
 				virtual void replicateChildren(shared_ptr<NetworkReplicator> peer);
 				#endif
+
+				#if HAVE_PUGIXML
+				virtual void serialize(pugi::xml_node parentNode);
+				virtual void deserialize(pugi::xml_node thisNode);
+				#endif
 				
 				DECLARE_CLASS(DataModel);
 

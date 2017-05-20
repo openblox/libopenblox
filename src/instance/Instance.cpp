@@ -28,6 +28,10 @@
 #include "instance/NetworkReplicator.h"
 #include "instance/NetworkServer.h"
 
+#include "type/Color3.h"
+#include "type/Vector3.h"
+#include "type/Vector2.h"
+
 #include <iostream>
 
 namespace OB{
@@ -308,7 +312,7 @@ namespace OB{
 		}
 
 		void Instance::replicateChildren(shared_ptr<NetworkReplicator> peer){
-			std::vector<shared_ptr<Instance>> kids = GetChildren();
+			std::vector<shared_ptr<Instance>> kids = children;
 			
 			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
 				shared_ptr<Instance> kid = kids[i];
@@ -321,11 +325,93 @@ namespace OB{
 		}
 		#endif
 
+		#if HAVE_PUGIXML
+	    void Instance::serialize(pugi::xml_node parentNode){
+			if(Archivable){
+				pugi::xml_node thisNode = parentNode.append_child(pugi::node_element);
+				thisNode.set_name("instance");
+			    thisNode.append_attribute("type").set_value(getClassName().c_str());
+
+				serializeProperties(thisNode);
+				serializeChildren(thisNode);
+			}
+		}
+
+		void Instance::serializeChildren(pugi::xml_node parentNode){
+			std::vector<shared_ptr<Instance>> kids = children;
+			
+			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
+				shared_ptr<Instance> kid = kids[i];
+				if(kid){
+					if(kid->Archivable){
+						kid->serialize(parentNode);
+					}
+				}
+			}
+		}
+
+		void Instance::serializeProperties(pugi::xml_node thisNode){
+			std::map<std::string, _PropertyInfo> props = getProperties();
+			for(auto it = props.begin(); it != props.end(); ++it){
+				std::string name = it->first;
+				_PropertyInfo pi = it->second;
+
+				if(pi.isSerialized){
+					pugi::xml_node propNode = thisNode.append_child(pugi::node_element);
+					propNode.set_name("property");
+					propNode.append_attribute("name").set_value(name.c_str());
+
+					if(pi.type == "string"){
+						propNode.append_attribute("value").set_value(getProperty(name)->asString().c_str());
+					}
+					if(pi.type == "int"){
+						propNode.append_attribute("value").set_value(getProperty(name)->asInt());
+					}
+					if(pi.type == "bool"){
+						propNode.append_attribute("value").set_value(getProperty(name)->asBool());
+					}
+					if(pi.type == "double"){
+						propNode.append_attribute("value").set_value(getProperty(name)->asDouble());
+					}
+					if(pi.type == "float"){
+						propNode.append_attribute("value").set_value(getProperty(name)->asFloat());
+					}
+					if(pi.type == "Color3"){
+						shared_ptr<Type::Color3> vval = getProperty(name)->asColor3();
+						if(vval){
+							propNode.append_attribute("value").set_value(vval->toString().c_str());
+						}else{
+							propNode.append_attribute("value").set_value("0, 0, 0");
+						}
+					}
+					if(pi.type == "Vector2"){
+						shared_ptr<Type::Vector2> vval = getProperty(name)->asVector2();
+						if(vval){
+							propNode.append_attribute("value").set_value(vval->toString().c_str());
+						}else{
+							propNode.append_attribute("value").set_value("0, 0");
+						}
+					}
+					if(pi.type == "Vector3"){
+						shared_ptr<Type::Vector3> vval = getProperty(name)->asVector3();
+						if(vval){
+							propNode.append_attribute("value").set_value(vval->toString().c_str());
+						}else{
+							propNode.append_attribute("value").set_value("0, 0, 0");
+						}
+					}
+				}
+			}
+		}
+		
+		void Instance::deserialize(pugi::xml_node thisNode){}
+		#endif
+
 		std::map<std::string, _PropertyInfo> Instance::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap;
-			propMap["Name"] = {"string", false, true};
-			propMap["Archivable"] = {"bool", false, true};
-			propMap["ClassName"] = {"string", true, true};
+			propMap["Name"] = {"string", false, true, true};
+			propMap["Archivable"] = {"bool", false, true, false};
+			propMap["ClassName"] = {"string", true, true, false};
 
 			return propMap;
 		}

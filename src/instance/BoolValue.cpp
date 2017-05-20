@@ -72,7 +72,7 @@ namespace OB{
 
 		std::map<std::string, _PropertyInfo> BoolValue::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
-			propMap["Value"] = {"bool", false, true};
+			propMap["Value"] = {"bool", false, true, true};
 
 			return propMap;
 		}

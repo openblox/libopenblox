@@ -104,9 +104,9 @@ namespace OB{
 
 		std::map<std::string, _PropertyInfo> DoubleConstrainedValue::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
-			propMap["Value"] = {"double", false, true};
-			propMap["MinValue"] = {"double", false, true};
-			propMap["MaxValue"] = {"double", false, true};
+			propMap["Value"] = {"double", false, true, true};
+			propMap["MinValue"] = {"double", false, true, true};
+			propMap["MaxValue"] = {"double", false, true, true};
 
 			return propMap;
 		}

@@ -203,13 +203,13 @@ namespace OB{
 
 		std::map<std::string, _PropertyInfo> BasePart::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
-			propMap["Anchored"] = {"bool", false, true};
-			propMap["Color"] = {"Color3", false, true};
-			propMap["CanCollide"] = {"bool", false, true};
-			propMap["Locked"] = {"bool", false, true};
-			propMap["Transparency"] = {"double", false, true};
-			propMap["Position"] = {"Vector3", false, true};
-			propMap["Rotation"] = {"Vector3", false, true};
+			propMap["Anchored"] = {"bool", false, true, true};
+			propMap["Color"] = {"Color3", false, true, true};
+			propMap["CanCollide"] = {"bool", false, true, true};
+			propMap["Locked"] = {"bool", false, true, true};
+			propMap["Transparency"] = {"double", false, true, true};
+			propMap["Position"] = {"Vector3", false, true, false};
+			propMap["Rotation"] = {"Vector3", false, true, false};
 
 			return propMap;
 		}

@@ -187,11 +187,11 @@ namespace OB{
 
 		std::map<std::string, _PropertyInfo> Lighting::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
-			propMap["SkyColor"] = {"Color3", false, true};
-			propMap["FogEnabled"] = {"bool", false, true};
-			propMap["FogColor"] = {"Color3", false, true};
-			propMap["FogStart"] = {"float", false, true};
-			propMap["FogEnd"] = {"float", false, true};
+			propMap["SkyColor"] = {"Color3", false, true, true};
+			propMap["FogEnabled"] = {"bool", false, true, true};
+			propMap["FogColor"] = {"Color3", false, true, true};
+			propMap["FogStart"] = {"float", false, true, true};
+			propMap["FogEnd"] = {"float", false, true, true};
 
 			return propMap;
 		}

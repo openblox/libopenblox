@@ -236,16 +236,16 @@ namespace OB{
 
 		std::map<std::string, _PropertyInfo> Humanoid::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
-			propMap["Health"] = {"double", false, true};
-			propMap["MaxHealth"] = {"double", false, true};
-			propMap["Invincible"] = {"bool", false, true};
-			propMap["NameVisible"] = {"bool", false, true};
-			propMap["HealthVisible"] = {"bool", false, true};
-			propMap["JumpPower"] = {"double", false, true};
-			propMap["WalkSpeed"] = {"double", false, true};
-			propMap["MoveDirection"] = {"Vector3", true, true};
-			propMap["State"] = {"int", false, true};
-			propMap["WalkTarget"] = {"Vector3", true, true};
+			propMap["Health"] = {"double", false, true, true};
+			propMap["MaxHealth"] = {"double", false, true, true};
+			propMap["Invincible"] = {"bool", false, true, true};
+			propMap["NameVisible"] = {"bool", false, true, true};
+			propMap["HealthVisible"] = {"bool", false, true, true};
+			propMap["JumpPower"] = {"double", false, true, true};
+			propMap["WalkSpeed"] = {"double", false, true, true};
+			propMap["MoveDirection"] = {"Vector3", true, true, true};
+			propMap["State"] = {"int", false, true, true};
+			propMap["WalkTarget"] = {"Vector3", true, true, true};
 
 			return propMap;
 		}
