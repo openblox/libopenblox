@@ -194,7 +194,7 @@ namespace OB{
 				shared_ptr<Instance::Instance> inst = *static_cast<shared_ptr<Instance::Instance>*>(wrapped);
 			    return inst;
 			}
-			return NULL;
+		    return shared_ptr<Instance::Instance>(NULL);
 		}
 
 		shared_ptr<Type> VarWrapper::asType(){
@@ -202,7 +202,7 @@ namespace OB{
 				shared_ptr<Type> tp = *static_cast<shared_ptr<Type>*>(wrapped);
 				return tp;
 			}
-			return NULL;
+			return shared_ptr<Type>(NULL);
 		}
 
 		shared_ptr<Vector3> VarWrapper::asVector3(){
@@ -210,7 +210,7 @@ namespace OB{
 				shared_ptr<Type> tp = *static_cast<shared_ptr<Type>*>(wrapped);
 				return dynamic_pointer_cast<Vector3>(tp);
 			}
-			return NULL;
+		    return make_shared<Vector3>(0, 0, 0);
 		}
 
 		shared_ptr<Vector2> VarWrapper::asVector2(){
@@ -218,15 +218,15 @@ namespace OB{
 				shared_ptr<Type> tp = *static_cast<shared_ptr<Type>*>(wrapped);
 				return dynamic_pointer_cast<Vector2>(tp);
 			}
-			return NULL;
+			return make_shared<Vector2>(0, 0);
 		}
 
 		shared_ptr<Color3> VarWrapper::asColor3(){
 			if(type == TYPE_TYPE){
 				shared_ptr<Type> tp = *static_cast<shared_ptr<Type>*>(wrapped);
-				return dynamic_pointer_cast<Color3>(tp);
+			    return dynamic_pointer_cast<Color3>(tp);
 			}
-			return NULL;
+			return make_shared<Color3>(0, 0, 0);
 		}
 
 		bool VarWrapper::valueEquals(shared_ptr<VarWrapper> other){
