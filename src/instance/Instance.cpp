@@ -360,6 +360,7 @@ namespace OB{
 					pugi::xml_node propNode = thisNode.append_child(pugi::node_element);
 					propNode.set_name("property");
 					propNode.append_attribute("name").set_value(name.c_str());
+					propNode.append_attribute("type").set_value(pi.type.c_str());
 
 					if(pi.type == "string"){
 						propNode.append_attribute("value").set_value(getProperty(name)->asString().c_str());
