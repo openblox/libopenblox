@@ -39,10 +39,11 @@
 #endif
 
 namespace OB{
-	AssetResponse::AssetResponse(size_t size, char* data, std::string resURI){
+	AssetResponse::AssetResponse(size_t size, char* data, std::string resURI, OBEngine* eng){
 		this->size = size;
 		this->data = data;
 		this->resURI = resURI;
+		this->eng = eng;
 	}
 
 	AssetResponse::~AssetResponse(){
@@ -65,16 +66,13 @@ namespace OB{
 
 	#if HAVE_IRRLICHT
 	irr::io::IReadFile* AssetResponse::toIReadFile(){
-		OBEngine* eng = OBEngine::getInstance();
-		if(eng){
-			irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
-			if(irrDev){
-				irr::scene::ISceneManager* smgr = irrDev->getSceneManager();
-				if(smgr){
-					irr::io::IFileSystem* ifs = smgr->getFileSystem();
-					if(ifs){
-						return ifs->createMemoryReadFile((void*)data, size, resURI.c_str(), false);
-					}
+		irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
+		if(irrDev){
+			irr::scene::ISceneManager* smgr = irrDev->getSceneManager();
+			if(smgr){
+				irr::io::IFileSystem* ifs = smgr->getFileSystem();
+				if(ifs){
+					return ifs->createMemoryReadFile((void*)data, size, resURI.c_str(), false);
 				}
 			}
 		}
@@ -82,10 +80,12 @@ namespace OB{
 	}
 	#endif
 	
-    AssetLocator::AssetLocator(){
+    AssetLocator::AssetLocator(OBEngine* eng){
+		this->eng = eng;
+		
 		requestQueueSize = 0;
 
-		loadingResponse = make_shared<AssetResponse>(0, (char*)NULL, "loading://null");
+		loadingResponse = make_shared<AssetResponse>(0, (char*)NULL, "loading://null", eng);
 		
 		pthread_mutex_init(&mmutex, NULL);
 	}
@@ -163,7 +163,6 @@ namespace OB{
 				char* thisDir = get_current_dir_name();
 				if(realRes){
 					if(!ob_str_startsWith(canonPath, std::string(realRes)) || !ob_str_startsWith(canonPath, std::string(thisDir))){
-						OBEngine* eng = OBEngine::getInstance();
 						shared_ptr<Instance::DataModel> dm = eng->getDataModel();
 						shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
 						shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
@@ -172,7 +171,7 @@ namespace OB{
 						fireArgs.push_back(make_shared<Type::VarWrapper>(url));
 						fireArgs.push_back(make_shared<Type::VarWrapper>("File not under resource directory."));
 
-						AssetLoadFailed->Fire(fireArgs);
+						AssetLoadFailed->Fire(eng, fireArgs);
 			
 						if(decCount){
 							requestQueueSize--;
@@ -186,7 +185,6 @@ namespace OB{
 					}
 				}else{
 					if(!ob_str_startsWith(canonPath, std::string(thisDir))){
-						OBEngine* eng = OBEngine::getInstance();
 						shared_ptr<Instance::DataModel> dm = eng->getDataModel();
 						shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
 						shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
@@ -195,7 +193,7 @@ namespace OB{
 						fireArgs.push_back(make_shared<Type::VarWrapper>(url));
 						fireArgs.push_back(make_shared<Type::VarWrapper>("File not under resource directory."));
 
-						AssetLoadFailed->Fire(fireArgs);
+						AssetLoadFailed->Fire(eng, fireArgs);
 			
 						if(decCount){
 							requestQueueSize--;
@@ -219,7 +217,6 @@ namespace OB{
 					body->data = bodyDat;
 					body->size = fileLen;
 				}else{
-					OBEngine* eng = OBEngine::getInstance();
 					shared_ptr<Instance::DataModel> dm = eng->getDataModel();
 					shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
 					shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
@@ -228,7 +225,7 @@ namespace OB{
 					fireArgs.push_back(make_shared<Type::VarWrapper>(url));
 					fireArgs.push_back(make_shared<Type::VarWrapper>("Failed to read file."));
 
-					AssetLoadFailed->Fire(fireArgs);
+					AssetLoadFailed->Fire(eng, fireArgs);
 			
 					if(decCount){
 						requestQueueSize--;
@@ -241,7 +238,6 @@ namespace OB{
 					return;
 				}
 			}else{
-				OBEngine* eng = OBEngine::getInstance();
 				shared_ptr<Instance::DataModel> dm = eng->getDataModel();
 				shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
 				shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
@@ -250,7 +246,7 @@ namespace OB{
 				fireArgs.push_back(make_shared<Type::VarWrapper>(url));
 				fireArgs.push_back(make_shared<Type::VarWrapper>("File not found."));
 
-				AssetLoadFailed->Fire(fireArgs);
+				AssetLoadFailed->Fire(eng, fireArgs);
 			
 				if(decCount){
 					requestQueueSize--;
@@ -281,7 +277,6 @@ namespace OB{
 			if(res != CURLE_OK){
 				std::cout << "[AssetLocator] cURL Error: " << curl_easy_strerror(res) << std::endl;
 
-				OBEngine* eng = OBEngine::getInstance();
 				shared_ptr<Instance::DataModel> dm = eng->getDataModel();
 				shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
 				shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
@@ -290,7 +285,7 @@ namespace OB{
 				fireArgs.push_back(make_shared<Type::VarWrapper>(url));
 				fireArgs.push_back(make_shared<Type::VarWrapper>(std::string(curl_easy_strerror(res))));
 
-				AssetLoadFailed->Fire(fireArgs);
+				AssetLoadFailed->Fire(eng, fireArgs);
 
 				curl_easy_cleanup(curl);
 
@@ -309,7 +304,6 @@ namespace OB{
 		}else{
 			std::cout << "[AssetLocator] Failed to initialize cURL" << std::endl;
 
-			OBEngine* eng = OBEngine::getInstance();
 			shared_ptr<Instance::DataModel> dm = eng->getDataModel();
 			shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
 			shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
@@ -318,7 +312,7 @@ namespace OB{
 			fireArgs.push_back(make_shared<Type::VarWrapper>(url));
 			fireArgs.push_back(make_shared<Type::VarWrapper>("Failed to initialize cURL."));
 
-			AssetLoadFailed->Fire(fireArgs);
+			AssetLoadFailed->Fire(eng, fireArgs);
 
 			if(decCount){
 				requestQueueSize--;
@@ -333,7 +327,6 @@ namespace OB{
 		}
 
 		if(body->data != NULL){
-			OBEngine* eng = OBEngine::getInstance();
 			shared_ptr<Instance::DataModel> dm = eng->getDataModel();
 			shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
 			shared_ptr<Type::Event> AssetLoaded = cp->GetAssetLoaded();
@@ -343,7 +336,7 @@ namespace OB{
 
 			putAsset(url, body->size, body->data);
 				
-			AssetLoaded->Fire(fireArgs);
+			AssetLoaded->Fire(eng, fireArgs);
 				
 			std::vector<weak_ptr<Instance::Instance>>::iterator i = instancesWaiting.begin();
 			while(i != instancesWaiting.end()){
@@ -366,7 +359,6 @@ namespace OB{
 		}else{
 			std::cout << "[AssetLocator] No data" << std::endl;
 
-			OBEngine* eng = OBEngine::getInstance();
 			shared_ptr<Instance::DataModel> dm = eng->getDataModel();
 			shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
 			shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
@@ -375,7 +367,7 @@ namespace OB{
 			fireArgs.push_back(make_shared<Type::VarWrapper>(url));
 			fireArgs.push_back(make_shared<Type::VarWrapper>("No data."));
 
-			AssetLoadFailed->Fire(fireArgs);
+			AssetLoadFailed->Fire(eng, fireArgs);
 		}
 
 		if(decCount){
@@ -389,6 +381,7 @@ namespace OB{
 
 	struct _ob_assetLocatorMetad{
 	    char* url;
+		OBEngine* eng;
 	};
 
 	int AssetLocator::loadAssetAsyncTask(void* metad, ob_int64 startTime){
@@ -398,7 +391,7 @@ namespace OB{
 		
 		struct _ob_assetLocatorMetad* locmetad = (struct _ob_assetLocatorMetad*)metad;
 
-		OBEngine* eng = OBEngine::getInstance();
+		OBEngine* eng = locmetad->eng;
 		shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
 
 		assetLoc->loadAssetSync(locmetad->url, true);
@@ -418,11 +411,11 @@ namespace OB{
 			return;
 		}
 
-		OBEngine* eng = OBEngine::getInstance();
 		shared_ptr<TaskScheduler> taskS = eng->getSecondaryTaskScheduler();
 
 		struct _ob_assetLocatorMetad* metad = new struct _ob_assetLocatorMetad;
 		metad->url = strdup(url.c_str());
+		metad->eng = eng;
 
 		pthread_mutex_lock(&mmutex);
 		
@@ -461,7 +454,7 @@ namespace OB{
 
 	void AssetLocator::putAsset(std::string url, size_t size, char* data){
 		contentCache.erase(contentCache.find(url));
-	    contentCache.emplace(url, make_shared<AssetResponse>(size, data, url));
+	    contentCache.emplace(url, make_shared<AssetResponse>(size, data, url, eng));
 	}
 
 	void AssetLocator::addWaitingInstance(shared_ptr<Instance::Instance> inst){

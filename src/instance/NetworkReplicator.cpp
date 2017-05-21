@@ -23,16 +23,18 @@
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS_ABS_WCLONE(NetworkReplicator, Instance){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-		NetworkReplicator::NetworkReplicator(){
+		NetworkReplicator::NetworkReplicator(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
+			
+			Archivable = false;
 
 			enet_peer = NULL;
 		}
 
-		NetworkReplicator::NetworkReplicator(ENetPeer* peer){
+		NetworkReplicator::NetworkReplicator(ENetPeer* peer, OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 
 			enet_peer = peer;

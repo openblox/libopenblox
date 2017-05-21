@@ -22,10 +22,10 @@
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(BindableEvent, true, false, Instance){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-		BindableEvent::BindableEvent(){
+		BindableEvent::BindableEvent(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 
 		    Event = make_shared<Type::Event>("Event");
@@ -34,7 +34,7 @@ namespace OB{
 	    BindableEvent::~BindableEvent(){}
 
 		shared_ptr<Instance> BindableEvent::cloneImpl(){
-			shared_ptr<BindableEvent> be = make_shared<BindableEvent>();
+			shared_ptr<BindableEvent> be = make_shared<BindableEvent>(eng);
 			be->Archivable = Archivable;
 			be->Name = Name;
 			be->ParentLocked = ParentLocked;

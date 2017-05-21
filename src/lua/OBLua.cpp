@@ -60,7 +60,7 @@ namespace OB{
 		//Stores information about Lua states used by OpenBlox, for example the 'script' value.
 		static std::map<lua_State*, struct OBLState*> lStates;
 		
-		lua_State* initGlobal(){
+		lua_State* initGlobal(OBEngine* eng){
 			//Don't put anything on the global state, its one purpose
 			//is to be the parent of coroutines.
 		    lua_State* L = lua_newstate(l_alloc, NULL);
@@ -71,10 +71,19 @@ namespace OB{
 			LState->numChildStates = 0;
 			LState->parent = NULL;
 			LState->initUseOver = false;
+			LState->eng = eng;
 
-			globalOBLState = LState;
+			lStates[L] = LState;
 			
 			return L;
+		}
+
+		OBEngine* getEngine(lua_State* L){
+		    struct OBLState* LState = lStates[L];
+			if(LState){
+				return LState->eng;
+			}
+			return NULL;
 		}
 
 		lua_State* initThread(lua_State* gL){
@@ -86,6 +95,7 @@ namespace OB{
 			LState->numChildStates = 0;
 			LState->parent = NULL;
 			LState->initUseOver = false;
+			LState->eng = getEngine(gL);
 
 			lStates[L] = LState;
 
@@ -151,7 +161,7 @@ namespace OB{
 
 			Enum::registerLuaEnums(L);
 
-			OBEngine* eng = OBEngine::getInstance();
+			OBEngine* eng = getEngine(L);
 		    shared_ptr<Instance::DataModel> dm = eng->getDataModel();
 			int gm = dm->wrap_lua(L);
 			lua_pushvalue(L, -gm);
@@ -176,6 +186,7 @@ namespace OB{
 			LState->ref = luaL_ref(pL, LUA_REGISTRYINDEX);
 			LState->numChildStates = 0;
 			LState->initUseOver = false;
+			LState->eng = getEngine(pL);
 
 			if(lStates.count(pL)){
 				struct OBLState* oL = lStates[pL];
@@ -200,7 +211,7 @@ namespace OB{
 					return;
 				}
 
-				OBEngine* eng = OBEngine::getInstance();
+				OBEngine* eng = getEngine(L);
 			    lua_State* gL = eng->getGlobalLuaState();
 
 				if(oL->ref != -1){
@@ -228,7 +239,10 @@ namespace OB{
 		
 		std::string handle_errors(lua_State* L){
 			std::string lerr = std::string(lua_tostring(L, -1));
-			OBLogger::log(lerr, OLL_Error);
+			
+			OBEngine* eng = getEngine(L);
+			shared_ptr<OBLogger> logger = eng->getLogger();
+			logger->log(lerr, OLL_Error);
 			
 			lua_pop(L, 1);//Pop the error off the stack like it never happened.
 			
@@ -263,7 +277,9 @@ namespace OB{
 				output = output + std::string(s);
 			}
 
-		    OBLogger::log(output, OLL_None);
+		    OBEngine* eng = getEngine(L);
+			shared_ptr<OBLogger> logger = eng->getLogger();
+			logger->log(output, OLL_None);
 			
 			return 0;
 		}
@@ -294,7 +310,9 @@ namespace OB{
 				output = output + std::string(s);
 			}
 
-			OBLogger::log(output, OLL_Warning);
+		    OBEngine* eng = getEngine(L);
+			shared_ptr<OBLogger> logger = eng->getLogger();
+			logger->log(output, OLL_Warning);
 			
 			return 0;
 		}
@@ -332,7 +350,7 @@ namespace OB{
 				waitTime = luaL_checknumber(L, 1);
 			}
 
-			OBEngine* eng = OBEngine::getInstance();
+		    OBEngine* eng = getEngine(L);
 		    shared_ptr<TaskScheduler> tasks = eng->getTaskScheduler();
 
 			ob_int64 curTime = currentTimeMillis();
@@ -377,7 +395,7 @@ namespace OB{
 			lua_pushvalue(L, idx);
 			lua_xmove(L, cL, 1);
 
-			OBEngine* eng = OBEngine::getInstance();
+		    OBEngine* eng = getEngine(L);
 		    shared_ptr<TaskScheduler> tasks = eng->getTaskScheduler();
 
 			ob_int64 curTime = currentTimeMillis();
@@ -406,7 +424,7 @@ namespace OB{
 			std::string className = std::string(luaL_checkstring(L, 1));
 			shared_ptr<Instance::Instance> par = Instance::Instance::checkInstance(L, 2);
 			
-		    shared_ptr<Instance::Instance> newGuy = ClassFactory::create(className);
+		    shared_ptr<Instance::Instance> newGuy = ClassFactory::create(className, getEngine(L));
 			if(newGuy != NULL){
 				if(par != NULL){
 					try{

@@ -24,17 +24,17 @@
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(Folder, true, false, Instance){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    Folder::Folder(){
+	    Folder::Folder(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 		}
 
 	    Folder::~Folder(){}
 
 		shared_ptr<Instance> Folder::cloneImpl(){
-			shared_ptr<Folder> fi = make_shared<Folder>();
+			shared_ptr<Folder> fi = make_shared<Folder>(eng);
 			fi->Archivable = Archivable;
 			fi->Name = Name;
 			fi->ParentLocked = ParentLocked;

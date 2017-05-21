@@ -43,8 +43,8 @@ namespace OB{
 				bool doesBlockLogService();
 
 				void FireLater(std::vector<shared_ptr<VarWrapper>> argList);
-				void Fire(std::vector<shared_ptr<VarWrapper>> argList);
-				void Fire();
+				void Fire(OBEngine* eng, std::vector<shared_ptr<VarWrapper>> argList);
+				void Fire(OBEngine* eng);
 
 				virtual std::string toString();
 				

@@ -32,7 +32,7 @@ namespace OB{
 	namespace Instance{
 		class NetworkClient: public NetworkPeer{
 			public:
-			    NetworkClient();
+			    NetworkClient(OBEngine* eng);
 				virtual ~NetworkClient();
 
 			    virtual void tick();
@@ -41,6 +41,10 @@ namespace OB{
 
 				void Connect(std::string server, int serverPort, int clientPort = 0);
 				void Disconnect(int blockDuration = 1000);
+
+				#if HAVE_PUGIXML
+				virtual std::string serializedID();
+				#endif
 
 				DECLARE_LUA_METHOD(Connect);
 				DECLARE_LUA_METHOD(Disconnect);

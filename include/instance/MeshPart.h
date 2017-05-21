@@ -38,7 +38,7 @@ namespace OB{
 		 */
 		class MeshPart: public BasePart{
 			public:
-			    MeshPart();
+			    MeshPart(OBEngine* eng);
 				virtual ~MeshPart();
 
 				void setMesh(std::string mesh);

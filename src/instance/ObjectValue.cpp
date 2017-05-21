@@ -19,18 +19,16 @@
 
 #include "instance/ObjectValue.h"
 
-#include "OBEngine.h"
-
 #include "instance/NetworkReplicator.h"
 #include "instance/NetworkServer.h"
 
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(ObjectValue, true, false, Instance){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    ObjectValue::ObjectValue(){
+	    ObjectValue::ObjectValue(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 
 			Value = NULL;
@@ -52,7 +50,7 @@ namespace OB{
 		}
 
 		shared_ptr<Instance> ObjectValue::cloneImpl(){
-			shared_ptr<ObjectValue> ov = make_shared<ObjectValue>();
+			shared_ptr<ObjectValue> ov = make_shared<ObjectValue>(eng);
 			ov->Archivable = Archivable;
 			ov->Name = Name;
 			ov->ParentLocked = ParentLocked;

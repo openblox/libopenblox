@@ -32,13 +32,17 @@ namespace OB{
 		 */
 		class RunService: public Instance{
 			public:
-			    RunService();
+			    RunService(OBEngine* eng);
 				virtual ~RunService();
 
 				bool IsClient();
 				bool IsServer();
 
 				virtual void tick();
+
+				#if HAVE_PUGIXML
+				virtual std::string serializedID();
+				#endif
 
 				static void register_lua_events(lua_State* L);
 				

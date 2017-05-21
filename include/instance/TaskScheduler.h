@@ -32,11 +32,18 @@ namespace OB{
 		 */
 		class TaskScheduler: public Instance{
 			public:
-			    TaskScheduler();
+			    TaskScheduler(OBEngine* eng);
 				virtual ~TaskScheduler();
 
 			    int getNumSleepingJobs();
 				int getNumWaitingJobs();
+
+				#if HAVE_PUGIXML
+				virtual std::string serializedID();
+				#endif
+
+				virtual std::map<std::string, _PropertyInfo> getProperties();
+				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
 
 				DECLARE_LUA_METHOD(getNumSleepingJobs);
 				DECLARE_LUA_METHOD(getNumWaitingJobs);

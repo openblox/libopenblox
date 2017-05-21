@@ -31,7 +31,7 @@
 namespace OB{
 	namespace Type{
 		DEFINE_TYPE(Event){
-			registerLuaType(LuaTypeName, TypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
+			registerLuaType(eng, LuaTypeName, TypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
 		}
 
 		Event::Event(std::string name, bool canFireFromLua, bool blockLogService){
@@ -88,10 +88,9 @@ namespace OB{
 			return 0;
 		}
 		
-		void Event::Fire(std::vector<shared_ptr<VarWrapper>> argList){
+		void Event::Fire(OBEngine* eng, std::vector<shared_ptr<VarWrapper>> argList){
 			if(!conns.empty()){
-				OBEngine* engine = OBEngine::getInstance();
-				shared_ptr<TaskScheduler> tasks = engine->getTaskScheduler();
+				shared_ptr<TaskScheduler> tasks = eng->getTaskScheduler();
 				
 			    for(std::vector<shared_ptr<EventConnection>>::size_type i = 0; i != conns.size(); i++){					
 				    /* We push these tasks onto the TaskScheduler so that
@@ -105,8 +104,8 @@ namespace OB{
 			}
 		}
 		
-		void Event::Fire(){
-			Fire(std::vector<shared_ptr<VarWrapper>>());
+		void Event::Fire(OBEngine* eng){
+			Fire(eng, std::vector<shared_ptr<VarWrapper>>());
 		}
 
 	    std::string Event::toString(){
@@ -170,7 +169,7 @@ namespace OB{
 				}
 			}
 			    
-			evt->Fire(fireArgs);
+			evt->Fire(Lua::getEngine(L), fireArgs);
 			return 0;
 		}
 
@@ -194,7 +193,7 @@ namespace OB{
 			shared_ptr<Instance::LogService> ls;
 
 			if(eud->blockedLogService){
-				OBEngine* eng = OBEngine::getInstance();
+				OBEngine* eng = Lua::getEngine(L);
 				if(eng){
 					shared_ptr<Instance::DataModel> dm = eng->getDataModel();
 					if(dm){

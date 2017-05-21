@@ -32,8 +32,12 @@ namespace OB{
 		 */
 		class ReplicatedFirst: public Instance{
 			public:
-			    ReplicatedFirst();
+			    ReplicatedFirst(OBEngine* eng);
 				virtual ~ReplicatedFirst();
+
+				#if HAVE_PUGIXML
+				virtual std::string serializedID();
+				#endif
 
 				DECLARE_CLASS(ReplicatedFirst);
 		};

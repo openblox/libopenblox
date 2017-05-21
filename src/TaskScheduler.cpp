@@ -19,13 +19,17 @@
 
 #include "TaskScheduler.h"
 
+#include "OBEngine.h"
+
 #include <algorithm>
 
 #include "OBException.h"
 #include "utility.h"
 
 namespace OB{
-	TaskScheduler::TaskScheduler(){
+	TaskScheduler::TaskScheduler(OBEngine* eng){
+		this->eng = eng;
+		
 	    SortsTasks = true;
 
 		numWaiting = 0;

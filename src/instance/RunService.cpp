@@ -19,18 +19,19 @@
 
 #include "instance/RunService.h"
 
-#include "OBEngine.h"
 #include "instance/DataModel.h"
 
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(RunService, false, isDataModel, Instance){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    RunService::RunService(){
+	    RunService::RunService(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 			netId = OB_NETID_NOT_REPLICATED;
+
+			Archivable = false;
 
 		    Stepped = make_shared<Type::Event>("Stepped");
 		}
@@ -46,19 +47,24 @@ namespace OB{
 		}
 
 		bool RunService::IsServer(){
-			OBEngine* eng = OBEngine::getInstance();
-			if(eng){
-				shared_ptr<DataModel> dm = eng->getDataModel();
-				return dm->FindService("NetworkServer") != NULL;
-			}
-			return false;
+			shared_ptr<DataModel> dm = eng->getDataModel();
+			return dm->FindService("NetworkServer") != NULL;
 		}
 
 		void RunService::tick(){
-			Stepped->Fire();
+			Stepped->Fire(eng);
 			
 			tickChildren();
 		}
+
+		#if HAVE_PUGIXML
+	    std::string RunService::serializedID(){
+			shared_ptr<OBSerializer> serializer = eng->getSerializer();
+			serializer->SetID(shared_from_this(), "RunService");
+			
+			return Instance::serializedID();
+		}
+		#endif
 
 		void RunService::register_lua_events(lua_State* L){
 			Instance::register_lua_events(L);

@@ -33,7 +33,7 @@ namespace OB{
 		 */
 		class DoubleConstrainedValue: public Instance{
 			public:
-			    DoubleConstrainedValue();
+			    DoubleConstrainedValue(OBEngine* eng);
 				virtual ~DoubleConstrainedValue();
 
 			    double getValue();

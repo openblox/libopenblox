@@ -32,7 +32,7 @@ namespace OB{
 		 */
 		class Model: public PVInstance{
 			public:
-				Model();
+				Model(OBEngine* eng);
 				virtual ~Model();
 
 				DECLARE_CLASS(Model);

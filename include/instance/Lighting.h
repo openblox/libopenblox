@@ -34,8 +34,12 @@ namespace OB{
 		 */
 		class Lighting: public Instance{
 			public:
-			    Lighting();
+			    Lighting(OBEngine* eng);
 				virtual ~Lighting();
+
+				#if HAVE_PUGIXML
+				virtual std::string serializedID();
+				#endif
 
 				shared_ptr<Type::Color3> getSkyColor();
 				void setSkyColor(shared_ptr<Type::Color3> skyColor);

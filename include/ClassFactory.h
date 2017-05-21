@@ -26,6 +26,8 @@
 #define OB_CLASSFACTORY
 
 namespace OB{
+	class OBEngine;
+	
 	/**
 	 * The "factory" used to create Instance classes by name.
 	 *
@@ -83,7 +85,7 @@ namespace OB{
 			 * @returns New instance or NULL
 			 * @author John M. Harris, Jr.
 			 */
-			static shared_ptr<Instance::Instance> create(std::string className);
+			static shared_ptr<Instance::Instance> create(std::string className, OBEngine* eng);
 
 			/**
 			 * Returns a new instance of the given class name, or NULL
@@ -99,7 +101,7 @@ namespace OB{
 			 * @returns New instance or NULL
 			 * @author John M. Harris, Jr.
 			 */
-			static shared_ptr<Instance::Instance> createService(std::string className, bool isDataModel);
+			static shared_ptr<Instance::Instance> createService(std::string className, bool isDataModel, OBEngine* eng);
 
 			/**
 			 * Returns a new instance of a given class name, or NULL
@@ -112,7 +114,7 @@ namespace OB{
 			 * @returns New instance or NULL
 			 * @author John M. Harris, Jr.
 			 */
-			static shared_ptr<Instance::Instance> createReplicate(std::string className);
+			static shared_ptr<Instance::Instance> createReplicate(std::string className, OBEngine* eng);
 
 			/**
 			 * Returns whether or not a given object is an instance of
@@ -131,7 +133,7 @@ namespace OB{
 			 *
 			 * @author John M. Harris, Jr.
 			 */
-			static void initClasses();
+			static void initClasses(OBEngine* eng);
 
 			/**
 			 * Registers core classes with the ClassFactory.

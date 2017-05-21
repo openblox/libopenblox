@@ -19,7 +19,6 @@
 
 #include "instance/NetworkClient.h"
 
-#include "OBEngine.h"
 #include "OBException.h"
 
 #include "utility.h"
@@ -30,12 +29,14 @@
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(NetworkClient, false, isDataModel, NetworkPeer){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    NetworkClient::NetworkClient(){
+	    NetworkClient::NetworkClient(OBEngine* eng) : NetworkPeer(eng){
 			Name = ClassName;
 			netId = OB_NETID_NOT_REPLICATED;
+
+			Archivable = false;
 
 			server_peer = NULL;
 		}
@@ -121,23 +122,20 @@ namespace OB{
 					ob_uint64 netId = bs.readUInt64();
 					std::string className = bs.readString();
 
-					OBEngine* eng = OBEngine::getInstance();
-					if(eng){
-						shared_ptr<DataModel> dm = eng->getDataModel();
-						if(dm){
-							weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
-							if(lookedUpInst.expired()){
-							    shared_ptr<Instance> createdInst = ClassFactory::createReplicate(className);
-								if(createdInst){
-									createdInst->setNetworkID(netId);
+					shared_ptr<DataModel> dm = eng->getDataModel();
+					if(dm){
+						weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
+						if(lookedUpInst.expired()){
+							shared_ptr<Instance> createdInst = ClassFactory::createReplicate(className, eng);
+							if(createdInst){
+								createdInst->setNetworkID(netId);
 
-									HeldInstance hi;
-									// We hold instances for up to 10 seconds
-									hi.holdEnd = currentTimeMillis() + (10 * 1000);
-									hi.inst = createdInst;
+								HeldInstance hi;
+								// We hold instances for up to 10 seconds
+								hi.holdEnd = currentTimeMillis() + (10 * 1000);
+								hi.inst = createdInst;
 
-									heldInstances.push(hi);
-								}
+								heldInstances.push(hi);
 							}
 						}
 					}
@@ -147,39 +145,36 @@ namespace OB{
 					ob_uint64 netId = bs.readUInt64();
 					ob_uint64 parentNetId = bs.readUInt64();
 
-					OBEngine* eng = OBEngine::getInstance();
-					if(eng){
-						shared_ptr<DataModel> dm = eng->getDataModel();
-						if(dm){
-							weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
+					shared_ptr<DataModel> dm = eng->getDataModel();
+					if(dm){
+						weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
 
-							if(lookedUpInst.expired()){
-								return;
+						if(lookedUpInst.expired()){
+							return;
+						}
+
+						if(shared_ptr<Instance> kid = lookedUpInst.lock()){
+							bool wasParentLocked = false;
+							if(kid->ParentLocked){
+								wasParentLocked = true;
+								kid->ParentLocked = false;
 							}
 
-							if(shared_ptr<Instance> kid = lookedUpInst.lock()){
-								bool wasParentLocked = false;
-								if(kid->ParentLocked){
-									wasParentLocked = true;
-									kid->ParentLocked = false;
+							if(parentNetId > OB_NETID_NULL){
+								weak_ptr<Instance> lookedUpParent = dm->lookupInstance(parentNetId);
+								if(lookedUpParent.expired()){
+									return;
 								}
 
-								if(parentNetId > OB_NETID_NULL){
-									weak_ptr<Instance> lookedUpParent = dm->lookupInstance(parentNetId);
-									if(lookedUpParent.expired()){
-										return;
-									}
-
-									if(shared_ptr<Instance> par = lookedUpParent.lock()){
-										kid->setParent(par, true);
-									}
-								}else{
-									kid->setParent(NULL, true);
+								if(shared_ptr<Instance> par = lookedUpParent.lock()){
+									kid->setParent(par, true);
 								}
+							}else{
+								kid->setParent(NULL, true);
+							}
 
-								if(wasParentLocked){
-									kid->ParentLocked = true;
-								}
+							if(wasParentLocked){
+								kid->ParentLocked = true;
 							}
 						}
 					}
@@ -188,20 +183,17 @@ namespace OB{
 				case OB_NET_PKT_SET_PROPERTY: {
 				    ob_uint64 netId = bs.readUInt64();
 					std::string prop = bs.readString();
-					shared_ptr<Type::VarWrapper> val = bs.readVar();
+					shared_ptr<Type::VarWrapper> val = bs.readVar(eng);
 
-					OBEngine* eng = OBEngine::getInstance();
-					if(eng){
-						shared_ptr<DataModel> dm = eng->getDataModel();
-						if(dm){
-							weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
-							if(lookedUpInst.expired()){
-								return;
-							}
+					shared_ptr<DataModel> dm = eng->getDataModel();
+					if(dm){
+						weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
+						if(lookedUpInst.expired()){
+							return;
+						}
 							
-							if(shared_ptr<Instance> kid = lookedUpInst.lock()){
-								kid->setProperty(prop, val);
-							}
+						if(shared_ptr<Instance> kid = lookedUpInst.lock()){
+							kid->setProperty(prop, val);
 						}
 					}
 					break;
@@ -217,7 +209,7 @@ namespace OB{
 				case ENET_EVENT_TYPE_CONNECT: {
 				    shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
 					
-					shared_ptr<ClientReplicator> cliRep = make_shared<ClientReplicator>(evt.peer);
+					shared_ptr<ClientReplicator> cliRep = make_shared<ClientReplicator>(evt.peer, eng);
 					cliRep->_initReplicator();
 					cliRep->setParent(sharedThis, false);
 					cliRep->ParentLocked = true;
@@ -254,6 +246,15 @@ namespace OB{
 				}
 			}
 		}
+
+		#if HAVE_PUGIXML
+	    std::string NetworkClient::serializedID(){
+			shared_ptr<OBSerializer> serializer = eng->getSerializer();
+			serializer->SetID(shared_from_this(), "NetworkClient");
+			
+			return Instance::serializedID();
+		}
+		#endif
 
 		int NetworkClient::lua_Connect(lua_State* L){
 		    shared_ptr<Instance> inst = checkInstance(L, 1, false);

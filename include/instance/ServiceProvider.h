@@ -32,7 +32,7 @@ namespace OB{
 		 */
 		class ServiceProvider: public Instance{
 			public:
-			    ServiceProvider();
+			    ServiceProvider(OBEngine* eng);
 				virtual ~ServiceProvider();
 
 				/**

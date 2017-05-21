@@ -19,15 +19,13 @@
 
 #include "instance/PVInstance.h"
 
-#include "OBEngine.h"
-
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS_ABS_WCLONE(PVInstance, Instance){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-		PVInstance::PVInstance(){
+		PVInstance::PVInstance(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 
 			#if HAVE_IRRLICHT
@@ -60,14 +58,11 @@ namespace OB{
 		}
 
 		void PVInstance::newIrrlichtNode(){
-		    OBEngine* eng = OBEngine::getInstance();
-			if(eng){
-				irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
-				if(irrDev){
-					irr::scene::ISceneManager* sceneMgr = irrDev->getSceneManager();
-					if(sceneMgr){
-						irrNode = sceneMgr->addEmptySceneNode();
-					}
+			irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
+			if(irrDev){
+				irr::scene::ISceneManager* sceneMgr = irrDev->getSceneManager();
+				if(sceneMgr){
+					irrNode = sceneMgr->addEmptySceneNode();
 				}
 			}
 		}
@@ -141,7 +136,6 @@ namespace OB{
 				Instance::addChild(kid);
 			}
 		}
-
 		#endif
 	}
 }

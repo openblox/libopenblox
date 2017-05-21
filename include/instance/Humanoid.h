@@ -35,7 +35,7 @@ namespace OB{
 		 */
 		class Humanoid: public Instance{
 			public:
-			    Humanoid();
+			    Humanoid(OBEngine* eng);
 				virtual ~Humanoid();
 
 				double getHealth();

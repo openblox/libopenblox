@@ -27,10 +27,10 @@
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(IntConstrainedValue, true, false, Instance){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    IntConstrainedValue::IntConstrainedValue(){
+	    IntConstrainedValue::IntConstrainedValue(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 
 			MaxValue = 0;
@@ -80,7 +80,7 @@ namespace OB{
 		}
 
 		shared_ptr<Instance> IntConstrainedValue::cloneImpl(){
-			shared_ptr<IntConstrainedValue> icv = make_shared<IntConstrainedValue>();
+			shared_ptr<IntConstrainedValue> icv = make_shared<IntConstrainedValue>(eng);
 			icv->Archivable = Archivable;
 			icv->Name = Name;
 			icv->ParentLocked = ParentLocked;

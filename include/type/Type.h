@@ -36,7 +36,7 @@ typedef void (*luaRegisterFunc)(lua_State* L);
 #define DECLARE_TYPE() \
 	virtual std::string getClassName(); \
 	virtual std::string getLuaClassName(); \
-	static void _ob_init(); \
+	static void _ob_init(OBEngine* eng); \
 protected: \
 	static std::string TypeName; \
 	static std::string LuaTypeName
@@ -50,7 +50,7 @@ protected: \
 	std::string Type_Name::getLuaClassName(){ \
 		return LuaTypeName; \
 	} \
-	void Type_Name::_ob_init()
+	void Type_Name::_ob_init(OBEngine* eng)
 
 #define DECLARE_LUA_METHOD(MethodName) \
 	static int lua_##MethodName(lua_State* L)
@@ -80,7 +80,7 @@ namespace OB{
 				 *
 				 * @author John M. Harris, Jr.
 				 */
-				static void registerLuaType(std::string typeName, std::string className, luaRegisterFunc register_metamethods, luaRegisterFunc register_methods, luaRegisterFunc register_getters, luaRegisterFunc register_setters);
+				static void registerLuaType(OBEngine* eng, std::string typeName, std::string className, luaRegisterFunc register_metamethods, luaRegisterFunc register_methods, luaRegisterFunc register_getters, luaRegisterFunc register_setters);
 
 				/**
 				 * Returns the stringified version of this Type.

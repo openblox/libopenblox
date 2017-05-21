@@ -19,19 +19,20 @@
 
 #include "instance/CoreGui.h"
 
-#include "OBEngine.h"
-
 #if HAVE_IRRLICHT
 #include <irrlicht/irrlicht.h>
 #endif
 
+#include "instance/NetworkReplicator.h"
+#include "instance/NetworkServer.h"
+
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(CoreGui, false, isDataModel, BasePlayerGui){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    CoreGui::CoreGui(){
+	    CoreGui::CoreGui(OBEngine* eng) : BasePlayerGui(eng){
 			Name = ClassName;
 			
 			Enabled = true;
@@ -43,17 +44,59 @@ namespace OB{
 			return NULL;
 		}
 
-		bool CoreGui::IsEnabled(){
+		bool CoreGui::isEnabled(){
 			return Enabled;
 		}
 		
-		void CoreGui::SetEnabled(bool enabled){
+		void CoreGui::setEnabled(bool enabled){
 			if(Enabled != enabled){
 				Enabled = enabled;
 
-				//TODO: Update?
+			    REPLICATE_PROPERTY_CHANGE(Enabled);
+				propertyChanged("Enabled");
 			}
 		}
+
+		#if HAVE_ENET
+		void CoreGui::replicateProperties(shared_ptr<NetworkReplicator> peer){
+			Instance::replicateProperties(peer);
+			
+			peer->sendSetPropertyPacket(netId, "Enabled", make_shared<Type::VarWrapper>(Enabled));
+		}
+		#endif
+
+		std::map<std::string, _PropertyInfo> CoreGui::getProperties(){
+			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
+			propMap["Enabled"] = {"bool", false, true, true};
+
+			return propMap;
+		}
+
+		void CoreGui::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
+		    if(prop == "Enabled"){
+			    setEnabled(val->asBool());
+				return;
+			}
+
+			Instance::setProperty(prop, val);
+		}
+
+		shared_ptr<Type::VarWrapper> CoreGui::getProperty(std::string prop){
+			if(prop == "Enabled"){
+				return make_shared<Type::VarWrapper>(isEnabled());
+			}
+			
+			return Instance::getProperty(prop);
+		}
+
+		#if HAVE_PUGIXML
+	    std::string CoreGui::serializedID(){
+			shared_ptr<OBSerializer> serializer = eng->getSerializer();
+			serializer->SetID(shared_from_this(), "CoreGui");
+			
+			return Instance::serializedID();
+		}
+		#endif
 		
 		int CoreGui::lua_getEnabled(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
@@ -61,7 +104,7 @@ namespace OB{
 			if(inst){
 				shared_ptr<CoreGui> instCG = dynamic_pointer_cast<CoreGui>(inst);
 				if(instCG){
-					lua_pushboolean(L, instCG->IsEnabled());
+					lua_pushboolean(L, instCG->isEnabled());
 				}
 			}
 			
@@ -76,7 +119,7 @@ namespace OB{
 				shared_ptr<CoreGui> instCG = dynamic_pointer_cast<CoreGui>(inst);
 				if(instCG){
 					bool newV = lua_toboolean(L, 2);
-					instCG->SetEnabled(newV);
+					instCG->setEnabled(newV);
 				}
 			}
 			

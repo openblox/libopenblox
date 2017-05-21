@@ -47,17 +47,12 @@
 #endif
 
 namespace OB{
-	OBEngine* OBEngine::inst = NULL;
-
-	OBEngine::OBEngine(){
-		if(inst != NULL){
-			throw new OBException("Only one instance of OBEngine can exist.");
-		}
-		inst = this;
-
+    OBEngine::OBEngine(){
 	    #if HAVE_PUGIXML
 		serializer = make_shared<OBSerializer>(this);
 		#endif
+
+		logger = make_shared<OBLogger>(this);
 
 		ClassFactory::registerCoreClasses();
 
@@ -95,10 +90,6 @@ namespace OB{
 		#endif
 	}
 
-	OBEngine* OBEngine::getInstance(){
-		return inst;
-	}
-
 	shared_ptr<TaskScheduler> OBEngine::getTaskScheduler(){
 		return taskSched;
 	}
@@ -134,7 +125,7 @@ namespace OB{
 
 		std::string verString = std::string(PACKAGE_STRING) + " initializing";
 		
-		OBLogger::log(verString);
+	    logger->log(verString);
 
 	    #if HAVE_IRRLICHT
 		
@@ -164,16 +155,16 @@ namespace OB{
 
 			std::string irrVer = renderTag + std::string("Irrlicht: ") + std::string(irrDev->getVersion());
 
-			OBLogger::log(irrVer);
+		    logger->log(irrVer);
 			
 			std::wstring wsName(irrDriv->getName());
 			std::string renderVersion = renderTag + std::string("Version: ") + std::string(wsName.begin(), wsName.end());
 
-			OBLogger::log(renderVersion);
+		    logger->log(renderVersion);
 
 			std::string renderVendor = renderTag + std::string("Vendor: ") + std::string(irrDriv->getVendorInfo().c_str());
 			
-			OBLogger::log(renderVendor);
+			logger->log(renderVendor);
 
 			unsigned int shaderLangVersion = irrDriv->getDriverAttributes().getAttributeAsInt("ShaderLanguageVersion");
 
@@ -183,29 +174,29 @@ namespace OB{
 
 			std::string renderShadingLangVer = renderTag + std::string("Shading Language Version: ") + std::string(buf);
 			
-			OBLogger::log(renderShadingLangVer);
+		    logger->log(renderShadingLangVer);
 
 			irrSceneMgr->addLightSceneNode();
 			irrSceneMgr->addCameraSceneNode(0, irr::core::vector3df(0,30,-40), irr::core::vector3df(0,5,0));
 		}
 		#endif
 		
-		taskSched = make_shared<TaskScheduler>();
+		taskSched = make_shared<TaskScheduler>(this);
 		
-		secondaryTaskSched = make_shared<TaskScheduler>();
+		secondaryTaskSched = make_shared<TaskScheduler>(this);
 		secondaryTaskSched->SetSortsTasks(false);
 		
-		assetLocator = make_shared<AssetLocator>();
+		assetLocator = make_shared<AssetLocator>(this);
 		
-		globalState = OB::Lua::initGlobal();
+		globalState = OB::Lua::initGlobal(this);
 		
-		dm = make_shared<Instance::DataModel>();
+		dm = make_shared<Instance::DataModel>(this);
 		dm->initServices();
 
 		//Initialize Lua types
-		Type::Type::_ob_init();
+		Type::Type::_ob_init(this);
 		
-		ClassFactory::initClasses();
+		ClassFactory::initClasses(this);
 
 		pthread_create(&secondaryTaskThread, NULL, _ob_eng_secondaryTaskThread, this);
 
@@ -365,5 +356,9 @@ namespace OB{
 
 	shared_ptr<AssetLocator> OBEngine::getAssetLocator(){
 		return assetLocator;
+	}
+
+	shared_ptr<OBLogger> OBEngine::getLogger(){
+		return logger;
 	}
 }

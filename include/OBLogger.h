@@ -23,6 +23,8 @@
 #define OB_OBLOGGER
 
 namespace OB{
+	class OBEngine;
+	
 	/**
 	 * All possible log levels. OLL_Debug means to log everything, OLL_None
 	 * means to log (just about) nothing. When used to print messages,
@@ -66,6 +68,9 @@ namespace OB{
 	 */
 	class OBLogger{
 		public:
+			OBLogger(OBEngine* eng);
+			~OBLogger();
+			
 			/**
 			 * Returns the current log level, corresponding
 			 * to one of the items in the OBLogLevel enumeration
@@ -74,7 +79,7 @@ namespace OB{
 			 * @returns Current log level
 			 * @author John M. Harris, Jr.
 			 */
-			static OBLogLevel getLogLevel();
+		    OBLogLevel getLogLevel();
 
 			/**
 			 * Sets a new log level. The default is OLL_Information.
@@ -82,7 +87,7 @@ namespace OB{
 			 * @param logLevel log level
 			 * @author John M. Harris, Jr.
 			 */
-			static void setLogLevel(OBLogLevel logLevel);
+		    void setLogLevel(OBLogLevel logLevel);
 
 			/**
 			 * Prints a message to the log.
@@ -91,7 +96,7 @@ namespace OB{
 			 * @param logLevel Log level of this message. Defaults to OLL_Information.
 			 * @author John M. Harris, Jr.
 			 */
-			static void log(std::string message, OBLogLevel logLevel = OLL_Information);
+			void log(std::string message, OBLogLevel logLevel = OLL_Information);
 
 			/**
 			 * Prints a message to the log, with additional information.
@@ -101,10 +106,12 @@ namespace OB{
 			 * @param logLevel Log level of this message. Defaults to OLL_Information.
 			 * @author John M. Harris, Jr.
 			 */
-			static void log(std::string message, std::string extra, OBLogLevel logLevel = OLL_Information);
+		    void log(std::string message, std::string extra, OBLogLevel logLevel = OLL_Information);
 
 		private:
-			static OBLogLevel _logLevel;
+			OBLogLevel _logLevel;
+			
+			OBEngine* eng;
 	};
 }
 

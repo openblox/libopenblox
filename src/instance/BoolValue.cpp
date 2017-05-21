@@ -19,18 +19,16 @@
 
 #include "instance/BoolValue.h"
 
-#include "OBEngine.h"
-
 #include "instance/NetworkReplicator.h"
 #include "instance/NetworkServer.h"
 
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(BoolValue, true, false, Instance){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    BoolValue::BoolValue(){
+	    BoolValue::BoolValue(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 
 			Value = false;
@@ -52,7 +50,7 @@ namespace OB{
 		}
 
 		shared_ptr<Instance> BoolValue::cloneImpl(){
-			shared_ptr<BoolValue> bv = make_shared<BoolValue>();
+			shared_ptr<BoolValue> bv = make_shared<BoolValue>(eng);
 			bv->Archivable = Archivable;
 			bv->Name = Name;
 			bv->ParentLocked = ParentLocked;

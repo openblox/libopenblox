@@ -26,7 +26,7 @@ namespace OB{
 	namespace Instance{
 		class BasePlayerGui: public Instance{
 			public:
-			    BasePlayerGui();
+			    BasePlayerGui(OBEngine* eng);
 				virtual ~BasePlayerGui();
 
 				DECLARE_CLASS(BasePlayerGui);

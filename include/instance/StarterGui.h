@@ -32,8 +32,12 @@ namespace OB{
 		 */
 		class StarterGui: public BasePlayerGui{
 			public:
-			    StarterGui();
+			    StarterGui(OBEngine* eng);
 				virtual ~StarterGui();
+
+				#if HAVE_PUGIXML
+				virtual std::string serializedID();
+				#endif
 
 				DECLARE_CLASS(StarterGui);
 		};

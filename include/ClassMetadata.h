@@ -26,13 +26,15 @@
 #define OB_CLASSMETADATA
 
 namespace OB{
+	class OBEngine;
+	
 	#ifndef OB_INST_INSTANCE
 	namespace Instance{
 		class Instance;
 	}
 	#endif
 
-	typedef void (*InstanceInitFnc)();
+	typedef void (*InstanceInitFnc)(OBEngine* eng);
 	
 	class ClassMetadata{
 		public:
@@ -43,7 +45,7 @@ namespace OB{
 			 * @returns New Instance or NULL if the class this describes is abstract.
 			 * @author John M. Harris, Jr.
 			 */
-			virtual shared_ptr<Instance::Instance> newInstance() = 0;
+			virtual shared_ptr<Instance::Instance> newInstance(OBEngine* eng) = 0;
 
 			/**
 			 * Used to tell if the supplied OB::Instance::Instance* is

@@ -24,12 +24,14 @@
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(LogService, false, isDataModel, Instance){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    LogService::LogService(){
+	    LogService::LogService(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 			netId = OB_NETID_NOT_REPLICATED;
+
+			Archivable = false;
 
 			//These pointers are initialized to keep postLog going as quickly as possible. No lookup should be done there.
 			MessageOutput = Enum::LuaMessageType->getEnumItem((int)Enum::MessageType::MessageOutput);
@@ -43,6 +45,15 @@ namespace OB{
 		}
 
 	    LogService::~LogService(){}
+
+		#if HAVE_PUGIXML
+	    std::string LogService::serializedID(){
+			shared_ptr<OBSerializer> serializer = eng->getSerializer();
+			serializer->SetID(shared_from_this(), "LogService");
+			
+			return Instance::serializedID();
+		}
+		#endif
 
 		shared_ptr<Instance> LogService::cloneImpl(){
 			return NULL;
@@ -83,7 +94,7 @@ namespace OB{
 			}
 
 			std::vector<shared_ptr<Type::VarWrapper>> args = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(message), make_shared<Type::VarWrapper>(val)});
-			MessageOut->Fire(args);
+			MessageOut->Fire(eng, args);
 		}
 
 		void LogService::block(){

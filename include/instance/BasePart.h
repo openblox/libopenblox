@@ -41,7 +41,7 @@ namespace OB{
 		 */
 		class BasePart: public PVInstance{
 			public:
-			    BasePart();
+			    BasePart(OBEngine* eng);
 				virtual ~BasePart();
 
 			    void setAnchored(bool anchored);

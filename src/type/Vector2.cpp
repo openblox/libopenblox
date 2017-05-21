@@ -28,7 +28,7 @@
 namespace OB{
 	namespace Type{
 		DEFINE_TYPE(Vector2){
-			registerLuaType(LuaTypeName, TypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
+			registerLuaType(eng, LuaTypeName, TypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
 		}
 		
 	    Vector2::Vector2(){

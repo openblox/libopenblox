@@ -28,7 +28,7 @@ namespace OB{
 		DEFINE_TYPE(LuaEnumItem){
 		    typeList.push_back(LuaTypeName);
 			
-			lua_State* L = OB::OBEngine::getInstance()->getGlobalLuaState();
+			lua_State* L = eng->getGlobalLuaState();
 
 			luaL_newmetatable(L, LuaTypeName.c_str());
 			luaL_Reg metamethods[] = {

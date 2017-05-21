@@ -31,7 +31,7 @@ namespace OB{
 		 */
 		class IntValue: public Instance{
 			public:
-			    IntValue();
+			    IntValue(OBEngine* eng);
 				virtual ~IntValue();
 
 			    int getValue();

@@ -478,7 +478,7 @@ namespace OB{
 		}
 	}
 
-	shared_ptr<Type::VarWrapper> BitStream::readVar(){
+	shared_ptr<Type::VarWrapper> BitStream::readVar(OBEngine* eng){
 		size_t var_type = readSizeT();
 
 	    switch(var_type){
@@ -506,14 +506,11 @@ namespace OB{
 			case Type::TYPE_INSTANCE: {
 				ob_uint64 netId = readUInt64();
 
-				OBEngine* eng = OBEngine::getInstance();
-				if(eng){
-					shared_ptr<Instance::DataModel> dm = eng->getDataModel();
-					if(dm){
-					    weak_ptr<Instance::Instance> weakInst = dm->lookupInstance(netId);
-						if(!weakInst.expired()){
-							return make_shared<Type::VarWrapper>(weakInst.lock());
-						}
+				shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+				if(dm){
+					weak_ptr<Instance::Instance> weakInst = dm->lookupInstance(netId);
+					if(!weakInst.expired()){
+						return make_shared<Type::VarWrapper>(weakInst.lock());
 					}
 				}
 				

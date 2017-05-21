@@ -40,7 +40,7 @@ namespace OB{
 		 */
 		class Workspace: public Model{
 			public:
-			    Workspace();
+			    Workspace(OBEngine* eng);
 				virtual ~Workspace();
 
 				double getDistributedGameTime();
@@ -62,6 +62,10 @@ namespace OB{
 				 * @author John M. Harris, Jr.
 				 */
 				virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
+				#endif
+
+				#if HAVE_PUGIXML
+				virtual std::string serializedID();
 				#endif
 
 				virtual std::map<std::string, _PropertyInfo> getProperties();

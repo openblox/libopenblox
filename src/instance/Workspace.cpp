@@ -19,7 +19,6 @@
 
 #include "instance/Workspace.h"
 
-#include "OBEngine.h"
 #include "utility.h"
 
 #include "instance/NetworkReplicator.h"
@@ -28,10 +27,10 @@
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(Workspace, false, isDataModel, Model){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    Workspace::Workspace(){
+	    Workspace::Workspace(OBEngine* eng) : Model(eng){
 			Name = ClassName;
 			netId = OB_NETID_WORKSPACE;
 
@@ -49,14 +48,11 @@ namespace OB{
 			#endif
 
 			#if HAVE_IRRLICHT
-		    OBEngine* eng = OBEngine::getInstance();
-			if(eng){
-				irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
-				if(irrDev){
-					irr::scene::ISceneManager* sceneMgr = irrDev->getSceneManager();
-					if(sceneMgr){
-					    irrNode = sceneMgr->addEmptySceneNode();
-					}
+			irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
+			if(irrDev){
+				irr::scene::ISceneManager* sceneMgr = irrDev->getSceneManager();
+				if(sceneMgr){
+				    irrNode = sceneMgr->addEmptySceneNode();
 				}
 			}
 			#endif
@@ -77,16 +73,11 @@ namespace OB{
 		}
 
 		double Workspace::getDistributedGameTime(){
-			OBEngine* eng = OBEngine::getInstance();
+			ob_int64 startTime = eng->getStartTime();
+			ob_int64 curTime = currentTimeMillis();
 
-			if(eng){
-				ob_int64 startTime = eng->getStartTime();
-				ob_int64 curTime = currentTimeMillis();
-
-				double runTime = (double)(curTime - startTime) / 1000;
-				return runTime;
-			}
-			return 0;
+			double runTime = (double)(curTime - startTime) / 1000;
+			return runTime;
 		}
 
 		shared_ptr<Type::Vector3> Workspace::getGravity(){
@@ -153,6 +144,15 @@ namespace OB{
 			peer->sendSetPropertyPacket(netId, "Gravity", make_shared<Type::VarWrapper>(Gravity));
 			peer->sendSetPropertyPacket(netId, "FallenPartsDestroyHeight", make_shared<Type::VarWrapper>(FallenPartsDestroyHeight));
 			peer->sendSetPropertyPacket(netId, "DestroyFallenParts", make_shared<Type::VarWrapper>(DestroyFallenParts));
+		}
+		#endif
+
+		#if HAVE_PUGIXML
+	    std::string Workspace::serializedID(){
+			shared_ptr<OBSerializer> serializer = eng->getSerializer();
+			serializer->SetID(shared_from_this(), "Workspace");
+			
+			return Instance::serializedID();
 		}
 		#endif
 

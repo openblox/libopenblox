@@ -29,6 +29,8 @@
 #include <cstring>
 
 namespace OB{
+	class OBEngine;
+
 	namespace Type{
 		class Color3;
 		class Vector3;
@@ -89,7 +91,7 @@ namespace OB{
 			std::string readString();
 
 		    void writeVar(shared_ptr<Type::VarWrapper> var);
-			shared_ptr<Type::VarWrapper> readVar();
+			shared_ptr<Type::VarWrapper> readVar(OBEngine* eng);
 
 			void writeColor3(shared_ptr<Type::Color3> var);
 			shared_ptr<Type::Color3> readColor3();

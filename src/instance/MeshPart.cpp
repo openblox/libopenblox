@@ -19,18 +19,16 @@
 
 #include "instance/MeshPart.h"
 
-#include "OBEngine.h"
-
 #include "instance/NetworkReplicator.h"
 #include "instance/NetworkServer.h"
 
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(MeshPart, true, false, BasePart){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    MeshPart::MeshPart(){
+	    MeshPart::MeshPart(OBEngine* eng) : BasePart(eng){
 			Name = ClassName;
 
 		    Mesh = "";
@@ -39,7 +37,7 @@ namespace OB{
 	    MeshPart::~MeshPart(){}
 
 		shared_ptr<Instance> MeshPart::cloneImpl(){
-			shared_ptr<MeshPart> mp = make_shared<MeshPart>();
+			shared_ptr<MeshPart> mp = make_shared<MeshPart>(eng);
 			mp->Archivable = Archivable;
 			mp->Name = Name;
 			mp->ParentLocked = ParentLocked;
@@ -70,26 +68,23 @@ namespace OB{
 				Mesh = mesh;
 
 				if(!Mesh.empty()){
-					OBEngine* eng = OBEngine::getInstance();
-					if(eng){
-						shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
-						if(assetLoc){
-							if(assetLoc->hasAsset(Mesh)){
-								updateMesh();
-								shared_ptr<Instance> parInst = Parent;
-								if(parInst){
-									if(shared_ptr<PVInstance> oInst = dynamic_pointer_cast<PVInstance>(parInst)){
-										irr::scene::ISceneNode* parIrrNode = oInst->getIrrNode();
-										if(parIrrNode){
-											parIrrNode->addChild(irrNode);
-										}
+					shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
+					if(assetLoc){
+						if(assetLoc->hasAsset(Mesh)){
+							updateMesh();
+							shared_ptr<Instance> parInst = Parent;
+							if(parInst){
+								if(shared_ptr<PVInstance> oInst = dynamic_pointer_cast<PVInstance>(parInst)){
+									irr::scene::ISceneNode* parIrrNode = oInst->getIrrNode();
+									if(parIrrNode){
+										parIrrNode->addChild(irrNode);
 									}
 								}
-							}else{
-								shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
-								assetLoc->addWaitingInstance(sharedThis);
-								assetLoc->loadAsset(Mesh);
 							}
+						}else{
+							shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
+							assetLoc->addWaitingInstance(sharedThis);
+							assetLoc->loadAsset(Mesh);
 						}
 					}
 				}
@@ -105,34 +100,31 @@ namespace OB{
 
 		void MeshPart::updateMesh(){
 			#if HAVE_IRRLICHT
-			OBEngine* eng = OBEngine::getInstance();
-			if(eng){
-				shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
-				if(assetLoc){
-				    shared_ptr<AssetResponse> resp = assetLoc->getAsset(Mesh);
-					if(resp){
-						irr::io::IReadFile* irf = resp->toIReadFile();
-						if(irf){
-							irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
-							if(irrDev){
-								irr::scene::ISceneManager* smgr = irrDev->getSceneManager();
-								if(smgr){
-									irr::scene::IAnimatedMesh* realMesh = smgr->getMesh(irf);
-									if(realMesh){
-										irr::scene::ISceneNode* oldNode = irrNode;
-										if(oldNode){
-										    oldNode->remove();
-										}
+			shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
+			if(assetLoc){
+				shared_ptr<AssetResponse> resp = assetLoc->getAsset(Mesh);
+				if(resp){
+					irr::io::IReadFile* irf = resp->toIReadFile();
+					if(irf){
+						irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
+						if(irrDev){
+							irr::scene::ISceneManager* smgr = irrDev->getSceneManager();
+							if(smgr){
+								irr::scene::IAnimatedMesh* realMesh = smgr->getMesh(irf);
+								if(realMesh){
+									irr::scene::ISceneNode* oldNode = irrNode;
+									if(oldNode){
+										oldNode->remove();
+									}
 
-										irrNode = smgr->addMeshSceneNode(realMesh);
-									    if(irrNode){
-											irr::scene::IMeshSceneNode* mirrNode = (irr::scene::IMeshSceneNode*)irrNode;
-											mirrNode->setMaterialFlag(irr::video::EMF_LIGHTING, true);
+									irrNode = smgr->addMeshSceneNode(realMesh);
+									if(irrNode){
+										irr::scene::IMeshSceneNode* mirrNode = (irr::scene::IMeshSceneNode*)irrNode;
+										mirrNode->setMaterialFlag(irr::video::EMF_LIGHTING, true);
 
-											updateColor();
-											updatePosition();
-										    updateRotation();
-										}
+										updateColor();
+										updatePosition();
+										updateRotation();
 									}
 								}
 							}

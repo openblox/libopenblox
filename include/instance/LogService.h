@@ -34,8 +34,12 @@ namespace OB{
 		 */
 		class LogService: public Instance{
 			public:
-			    LogService();
+			    LogService(OBEngine* eng);
 				virtual ~LogService();
+
+				#if HAVE_PUGIXML
+				virtual std::string serializedID();
+				#endif
 
 				void postLog(std::string message, Enum::MessageType messageType);
 				

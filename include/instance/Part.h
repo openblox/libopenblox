@@ -37,7 +37,7 @@ namespace OB{
 		 */
 		class Part: public BasePart{
 			public:
-			    Part();
+			    Part(OBEngine* eng);
 				virtual ~Part();
 
 				shared_ptr<Type::Vector3> getSize();

@@ -19,18 +19,19 @@
 
 #include "instance/TaskScheduler.h"
 
-#include "OBEngine.h"
 #include "TaskScheduler.h"
 
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(TaskScheduler, false, isDataModel, Instance){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    TaskScheduler::TaskScheduler(){
+	    TaskScheduler::TaskScheduler(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 			netId = OB_NETID_NOT_REPLICATED;
+
+			Archivable = false;
 		}
 
 	    TaskScheduler::~TaskScheduler(){}
@@ -40,25 +41,47 @@ namespace OB{
 		}
 
 		int TaskScheduler::getNumSleepingJobs(){
-			OBEngine* eng = OBEngine::getInstance();
-			if(eng){
-			    shared_ptr<OB::TaskScheduler> taskSched = eng->getTaskScheduler();
-				if(taskSched){
-					return taskSched->GetNumSleepingJobs();
-				}
+			shared_ptr<OB::TaskScheduler> taskSched = eng->getTaskScheduler();
+			if(taskSched){
+				return taskSched->GetNumSleepingJobs();
 			}
 			return -1;
 		}
 
 		int TaskScheduler::getNumWaitingJobs(){
-	    	OBEngine* eng = OBEngine::getInstance();
-			if(eng){
-			    shared_ptr<OB::TaskScheduler> taskSched = eng->getTaskScheduler();
-				if(taskSched){
-					return taskSched->GetNumWaitingJobs();
-				}
+			shared_ptr<OB::TaskScheduler> taskSched = eng->getTaskScheduler();
+			if(taskSched){
+				return taskSched->GetNumWaitingJobs();
 			}
 			return -1;
+		}
+
+		#if HAVE_PUGIXML
+	    std::string TaskScheduler::serializedID(){
+			shared_ptr<OBSerializer> serializer = eng->getSerializer();
+			serializer->SetID(shared_from_this(), "TaskScheduler");
+			
+			return Instance::serializedID();
+		}
+		#endif
+
+		std::map<std::string, _PropertyInfo> TaskScheduler::getProperties(){
+			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
+			propMap["NumSleepingJobs"] = {"int", true, true, false};
+			propMap["NumWaitingJobs"] = {"int", true, true, false};
+
+			return propMap;
+		}
+
+		shared_ptr<Type::VarWrapper> TaskScheduler::getProperty(std::string prop){
+			if(prop == "NumSleepingJobs"){
+				return make_shared<Type::VarWrapper>(getNumSleepingJobs());
+			}
+			if(prop == "NumWaitingJobs"){
+				return make_shared<Type::VarWrapper>(getNumWaitingJobs());
+			}
+			
+			return Instance::getProperty(prop);
 		}
 
 		int TaskScheduler::lua_getNumSleepingJobs(lua_State* L){

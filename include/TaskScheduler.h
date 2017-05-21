@@ -25,6 +25,8 @@
 #define OB_TASKSCHEDULER
 
 namespace OB{
+	class OBEngine;
+	
 	/**
 	 * This typedef describes the type of function accepted by the
 	 * TaskScheduler. When queuing a task, you specify a function of
@@ -85,7 +87,7 @@ namespace OB{
 	 */
 	class TaskScheduler{
 		public:
-		    TaskScheduler();
+		    TaskScheduler(OBEngine* eng);
 			virtual ~TaskScheduler();
 
 			/*
@@ -153,6 +155,8 @@ namespace OB{
 			void enqueue(ob_task_fnc fnc, void* metad, ob_int64 at);
 		private:
 			std::vector<_ob_waiting_task> tasks;
+
+			OBEngine* eng;
 
 			bool SortsTasks;
 			

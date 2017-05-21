@@ -25,10 +25,10 @@
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(Humanoid, true, false, Instance){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    Humanoid::Humanoid(){
+	    Humanoid::Humanoid(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 			
 			Health = 100;
@@ -50,7 +50,7 @@ namespace OB{
 	    Humanoid::~Humanoid(){}
 
 		shared_ptr<Instance> Humanoid::cloneImpl(){
-			shared_ptr<Humanoid> h = make_shared<Humanoid>();
+			shared_ptr<Humanoid> h = make_shared<Humanoid>(eng);
 			h->Archivable = Archivable;
 			h->Name = Name;
 			h->ParentLocked = ParentLocked;
@@ -78,10 +78,10 @@ namespace OB{
 				Health = health;
 
 				std::vector<shared_ptr<Type::VarWrapper>> args = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(oldHealth), make_shared<Type::VarWrapper>()});
-				HealthChanged->Fire(args);
+				HealthChanged->Fire(eng, args);
 
 				if(Health <= 0){
-					Died->Fire();
+					Died->Fire(eng);
 				}
 
 				REPLICATE_PROPERTY_CHANGE(Health);
@@ -200,10 +200,10 @@ namespace OB{
 				Health = newHealth;
 
 				std::vector<shared_ptr<Type::VarWrapper>> args = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(oldHealth), make_shared<Type::VarWrapper>(damage_metadata)});
-				HealthChanged->Fire(args);
+				HealthChanged->Fire(eng, args);
 
 				if(Health <= 0){
-				    Died->Fire();
+				    Died->Fire(eng);
 				}
 
 				REPLICATE_PROPERTY_CHANGE(Health);

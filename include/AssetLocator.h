@@ -23,12 +23,11 @@
 #include "obtype.h"
 #include "mem.h"
 
-#include "instance/Instance.h"
-
 #include <pthread.h>
 
 #include <string>
 #include <map>
+#include <vector>
 
 #include "oblibconfig.h"
 
@@ -37,9 +36,15 @@
 #endif
 
 namespace OB{
+	class OBEngine;
+	
+	namespace Instance{
+		class Instance;
+	}
+	
 	class AssetResponse{
 		public:
-			AssetResponse(size_t size, char* data, std::string resURI);
+			AssetResponse(size_t size, char* data, std::string resURI, OBEngine* eng);
 			~AssetResponse();
 
 			size_t getSize();
@@ -54,12 +59,13 @@ namespace OB{
 			size_t size;
 			char* data;
 			std::string resURI;
-			
+
+			OBEngine* eng;
 	};
 	
 	class AssetLocator{
 		public:
-		    AssetLocator();
+		    AssetLocator(OBEngine* eng);
 			virtual ~AssetLocator();
 
 			void tick();
@@ -77,6 +83,7 @@ namespace OB{
 			
 		private:
 			std::map<std::string, shared_ptr<AssetResponse>> contentCache;
+			OBEngine* eng;
 
 			std::vector<weak_ptr<Instance::Instance>> instancesWaiting;
 

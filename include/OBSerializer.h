@@ -19,9 +19,7 @@
 
 #include "oblibconfig.h"
 
-#if HAVE_PUGIXML
-#include "instance/Instance.h"
-#endif
+#include "mem.h"
 
 #include <string>
 #include <map>
@@ -34,6 +32,10 @@
 
 namespace OB{
 	class OBEngine;
+
+	namespace Instance{
+		class Instance;
+	}
 	
 	class OBSerializer{
 		public:

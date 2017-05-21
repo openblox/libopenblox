@@ -19,8 +19,6 @@
 
 #include "instance/Instance.h"
 
-#include "type/Color3.h"
-
 #ifndef OB_INST_CONTENTPROVIDER
 #define OB_INST_CONTENTPROVIDER
 
@@ -34,7 +32,7 @@ namespace OB{
 		 */
 		class ContentProvider: public Instance{
 			public:
-			    ContentProvider();
+			    ContentProvider(OBEngine* eng);
 				virtual ~ContentProvider();
 
 				shared_ptr<Type::Event> GetAssetLoaded();
@@ -43,6 +41,10 @@ namespace OB{
 				void Preload(std::string url);
 				void Load(std::string url);
 			    char* GetAsset(std::string url);
+
+				#if HAVE_PUGIXML
+				virtual std::string serializedID();
+				#endif
 				
 				DECLARE_LUA_METHOD(Preload);
 				DECLARE_LUA_METHOD(Load);

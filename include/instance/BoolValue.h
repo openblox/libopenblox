@@ -31,7 +31,7 @@ namespace OB{
 		 */
 		class BoolValue: public Instance{
 			public:
-			    BoolValue();
+			    BoolValue(OBEngine* eng);
 				virtual ~BoolValue();
 
 				bool getValue();

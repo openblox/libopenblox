@@ -38,7 +38,7 @@ namespace OB{
 		 */
 		class PVInstance: public Instance{
 			public:
-				PVInstance();
+				PVInstance(OBEngine* eng);
 				virtual ~PVInstance();
 
 				#if HAVE_IRRLICHT

@@ -34,16 +34,16 @@
 namespace OB{
 	namespace Type{
 	    DEFINE_TYPE(Type){
-			registerLuaType(LuaTypeName, TypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
+			registerLuaType(eng, LuaTypeName, TypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
 
-			Color3::_ob_init();
-			Vector3::_ob_init();
-			Vector2::_ob_init();
+			Color3::_ob_init(eng);
+			Vector3::_ob_init(eng);
+			Vector2::_ob_init(eng);
 			
-			Event::_ob_init();
-			EventConnection::_ob_init();
-			LuaEnum::_ob_init();
-			LuaEnumItem::_ob_init();
+			Event::_ob_init(eng);
+			EventConnection::_ob_init(eng);
+			LuaEnum::_ob_init(eng);
+			LuaEnumItem::_ob_init(eng);
 		}
 
 		std::vector<std::string> Type::typeList;
@@ -56,10 +56,10 @@ namespace OB{
 			return false;
 		}
 
-		void Type::registerLuaType(std::string typeName, std::string className, luaRegisterFunc register_metamethods, luaRegisterFunc register_methods, luaRegisterFunc register_getters, luaRegisterFunc register_setters){
+		void Type::registerLuaType(OBEngine* eng, std::string typeName, std::string className, luaRegisterFunc register_metamethods, luaRegisterFunc register_methods, luaRegisterFunc register_getters, luaRegisterFunc register_setters){
 			typeList.push_back(typeName);
 			
-			lua_State* L = OB::OBEngine::getInstance()->getGlobalLuaState();
+			lua_State* L = eng->getGlobalLuaState();
 
 			luaL_newmetatable(L, typeName.c_str());
 			register_metamethods(L);

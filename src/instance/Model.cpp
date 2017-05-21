@@ -24,17 +24,17 @@
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(Model, true, false, PVInstance){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-		Model::Model(){
+		Model::Model(OBEngine* eng) : PVInstance(eng){
 			Name = ClassName;
 		}
 
 	    Model::~Model(){}
 
 		shared_ptr<Instance> Model::cloneImpl(){
-			shared_ptr<Model> mi = make_shared<Model>();
+			shared_ptr<Model> mi = make_shared<Model>(eng);
 			mi->Archivable = Archivable;
 			mi->Name = Name;
 			mi->ParentLocked = ParentLocked;

@@ -23,6 +23,7 @@
 #include "mem.h"
 
 #include "lua/OBLua.h"
+#include "OBEngine.h"
 #include "ClassFactory.h"
 #include "obtype.h"
 
@@ -47,20 +48,17 @@
 	#define REPLICATE_PROPERTY_CHANGE(__repl_prop) \
 	{ \
 		if(netId > 4){ \
-			OB::OBEngine* __repl_eng = OB::OBEngine::getInstance();	\
-			if(__repl_eng){ \
-				shared_ptr<OB::Instance::DataModel> __repl_dm = __repl_eng->getDataModel(); \
-				if(__repl_dm){ \
-					if((netId < OB_NETID_WORKSPACE) || IsDescendantOf(__repl_dm)){ \
-						shared_ptr<OB::Instance::Instance> __repl_nsInst = __repl_dm->FindService("NetworkServer"); \
-						if(shared_ptr<OB::Instance::NetworkServer> __repl_ns = dynamic_pointer_cast<OB::Instance::NetworkServer>(__repl_nsInst)){ \
-							BitStream __repl_bs; \
-				    		__repl_bs.writeSizeT(OB_NET_PKT_SET_PROPERTY); \
-							__repl_bs.writeUInt64(netId); \
-							__repl_bs.writeString(#__repl_prop); \
-		    				__repl_bs.writeVar(make_shared<Type::VarWrapper>(__repl_prop)); \
-							__repl_ns->broadcast(OB_NET_CHAN_REPLICATION, __repl_bs); \
-						} \
+			shared_ptr<OB::Instance::DataModel> __repl_dm = eng->getDataModel(); \
+			if(__repl_dm){ \
+				if((netId < OB_NETID_WORKSPACE) || IsDescendantOf(__repl_dm)){ \
+					shared_ptr<OB::Instance::Instance> __repl_nsInst = __repl_dm->FindService("NetworkServer"); \
+					if(shared_ptr<OB::Instance::NetworkServer> __repl_ns = dynamic_pointer_cast<OB::Instance::NetworkServer>(__repl_nsInst)){ \
+						BitStream __repl_bs; \
+				   		__repl_bs.writeSizeT(OB_NET_PKT_SET_PROPERTY); \
+						__repl_bs.writeUInt64(netId); \
+						__repl_bs.writeString(#__repl_prop); \
+		    			__repl_bs.writeVar(make_shared<Type::VarWrapper>(__repl_prop)); \
+						__repl_ns->broadcast(OB_NET_CHAN_REPLICATION, __repl_bs); \
 					} \
 				} \
 			} \
@@ -80,7 +78,7 @@ typedef void (*luaRegisterFunc)(lua_State* L);
 	virtual std::string getLuaClassName(); \
 	static OB::ClassMetadata* _ob_classmetadata; \
 	static void registerClass(); \
-	static void _ob_init(); \
+	static void _ob_init(OBEngine* eng); \
 protected: \
 	static std::string ClassName; \
 	static std::string LuaClassName
@@ -96,7 +94,7 @@ protected: \
 	} \
 	OB::ClassMetadata* Class_Name::_ob_classmetadata = NULL; \
     void Class_Name::registerClass(){ _ob_classmetadata = new Class_Name##_ClassMetadata; } \
-	void Class_Name::_ob_init()
+	void Class_Name::_ob_init(OBEngine* eng)
 
 #define DEFINE_CLASS(Class_Name, isInstable, isAService, ParentClass) \
 	class Class_Name##_ClassMetadata: public OB::ClassMetadata{ \
@@ -104,8 +102,8 @@ protected: \
 		Class_Name##_ClassMetadata(){ \
 			OB::ClassFactory::addClass(#Class_Name, this); \
 		} \
-		virtual shared_ptr<OB::Instance::Instance> newInstance(){ \
-			return make_shared<Class_Name>(); \
+		virtual shared_ptr<OB::Instance::Instance> newInstance(OBEngine* eng){ \
+			return make_shared<Class_Name>(eng); \
 		} \
 		virtual bool isA(shared_ptr<OB::Instance::Instance> obj){ \
 			return (dynamic_pointer_cast<Class_Name>(obj)) != NULL; \
@@ -135,7 +133,7 @@ protected: \
 		Class_Name##_ClassMetadata(){ \
 			OB::ClassFactory::addClass(#Class_Name, this); \
 		} \
-		virtual shared_ptr<OB::Instance::Instance> newInstance(){ \
+		virtual shared_ptr<OB::Instance::Instance> newInstance(OBEngine* eng){ \
 			return NULL; \
 		} \
 		virtual bool isA(shared_ptr<OB::Instance::Instance> obj){ \
@@ -166,7 +164,7 @@ protected: \
 		Class_Name##_ClassMetadata(){ \
 			OB::ClassFactory::addClass(#Class_Name, this); \
 		} \
-		virtual shared_ptr<OB::Instance::Instance> newInstance(){ \
+		virtual shared_ptr<OB::Instance::Instance> newInstance(OBEngine* eng){ \
 			return NULL; \
 		} \
 		virtual bool isA(shared_ptr<OB::Instance::Instance> obj){ \
@@ -238,7 +236,7 @@ namespace OB{
 				// @endcond
 		{
 			public:
-				Instance();
+				Instance(OBEngine* eng);
 				virtual ~Instance();
 
 				//Accessors and Mutators
@@ -247,6 +245,15 @@ namespace OB{
 				
 			    virtual void setArchivable(bool archivable);
 				virtual bool getArchivable();
+
+				/**
+				 * Returns the OBEngine instance associated with this
+				 * Instance.
+				 *
+				 * @returns OBEngine* engine
+				 * @author John M. Harris, Jr.
+				 */
+				OBEngine* getEngine();
 
 				/**
 				 * Calls Remove on all children.
@@ -454,7 +461,7 @@ namespace OB{
 				 *
 				 * @author John M. Harris, Jr.
 				 */
-				static void registerLuaClass(std::string className, luaRegisterFunc register_metamethods, luaRegisterFunc register_methods, luaRegisterFunc register_getters, luaRegisterFunc register_setters, luaRegisterFunc register_events);
+				static void registerLuaClass(OBEngine* eng, std::string className, luaRegisterFunc register_metamethods, luaRegisterFunc register_methods, luaRegisterFunc register_getters, luaRegisterFunc register_setters, luaRegisterFunc register_events);
 
 				/**
 				 * Returns the stringified version of this Instance,
@@ -671,6 +678,8 @@ namespace OB{
 				 * @returns bool, true if all assets have been loaded
 				 */
 				virtual bool assetLoaded(std::string res);
+
+				OBEngine* eng;
 
 				DECLARE_CLASS(Instance);
 

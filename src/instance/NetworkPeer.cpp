@@ -23,11 +23,13 @@
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS_ABS_WCLONE(NetworkPeer, Instance){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-		NetworkPeer::NetworkPeer(){
+		NetworkPeer::NetworkPeer(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
+
+			Archivable = false;
 
 			enet_host = NULL;
 		}

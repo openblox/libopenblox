@@ -19,17 +19,17 @@
 
 #include "instance/ContentProvider.h"
 
-#include "OBEngine.h"
-
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(ContentProvider, false, isDataModel, Instance){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    ContentProvider::ContentProvider(){
+	    ContentProvider::ContentProvider(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 			netId = OB_NETID_NOT_REPLICATED;
+
+			Archivable = false;
 
 			AssetLoaded = make_shared<Type::Event>("AssetLoaded");
 			AssetLoadFailed = make_shared<Type::Event>("AssetLoadFailed");
@@ -50,21 +50,18 @@ namespace OB{
 		}
 
 	    void ContentProvider::Preload(std::string url){
-		    OBEngine* eng = OBEngine::getInstance();
 			shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
 
 			assetLoc->loadAsset(url);
 		}
 
 		void ContentProvider::Load(std::string url){
-		    OBEngine* eng = OBEngine::getInstance();
 			shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
 
 			assetLoc->loadAssetSync(url);
 		}
 
 		char* ContentProvider::GetAsset(std::string url){
-			OBEngine* eng = OBEngine::getInstance();
 			shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
 
 			shared_ptr<AssetResponse> resp = assetLoc->getAsset(url);
@@ -78,6 +75,15 @@ namespace OB{
 			
 		    return NULL;
 		}
+
+		#if HAVE_PUGIXML
+	    std::string ContentProvider::serializedID(){
+			shared_ptr<OBSerializer> serializer = eng->getSerializer();
+			serializer->SetID(shared_from_this(), "ContentProvider");
+			
+			return Instance::serializedID();
+		}
+		#endif
 
 		int ContentProvider::lua_Preload(lua_State* L){
 		    shared_ptr<Instance> inst = checkInstance(L, 1, false);
@@ -128,7 +134,7 @@ namespace OB{
 		    shared_ptr<Instance> inst = checkInstance(L, 1, false);
 			
 			if(shared_ptr<ContentProvider> cp = dynamic_pointer_cast<ContentProvider>(inst)){
-			    OBEngine* eng = OBEngine::getInstance();
+				OBEngine* eng = Lua::getEngine(L);
 				shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
 
 				lua_pushinteger(L, assetLoc->getRequestQueueSize());

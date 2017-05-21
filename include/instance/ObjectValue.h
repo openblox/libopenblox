@@ -31,7 +31,7 @@ namespace OB{
 		 */
 		class ObjectValue: public Instance{
 			public:
-			    ObjectValue();
+			    ObjectValue(OBEngine* eng);
 				virtual ~ObjectValue();
 
 			    shared_ptr<Instance> getValue();

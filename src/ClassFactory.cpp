@@ -19,6 +19,8 @@
 
 #include "ClassFactory.h"
 
+#include "OBEngine.h"
+
 #include "OBException.h"
 
 //Alllllll Instances
@@ -96,30 +98,30 @@ namespace OB{
 		return "";
 	}
 
-	shared_ptr<Instance::Instance> ClassFactory::create(std::string className){
+	shared_ptr<Instance::Instance> ClassFactory::create(std::string className, OBEngine* eng){
 		ClassMetadata* classMd = metadataTable[className];
 		if(classMd){
 			if(classMd->isInstantiatable()){
-				return classMd->newInstance();
+				return classMd->newInstance(eng);
 			}
 		}
 		return NULL;
 	}
 
-	shared_ptr<Instance::Instance> ClassFactory::createService(std::string className, bool isDataModel){
+	shared_ptr<Instance::Instance> ClassFactory::createService(std::string className, bool isDataModel, OBEngine* eng){
 		ClassMetadata* classMd = metadataTable[className];
 		if(classMd){
 			if(classMd->isService(isDataModel)){
-				return classMd->newInstance();
+				return classMd->newInstance(eng);
 			}
 		}
 		return NULL;
 	}
 
-    shared_ptr<Instance::Instance> ClassFactory::createReplicate(std::string className){
+    shared_ptr<Instance::Instance> ClassFactory::createReplicate(std::string className, OBEngine* eng){
 		ClassMetadata* classMd = metadataTable[className];
 		if(classMd){
-			return classMd->newInstance();
+			return classMd->newInstance(eng);
 		}
 		return NULL;
 	}
@@ -132,9 +134,9 @@ namespace OB{
 		return false;
 	}
 
-	void ClassFactory::initClasses(){
+	void ClassFactory::initClasses(OBEngine* eng){
 		for(std::map<std::string, ClassMetadata*>::iterator it = metadataTable.begin(); it != metadataTable.end(); ++it){
-			it->second->getInitFunc()();
+			it->second->getInitFunc()(eng);
 		}
 	}
 
@@ -174,11 +176,14 @@ namespace OB{
 		Instance::IntValue::registerClass();
 		Instance::NumberValue::registerClass();
 		Instance::ObjectValue::registerClass();
+
+		#if HAVE_ENET
 		Instance::NetworkReplicator::registerClass();
 		Instance::ClientReplicator::registerClass();
 		Instance::ServerReplicator::registerClass();
 		Instance::NetworkPeer::registerClass();
 		Instance::NetworkServer::registerClass();
 		Instance::NetworkClient::registerClass();
+		#endif
 	}
 }

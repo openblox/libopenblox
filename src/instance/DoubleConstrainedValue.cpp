@@ -19,18 +19,16 @@
 
 #include "instance/DoubleConstrainedValue.h"
 
-#include "OBEngine.h"
-
 #include "instance/NetworkReplicator.h"
 #include "instance/NetworkServer.h"
 
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(DoubleConstrainedValue, true, false, Instance){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    DoubleConstrainedValue::DoubleConstrainedValue(){
+	    DoubleConstrainedValue::DoubleConstrainedValue(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 
 			MaxValue = 0;
@@ -80,7 +78,7 @@ namespace OB{
 		}
 
 		shared_ptr<Instance> DoubleConstrainedValue::cloneImpl(){
-			shared_ptr<DoubleConstrainedValue> dcv = make_shared<DoubleConstrainedValue>();
+			shared_ptr<DoubleConstrainedValue> dcv = make_shared<DoubleConstrainedValue>(eng);
 			dcv->Archivable = Archivable;
 			dcv->Name = Name;
 			dcv->ParentLocked = ParentLocked;

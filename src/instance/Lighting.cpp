@@ -19,8 +19,6 @@
 
 #include "instance/Lighting.h"
 
-#include "OBEngine.h"
-
 #include "instance/NetworkReplicator.h"
 #include "instance/NetworkServer.h"
 
@@ -31,10 +29,10 @@
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(Lighting, false, isDataModel, Instance){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    Lighting::Lighting(){
+	    Lighting::Lighting(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 			netId = OB_NETID_LIGHTING;
 			
@@ -44,6 +42,15 @@ namespace OB{
 		}
 
 	    Lighting::~Lighting(){}
+
+		#if HAVE_PUGIXML
+	    std::string Lighting::serializedID(){
+			shared_ptr<OBSerializer> serializer = eng->getSerializer();
+			serializer->SetID(shared_from_this(), "Lighting");
+			
+			return Instance::serializedID();
+		}
+		#endif
 
 		shared_ptr<Instance> Lighting::cloneImpl(){
 			return NULL;
@@ -74,8 +81,6 @@ namespace OB{
 
 		void Lighting::updateFog(){
 			#if HAVE_IRRLICHT
-			
-		    OBEngine* eng = OBEngine::getInstance();
 		  	irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
 			if(irrDev == NULL){
 				return;
@@ -97,7 +102,6 @@ namespace OB{
 			}else{
 				driver->setFog();
 			}
-
 			#endif
 		}
 

@@ -31,11 +31,11 @@
 
 namespace OB{
 	namespace Instance{
-		DEFINE_CLASS(DataModel, false, false, Instance){
-			registerLuaClass(LuaClassName, register_lua_metamethods, DataModel::register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+		DEFINE_CLASS(DataModel, false, false, ServiceProvider){
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, DataModel::register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    DataModel::DataModel(){
+	    DataModel::DataModel(OBEngine* eng) : ServiceProvider(eng){
 			Name = "Game";
 
 			netId = OB_NETID_DATAMODEL;
@@ -46,7 +46,6 @@ namespace OB{
 	    DataModel::~DataModel(){}
 
 		void DataModel::Shutdown(int statusCode){
-		    OBEngine* eng = OBEngine::getInstance();
 			eng->setExitCode(statusCode);
 			eng->shutdown();
 		}
@@ -54,27 +53,27 @@ namespace OB{
 		void DataModel::initServices(){
 			shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
 
-			workspace = make_shared<Workspace>();
+			workspace = make_shared<Workspace>(eng);
 			workspace->setParent(sharedThis, false);
 			workspace->ParentLocked = true;
 			
-			lighting = make_shared<Lighting>();
+			lighting = make_shared<Lighting>(eng);
 			lighting->setParent(sharedThis, false);
 			lighting->ParentLocked = true;
 
-			contentProvider = make_shared<ContentProvider>();
+			contentProvider = make_shared<ContentProvider>(eng);
 		    contentProvider->setParent(sharedThis, false);
 		    contentProvider->ParentLocked = true;
 
-			logService = make_shared<LogService>();
+			logService = make_shared<LogService>(eng);
 			logService->setParent(sharedThis, false);
 			logService->ParentLocked = true;
 
-		    runService = make_shared<RunService>();
+		    runService = make_shared<RunService>(eng);
 		    runService->setParent(sharedThis, false);
 		    runService->ParentLocked = true;
 
-		    replicatedFirst = make_shared<ReplicatedFirst>();
+		    replicatedFirst = make_shared<ReplicatedFirst>(eng);
 		    replicatedFirst->setParent(sharedThis, false);
 		    replicatedFirst->ParentLocked = true;
 		}
@@ -108,7 +107,7 @@ namespace OB{
 			if(foundService != NULL){
 				return foundService;
 			}
-		    shared_ptr<Instance> newGuy = ClassFactory::createService(className, true);
+		    shared_ptr<Instance> newGuy = ClassFactory::createService(className, true, eng);
 			if(newGuy){
 				newGuy->setParent(std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this(), false);
 				newGuy->ParentLocked = true;
@@ -227,7 +226,6 @@ namespace OB{
 	    void DataModel::deserialize(pugi::xml_node thisNode){}
 
 	    std::string DataModel::serializedID(){
-			OBEngine* eng = OBEngine::getInstance();
 			shared_ptr<OBSerializer> serializer = eng->getSerializer();
 			serializer->SetID(shared_from_this(), "game");
 			

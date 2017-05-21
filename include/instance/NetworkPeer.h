@@ -30,7 +30,7 @@ namespace OB{
 	namespace Instance{
 		class NetworkPeer: public Instance{
 			public:
-			    NetworkPeer();
+			    NetworkPeer(OBEngine* eng);
 				virtual ~NetworkPeer();
 
 				DECLARE_CLASS(NetworkPeer);

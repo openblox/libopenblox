@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2016 John M. Harris, Jr. <johnmh@openblox.org>
  *
@@ -29,6 +30,8 @@ extern "C" {
 #include <string>
 
 namespace OB{
+	class OBEngine;
+	
 	/*
 	 * Convenience function to handle type errors, used in check*
 	 * functions.
@@ -62,9 +65,8 @@ namespace OB{
 			int numChildStates;
 			bool initUseOver;
 			OBLState* parent;
+			OBEngine* eng;
 		};
-
-	    extern OBLState* globalOBLState;
 
 		/**
 		 * Returns a global Lua state, which is only used to handle
@@ -74,7 +76,15 @@ namespace OB{
 		 * @returns Global a global Lua state.
 		 * @author John M. Harris, Jr.
 		 */
-		lua_State* initGlobal();
+		lua_State* initGlobal(OBEngine* eng);
+
+		/**
+		 * Returns the OBEngine* associated with this Lua state.
+		 *
+		 * @returns OBEngine* engine
+		 * @author John M. Harris, Jr.
+		 */
+		OBEngine* getEngine(lua_State* L);
 
 		/**
 		 * Returns a Lua state under the global Lua state with the

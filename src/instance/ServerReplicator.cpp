@@ -23,15 +23,17 @@
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(ServerReplicator, false, false, NetworkReplicator){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    ServerReplicator::ServerReplicator(){
+	    ServerReplicator::ServerReplicator(OBEngine* eng) : NetworkReplicator(eng){
 			Name = ClassName;
 			netId = OB_NETID_NOT_REPLICATED;
+
+			Archivable = false;
 		}
 
-	    ServerReplicator::ServerReplicator(ENetPeer* peer) : NetworkReplicator(peer){
+	    ServerReplicator::ServerReplicator(ENetPeer* peer, OBEngine* eng) : NetworkReplicator(peer, eng){
 			Name = ClassName;
 			netId = OB_NETID_NOT_REPLICATED;
 		}

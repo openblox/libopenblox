@@ -32,7 +32,7 @@ namespace OB{
 		 */
 		class Folder: public Instance{
 			public:
-			    Folder();
+			    Folder(OBEngine* eng);
 				virtual ~Folder();
 
 				DECLARE_CLASS(Folder);

@@ -19,8 +19,6 @@
 
 #include "instance/NetworkServer.h"
 
-#include "OBEngine.h"
-
 #include "OBException.h"
 
 #include "instance/ServerReplicator.h"
@@ -29,12 +27,14 @@
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(NetworkServer, false, isDataModel, NetworkPeer){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    NetworkServer::NetworkServer(){
+	    NetworkServer::NetworkServer(OBEngine* eng) : NetworkPeer(eng){
 			Name = ClassName;
 			netId = OB_NETID_NOT_REPLICATED;
+
+			Archivable = false;
 
 			Port = -1;
 		}
@@ -119,22 +119,28 @@ namespace OB{
 			}
 		}
 
+		#if HAVE_PUGIXML
+	    std::string NetworkServer::serializedID(){
+			shared_ptr<OBSerializer> serializer = eng->getSerializer();
+			serializer->SetID(shared_from_this(), "NetworkServer");
+			
+			return Instance::serializedID();
+		}
+		#endif
+
 		void NetworkServer::processEvent(ENetEvent evt){
 		    switch(evt.type){
 				case ENET_EVENT_TYPE_CONNECT: {
 				    shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
 					
-					shared_ptr<ServerReplicator> servRep = make_shared<ServerReplicator>(evt.peer);
+					shared_ptr<ServerReplicator> servRep = make_shared<ServerReplicator>(evt.peer, eng);
 					servRep->_initReplicator();
 				    servRep->setParent(sharedThis, false);
 				    servRep->ParentLocked = true;
-
-					OBEngine* eng = OBEngine::getInstance();
-					if(eng){
-						shared_ptr<DataModel> dm = eng->getDataModel();
-						if(dm){
-							dm->replicate(servRep);
-						}
+					
+					shared_ptr<DataModel> dm = eng->getDataModel();
+					if(dm){
+						dm->replicate(servRep);
 					}
 					break;
 				}

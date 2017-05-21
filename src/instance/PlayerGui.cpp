@@ -19,8 +19,6 @@
 
 #include "instance/PlayerGui.h"
 
-#include "OBEngine.h"
-
 #if HAVE_IRRLICHT
 #include <irrlicht/irrlicht.h>
 #endif
@@ -28,10 +26,10 @@
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(PlayerGui, false, false, BasePlayerGui){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    PlayerGui::PlayerGui(){
+	    PlayerGui::PlayerGui(OBEngine* eng) : BasePlayerGui(eng){
 			Name = ClassName;
 		}
 

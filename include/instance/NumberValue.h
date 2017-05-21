@@ -31,7 +31,7 @@ namespace OB{
 		 */
 		class NumberValue: public Instance{
 			public:
-			    NumberValue();
+			    NumberValue(OBEngine* eng);
 				virtual ~NumberValue();
 
 			    double getValue();

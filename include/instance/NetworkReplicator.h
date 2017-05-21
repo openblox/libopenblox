@@ -32,8 +32,8 @@ namespace OB{
 	namespace Instance{
 		class NetworkReplicator: public Instance{
 			public:
-			    NetworkReplicator();
-				NetworkReplicator(ENetPeer* peer);
+			    NetworkReplicator(OBEngine* eng);
+				NetworkReplicator(ENetPeer* peer, OBEngine* eng);
 				virtual ~NetworkReplicator();
 
 				void _initReplicator();

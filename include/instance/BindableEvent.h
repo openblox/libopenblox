@@ -32,7 +32,7 @@ namespace OB{
 		 */
 		class BindableEvent: public Instance {
 			public:
-			    BindableEvent();
+			    BindableEvent(OBEngine* eng);
 				virtual ~BindableEvent();
 
 				static void register_lua_events(lua_State* L);

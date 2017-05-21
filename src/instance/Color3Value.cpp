@@ -19,18 +19,16 @@
 
 #include "instance/Color3Value.h"
 
-#include "OBEngine.h"
-
 #include "instance/NetworkReplicator.h"
 #include "instance/NetworkServer.h"
 
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(Color3Value, true, false, Instance){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    Color3Value::Color3Value(){
+	    Color3Value::Color3Value(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 
 			Value = make_shared<Type::Color3>(0, 0, 0);
@@ -55,7 +53,7 @@ namespace OB{
 		}
 
 		shared_ptr<Instance> Color3Value::cloneImpl(){
-			shared_ptr<Color3Value> cv = make_shared<Color3Value>();
+			shared_ptr<Color3Value> cv = make_shared<Color3Value>(eng);
 			cv->Archivable = Archivable;
 			cv->Name = Name;
 			cv->ParentLocked = ParentLocked;

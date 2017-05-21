@@ -22,10 +22,10 @@
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS_ABS_WCLONE(BasePlayerGui, Instance){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-		BasePlayerGui::BasePlayerGui(){
+		BasePlayerGui::BasePlayerGui(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 		}
 

@@ -22,7 +22,6 @@
 #include <algorithm>
 
 #include "OBException.h"
-#include "OBEngine.h"
 #include "BitStream.h"
 
 #include "instance/NetworkReplicator.h"
@@ -37,10 +36,12 @@
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS_ABS(Instance, NULL){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-		Instance::Instance(){
+		Instance::Instance(OBEngine* eng){
+			this->eng = eng;
+			
 			Archivable = true;
 			Name = ClassName;
 			ParentLocked = false;
@@ -58,12 +59,9 @@ namespace OB{
 
 		Instance::~Instance(){
 			if(netId >= OB_NETID_START){
-				OBEngine* eng = OBEngine::getInstance();
-				if(eng){
-					shared_ptr<DataModel> dm = eng->getDataModel();
-					if(dm){
-						dm->dropInstance(netId);
-					}
+				shared_ptr<DataModel> dm = eng->getDataModel();
+				if(dm){
+					dm->dropInstance(netId);
 				}
 			}
 		}
@@ -92,6 +90,10 @@ namespace OB{
 
 		bool Instance::getArchivable(){
 			return Archivable;
+		}
+
+		OBEngine* Instance::getEngine(){
+			return eng;
 		}
 
 		void Instance::ClearAllChildren(){
@@ -250,13 +252,10 @@ namespace OB{
 
 		void Instance::setNetworkID(ob_int64 netId){
 			if(netId >= OB_NETID_START){
-				OBEngine* eng = OBEngine::getInstance();
-				if(eng){
-					shared_ptr<DataModel> dm = eng->getDataModel();
-					if(dm){
-						this->netId = netId;
-						dm->putInstance(shared_from_this());
-					}
+				shared_ptr<DataModel> dm = eng->getDataModel();
+				if(dm){
+					this->netId = netId;
+					dm->putInstance(shared_from_this());
 				}
 			}else{
 				this->netId = netId;
@@ -264,12 +263,9 @@ namespace OB{
 		}
 
 		void Instance::generateNetworkID(){
-		    OBEngine* eng = OBEngine::getInstance();
-			if(eng){
-			    shared_ptr<DataModel> dm = eng->getDataModel();
-				if(dm){
-					setNetworkID(dm->nextNetworkID());
-				}
+			shared_ptr<DataModel> dm = eng->getDataModel();
+			if(dm){
+				setNetworkID(dm->nextNetworkID());
 			}
 		}
 
@@ -405,7 +401,7 @@ namespace OB{
 					if(pi.type == "Instance"){
 						shared_ptr<Instance> vval = getProperty(name)->asInstance();
 						if(vval){
-							propNode.text().set(vval->getName().c_str());
+							propNode.text().set(vval->serializedID().c_str());
 						}else{
 							propNode.text().set("NULL");
 						}
@@ -417,7 +413,6 @@ namespace OB{
 		void Instance::deserialize(pugi::xml_node thisNode){}
 
 		std::string Instance::serializedID(){
-			OBEngine* eng = OBEngine::getInstance();
 		    shared_ptr<OBSerializer> serializer = eng->getSerializer();
 			return serializer->GetID(shared_from_this());
 		}
@@ -472,8 +467,8 @@ namespace OB{
 			}
 		}
 
-		void Instance::registerLuaClass(std::string className, luaRegisterFunc register_metamethods, luaRegisterFunc register_methods, luaRegisterFunc register_getters, luaRegisterFunc register_setters, luaRegisterFunc register_events){
-			lua_State* L = OB::OBEngine::getInstance()->getGlobalLuaState();
+		void Instance::registerLuaClass(OBEngine* eng, std::string className, luaRegisterFunc register_metamethods, luaRegisterFunc register_methods, luaRegisterFunc register_getters, luaRegisterFunc register_setters, luaRegisterFunc register_events){
+			lua_State* L = eng->getGlobalLuaState();
 
 			luaL_newmetatable(L, className.c_str());
 			register_metamethods(L);
@@ -532,7 +527,7 @@ namespace OB{
 		void Instance::propertyChanged(std::string property){
 		    std::vector<shared_ptr<Type::VarWrapper>> args = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(property)});
 
-			Changed->Fire(args);
+			Changed->Fire(eng, args);
 		}
 
 		void Instance::propertyChanged(std::string property, shared_ptr<Instance> inst){
@@ -564,36 +559,33 @@ namespace OB{
 
 				#ifdef HAVE_ENET
 				if(useDMNotify){
-				    OBEngine* eng = OBEngine::getInstance();
-					if(eng){
-						shared_ptr<DataModel> dm = eng->getDataModel();
-						if(dm){
-							if(IsDescendantOf(dm)){
-								if(netId == OB_NETID_UNASSIGNED){
-									generateNetworkID();
-								}
-								if(netId >= OB_NETID_DATAMODEL){
-									shared_ptr<Instance> nsInst = dm->FindService("NetworkServer");
-									if(shared_ptr<NetworkServer> ns = dynamic_pointer_cast<NetworkServer>(nsInst)){
-										BitStream bsOut;
-										bsOut.writeSizeT(OB_NET_PKT_CREATE_INSTANCE);
-										bsOut.writeUInt64(netId);
-										bsOut.writeString(getClassName());
+					shared_ptr<DataModel> dm = eng->getDataModel();
+					if(dm){
+						if(IsDescendantOf(dm)){
+							if(netId == OB_NETID_UNASSIGNED){
+								generateNetworkID();
+							}
+							if(netId >= OB_NETID_DATAMODEL){
+								shared_ptr<Instance> nsInst = dm->FindService("NetworkServer");
+								if(shared_ptr<NetworkServer> ns = dynamic_pointer_cast<NetworkServer>(nsInst)){
+									BitStream bsOut;
+									bsOut.writeSizeT(OB_NET_PKT_CREATE_INSTANCE);
+									bsOut.writeUInt64(netId);
+									bsOut.writeString(getClassName());
 
-										ns->broadcast(OB_NET_CHAN_REPLICATION, bsOut);
+									ns->broadcast(OB_NET_CHAN_REPLICATION, bsOut);
 
-										bsOut.reset();
+									bsOut.reset();
 
-										bsOut.writeSizeT(OB_NET_PKT_SET_PARENT);
-										bsOut.writeUInt64(netId);
-										if(Parent){
-											bsOut.writeUInt64(Parent->GetNetworkID());
-										}else{
-											bsOut.writeUInt64(OB_NETID_NULL);
-										}
-
-										ns->broadcast(OB_NET_CHAN_REPLICATION, bsOut);
+									bsOut.writeSizeT(OB_NET_PKT_SET_PARENT);
+									bsOut.writeUInt64(netId);
+									if(Parent){
+										bsOut.writeUInt64(Parent->GetNetworkID());
+									}else{
+										bsOut.writeUInt64(OB_NETID_NULL);
 									}
+
+									ns->broadcast(OB_NET_CHAN_REPLICATION, bsOut);
 								}
 							}
 						}
@@ -621,7 +613,7 @@ namespace OB{
 		}
 
 		void Instance::fireAncestryChanged(std::vector<shared_ptr<Type::VarWrapper>> args){
-			AncestryChanged->Fire(args);
+			AncestryChanged->Fire(eng, args);
 
 			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != children.size(); i++){
 				shared_ptr<Instance> kid = children[i];
@@ -632,7 +624,7 @@ namespace OB{
 		}
 
 		void Instance::fireDescendantAdded(std::vector<shared_ptr<Type::VarWrapper>> args){
-			DescendantAdded->Fire(args);
+			DescendantAdded->Fire(eng, args);
 
 			if(Parent){
 				Parent->fireDescendantAdded(args);
@@ -640,7 +632,7 @@ namespace OB{
 		}
 
 		void Instance::fireDescendantRemoving(std::vector<shared_ptr<Type::VarWrapper>> args){
-			DescendantRemoving->Fire(args);
+			DescendantRemoving->Fire(eng, args);
 
 			if(Parent){
 				Parent->fireDescendantRemoving(args);
@@ -653,7 +645,7 @@ namespace OB{
 
 
 			    std::vector<shared_ptr<Type::VarWrapper>> args = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(kid)});
-				ChildRemoved->Fire(args);
+				ChildRemoved->Fire(eng, args);
 				fireDescendantRemoving(args);
 			}
 		}
@@ -663,7 +655,7 @@ namespace OB{
 				children.push_back(kid);
 
 				std::vector<shared_ptr<Type::VarWrapper>> args = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(kid)});
-				ChildAdded->Fire(args);
+				ChildAdded->Fire(eng, args);
 				fireDescendantAdded(args);
 			}
 		}

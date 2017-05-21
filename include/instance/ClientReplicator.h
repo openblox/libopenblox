@@ -27,8 +27,8 @@ namespace OB{
 	namespace Instance{
 		class ClientReplicator: public NetworkReplicator{
 			public:
-			    ClientReplicator();
-			    ClientReplicator(ENetPeer* peer);
+			    ClientReplicator(OBEngine* eng);
+			    ClientReplicator(ENetPeer* peer, OBEngine* eng);
 				virtual ~ClientReplicator();
 
 				DECLARE_CLASS(ClientReplicator);

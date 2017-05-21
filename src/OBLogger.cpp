@@ -25,7 +25,11 @@
 #include <iostream>
 
 namespace OB{
-	OBLogLevel OBLogger::_logLevel;
+    OBLogger::OBLogger(OBEngine* eng){
+		this->eng = eng;
+	}
+
+	OBLogger::~OBLogger(){}
 
 	OBLogLevel OBLogger::getLogLevel(){
 		return _logLevel;
@@ -43,12 +47,9 @@ namespace OB{
 		std::string logLevelStr = "";
 
 		shared_ptr<Instance::LogService> ls;
-		OBEngine* eng = OBEngine::getInstance();
-		if(eng){
-			shared_ptr<Instance::DataModel> dm = eng->getDataModel();
-			if(dm){
-				ls = dm->getLogService();
-			}
+		shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+		if(dm){
+			ls = dm->getLogService();
 		}
 
 		std::string textMsg = text;

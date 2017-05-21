@@ -33,7 +33,7 @@ namespace OB{
 		 */
 		class IntConstrainedValue: public Instance{
 			public:
-			    IntConstrainedValue();
+			    IntConstrainedValue(OBEngine* eng);
 				virtual ~IntConstrainedValue();
 
 			    int getValue();

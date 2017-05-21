@@ -32,8 +32,12 @@ namespace OB{
 		 */
 		class ReplicatedStorage: public Instance{
 			public:
-			    ReplicatedStorage();
+			    ReplicatedStorage(OBEngine* eng);
 				virtual ~ReplicatedStorage();
+
+				#if HAVE_PUGIXML
+				virtual std::string serializedID();
+				#endif
 
 				DECLARE_CLASS(ReplicatedStorage);
 		};

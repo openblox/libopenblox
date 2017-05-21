@@ -40,7 +40,7 @@ namespace OB{
 		 */
 		class DataModel: public ServiceProvider{
 			public:
-			    DataModel();
+			    DataModel(OBEngine* eng);
 				virtual ~DataModel();
 
 				void Shutdown(int statusCode = 0);

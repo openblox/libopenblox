@@ -28,8 +28,8 @@ namespace OB{
 	namespace Instance{
 		class ServerReplicator: public NetworkReplicator{
 			public:
-			    ServerReplicator();
-			    ServerReplicator(ENetPeer* peer);
+			    ServerReplicator(OBEngine* eng);
+			    ServerReplicator(ENetPeer* peer, OBEngine* eng);
 				virtual ~ServerReplicator();
 
 				DECLARE_CLASS(ServerReplicator);

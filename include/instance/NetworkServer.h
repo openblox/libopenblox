@@ -19,7 +19,6 @@
 
 #include "instance/NetworkPeer.h"
 
-#include "OBEngine.h"
 #include "instance/DataModel.h"
 
 #include "BitStream.h"
@@ -33,7 +32,7 @@ namespace OB{
 	namespace Instance{
 		class NetworkServer: public NetworkPeer{
 			public:
-			    NetworkServer();
+			    NetworkServer(OBEngine* eng);
 				virtual ~NetworkServer();
 
 			    virtual void tick();
@@ -44,6 +43,10 @@ namespace OB{
 				void Stop(int blockDuration = 1000);
 
 				void broadcast(enet_uint8 channel, BitStream &bs);
+
+				#if HAVE_PUGIXML
+				virtual std::string serializedID();
+				#endif
 
 				DECLARE_LUA_METHOD(Start);
 				DECLARE_LUA_METHOD(Stop);

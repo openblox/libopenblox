@@ -33,7 +33,7 @@ namespace OB{
 		 */
 		class Color3Value: public Instance{
 			public:
-			    Color3Value();
+			    Color3Value(OBEngine* eng);
 				virtual ~Color3Value();
 
 				shared_ptr<Type::Color3> getValue();

@@ -19,18 +19,16 @@
 
 #include "instance/Part.h"
 
-#include "OBEngine.h"
-
 #include "instance/NetworkReplicator.h"
 #include "instance/NetworkServer.h"
 
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(Part, true, false, BasePart){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    Part::Part(){
+	    Part::Part(OBEngine* eng) : BasePart(eng){
 			Name = ClassName;
 
 		    Size = make_shared<Type::Vector3>(1, 1, 1);
@@ -39,7 +37,7 @@ namespace OB{
 	    Part::~Part(){}
 
 		shared_ptr<Instance> Part::cloneImpl(){
-			shared_ptr<Part> p = make_shared<Part>();
+			shared_ptr<Part> p = make_shared<Part>(eng);
 			p->Archivable = Archivable;
 			p->Name = Name;
 			p->ParentLocked = ParentLocked;
@@ -122,23 +120,20 @@ namespace OB{
 
 		#if HAVE_IRRLICHT
 		void Part::newIrrlichtNode(){
-			OBEngine* eng = OBEngine::getInstance();
-			if(eng){
-				irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
-				if(irrDev){
-					irr::scene::ISceneManager* smgr = irrDev->getSceneManager();
-					if(smgr){
-						irrNode = smgr->addCubeSceneNode(1);
+			irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
+			if(irrDev){
+				irr::scene::ISceneManager* smgr = irrDev->getSceneManager();
+				if(smgr){
+					irrNode = smgr->addCubeSceneNode(1);
 						
-						if(irrNode){
-							irr::scene::IMeshSceneNode* mirrNode = (irr::scene::IMeshSceneNode*)irrNode;
-							mirrNode->setMaterialFlag(irr::video::EMF_LIGHTING, true);
+					if(irrNode){
+						irr::scene::IMeshSceneNode* mirrNode = (irr::scene::IMeshSceneNode*)irrNode;
+						mirrNode->setMaterialFlag(irr::video::EMF_LIGHTING, true);
 
-							updateColor();
-							updatePosition();
-							updateRotation();
-							updateSize();
-						}
+						updateColor();
+						updatePosition();
+						updateRotation();
+						updateSize();
 					}
 				}
 			}

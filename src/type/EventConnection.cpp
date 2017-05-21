@@ -28,7 +28,7 @@
 namespace OB{
 	namespace Type{
 		DEFINE_TYPE(EventConnection){
-			registerLuaType(LuaTypeName, TypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
+			registerLuaType(eng, LuaTypeName, TypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
 		}
 		
 		EventConnection::EventConnection(shared_ptr<Event> evt, void* ud, void (*fnc)(std::vector<shared_ptr<VarWrapper>>, void*)){

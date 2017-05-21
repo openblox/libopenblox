@@ -19,8 +19,6 @@
 
 #include "instance/StarterGui.h"
 
-#include "OBEngine.h"
-
 #if HAVE_IRRLICHT
 #include <irrlicht/irrlicht.h>
 #endif
@@ -28,16 +26,25 @@
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(StarterGui, false, isDataModel, BasePlayerGui){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    StarterGui::StarterGui(){
+	    StarterGui::StarterGui(OBEngine* eng) : BasePlayerGui(eng){
 			Name = ClassName;
 
 			netId = OB_NETID_STARTERGUI;
 		}
 
 	    StarterGui::~StarterGui(){}
+
+		#if HAVE_PUGIXML
+	    std::string StarterGui::serializedID(){
+			shared_ptr<OBSerializer> serializer = eng->getSerializer();
+			serializer->SetID(shared_from_this(), "StarterGui");
+			
+			return Instance::serializedID();
+		}
+		#endif
 
 		shared_ptr<Instance> StarterGui::cloneImpl(){
 			return NULL;

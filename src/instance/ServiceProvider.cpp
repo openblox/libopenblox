@@ -22,10 +22,10 @@
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS_ABS_WCLONE(ServiceProvider, Instance){
-			registerLuaClass(LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    ServiceProvider::ServiceProvider(){
+	    ServiceProvider::ServiceProvider(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 		}
 
@@ -48,7 +48,7 @@ namespace OB{
 			if(foundService != NULL){
 				return foundService;
 			}
-		    shared_ptr<Instance> newGuy = ClassFactory::createService(className, false);
+		    shared_ptr<Instance> newGuy = ClassFactory::createService(className, false, eng);
 			if(newGuy){
 				newGuy->setParent(std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this(), false);
 				newGuy->ParentLocked = true;

@@ -52,6 +52,9 @@ namespace OB{
 	#ifndef OB_TASKSCHEDULER
 	class TaskScheduler;
 	#endif
+	#ifndef OB_ASSETLOCATOR
+	class AssetLocator;
+	#endif
 
 	/**
 	 * This is the main class of the OpenBlox engine. This class is
@@ -65,14 +68,6 @@ namespace OB{
 		public:
 			OBEngine();
 			virtual ~OBEngine();
-
-			/**
-			 * Returns the global instance of OBEngine.
-			 *
-			 * @returns Global instance of OBEngine
-			 * @author John M. Harris, Jr.
-			 */
-			static OBEngine* getInstance();
 
 			/**
 			 * Returns primary TaskScheduler.
@@ -316,6 +311,14 @@ namespace OB{
 			 * @author John M. Harris, Jr.
 			 */
 			shared_ptr<AssetLocator> getAssetLocator();
+
+			/**
+			 * Returns the logger.
+			 *
+			 * @returns OBLogger
+			 * @author John M. Harris, Jr.
+			 */
+			shared_ptr<OBLogger> getLogger();
 			
 		private:
 			//State helpers
@@ -346,9 +349,8 @@ namespace OB{
 			shared_ptr<TaskScheduler> secondaryTaskSched;
 			shared_ptr<AssetLocator> assetLocator;
 			shared_ptr<OBSerializer> serializer;
+			shared_ptr<OBLogger> logger;
 			shared_ptr<Instance::DataModel> dm;
-
-			static OBEngine* inst;
 	};
 }
 

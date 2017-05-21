@@ -34,7 +34,7 @@ namespace OB{
 		 */
 		class PlayerGui: public BasePlayerGui{
 			public:
-			    PlayerGui();
+			    PlayerGui(OBEngine* eng);
 				virtual ~PlayerGui();
 
 				DECLARE_CLASS(PlayerGui);
