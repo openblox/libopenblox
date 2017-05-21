@@ -58,6 +58,7 @@ instance/Color3Value.cpp \
 instance/IntConstrainedValue.cpp \
 instance/IntValue.cpp \
 instance/NumberValue.cpp \
+instance/ObjectValue.cpp \
 instance/NetworkReplicator.cpp \
 instance/ClientReplicator.cpp \
 instance/ServerReplicator.cpp \

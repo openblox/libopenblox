@@ -51,6 +51,7 @@
 #include "instance/IntConstrainedValue.h"
 #include "instance/IntValue.h"
 #include "instance/NumberValue.h"
+#include "instance/ObjectValue.h"
 #include "instance/NetworkReplicator.h"
 #include "instance/ClientReplicator.h"
 #include "instance/ServerReplicator.h"
@@ -172,6 +173,7 @@ namespace OB{
 		Instance::IntConstrainedValue::registerClass();
 		Instance::IntValue::registerClass();
 		Instance::NumberValue::registerClass();
+		Instance::ObjectValue::registerClass();
 		Instance::NetworkReplicator::registerClass();
 		Instance::ClientReplicator::registerClass();
 		Instance::ServerReplicator::registerClass();
