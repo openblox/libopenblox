@@ -402,6 +402,14 @@ namespace OB{
 							propNode.text().set("0, 0, 0");
 						}
 					}
+					if(pi.type == "Instance"){
+						shared_ptr<Instance> vval = getProperty(name)->asInstance();
+						if(vval){
+							propNode.text().set(vval->getName().c_str());
+						}else{
+							propNode.text().set("NULL");
+						}
+					}
 				}
 			}
 		}
