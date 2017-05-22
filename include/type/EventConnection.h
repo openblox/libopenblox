@@ -19,6 +19,8 @@
 
 #include "type/Type.h"
 
+#include <functional>
+
 #ifndef OB_TYPE_EVENTCONNECTION
 #define OB_TYPE_EVENTCONNECTION
 
@@ -28,7 +30,8 @@ namespace OB{
 		
 		class EventConnection: public Type{
 			public:
-			    EventConnection(shared_ptr<Event> evt, void* ud, void (*fnc)(std::vector<shared_ptr<VarWrapper>>, void*));
+			    EventConnection(shared_ptr<Event> evt, std::function<void(std::vector<shared_ptr<VarWrapper>>)>);
+				EventConnection(shared_ptr<Event> evt, std::function<void(std::vector<shared_ptr<VarWrapper>>)>, void* ud);
 				virtual ~EventConnection();
 
 				void Disconnect();
@@ -48,8 +51,8 @@ namespace OB{
 				static void register_lua_property_getters(lua_State* L);
 				
 			    shared_ptr<Event> evt;
-				void* ud;
-			    void (*fnc)(std::vector<shared_ptr<VarWrapper>>, void*);
+				std::function<void(std::vector<shared_ptr<VarWrapper>>)> fnc;
+			    void* ud;
 		};
 
 		shared_ptr<EventConnection> checkEventConnection(lua_State* L, int n, bool errIfNot = true, bool allowNil = true);

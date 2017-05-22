@@ -23,6 +23,8 @@
 
 #include <vector>
 
+#include <functional>
+
 #ifndef OB_TYPE_EVENT
 #define OB_TYPE_EVENT
 
@@ -35,6 +37,7 @@ namespace OB{
 				Event(std::string name, bool canFireFromLua = false, bool blockLogService = false);
 				virtual ~Event();
 
+				shared_ptr<EventConnection> Connect(std::function<void(std::vector<shared_ptr<VarWrapper>>)> fnc);
 			    shared_ptr<EventConnection> Connect(void (*fnc)(std::vector<shared_ptr<VarWrapper>>, void*), void* ud);
 
 				void disconnectAll();

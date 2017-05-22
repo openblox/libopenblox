@@ -30,8 +30,14 @@ namespace OB{
 		DEFINE_TYPE(EventConnection){
 			registerLuaType(eng, LuaTypeName, TypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
 		}
+
+		EventConnection::EventConnection(shared_ptr<Event> evt, std::function<void(std::vector<shared_ptr<VarWrapper>>)> fnc){
+			this->evt = evt;
+		    this->fnc = fnc;
+			ud = NULL;
+		}
 		
-		EventConnection::EventConnection(shared_ptr<Event> evt, void* ud, void (*fnc)(std::vector<shared_ptr<VarWrapper>>, void*)){
+		EventConnection::EventConnection(shared_ptr<Event> evt, std::function<void(std::vector<shared_ptr<VarWrapper>>)> fnc, void* ud){
 			this->evt = evt;
 			this->ud = ud;
 		    this->fnc = fnc;
@@ -60,7 +66,7 @@ namespace OB{
 		}
 
 		void EventConnection::fire(std::vector<shared_ptr<VarWrapper>> args){
-			fnc(args, ud);
+			fnc(args);
 		}
 
 		std::string EventConnection::toString(){

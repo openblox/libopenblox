@@ -42,8 +42,18 @@ namespace OB{
 
 		Event::~Event(){}
 
+		shared_ptr<EventConnection> Event::Connect(std::function<void(std::vector<shared_ptr<VarWrapper>>)> fnc){
+			shared_ptr<EventConnection> evtCon = make_shared<EventConnection>(dynamic_pointer_cast<Event>(std::enable_shared_from_this<Type>::shared_from_this()), fnc);
+			conns.push_back(evtCon);
+
+			return evtCon;
+		}
+
 		shared_ptr<EventConnection> Event::Connect(void (*fnc)(std::vector<shared_ptr<VarWrapper>>, void*), void* ud){
-			shared_ptr<EventConnection> evtCon = make_shared<EventConnection>(dynamic_pointer_cast<Event>(std::enable_shared_from_this<Type>::shared_from_this()), ud, fnc);
+		    using namespace std::placeholders;
+
+			std::function<void(std::vector<shared_ptr<VarWrapper>>)> nfnc = std::bind(fnc, _1, ud);
+			shared_ptr<EventConnection> evtCon = make_shared<EventConnection>(dynamic_pointer_cast<Event>(std::enable_shared_from_this<Type>::shared_from_this()), nfnc, ud);
 			conns.push_back(evtCon);
 
 			return evtCon;
