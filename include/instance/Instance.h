@@ -432,7 +432,9 @@ namespace OB{
 				virtual void serialize(pugi::xml_node parentNode);
 				virtual void serializeChildren(pugi::xml_node parentNode);
 				virtual void serializeProperties(pugi::xml_node thisNode);
+				virtual void deserializeCreate(pugi::xml_node thisNode);
 				virtual void deserialize(pugi::xml_node thisNode);
+				virtual void deserializeProperties(pugi::xml_node thisNode);
 				virtual std::string serializedID();
 				#endif
 

@@ -66,6 +66,9 @@ namespace OB{
 		pugi::xml_document doc;
 		char* docBuf = NULL;
 
+		instanceMap.clear();
+		dynamic_instance_count = 0;
+
 		if(eng){
 			shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
 			if(assetLoc){
@@ -81,6 +84,26 @@ namespace OB{
 		
 						return NULL;
 					}
+
+					pugi::xml_node game_node = doc.child("game");
+					if(!game_node){
+						puts("File not in game format.");
+						
+						if(docBuf){
+							delete[] docBuf;
+						}
+						
+						return NULL;
+					}
+
+					shared_ptr<Instance::Instance> dm = eng->getDataModel();
+					dm->deserialize(game_node);
+
+					if(docBuf){
+						delete[] docBuf;
+					}
+
+					return dm;
 				}
 			}
 		}
@@ -197,6 +220,18 @@ namespace OB{
 			instanceMap[inst] = id_str;
 			return id_str;
 		}
+	}
+
+	shared_ptr<Instance::Instance> OBSerializer::GetByID(std::string id){
+		for(auto it = instanceMap.begin(); it != instanceMap.end(); it++){
+			shared_ptr<Instance::Instance> inst = it->first;
+			std::string iid = it->second;
+
+			if(id == iid){
+				return inst;
+			}
+		}
+		return NULL;
 	}
 
 	void OBSerializer::SetID(shared_ptr<Instance::Instance> inst, std::string newId){

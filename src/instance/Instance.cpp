@@ -352,29 +352,30 @@ namespace OB{
 			for(auto it = props.begin(); it != props.end(); ++it){
 				std::string name = it->first;
 				_PropertyInfo pi = it->second;
+				std::string stype = pi.type;
 
 				if(pi.isSerialized){
 					pugi::xml_node propNode = thisNode.append_child(pugi::node_element);
 					propNode.set_name("property");
 					propNode.append_attribute("name").set_value(name.c_str());
-					propNode.append_attribute("type").set_value(pi.type.c_str());
+					propNode.append_attribute("type").set_value(stype.c_str());
 
-					if(pi.type == "string"){
+					if(stype == "string"){
 						propNode.text().set(getProperty(name)->asString().c_str());
 					}
-					if(pi.type == "int"){
+					if(stype == "int"){
 						propNode.text().set(getProperty(name)->asInt());
 					}
-					if(pi.type == "bool"){
+					if(stype == "bool"){
 						propNode.text().set(getProperty(name)->asBool());
 					}
-					if(pi.type == "double"){
+					if(stype == "double"){
 						propNode.text().set(getProperty(name)->asDouble());
 					}
-					if(pi.type == "float"){
+					if(stype == "float"){
 						propNode.text().set(getProperty(name)->asFloat());
 					}
-					if(pi.type == "Color3"){
+					if(stype == "Color3"){
 						shared_ptr<Type::Color3> vval = getProperty(name)->asColor3();
 						if(vval){
 							propNode.text().set(vval->toString().c_str());
@@ -382,7 +383,7 @@ namespace OB{
 							propNode.text().set("0, 0, 0");
 						}
 					}
-					if(pi.type == "Vector2"){
+					if(stype == "Vector2"){
 						shared_ptr<Type::Vector2> vval = getProperty(name)->asVector2();
 						if(vval){
 							propNode.text().set(vval->toString().c_str());
@@ -390,7 +391,7 @@ namespace OB{
 							propNode.text().set("0, 0");
 						}
 					}
-					if(pi.type == "Vector3"){
+					if(stype == "Vector3"){
 						shared_ptr<Type::Vector3> vval = getProperty(name)->asVector3();
 						if(vval){
 							propNode.text().set(vval->toString().c_str());
@@ -398,7 +399,7 @@ namespace OB{
 							propNode.text().set("0, 0, 0");
 						}
 					}
-					if(pi.type == "Instance"){
+					if(stype == "Instance"){
 						shared_ptr<Instance> vval = getProperty(name)->asInstance();
 						if(vval){
 							propNode.text().set(vval->serializedID().c_str());
@@ -409,8 +410,99 @@ namespace OB{
 				}
 			}
 		}
+
+		void Instance::deserializeCreate(pugi::xml_node thisNode){
+			for(pugi::xml_node cinst : thisNode.children("instance")){
+				pugi::xml_attribute itype = cinst.attribute("type");
+				pugi::xml_attribute iid = cinst.attribute("id");
+
+				if(!itype.empty() && !iid.empty()){
+					std::string stype = itype.as_string();
+					std::string sid = iid.as_string();
+
+					shared_ptr<Instance> createdInst = ClassFactory::createReplicate(stype, eng);
+					if(createdInst){
+						shared_ptr<OBSerializer> serializer = eng->getSerializer();
+						if(serializer){
+							serializer->SetID(createdInst, sid);
+						
+							createdInst->setParent(eng->getDataModel(), true);
+
+							createdInst->deserializeCreate(cinst);
+						}
+					}
+				}
+			}
+		}
+
+		void Instance::deserialize(pugi::xml_node thisNode){
+			deserializeCreate(thisNode);
+			
+			deserializeProperties(thisNode);
+
+			for(pugi::xml_node cinst : thisNode.children("instance")){
+				pugi::xml_attribute iid = cinst.attribute("id");
+
+				if(!iid.empty()){
+					shared_ptr<OBSerializer> serializer = eng->getSerializer();
+					if(serializer){
+						shared_ptr<Instance> childInst = serializer->GetByID(iid.as_string());
+						if(childInst){
+							childInst->deserializeProperties(cinst);
+						}
+					}
+				}
+			}
+		}
 		
-		void Instance::deserialize(pugi::xml_node thisNode){}
+		void Instance::deserializeProperties(pugi::xml_node thisNode){
+			std::map<std::string, _PropertyInfo> props = getProperties();
+			for(auto it = props.begin(); it != props.end(); ++it){
+				std::string name = it->first;
+				_PropertyInfo pi = it->second;
+				std::string stype = pi.type;
+
+				if(pi.isSerialized){
+					pugi::xml_node propNode = thisNode.find_child_by_attribute("property", "name", name.c_str());
+
+					if(!propNode.empty()){
+						pugi::xml_text propVal = propNode.text();
+
+						if(stype == "string"){
+						    setProperty(name, make_shared<Type::VarWrapper>(propVal.as_string()));
+						}
+						if(stype == "int"){
+							setProperty(name, make_shared<Type::VarWrapper>(propVal.as_int()));
+						}
+						if(stype == "bool"){
+							setProperty(name, make_shared<Type::VarWrapper>(propVal.as_bool()));
+						}
+						if(stype == "double"){
+						    setProperty(name, make_shared<Type::VarWrapper>(propVal.as_double()));
+						}
+						if(stype == "float"){
+						    setProperty(name, make_shared<Type::VarWrapper>(propVal.as_float()));
+						}
+						if(stype == "Color3"){
+						    
+						}
+						if(stype == "Vector2"){
+						    
+						}
+						if(stype == "Vector3"){
+						    
+						}
+						if(stype == "Instance"){
+							shared_ptr<OBSerializer> serializer = eng->getSerializer();
+							if(serializer){
+								std::string iid = propVal.as_string();
+								shared_ptr<Instance> iinst = serializer->GetByID(iid);
+							}
+						}
+					}
+				}
+			}
+		}
 
 		std::string Instance::serializedID(){
 		    shared_ptr<OBSerializer> serializer = eng->getSerializer();
