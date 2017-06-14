@@ -122,7 +122,7 @@ namespace OB{
 		#if HAVE_PUGIXML
 	    std::string NetworkServer::serializedID(){
 			shared_ptr<OBSerializer> serializer = eng->getSerializer();
-			serializer->SetID(shared_from_this(), "NetworkServer");
+			serializer->SetID(shared_from_this(), getClassName());
 			
 			return Instance::serializedID();
 		}

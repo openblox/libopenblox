@@ -322,32 +322,37 @@ namespace OB{
 		#endif
 
 		#if HAVE_PUGIXML
-	    void Instance::serialize(pugi::xml_node parentNode){
+		void Instance::serializeThis(pugi::xml_node thisNode, shared_ptr<Instance> model_ptr){
+			thisNode.append_attribute("type").set_value(getClassName().c_str());
+			thisNode.append_attribute("id").set_value(serializedID().c_str());
+			
+			serializeProperties(thisNode, model_ptr);
+			serializeChildren(thisNode, model_ptr);
+		}
+		
+	    void Instance::serialize(pugi::xml_node parentNode, shared_ptr<Instance> model){
 			if(Archivable){
 				pugi::xml_node thisNode = parentNode.append_child(pugi::node_element);
 				thisNode.set_name("instance");
-			    thisNode.append_attribute("type").set_value(getClassName().c_str());
-				thisNode.append_attribute("id").set_value(serializedID().c_str());
-
-				serializeProperties(thisNode);
-				serializeChildren(thisNode);
+				
+				serializeThis(thisNode, model);
 			}
 		}
 
-		void Instance::serializeChildren(pugi::xml_node parentNode){
+		void Instance::serializeChildren(pugi::xml_node parentNode, shared_ptr<Instance> model){
 			std::vector<shared_ptr<Instance>> kids = children;
 			
 			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
 				shared_ptr<Instance> kid = kids[i];
 				if(kid){
 					if(kid->Archivable){
-						kid->serialize(parentNode);
+						kid->serialize(parentNode, model);
 					}
 				}
 			}
 		}
 
-		void Instance::serializeProperties(pugi::xml_node thisNode){
+		void Instance::serializeProperties(pugi::xml_node thisNode, shared_ptr<Instance> model){
 			std::map<std::string, _PropertyInfo> props = getProperties();
 			for(auto it = props.begin(); it != props.end(); ++it){
 				std::string name = it->first;
@@ -401,6 +406,10 @@ namespace OB{
 					}
 					if(stype == "Instance"){
 						shared_ptr<Instance> vval = getProperty(name)->asInstance();
+						if(model && !model->IsAncestorOf(vval)){
+							// We don't want a reference to something we don't know about.
+						    vval = NULL;
+						}
 						if(vval){
 							propNode.text().set(vval->serializedID().c_str());
 						}else{
@@ -415,20 +424,24 @@ namespace OB{
 			for(pugi::xml_node cinst : thisNode.children("instance")){
 				pugi::xml_attribute itype = cinst.attribute("type");
 				pugi::xml_attribute iid = cinst.attribute("id");
-
+				
 				if(!itype.empty() && !iid.empty()){
 					std::string stype = itype.as_string();
 					std::string sid = iid.as_string();
 
-					shared_ptr<Instance> createdInst = ClassFactory::createReplicate(stype, eng);
-					if(createdInst){
-						shared_ptr<OBSerializer> serializer = eng->getSerializer();
-						if(serializer){
-							serializer->SetID(createdInst, sid);
-						
-							createdInst->setParent(eng->getDataModel(), true);
+					shared_ptr<OBSerializer> serializer = eng->getSerializer();
+					if(serializer){
+						shared_ptr<Instance> tInst = serializer->GetByID(sid);
+						if(!tInst){
+						    tInst = ClassFactory::createReplicate(stype, eng);
+						}
 
-							createdInst->deserializeCreate(cinst);
+						if(tInst){
+							serializer->SetID(tInst, sid);
+						
+						    tInst->setParent(shared_from_this(), true);
+
+						    tInst->deserializeCreate(cinst);
 						}
 					}
 				}
@@ -469,7 +482,7 @@ namespace OB{
 						pugi::xml_text propVal = propNode.text();
 
 						if(stype == "string"){
-						    setProperty(name, make_shared<Type::VarWrapper>(propVal.as_string()));
+						    setProperty(name, make_shared<Type::VarWrapper>(std::string(propVal.as_string())));
 						}
 						if(stype == "int"){
 							setProperty(name, make_shared<Type::VarWrapper>(propVal.as_int()));

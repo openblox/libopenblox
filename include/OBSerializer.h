@@ -42,8 +42,10 @@ namespace OB{
 			OBSerializer(OBEngine* eng);
 			
 			#if HAVE_PUGIXML
+			shared_ptr<Instance::Instance> LoadModelFromMemory(char* buf, size_t size);
 			shared_ptr<Instance::Instance> LoadModel(std::string resURI);
-			shared_ptr<Instance::Instance> Load(std::string resURI);
+		    bool LoadFromMemory(char* buf, size_t size);
+		    bool Load(std::string resURI);
 		    bool SaveModel(shared_ptr<Instance::Instance> model, std::string file);
 			std::string SaveModelInMemory(shared_ptr<Instance::Instance> model);
 			bool Save(std::string file);

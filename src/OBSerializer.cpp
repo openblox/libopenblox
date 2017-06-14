@@ -53,6 +53,10 @@ namespace OB{
 		}
 		return ouri;
 	}
+
+	shared_ptr<Instance::Instance> OBSerializer::LoadModelFromMemory(char* buf, size_t size){
+		
+	}
 	
 	shared_ptr<Instance::Instance> OBSerializer::LoadModel(std::string resURI){
 		std::string loadURI = _ob_obserializer_load_uri_to_std(resURI);
@@ -60,14 +64,37 @@ namespace OB{
 		return NULL;
 	}
 
-	shared_ptr<Instance::Instance> OBSerializer::Load(std::string resURI){
-		std::string loadURI = _ob_obserializer_load_uri_to_std(resURI);
-
+	bool OBSerializer::LoadFromMemory(char* buf, size_t size){
 		pugi::xml_document doc;
-		char* docBuf = NULL;
+		pugi::xml_parse_result result = doc.load_buffer(buf, size, pugi::parse_cdata | pugi::parse_escapes | pugi::parse_wconv_attribute | pugi::parse_eol | pugi::parse_pi, pugi::encoding_utf8);
+
+		if(!result){
+			printf("XML Parser Error: %s\n", result.description());
+
+			return false;
+		}
+
+		pugi::xml_node game_node = doc.child("game");
+		if(!game_node){
+			puts("File not in game format.");
+
+			return false;
+		}
 
 		instanceMap.clear();
 		dynamic_instance_count = 0;
+
+		shared_ptr<Instance::Instance> dm = eng->getDataModel();
+		dm->deserialize(game_node);
+
+		instanceMap.clear();
+		dynamic_instance_count = 0;
+
+		return true;
+	}
+	
+    bool OBSerializer::Load(std::string resURI){
+		std::string loadURI = _ob_obserializer_load_uri_to_std(resURI);
 
 		if(eng){
 			shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
@@ -75,47 +102,12 @@ namespace OB{
 				assetLoc->loadAssetSync(loadURI, false, true);
 				shared_ptr<AssetResponse> resp = assetLoc->getAsset(loadURI, false);
 				if(resp){
-					docBuf = new char[resp->getSize()];
-					pugi::xml_parse_result result = doc.load_buffer_inplace(docBuf, resp->getSize());
-					if(!result){
-						if(docBuf){
-							delete[] docBuf;
-						}
-		
-						return NULL;
-					}
-
-					pugi::xml_node game_node = doc.child("game");
-					if(!game_node){
-						puts("File not in game format.");
-						
-						if(docBuf){
-							delete[] docBuf;
-						}
-						
-						return NULL;
-					}
-
-					shared_ptr<Instance::Instance> dm = eng->getDataModel();
-					dm->deserialize(game_node);
-
-					if(docBuf){
-						delete[] docBuf;
-					}
-
-					return dm;
+				    return LoadFromMemory(resp->getData(), resp->getSize());
 				}
 			}
 		}
-
-		instanceMap.clear();
-		dynamic_instance_count = 0;
-
-		if(docBuf){
-			delete[] docBuf;
-		}
 		
-		return NULL;
+		return false;
 	}
 
 	void _ob_obserializer_add_warning(pugi::xml_document &doc){
@@ -128,9 +120,6 @@ namespace OB{
 			return false;
 		}
 
-		instanceMap.clear();
-		dynamic_instance_count = 0;
-
 		pugi::xml_document doc;
 
 		_ob_obserializer_add_warning(doc);
@@ -139,7 +128,13 @@ namespace OB{
 		model_node.set_name("model");
 		model_node.append_attribute("version").set_value(OB_SERIALIZER_XML_CURRENT_VERSION_ID);
 
-	    model->serialize(model_node);
+		instanceMap.clear();
+		dynamic_instance_count = 0;
+
+	    model->serializeThis(model_node, model);
+
+		instanceMap.clear();
+		dynamic_instance_count = 0;
 		
 		return doc.save_file(file.c_str(), "\t", pugi::format_indent, pugi::encoding_utf8);
 	}
@@ -148,9 +143,6 @@ namespace OB{
 		if(!model){
 			return "";
 		}
-
-		instanceMap.clear();
-		dynamic_instance_count = 0;
 		
 		pugi::xml_document doc;
 
@@ -160,7 +152,13 @@ namespace OB{
 		model_node.set_name("model");
 		model_node.append_attribute("version").set_value(OB_SERIALIZER_XML_CURRENT_VERSION_ID);
 
-	    model->serialize(model_node);
+		instanceMap.clear();
+		dynamic_instance_count = 0;
+
+	    model->serializeThis(model_node, model);
+
+		instanceMap.clear();
+		dynamic_instance_count = 0;
 		
 		std::stringstream ss;
 	    doc.save(ss, "\t", pugi::format_indent, pugi::encoding_utf8);
@@ -169,39 +167,49 @@ namespace OB{
 	}
 
 	bool OBSerializer::Save(std::string file){
-		instanceMap.clear();
-		dynamic_instance_count = 0;
-		
 		pugi::xml_document doc;
 
 		_ob_obserializer_add_warning(doc);
 
+		pugi::xml_node game_node = doc.append_child(pugi::node_element);
+	    game_node.set_name("game");
+	    game_node.append_attribute("version").set_value(OB_SERIALIZER_XML_CURRENT_VERSION_ID);
+
+		instanceMap.clear();
+		dynamic_instance_count = 0;
+
 		//We don't *need* to know it's a DataModel
 		shared_ptr<Instance::Instance> dm = eng->getDataModel();
 		if(dm){
-			dm->serialize(doc);
+			dm->serializeThis(game_node, NULL);
 		}
 
-		doc.child("game").append_attribute("version").set_value(OB_SERIALIZER_XML_CURRENT_VERSION_ID);
+		instanceMap.clear();
+		dynamic_instance_count = 0;
 		
 		return doc.save_file(file.c_str(), "\t", pugi::format_indent, pugi::encoding_utf8);
 	}
 
 	std::string OBSerializer::SaveInMemory(){
-		instanceMap.clear();
-		dynamic_instance_count = 0;
-		
-		pugi::xml_document doc;
+	    pugi::xml_document doc;
 
 		_ob_obserializer_add_warning(doc);
+
+		instanceMap.clear();
+		dynamic_instance_count = 0;
+
+		pugi::xml_node game_node = doc.append_child(pugi::node_element);
+	    game_node.set_name("game");
+	    game_node.append_attribute("version").set_value(OB_SERIALIZER_XML_CURRENT_VERSION_ID);
 
 		//We don't *need* to know it's a DataModel
 		shared_ptr<Instance::Instance> dm = eng->getDataModel();
 		if(dm){
-			dm->serialize(doc);
+			dm->serializeThis(game_node, NULL);
 		}
 
-		doc.child("game").append_attribute("version").set_value(OB_SERIALIZER_XML_CURRENT_VERSION_ID);
+		instanceMap.clear();
+		dynamic_instance_count = 0;
 
 		std::stringstream ss;
 	    doc.save(ss, "\t", pugi::format_indent, pugi::encoding_utf8);
@@ -223,6 +231,18 @@ namespace OB{
 	}
 
 	shared_ptr<Instance::Instance> OBSerializer::GetByID(std::string id){
+		if(id == "NULL"){
+			return NULL;
+		}
+		shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+		if(id == "game"){
+			return dm;
+		}
+		shared_ptr<Instance::Instance> inst = dm->FindService(id);
+		if(inst){
+			return inst;
+		}
+		
 		for(auto it = instanceMap.begin(); it != instanceMap.end(); it++){
 			shared_ptr<Instance::Instance> inst = it->first;
 			std::string iid = it->second;

@@ -453,8 +453,7 @@ namespace OB{
 	}
 
 	void AssetLocator::putAsset(std::string url, size_t size, char* data){
-		contentCache.erase(contentCache.find(url));
-	    contentCache.emplace(url, make_shared<AssetResponse>(size, data, url, eng));
+	    contentCache[url] = make_shared<AssetResponse>(size, data, url, eng);
 	}
 
 	void AssetLocator::addWaitingInstance(shared_ptr<Instance::Instance> inst){

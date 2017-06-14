@@ -429,9 +429,10 @@ namespace OB{
 				#endif
 
 				#if HAVE_PUGIXML
-				virtual void serialize(pugi::xml_node parentNode);
-				virtual void serializeChildren(pugi::xml_node parentNode);
-				virtual void serializeProperties(pugi::xml_node thisNode);
+				virtual void serializeThis(pugi::xml_node parentNode, shared_ptr<Instance> model);
+				virtual void serialize(pugi::xml_node parentNode, shared_ptr<Instance> model);
+				virtual void serializeChildren(pugi::xml_node parentNode, shared_ptr<Instance> model);
+				virtual void serializeProperties(pugi::xml_node thisNode, shared_ptr<Instance> model);
 				virtual void deserializeCreate(pugi::xml_node thisNode);
 				virtual void deserialize(pugi::xml_node thisNode);
 				virtual void deserializeProperties(pugi::xml_node thisNode);

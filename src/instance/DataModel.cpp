@@ -213,17 +213,9 @@ namespace OB{
 		#endif
 
 		#if HAVE_PUGIXML
-	    void DataModel::serialize(pugi::xml_node parentNode){
-			if(Archivable){
-				pugi::xml_node thisNode = parentNode.append_child(pugi::node_element);
-				thisNode.set_name("game");
-
-				serializeProperties(thisNode);
-				serializeChildren(thisNode);
-			}
+	    void DataModel::deserialize(pugi::xml_node thisNode){
+			Instance::deserialize(thisNode);
 		}
-		
-	    void DataModel::deserialize(pugi::xml_node thisNode){}
 
 	    std::string DataModel::serializedID(){
 			shared_ptr<OBSerializer> serializer = eng->getSerializer();

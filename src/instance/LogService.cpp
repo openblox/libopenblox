@@ -49,7 +49,7 @@ namespace OB{
 		#if HAVE_PUGIXML
 	    std::string LogService::serializedID(){
 			shared_ptr<OBSerializer> serializer = eng->getSerializer();
-			serializer->SetID(shared_from_this(), "LogService");
+			serializer->SetID(shared_from_this(), getClassName());
 			
 			return Instance::serializedID();
 		}
