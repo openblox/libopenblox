@@ -20,6 +20,7 @@
 #include "type/Vector2.h"
 
 #include "instance/Instance.h"
+#include "utility.h"
 
 #include <sstream>
 
@@ -39,6 +40,29 @@ namespace OB{
 	    Vector2::Vector2(double x, double y){
 			this->x = x;
 			this->y = y;
+		}
+
+		Vector2::Vector2(std::string str){
+			std::vector<std::string> fields = split(fields, str, ",");
+			if(fields.size() == 2){
+				std::string xStr = trim(fields[0]);
+				std::string yStr = trim(fields[1]);
+
+				if(xStr.length() > 0){
+					x = atof(xStr.c_str());
+				}else{
+					x = 0;
+				}
+				
+				if(yStr.length() > 0){
+					y = atof(yStr.c_str());
+				}else{
+					y = 0;
+				}
+			}else{
+				x = 0;
+				y = 0;
+			}
 		}
 
 	    Vector2::~Vector2(){}

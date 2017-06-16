@@ -20,6 +20,7 @@
 #include "type/Color3.h"
 
 #include "instance/Instance.h"
+#include "utility.h"
 
 #include <sstream>
 
@@ -56,6 +57,37 @@ namespace OB{
 			this->r = rr;
 			this->g = gg;
 			this->b = bb;
+		}
+
+	    Color3::Color3(std::string str){
+			std::vector<std::string> fields = split(fields, str, ",");
+			if(fields.size() == 3){
+				std::string rStr = trim(fields[0]);
+				std::string gStr = trim(fields[1]);
+				std::string bStr = trim(fields[2]);
+
+				if(rStr.length() > 0){
+					r = atof(rStr.c_str());
+				}else{
+					r = 0;
+				}
+				
+				if(gStr.length() > 0){
+					g = atof(gStr.c_str());
+				}else{
+					g = 0;
+				}
+				
+				if(bStr.length() > 0){
+					b = atof(bStr.c_str());
+				}else{
+					b = 0;
+				}
+			}else{
+				r = 0;
+				g = 0;
+				b = 0;
+			}
 		}
 
 		Color3::~Color3(){}

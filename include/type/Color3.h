@@ -35,6 +35,7 @@ namespace OB{
 			    Color3();
 			    Color3(double r, double g, double b);
 				Color3(int r, int g, int b);
+				Color3(std::string str);
 				virtual ~Color3();
 
 				double getR();

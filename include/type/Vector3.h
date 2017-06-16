@@ -38,6 +38,7 @@ namespace OB{
 			public:
 			    Vector3();
 			    Vector3(double x, double y, double z);
+				Vector3(std::string str);
 				virtual ~Vector3();
 
 				double getX();

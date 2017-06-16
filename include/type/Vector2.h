@@ -34,6 +34,7 @@ namespace OB{
 			public:
 			    Vector2();
 			    Vector2(double x, double y);
+				Vector2(std::string str);
 				virtual ~Vector2();
 
 				double getX();

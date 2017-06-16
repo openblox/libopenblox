@@ -20,6 +20,7 @@
 #include "type/Vector3.h"
 
 #include "instance/Instance.h"
+#include "utility.h"
 
 #include <sstream>
 
@@ -41,6 +42,37 @@ namespace OB{
 			this->x = x;
 			this->y = y;
 			this->z = z;
+		}
+
+		Vector3::Vector3(std::string str){
+			std::vector<std::string> fields = split(fields, str, ",");
+			if(fields.size() == 3){
+				std::string xStr = trim(fields[0]);
+				std::string yStr = trim(fields[1]);
+				std::string zStr = trim(fields[2]);
+
+				if(xStr.length() > 0){
+					x = atof(xStr.c_str());
+				}else{
+					x = 0;
+				}
+				
+				if(yStr.length() > 0){
+					y = atof(yStr.c_str());
+				}else{
+					y = 0;
+				}
+				
+				if(zStr.length() > 0){
+					z = atof(zStr.c_str());
+				}else{
+					z = 0;
+				}
+			}else{
+				x = 0;
+				y = 0;
+				z = 0;
+			}
 		}
 
 	    Vector3::~Vector3(){}
