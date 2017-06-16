@@ -497,13 +497,13 @@ namespace OB{
 						    setProperty(name, make_shared<Type::VarWrapper>(propVal.as_float()));
 						}
 						if(stype == "Color3"){
-						    
+						    setProperty(name, make_shared<Type::VarWrapper>(make_shared<Type::Color3>(propVal.as_string())));
 						}
 						if(stype == "Vector2"){
-						    
+						    setProperty(name, make_shared<Type::VarWrapper>(make_shared<Type::Vector2>(propVal.as_string())));
 						}
 						if(stype == "Vector3"){
-						    
+						    setProperty(name, make_shared<Type::VarWrapper>(make_shared<Type::Vector3>(propVal.as_string())));
 						}
 						if(stype == "Instance"){
 							shared_ptr<OBSerializer> serializer = eng->getSerializer();
