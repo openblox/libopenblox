@@ -38,6 +38,7 @@
 #include "type/Color3.h"
 #include "type/Vector3.h"
 #include "type/Vector2.h"
+#include "type/CFrame.h"
 
 #include "type/Enum.h"
 
@@ -158,6 +159,14 @@ namespace OB{
 			};
 			luaL_setfuncs(L, vector2lib, 0);
 			lua_setglobal(L, "Vector2");
+
+			lua_newtable(L);
+			luaL_Reg cframelib[] = {
+				{"new", lua_newCFrame},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, cframelib, 0);
+			lua_setglobal(L, "CFrame");
 
 			Enum::registerLuaEnums(L);
 
@@ -482,6 +491,49 @@ namespace OB{
 
 		    shared_ptr<Type::Vector2> newGuy = make_shared<Type::Vector2>(x, y);
 			return newGuy->wrap_lua(L);
+		}
+
+		int lua_newCFrame(lua_State* L){
+			int nargs = lua_gettop(L);
+			if(nargs == 0){
+				return make_shared<Type::CFrame>()->wrap_lua(L);
+			}else if(nargs == 2){
+				shared_ptr<Type::Vector3> pos = Type::checkVector3(L, 1, true, false);
+				shared_ptr<Type::Vector3> lA = Type::checkVector3(L, 1, true, false);
+				return make_shared<Type::CFrame>(pos, lA)->wrap_lua(L);
+			}else if(nargs == 3){
+				double x = luaL_checknumber(L, 1);
+				double y = luaL_checknumber(L, 2);
+				double z = luaL_checknumber(L, 3);
+				return make_shared<Type::CFrame>(x, y, z)->wrap_lua(L);
+			}else if(nargs == 7){
+				double x = luaL_checknumber(L, 1);
+				double y = luaL_checknumber(L, 2);
+				double z = luaL_checknumber(L, 3);
+				double qx = luaL_checknumber(L, 4);
+				double qy = luaL_checknumber(L, 5);
+				double qz = luaL_checknumber(L, 6);
+				double qw = luaL_checknumber(L, 7);
+				return make_shared<Type::CFrame>(x, y, z, qx, qy, qz, qw)->wrap_lua(L);
+			}else if(nargs == 12){
+				double x = luaL_checknumber(L, 1);
+				double y = luaL_checknumber(L, 2);
+				double z = luaL_checknumber(L, 3);
+				double r00 = luaL_checknumber(L, 4);
+				double r01 = luaL_checknumber(L, 5);
+				double r02 = luaL_checknumber(L, 6);
+				double r10 = luaL_checknumber(L, 7);
+				double r11 = luaL_checknumber(L, 8);
+				double r12 = luaL_checknumber(L, 9);
+				double r20 = luaL_checknumber(L, 10);
+				double r21 = luaL_checknumber(L, 11);
+				double r22 = luaL_checknumber(L, 12);
+				return make_shared<Type::CFrame>(x, y, z,
+										   r00, r01, r02,
+										   r10, r11, r12,
+										   r20, r21, r22)->wrap_lua(L);
+			}
+			return 0;
 		}
 
 		int lua_listInstanceClasses(lua_State* L){

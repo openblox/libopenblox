@@ -55,11 +55,17 @@ namespace OB{
 				 */
 			    CFrame(double x, double y, double z);
 				/**
+				 * Creates a copy of a CFrame
+				 */
+				CFrame(shared_ptr<CFrame> cf);
+				/**
 				 * Creates a CFrame from a position (x, y, z) and
 				 * quaternion (qX, qY, qZ, qW)
 				 */
 				CFrame(double x, double y, double z,
 					   double qX, double qY, double qZ, double qW);
+
+				CFrame(int);
 
 				/*
 				 * Creates a CFrame from a position (x, y, z) with
@@ -88,7 +94,7 @@ namespace OB{
 
 				shared_ptr<CFrame> add(shared_ptr<Vector3> v);
 				shared_ptr<CFrame> sub(shared_ptr<Vector3> v);
-				shared_ptr<CFrame> mul(shared_ptr<Vector3> v);
+				// TODO: shared_ptr<CFrame> mul(shared_ptr<Vector3> v);
 				shared_ptr<CFrame> mul(shared_ptr<CFrame> c);
 
 				shared_ptr<CFrame> lerp(shared_ptr<CFrame> goal, double alpha);
@@ -99,6 +105,7 @@ namespace OB{
 				static int lua_getX(lua_State* L);
 				static int lua_getY(lua_State* L);
 				static int lua_getZ(lua_State* L);
+				static int lua_getP(lua_State* L);
 
 				static int lua_lerp(lua_State* L);
 
@@ -114,19 +121,17 @@ namespace OB{
 				
 				DECLARE_TYPE();
 
-				CFrame(int);
-
 				void setIdentity();
 				void multiplyInternal(shared_ptr<CFrame> other);
 				void translate(double x, double y, double z);
 				void rotate(double angle, double x, double y, double z);
-				void rotateQ(double qX, double qY, double qZ);
+				void rotateQ(double qX, double qY, double qZ, double qW);
 				void lookAt(shared_ptr<Vector3> pos, shared_ptr<Vector3> at);
 
-			    double matrix[4][4];
+			    double m[4][4];
 				int fB;
 
-				enum{
+				enum CFPerfT{
 					Identity = 0x0001, //Identity matrix
 					Unknown = 0x0002, //Unknown contents, make no assumptions
 					Translation = 0x0003, //Simple translation
@@ -136,7 +141,7 @@ namespace OB{
 
 		};
 
-		shared_ptr<Vector3> checkCFrame(lua_State* L, int n, bool errIfNot = true, bool allowNil = true);
+		shared_ptr<CFrame> checkCFrame(lua_State* L, int n, bool errIfNot = true, bool allowNil = true);
 	}
 }
 

@@ -214,6 +214,15 @@ namespace OB{
 		int lua_newVector2(lua_State* L);
 
 		/**
+		 * Used to create a CFrame from Lua.
+		 *
+		 * @param L Lua state
+		 * @returns int 1
+		 * @author John M. Harris, Jr.
+		 */
+		int lua_newCFrame(lua_State* L);
+
+		/**
 		 * Used to get a list of all Instance classes from Lua.
 		 *
 		 * @param L Lua state
