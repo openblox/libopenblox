@@ -424,8 +424,8 @@ namespace OB{
 			for(pugi::xml_node cinst : thisNode.children("instance")){
 				pugi::xml_attribute itype = cinst.attribute("type");
 				pugi::xml_attribute iid = cinst.attribute("id");
-				
-				if(!itype.empty() && !iid.empty()){
+
+			    if(!itype.empty() && !iid.empty()){
 					std::string stype = itype.as_string();
 					std::string sid = iid.as_string();
 
@@ -450,22 +450,7 @@ namespace OB{
 
 		void Instance::deserialize(pugi::xml_node thisNode){
 			deserializeCreate(thisNode);
-			
 			deserializeProperties(thisNode);
-
-			for(pugi::xml_node cinst : thisNode.children("instance")){
-				pugi::xml_attribute iid = cinst.attribute("id");
-
-				if(!iid.empty()){
-					shared_ptr<OBSerializer> serializer = eng->getSerializer();
-					if(serializer){
-						shared_ptr<Instance> childInst = serializer->GetByID(iid.as_string());
-						if(childInst){
-							childInst->deserializeProperties(cinst);
-						}
-					}
-				}
-			}
 		}
 		
 		void Instance::deserializeProperties(pugi::xml_node thisNode){
@@ -513,6 +498,16 @@ namespace OB{
 							}
 						}
 					}
+				}
+			}
+
+			std::vector<shared_ptr<Instance>> kids = GetChildren();
+			
+			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
+				shared_ptr<Instance> kid = kids[i];
+				if(kid){
+					pugi::xml_node cinst = thisNode.find_child_by_attribute("instance", "id", kid->serializedID().c_str());
+				    kid->deserializeProperties(cinst);
 				}
 			}
 		}
