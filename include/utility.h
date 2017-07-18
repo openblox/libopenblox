@@ -31,6 +31,10 @@
 #include <string>
 #include <cstddef>
 #include <algorithm>
+#include <iostream>
+#include <sstream>
+#include <vector>
+#include <string>
 
 #ifdef _WIN32
 #include <winsock2.h>
@@ -60,23 +64,15 @@ namespace OB{
 		no_empties
 	};
 
-	template <typename Container>
-	static inline Container& split(Container& result, const typename Container::value_type& s, const typename Container::value_type& delimiters, empties_t empties = empties_t::empties_ok){
-		result.clear();
-		size_t current;
-		size_t next = -1;
-		do{
-			if(empties == empties_t::no_empties){
-				next = s.find_first_not_of(delimiters, next + 1);
-				if (next == Container::value_type::npos) break;
-				next -= 1;
-			}
-			current = next + 1;
-			next = s.find_first_of(delimiters, current);
-			result.push_back(s.substr(current, next - current));
+    static inline std::vector<std::string> split(std::string str){
+		std::vector<std::string> results;
+		std::stringstream ss(str);
+		while(ss.good()){
+			std::string substr;
+			getline(ss, substr, ',');
+			results.push_back(substr);
 		}
-		while(next != Container::value_type::npos);
-		return result;
+		return results;
 	}
 
 	static inline std::string &ltrim(std::string &s){

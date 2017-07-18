@@ -60,7 +60,7 @@ namespace OB{
 		}
 
 	    Color3::Color3(std::string str){
-			std::vector<std::string> fields = split(fields, str, ",");
+		    std::vector<std::string> fields = split(str);
 			if(fields.size() == 3){
 				std::string rStr = trim(fields[0]);
 				std::string gStr = trim(fields[1]);

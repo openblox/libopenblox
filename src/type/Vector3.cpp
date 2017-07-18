@@ -45,7 +45,7 @@ namespace OB{
 		}
 
 		Vector3::Vector3(std::string str){
-			std::vector<std::string> fields = split(fields, str, ",");
+		    std::vector<std::string> fields = split(str);
 			if(fields.size() == 3){
 				std::string xStr = trim(fields[0]);
 				std::string yStr = trim(fields[1]);
