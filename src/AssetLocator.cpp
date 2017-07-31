@@ -214,6 +214,8 @@ namespace OB{
 
 				char* bodyDat = (char*)malloc(fileLen);
 				if(file.read(bodyDat, fileLen)){
+					bodyDat[fileLen] = '\0';
+					
 					body->data = bodyDat;
 					body->size = fileLen;
 				}else{
@@ -453,7 +455,13 @@ namespace OB{
 	}
 
 	void AssetLocator::putAsset(std::string url, size_t size, char* data){
-	    contentCache[url] = make_shared<AssetResponse>(size, data, url, eng);
+		std::map<std::string, shared_ptr<AssetResponse>>::iterator i = contentCache.find(url);
+
+		if(i != contentCache.end()){
+			contentCache.erase(i);
+		}
+
+		contentCache.emplace(url, make_shared<AssetResponse>(size, data, url, eng));
 	}
 
 	void AssetLocator::addWaitingInstance(shared_ptr<Instance::Instance> inst){
