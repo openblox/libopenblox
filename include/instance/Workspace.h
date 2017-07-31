@@ -45,6 +45,9 @@ namespace OB{
 
 				double getDistributedGameTime();
 
+				shared_ptr<Instance> getCurrentCamera();
+				void setCurrentCamera(shared_ptr<Instance> inst);
+
 			    shared_ptr<Type::Vector3> getGravity();
 				void setGravity(shared_ptr<Type::Vector3> gravity);
 				
@@ -73,6 +76,8 @@ namespace OB{
 				virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
 
 				DECLARE_LUA_METHOD(getDistributedGameTime);
+				DECLARE_LUA_METHOD(getCurrentCamera);
+				DECLARE_LUA_METHOD(setCurrentCamera);
 				DECLARE_LUA_METHOD(getGravity);
 				DECLARE_LUA_METHOD(setGravity);
 				DECLARE_LUA_METHOD(getFallenPartsDestroyHeight);
@@ -95,6 +100,7 @@ namespace OB{
 				btDiscreteDynamicsWorld* dynamicsWorld;
 				#endif
 
+				shared_ptr<Instance> CurrentCamera;
 			    shared_ptr<Type::Vector3> Gravity;
 				double FallenPartsDestroyHeight;
 				bool DestroyFallenParts;

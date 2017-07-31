@@ -21,6 +21,9 @@
 
 #include "OBEngine.h"
 
+//Helper classes
+#include "instance/Camera.h"
+
 //Services we're including just to initiate them ahead of time
 #include "instance/Workspace.h"
 #include "instance/Lighting.h"
@@ -56,6 +59,9 @@ namespace OB{
 			workspace = make_shared<Workspace>(eng);
 			workspace->setParent(sharedThis, false);
 			workspace->ParentLocked = true;
+
+			shared_ptr<Camera> cam = make_shared<Camera>(getEngine());
+			workspace->setCurrentCamera(cam);
 			
 			lighting = make_shared<Lighting>(eng);
 			lighting->setParent(sharedThis, false);

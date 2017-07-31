@@ -21,6 +21,8 @@
 
 #include "utility.h"
 
+#include "instance/Camera.h"
+
 #include "instance/NetworkReplicator.h"
 #include "instance/NetworkServer.h"
 
@@ -33,7 +35,7 @@ namespace OB{
 	    Workspace::Workspace(OBEngine* eng) : Model(eng){
 			Name = ClassName;
 			netId = OB_NETID_WORKSPACE;
-
+			
 			Gravity = make_shared<Type::Vector3>(0, -196.2, 0);
 			FallenPartsDestroyHeight = -1000;
 			DestroyFallenParts = true;
@@ -78,6 +80,20 @@ namespace OB{
 
 			double runTime = (double)(curTime - startTime) / 1000;
 			return runTime;
+		}
+
+		shared_ptr<Instance> Workspace::getCurrentCamera(){
+			return CurrentCamera;
+		}
+		
+		void Workspace::setCurrentCamera(shared_ptr<Instance> inst){
+		    if(shared_ptr<Camera> cInst = dynamic_pointer_cast<Camera>(inst)){
+				CurrentCamera = cInst;
+				
+				if(CurrentCamera){
+					CurrentCamera->setParent(std::enable_shared_from_this<Instance>::shared_from_this(), true);
+				}
+			}
 		}
 
 		shared_ptr<Type::Vector3> Workspace::getGravity(){
@@ -140,7 +156,7 @@ namespace OB{
 		#if HAVE_ENET
 		void Workspace::replicateProperties(shared_ptr<NetworkReplicator> peer){
 		    Instance::replicateProperties(peer);
-		    
+
 			peer->sendSetPropertyPacket(netId, "Gravity", make_shared<Type::VarWrapper>(Gravity));
 			peer->sendSetPropertyPacket(netId, "FallenPartsDestroyHeight", make_shared<Type::VarWrapper>(FallenPartsDestroyHeight));
 			peer->sendSetPropertyPacket(netId, "DestroyFallenParts", make_shared<Type::VarWrapper>(DestroyFallenParts));
@@ -158,6 +174,7 @@ namespace OB{
 
 		std::map<std::string, _PropertyInfo> Workspace::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
+			propMap["CurrentCamera"] = {"Instance", false, true, false};
 			propMap["Gravity"] = {"Vector3", false, true, true};
 			propMap["FallenPartsDestroyHeight"] = {"double", false, true, true};
 			propMap["DestroyFallenParts"] = {"bool", false, true, true};
@@ -166,6 +183,10 @@ namespace OB{
 		}
 
 		void Workspace::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
+			if(prop == "CurrentCamera"){
+				setCurrentCamera(val->asInstance());
+				return;
+			}
 		    if(prop == "Gravity"){
 			    setGravity(val->asVector3());
 				return;
@@ -183,6 +204,9 @@ namespace OB{
 		}
 
 		shared_ptr<Type::VarWrapper> Workspace::getProperty(std::string prop){
+			if(prop == "CurrentCamera"){
+				return make_shared<Type::VarWrapper>(getCurrentCamera());
+			}
 			if(prop == "Gravity"){
 				return make_shared<Type::VarWrapper>(getGravity());
 			}
@@ -207,6 +231,40 @@ namespace OB{
 				}
 			}
 
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int Workspace::lua_setCurrentCamera(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Workspace> instWS = dynamic_pointer_cast<Workspace>(inst);
+				if(instWS){
+				    shared_ptr<Instance> newV = checkInstance(L, 2, false);
+					instWS->setCurrentCamera(newV);
+				}
+			}
+			
+			return 0;
+		}
+
+		int Workspace::lua_getCurrentCamera(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Workspace> instWS = dynamic_pointer_cast<Workspace>(inst);
+				if(instWS){
+				    shared_ptr<Instance> tV = instWS->getCurrentCamera();
+					if(tV){
+					    tV->wrap_lua(L);
+					}else{
+						lua_pushnil(L);
+					}
+					return 1;
+				}
+			}
+			
 			lua_pushnil(L);
 			return 1;
 		}
@@ -307,6 +365,7 @@ namespace OB{
 			Instance::register_lua_property_setters(L);
 			
 			luaL_Reg properties[] = {
+				{"CurrentCamera", lua_setCurrentCamera},
 				{"DistributedGameTime", lua_readOnlyProperty},
 				{"Gravity", lua_setGravity},
 				{"FallenPartsDestroyHeight", lua_setFallenPartsDestroyHeight},
@@ -320,6 +379,7 @@ namespace OB{
 			Instance::register_lua_property_getters(L);
 			
 			luaL_Reg properties[] = {
+				{"CurrentCamera", lua_getCurrentCamera},
 			    {"DistributedGameTime", lua_getDistributedGameTime},
 				{"Gravity", lua_getGravity},
 				{"FallenPartsDestroyHeight", lua_setFallenPartsDestroyHeight},

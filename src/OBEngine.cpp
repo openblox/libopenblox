@@ -266,8 +266,8 @@ namespace OB{
 					irrSkyCol = irr::video::SColor(255, 0, 0, 0);
 				}
 			}
-			
-			irrDriv->beginScene(true, true, irrSkyCol);
+
+		    irrDriv->beginScene(true, true, irrSkyCol);
 			irrSceneMgr->drawAll();
 			irrDriv->endScene();
 		}

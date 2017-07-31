@@ -25,6 +25,7 @@
 
 //Alllllll Instances
 #include "instance/Instance.h"
+#include "instance/Camera.h"
 #include "instance/PVInstance.h"
 #include "instance/Model.h"
 #include "instance/BindableEvent.h"
@@ -147,6 +148,7 @@ namespace OB{
 		isInitialized = true;
 		
 		Instance::Instance::registerClass();
+		Instance::Camera::registerClass();
 		Instance::PVInstance::registerClass();
 		Instance::Model::registerClass();
 	    Instance::BindableEvent::registerClass();

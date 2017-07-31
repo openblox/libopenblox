@@ -31,12 +31,14 @@ type/Vector3.cpp \
 type/Vector2.cpp \
 type/CFrame.cpp \
 instance/Instance.cpp \
+instance/Camera.cpp \
 instance/PVInstance.cpp \
 instance/Model.cpp \
 instance/BindableEvent.cpp \
 instance/ServiceProvider.cpp \
 instance/Lighting.cpp \
 instance/ContentProvider.cpp \
+instance/UserInputService.cpp \
 instance/BasePlayerGui.cpp \
 instance/CoreGui.cpp \
 instance/StarterGui.cpp \
