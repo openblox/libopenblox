@@ -161,6 +161,14 @@ namespace OB{
 			void render();
 
 			/**
+			 * Save an image of the last frame to a file.
+			 *
+			 * @param file File to write to
+			 * @author John M. Harris, Jr.
+			 */
+		    bool saveScreenshot(std::string file);
+
+			/**
 			 * Returns the global Lua state, which all states
 			 * used by the engine are coroutines of.
 			 *

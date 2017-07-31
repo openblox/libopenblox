@@ -275,6 +275,18 @@ namespace OB{
 		#endif
 	}
 
+    bool OBEngine::saveScreenshot(std::string file){
+		if(doRendering){
+		    if(irrDriv){
+				irr::video::IImage* img = irrDriv->createScreenShot();
+				if(img){
+					return irrDriv->writeImageToFile(img,  irr::io::path(file.c_str()));
+				}
+			}
+		}
+		return false;
+	}
+
 	lua_State* OBEngine::getGlobalLuaState(){
 		return globalState;
 	}
