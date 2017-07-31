@@ -257,10 +257,14 @@ namespace OB{
 			
 			shared_ptr<Type::Color3> skyCol = light->getSkyColor();
 			irr::video::SColor irrSkyCol;
-			if(skyCol != NULL){
-				irrSkyCol = skyCol->toIrrlichtSColor();
+			if(light->isSkyTransparent()){
+				irrSkyCol = irr::video::SColor(0, 0, 0, 0);
 			}else{
-				irrSkyCol = irr::video::SColor(255, 0, 0, 0);
+				if(skyCol != NULL){
+					irrSkyCol = skyCol->toIrrlichtSColor();
+				}else{
+					irrSkyCol = irr::video::SColor(255, 0, 0, 0);
+				}
 			}
 			
 			irrDriv->beginScene(true, true, irrSkyCol);

@@ -44,6 +44,9 @@ namespace OB{
 				shared_ptr<Type::Color3> getSkyColor();
 				void setSkyColor(shared_ptr<Type::Color3> skyColor);
 
+				bool isSkyTransparent();
+				void setSkyTransparent(bool skyTransparent);
+
 				bool isFogEnabled();
 				void setFogEnabled(bool fogEnabled);
 
@@ -72,7 +75,8 @@ namespace OB{
 
 				DECLARE_LUA_METHOD(getSkyColor);
 				DECLARE_LUA_METHOD(setSkyColor);
-				
+				DECLARE_LUA_METHOD(getSkyTransparent);
+				DECLARE_LUA_METHOD(setSkyTransparent);
 				DECLARE_LUA_METHOD(getFogEnabled);
 				DECLARE_LUA_METHOD(setFogEnabled);
 				DECLARE_LUA_METHOD(getFogColor);
@@ -90,6 +94,7 @@ namespace OB{
 				void updateFog();
 
 				shared_ptr<Type::Color3> SkyColor;
+				bool SkyTransparent;
 				
 				bool FogEnabled;
 				shared_ptr<Type::Color3> FogColor;

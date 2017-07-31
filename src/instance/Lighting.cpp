@@ -35,6 +35,8 @@ namespace OB{
 	    Lighting::Lighting(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 			netId = OB_NETID_LIGHTING;
+
+			SkyTransparent = false;
 			
 			FogEnabled = false;
 			FogStart = 0;
@@ -76,6 +78,19 @@ namespace OB{
 					REPLICATE_PROPERTY_CHANGE(SkyColor);
 					propertyChanged("SkyColor");
 				}
+			}
+		}
+
+		bool Lighting::isSkyTransparent(){
+			return SkyTransparent;
+		}
+
+		void Lighting::setSkyTransparent(bool skyTransparent){
+			if(skyTransparent != SkyTransparent){
+				SkyTransparent = skyTransparent;
+
+				REPLICATE_PROPERTY_CHANGE(SkyTransparent);
+				propertyChanged("SkyTransparent");
 			}
 		}
 
@@ -182,6 +197,7 @@ namespace OB{
 			Instance::replicateProperties(peer);
 			
 			peer->sendSetPropertyPacket(netId, "SkyColor", make_shared<Type::VarWrapper>(SkyColor));
+			peer->sendSetPropertyPacket(netId, "SkyTransparent", make_shared<Type::VarWrapper>(SkyTransparent));
 			peer->sendSetPropertyPacket(netId, "FogEnabled", make_shared<Type::VarWrapper>(FogEnabled));
 			peer->sendSetPropertyPacket(netId, "FogColor", make_shared<Type::VarWrapper>(FogColor));
 			peer->sendSetPropertyPacket(netId, "FogStart", make_shared<Type::VarWrapper>(FogStart));
@@ -192,6 +208,7 @@ namespace OB{
 		std::map<std::string, _PropertyInfo> Lighting::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
 			propMap["SkyColor"] = {"Color3", false, true, true};
+			propMap["SkyTransparent"] = {"bool", false, true, true};
 			propMap["FogEnabled"] = {"bool", false, true, true};
 			propMap["FogColor"] = {"Color3", false, true, true};
 			propMap["FogStart"] = {"float", false, true, true};
@@ -201,7 +218,11 @@ namespace OB{
 		}
 
 		void Lighting::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
-		    if(prop == "SkyColor"){
+		    if(prop == "SkyTransparent"){
+			    setSkyTransparent(val->asBool());
+				return;
+			}
+			if(prop == "SkyColor"){
 			    setSkyColor(val->asColor3());
 				return;
 			}
@@ -228,6 +249,9 @@ namespace OB{
 		shared_ptr<Type::VarWrapper> Lighting::getProperty(std::string prop){
 			if(prop == "SkyColor"){
 				return make_shared<Type::VarWrapper>(getSkyColor());
+			}
+			if(prop == "SkyTransparent"){
+				return make_shared<Type::VarWrapper>(isSkyTransparent());
 			}
 			if(prop == "FogEnabled"){
 				return make_shared<Type::VarWrapper>(isFogEnabled());
@@ -273,6 +297,35 @@ namespace OB{
 				if(instL){
 				    shared_ptr<Type::Color3> col3 = Type::checkColor3(L, 2, true, true);
 			    	instL->setSkyColor(col3);
+				}
+			}
+			
+			return 0;
+		}
+
+		int Lighting::lua_getSkyTransparent(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
+				if(instL){
+					lua_pushboolean(L, instL->isSkyTransparent());
+					return 1;
+				}
+			}
+			
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int Lighting::lua_setSkyTransparent(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
+				if(instL){
+					bool newV = lua_toboolean(L, 2);
+					instL->setSkyTransparent(newV);
 				}
 			}
 			
@@ -405,6 +458,7 @@ namespace OB{
 			
 			luaL_Reg properties[] = {
 				{"SkyColor", lua_setSkyColor},
+				{"SkyTransparent", lua_setSkyTransparent},
 				{"FogEnabled", lua_setFogEnabled},
 				{"FogColor", lua_setFogColor},
 				{"FogStart", lua_setFogStart},
@@ -419,6 +473,7 @@ namespace OB{
 			
 			luaL_Reg properties[] = {
 				{"SkyColor", lua_getSkyColor},
+				{"SkyTransparent", lua_getSkyTransparent},
 				{"FogEnabled", lua_getFogEnabled},
 				{"FogColor", lua_getFogColor},
 				{"FogStart", lua_getFogStart},
