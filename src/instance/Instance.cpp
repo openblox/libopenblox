@@ -30,6 +30,8 @@
 #include "type/Color3.h"
 #include "type/Vector3.h"
 #include "type/Vector2.h"
+#include "type/UDim.h"
+#include "type/UDim2.h"
 
 #include <iostream>
 
