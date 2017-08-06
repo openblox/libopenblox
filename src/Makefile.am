@@ -73,6 +73,7 @@ instance/NetworkClient.cpp \
 instance/GuiBase.cpp \
 instance/GuiBase2d.cpp \
 instance/GuiObject.cpp \
+instance/Frame.cpp \
 OBSerializer.cpp \
 utility.cpp
 
