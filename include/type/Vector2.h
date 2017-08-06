@@ -91,11 +91,11 @@ namespace OB{
 				static void register_lua_methods(lua_State* L);
 				static void register_lua_property_setters(lua_State* L);
 				static void register_lua_property_getters(lua_State* L);
-				
-				DECLARE_TYPE();
 
 				double x;
 				double y;
+				
+				DECLARE_TYPE();
 
 		};
 

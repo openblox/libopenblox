@@ -75,6 +75,11 @@ namespace OB{
 					   double R00, double R01, double R02,
 					   double R10, double R11, double R12,
 					   double R20, double R21, double R22);
+
+				#if HAVE_IRRLICHT
+				CFrame(irr::core::matrix4 m4p);
+				#endif
+				
 				virtual ~CFrame();
 
 				double getX();
