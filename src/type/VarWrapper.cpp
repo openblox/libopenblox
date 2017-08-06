@@ -24,6 +24,8 @@
 #include "type/Vector3.h"
 #include "type/Vector2.h"
 #include "type/Color3.h"
+#include "type/UDim.h"
+#include "type/UDim2.h"
 
 namespace OB{
 	namespace Type{
@@ -227,6 +229,22 @@ namespace OB{
 			    return dynamic_pointer_cast<Color3>(tp);
 			}
 			return make_shared<Color3>(0, 0, 0);
+		}
+
+		shared_ptr<UDim> VarWrapper::asUDim(){
+			if(type == TYPE_TYPE){
+				shared_ptr<Type> tp = *static_cast<shared_ptr<Type>*>(wrapped);
+			    return dynamic_pointer_cast<UDim>(tp);
+			}
+			return make_shared<UDim>();
+		}
+
+		shared_ptr<UDim2> VarWrapper::asUDim2(){
+			if(type == TYPE_TYPE){
+				shared_ptr<Type> tp = *static_cast<shared_ptr<Type>*>(wrapped);
+			    return dynamic_pointer_cast<UDim2>(tp);
+			}
+			return make_shared<UDim2>();
 		}
 
 		bool VarWrapper::valueEquals(shared_ptr<VarWrapper> other){

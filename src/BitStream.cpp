@@ -25,6 +25,8 @@
 
 #include <sstream>
 
+#include "type/UDim2.h"
+#include "type/UDim.h"
 #include "type/Color3.h"
 #include "type/Vector3.h"
 #include "type/Vector2.h"
@@ -444,7 +446,13 @@ namespace OB{
 					if(typ){
 						std::string typName = typ->getClassName();
 
-						if(typName == "Color3"){
+						if(typName == "UDim2"){
+							writeSizeT(OB_NET_TYPE_UDIM2);
+							writeUDim2(dynamic_pointer_cast<Type::UDim2>(typ));
+						}else if(typName == "UDim"){
+							writeSizeT(OB_NET_TYPE_UDIM);
+							writeUDim(dynamic_pointer_cast<Type::UDim>(typ));
+						}else if(typName == "Color3"){
 							writeSizeT(OB_NET_TYPE_COLOR3);
 							writeColor3(dynamic_pointer_cast<Type::Color3>(typ));
 						}else if(typName == "Vector3"){
@@ -546,6 +554,48 @@ namespace OB{
 			}
 		}
 		return make_shared<Type::VarWrapper>();
+	}
+
+	void BitStream::writeUDim2(shared_ptr<Type::UDim2> var){
+		if(var){
+		    shared_ptr<Type::UDim> x = var->getX();
+			shared_ptr<Type::UDim> y = var->getY();
+			writeDouble(x->getScale());
+			writeDouble(x->getOffset());
+			writeDouble(y->getScale());
+			writeDouble(y->getOffset());
+		}else{
+			writeDouble(0);
+			writeDouble(0);
+			writeDouble(0);
+			writeDouble(0);
+		}
+	}
+	
+	shared_ptr<Type::UDim2> BitStream::readUDim2(){
+		double xScale = readDouble();
+		double xOffset = readDouble();
+		double yScale = readDouble();
+		double yOffset = readDouble();
+
+		return make_shared<Type::UDim2>(xScale, xOffset, yScale, yOffset);
+	}
+
+	void BitStream::writeUDim(shared_ptr<Type::UDim> var){
+		if(var){
+			writeDouble(var->getScale());
+			writeDouble(var->getOffset());
+		}else{
+			writeDouble(0);
+			writeDouble(0);
+		}
+	}
+	
+	shared_ptr<Type::UDim> BitStream::readUDim(){
+		double scale = readDouble();
+		double offset = readDouble();
+
+		return make_shared<Type::UDim>(scale, offset);
 	}
 
 	void BitStream::writeColor3(shared_ptr<Type::Color3> var){

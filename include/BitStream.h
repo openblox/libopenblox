@@ -32,6 +32,8 @@ namespace OB{
 	class OBEngine;
 
 	namespace Type{
+		class UDim;
+		class UDim2;
 		class Color3;
 		class Vector3;
 		class Vector2;
@@ -92,6 +94,12 @@ namespace OB{
 
 		    void writeVar(shared_ptr<Type::VarWrapper> var);
 			shared_ptr<Type::VarWrapper> readVar(OBEngine* eng);
+
+			void writeUDim2(shared_ptr<Type::UDim2> var);
+			shared_ptr<Type::UDim2> readUDim2();
+
+			void writeUDim(shared_ptr<Type::UDim> var);
+			shared_ptr<Type::UDim> readUDim();
 
 			void writeColor3(shared_ptr<Type::Color3> var);
 			shared_ptr<Type::Color3> readColor3();

@@ -31,6 +31,8 @@ namespace OB{
 		class Vector3;
 		class Vector2;
 		class Color3;
+		class UDim;
+		class UDim2;
 		
 		/**
 		 * Describes the type of the wrapped variable for conversion
@@ -114,6 +116,8 @@ namespace OB{
 				shared_ptr<Vector3> asVector3();
 				shared_ptr<Vector2> asVector2();
 				shared_ptr<Color3> asColor3();
+				shared_ptr<UDim> asUDim();
+				shared_ptr<UDim2> asUDim2();
 
 				bool valueEquals(shared_ptr<VarWrapper> other);
 

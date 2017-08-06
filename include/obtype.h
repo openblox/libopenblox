@@ -73,6 +73,8 @@ typedef unsigned long long int ob_uint64;
 #define OB_NET_TYPE_VECTOR2 7
 #define OB_NET_TYPE_LUAENUM 8
 #define OB_NET_TYPE_LUAENUMITEM 9
+#define OB_NET_TYPE_UDIM 10
+#define OB_NET_TYPE_UDIM2 11
 
 #endif // OB_OBTYPE
 
