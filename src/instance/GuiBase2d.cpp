@@ -67,6 +67,25 @@ namespace OB{
 			return 1;
 		}
 
+		std::map<std::string, _PropertyInfo> GuiBase2d::getProperties(){
+			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
+			propMap["AbsolutePosition"] = {"Vector2", true, true, false};
+			propMap["AbsoluteSize"] = {"Vector2", true, true, false};
+
+			return propMap;
+		}
+
+	    shared_ptr<Type::VarWrapper> GuiBase2d::getProperty(std::string prop){
+			if(prop == "AbsolutePosition"){
+				return make_shared<Type::VarWrapper>(getAbsolutePosition());
+			}
+			if(prop == "AbsoluteSize"){
+				return make_shared<Type::VarWrapper>(getAbsoluteSize());
+			}
+			
+			return Instance::getProperty(prop);
+		}
+
 		void GuiBase2d::register_lua_property_setters(lua_State* L){
 			Instance::register_lua_property_setters(L);
 			

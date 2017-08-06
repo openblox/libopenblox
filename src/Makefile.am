@@ -72,6 +72,7 @@ instance/NetworkServer.cpp \
 instance/NetworkClient.cpp \
 instance/GuiBase.cpp \
 instance/GuiBase2d.cpp \
+instance/GuiObject.cpp \
 OBSerializer.cpp \
 utility.cpp
 

@@ -39,6 +39,9 @@ namespace OB{
 				virtual shared_ptr<Type::Vector2> getAbsolutePosition();
 				virtual shared_ptr<Type::Vector2> getAbsoluteSize();
 
+				virtual std::map<std::string, _PropertyInfo> getProperties();
+				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
+
 				DECLARE_LUA_METHOD(getAbsolutePosition);
 				DECLARE_LUA_METHOD(getAbsoluteSize);
 
