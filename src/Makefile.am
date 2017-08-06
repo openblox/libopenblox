@@ -29,6 +29,7 @@ type/EventConnection.cpp \
 type/Event.cpp \
 type/Vector3.cpp \
 type/Vector2.cpp \
+type/UDim.cpp \
 type/CFrame.cpp \
 instance/Instance.cpp \
 instance/Camera.cpp \
