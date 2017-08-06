@@ -53,6 +53,9 @@ namespace OB{
 				bool isEnabled();
 				void setEnabled(bool enabled);
 
+				virtual shared_ptr<Type::Vector2> getAbsolutePosition();
+				virtual shared_ptr<Type::Vector2> getAbsoluteSize();
+
 				#if HAVE_ENET
 				/**
 				 * Replicates properties of this Instance.
