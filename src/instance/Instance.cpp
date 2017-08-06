@@ -490,6 +490,12 @@ namespace OB{
 						if(stype == "Vector3"){
 						    setProperty(name, make_shared<Type::VarWrapper>(make_shared<Type::Vector3>(propVal.as_string())));
 						}
+						if(stype == "UDim"){
+						    setProperty(name, make_shared<Type::VarWrapper>(make_shared<Type::UDim>(propVal.as_string())));
+						}
+						if(stype == "UDim2"){
+						    setProperty(name, make_shared<Type::VarWrapper>(make_shared<Type::UDim2>(propVal.as_string())));
+						}
 						if(stype == "Instance"){
 							shared_ptr<OBSerializer> serializer = eng->getSerializer();
 							if(serializer){
