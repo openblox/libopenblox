@@ -51,7 +51,7 @@ namespace OB{
 			shared_ptr<Type::UDim> pY = Position->getY();
 			
 			if(Parent){//Sanity check, really.
-			    if(shared_ptr<GuiObject> pgo = dynamic_pointer_cast<GuiObject>(Parent)){
+			    if(shared_ptr<GuiBase2d> pgo = dynamic_pointer_cast<GuiBase2d>(Parent)){
 					shared_ptr<Type::Vector2> pap = pgo->getAbsolutePosition();
 					shared_ptr<Type::Vector2> pas = pgo->getAbsoluteSize();
 					seed->x = pap->getX() + pX->getOffset() + (pX->getScale() * pas->getX());
@@ -68,7 +68,7 @@ namespace OB{
 			shared_ptr<Type::UDim> sY = Size->getY();
 			
 			if(Parent){//Sanity check, really.
-			    if(shared_ptr<GuiObject> pgo = dynamic_pointer_cast<GuiObject>(Parent)){
+			    if(shared_ptr<GuiBase2d> pgo = dynamic_pointer_cast<GuiBase2d>(Parent)){
 					shared_ptr<Type::Vector2> pas = pgo->getAbsoluteSize();
 					seed->x = sX->getOffset() + (pas->getX() * sX->getScale());
 					seed->y = sY->getOffset() + (pas->getY() * sY->getScale());
