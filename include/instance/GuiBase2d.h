@@ -17,7 +17,9 @@
  * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "instance/Instance.h"
+#include "instance/GuiBase.h"
+
+#include "type/Vector2.h"
 
 #ifndef OB_INST_GUIBASE2D
 #define OB_INST_GUIBASE2D
@@ -29,12 +31,21 @@ namespace OB{
 		 *
 		 * @author John M. Harris, Jr.
 		 */
-		class GuiBase2d: public Instance{
+		class GuiBase2d: public GuiBase{
 			public:
 			    GuiBase2d(OBEngine* eng);
 				virtual ~GuiBase2d();
 
-				DECLARE_CLASS(GuiBase2d);
+				virtual shared_ptr<Type::Vector2> getAbsolutePosition();
+				virtual shared_ptr<Type::Vector2> getAbsoluteSize();
+
+				DECLARE_LUA_METHOD(getAbsolutePosition);
+				DECLARE_LUA_METHOD(getAbsoluteSize);
+
+				static void register_lua_property_getters(lua_State* L);
+				static void register_lua_property_setters(lua_State* L);
+
+			    DECLARE_CLASS(GuiBase2d);
 		};
 	}
 }

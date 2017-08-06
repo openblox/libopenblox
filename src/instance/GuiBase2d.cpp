@@ -17,7 +17,7 @@
  * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "instance/GuiBase2.h"
+#include "instance/GuiBase2d.h"
 
 namespace OB{
 	namespace Instance{
@@ -30,5 +30,63 @@ namespace OB{
 		}
 
 	    GuiBase2d::~GuiBase2d(){}
+
+		shared_ptr<Type::Vector2> GuiBase2d::getAbsolutePosition(){
+			return make_shared<Type::Vector2>();
+		}
+
+		shared_ptr<Type::Vector2> GuiBase2d::getAbsoluteSize(){
+			return make_shared<Type::Vector2>();
+		}
+
+		int GuiBase2d::lua_getAbsolutePosition(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<GuiBase2d> instGB2 = dynamic_pointer_cast<GuiBase2d>(inst);
+				if(instGB2){
+				    return instGB2->getAbsolutePosition()->wrap_lua(L);
+				}
+			}
+			
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int GuiBase2d::lua_getAbsoluteSize(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<GuiBase2d> instGB2 = dynamic_pointer_cast<GuiBase2d>(inst);
+				if(instGB2){
+				    return instGB2->getAbsoluteSize()->wrap_lua(L);
+				}
+			}
+			
+			lua_pushnil(L);
+			return 1;
+		}
+
+		void GuiBase2d::register_lua_property_setters(lua_State* L){
+			Instance::register_lua_property_setters(L);
+			
+			luaL_Reg properties[] = {
+				{"AbsolutePosition", Instance::lua_readOnlyProperty},
+				{"AbsoluteSize", Instance::lua_readOnlyProperty},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, properties, 0);
+		}
+
+		void GuiBase2d::register_lua_property_getters(lua_State* L){
+			Instance::register_lua_property_getters(L);
+			
+		    luaL_Reg properties[] = {
+				{"AbsolutePosition", lua_getAbsolutePosition},
+				{"AbsoluteSize", lua_getAbsoluteSize},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, properties, 0);
+		}
 	}
 }
