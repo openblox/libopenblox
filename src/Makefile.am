@@ -71,6 +71,7 @@ instance/NetworkPeer.cpp \
 instance/NetworkServer.cpp \
 instance/NetworkClient.cpp \
 instance/GuiBase.cpp \
+instance/GuiBase2d.cpp \
 OBSerializer.cpp \
 utility.cpp
 
