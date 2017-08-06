@@ -25,6 +25,7 @@
 namespace OB{
 	namespace Instance{
 		class Workspace;
+		class CoreGui;
 		class Lighting;
 		class ContentProvider;
 		class LogService;
@@ -54,6 +55,14 @@ namespace OB{
 				 * @author John M. Harris, Jr.
 				 */
 				shared_ptr<Workspace> getWorkspace();
+
+				/**
+				 * Returns the CoreGui service.
+				 *
+				 * @returns coreGui
+				 * @author John M. Harris, Jr.
+				 */
+				shared_ptr<CoreGui> getCoreGui();
 				
 				/**
 				 * Returns the Lighting service.
@@ -144,17 +153,13 @@ namespace OB{
 				virtual std::string serializedID();
 				#endif
 				
-				/**
-				 * Renders additional scene objects, including GUI.
-				 * Called from OBEngine::render
-				 *
-				 * @author John M. Harris, Jr.
-				 */
+			    virtual void preRender();
 				virtual void render();
 				
 				DECLARE_CLASS(DataModel);
 
 				shared_ptr<Workspace> workspace;
+				shared_ptr<CoreGui> coreGui;
 				shared_ptr<Lighting> lighting;
 				shared_ptr<ContentProvider> contentProvider;
 				shared_ptr<LogService> logService;

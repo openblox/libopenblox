@@ -26,6 +26,7 @@
 
 //Services we're including just to initiate them ahead of time
 #include "instance/Workspace.h"
+#include "instance/CoreGui.h"
 #include "instance/Lighting.h"
 #include "instance/ContentProvider.h"
 #include "instance/LogService.h"
@@ -62,6 +63,10 @@ namespace OB{
 
 			shared_ptr<Camera> cam = make_shared<Camera>(getEngine());
 			workspace->setCurrentCamera(cam);
+
+			coreGui = make_shared<CoreGui>(eng);
+			coreGui->setParent(sharedThis, false);
+			coreGui->ParentLocked = true;
 			
 			lighting = make_shared<Lighting>(eng);
 			lighting->setParent(sharedThis, false);
@@ -86,6 +91,10 @@ namespace OB{
 
 		shared_ptr<Workspace> DataModel::getWorkspace(){
 			return workspace;
+		}
+
+		shared_ptr<CoreGui> DataModel::getCoreGui(){
+			return coreGui;
 		}
 
 		shared_ptr<Lighting> DataModel::getLighting(){
@@ -231,8 +240,14 @@ namespace OB{
 		}
 		#endif
 
+		void DataModel::preRender(){
+			workspace->preRender();
+			coreGui->preRender();
+		}
+
 		void DataModel::render(){
-			//TODO: Render CoreGUI, etc
+		    workspace->render();
+			coreGui->render();
 		}
 
 		int DataModel::lua_Shutdown(lua_State* L){
