@@ -17,14 +17,14 @@
  * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "instance/Instance.h"
+#include "instance/GuiBase2d.h"
 
 #ifndef OB_INST_BASEPLAYERGUI
 #define OB_INST_BASEPLAYERGUI
 
 namespace OB{
 	namespace Instance{
-		class BasePlayerGui: public Instance{
+		class BasePlayerGui: public GuiBase2d{
 			public:
 			    BasePlayerGui(OBEngine* eng);
 				virtual ~BasePlayerGui();
