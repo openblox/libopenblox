@@ -86,7 +86,7 @@ namespace OB{
 		#endif
 
 		std::map<std::string, _PropertyInfo> CoreGui::getProperties(){
-			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
+			std::map<std::string, _PropertyInfo> propMap = GuiBase2d::getProperties();
 			propMap["Enabled"] = {"bool", false, true, true};
 
 			return propMap;
@@ -106,7 +106,7 @@ namespace OB{
 				return make_shared<Type::VarWrapper>(isEnabled());
 			}
 			
-			return Instance::getProperty(prop);
+			return GuiBase2d::getProperty(prop);
 		}
 
 		#if HAVE_PUGIXML
@@ -147,7 +147,7 @@ namespace OB{
 		}
 
 		void CoreGui::register_lua_property_setters(lua_State* L){
-			Instance::register_lua_property_setters(L);
+		    GuiBase2d::register_lua_property_setters(L);
 			
 			luaL_Reg properties[] = {
 				{"Enabled", lua_setEnabled},
@@ -157,7 +157,7 @@ namespace OB{
 		}
 
 		void CoreGui::register_lua_property_getters(lua_State* L){
-			Instance::register_lua_property_getters(L);
+		    GuiBase2d::register_lua_property_getters(L);
 			
 			luaL_Reg properties[] = {
 				{"Enabled", lua_getEnabled},

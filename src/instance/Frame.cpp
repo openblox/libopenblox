@@ -19,6 +19,8 @@
 
 #include "instance/Frame.h"
 
+#include "type/Color3.h"
+
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(Frame, true, false, GuiObject){
@@ -33,6 +35,16 @@ namespace OB{
 
 		shared_ptr<Instance> Frame::cloneImpl(){
 			return NULL;
+		}
+
+		void Frame::render(){
+			if(irr::IrrlichtDevice* irrDev = getEngine()->getIrrlichtDevice()){
+			    if(irr::video::IVideoDriver* irrDriv = irrDev->getVideoDriver()){
+					shared_ptr<Type::Vector2> pos = getAbsolutePosition();
+					shared_ptr<Type::Vector2> siz = getAbsoluteSize();
+					irrDriv->draw2DRectangle(BackgroundColor3->toIrrlichtSColor(255 / BackgroundTransparency), irr::core::rect<irr::s32>(pos->getX(), pos->getY(), siz->getX(), siz->getY()));
+				}
+			}
 		}
 	}
 }

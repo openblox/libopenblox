@@ -28,6 +28,8 @@ namespace OB{
 			public:
 			    Frame(OBEngine* eng);
 				virtual ~Frame();
+
+				virtual void render();
 				
 				DECLARE_CLASS(Frame);
 		};
