@@ -30,16 +30,52 @@ namespace OB{
 
 	    GuiObject::GuiObject(OBEngine* eng) : GuiBase2d(eng){
 			Name = ClassName;
+
+			Active = false;
+			BackgroundColor3 = make_shared<Type::Color3>();
+			BackgroundTransparency = 0;
+			BorderColor3 = BackgroundColor3;
+			BorderSizePixel = 1;
+			ClipsDescendants = true;
+			Position = make_shared<Type::UDim2>(0, 100, 0, 100);
+			Size = Position;
+			Visible = true;
+			ZIndex = 1;
 		}
 
 	    GuiObject::~GuiObject(){}
 
 		shared_ptr<Type::Vector2> GuiObject::getAbsolutePosition(){
-			return make_shared<Type::Vector2>();
+		    shared_ptr<Type::Vector2> seed = make_shared<Type::Vector2>(0, 0);
+			shared_ptr<Type::UDim> pX = Position->getX();
+			shared_ptr<Type::UDim> pY = Position->getY();
+			
+			if(Parent){//Sanity check, really.
+			    if(shared_ptr<GuiObject> pgo = dynamic_pointer_cast<GuiObject>(Parent)){
+					shared_ptr<Type::Vector2> pap = pgo->getAbsolutePosition();
+					shared_ptr<Type::Vector2> pas = pgo->getAbsoluteSize();
+					seed->x = pap->getX() + pX->getOffset() + (pX->getScale() * pas->getX());
+					seed->y = pap->getY() + pY->getOffset() + (pY->getScale() * pas->getY());
+				}
+			}
+			
+			return seed;
 		}
 
 		shared_ptr<Type::Vector2> GuiObject::getAbsoluteSize(){
-			return make_shared<Type::Vector2>();
+		    shared_ptr<Type::Vector2> seed = make_shared<Type::Vector2>(0, 0);
+			shared_ptr<Type::UDim> sX = Size->getX();
+			shared_ptr<Type::UDim> sY = Size->getY();
+			
+			if(Parent){//Sanity check, really.
+			    if(shared_ptr<GuiObject> pgo = dynamic_pointer_cast<GuiObject>(Parent)){
+					shared_ptr<Type::Vector2> pas = pgo->getAbsoluteSize();
+					seed->x = sX->getOffset() + (pas->getX() * sX->getScale());
+					seed->y = sY->getOffset() + (pas->getY() * sY->getScale());
+				}
+			}
+			
+			return seed;
 		}
 
 		bool GuiObject::isActive(){
