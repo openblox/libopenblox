@@ -268,7 +268,13 @@ namespace OB{
 			}
 
 		    irrDriv->beginScene(true, true, irrSkyCol);
+
+			dm->preRender();
+			
 			irrSceneMgr->drawAll();
+
+			dm->render();
+			
 			irrDriv->endScene();
 		}
 		

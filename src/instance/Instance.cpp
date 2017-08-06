@@ -555,6 +555,29 @@ namespace OB{
 		void Instance::tick(){
 			tickChildren();
 		}
+
+	    void Instance::preRender(){
+			std::vector<shared_ptr<Instance>> kids = GetChildren();
+			
+			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
+				shared_ptr<Instance> kid = kids[i];
+				if(kid){
+					kid->preRender();
+				}
+			}
+		}
+
+			    
+	    void Instance::render(){
+			std::vector<shared_ptr<Instance>> kids = GetChildren();
+			
+			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
+				shared_ptr<Instance> kid = kids[i];
+				if(kid){
+					kid->render();
+				}
+			}
+		}
 	
 		void Instance::tickChildren(){
 			std::vector<shared_ptr<Instance>> kids = GetChildren();

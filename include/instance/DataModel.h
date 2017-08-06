@@ -144,6 +144,14 @@ namespace OB{
 				virtual std::string serializedID();
 				#endif
 				
+				/**
+				 * Renders additional scene objects, including GUI.
+				 * Called from OBEngine::render
+				 *
+				 * @author John M. Harris, Jr.
+				 */
+				virtual void render();
+				
 				DECLARE_CLASS(DataModel);
 
 				shared_ptr<Workspace> workspace;

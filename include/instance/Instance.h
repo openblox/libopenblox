@@ -452,6 +452,22 @@ namespace OB{
 				virtual void tick();
 
 				/**
+				 * Called before the scene is rendered.
+				 * Called from OBEngine::render
+				 *
+				 * @author John M. Harris, Jr.
+				 */
+				virtual void preRender();
+
+				/**
+				 * Renders additional scene objects, including GUI.
+				 * Called from OBEngine::render
+				 *
+				 * @author John M. Harris, Jr.
+				 */
+				virtual void render();
+
+				/**
 				 * Convenience method to call tick on all children.
 
 				 * @author John M. Harris, Jr.

@@ -231,6 +231,10 @@ namespace OB{
 		}
 		#endif
 
+		void DataModel::render(){
+			//TODO: Render CoreGUI, etc
+		}
+
 		int DataModel::lua_Shutdown(lua_State* L){
 		    shared_ptr<Instance> inst = checkInstance(L, 1, false);
 			
