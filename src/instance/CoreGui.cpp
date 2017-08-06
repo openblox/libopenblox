@@ -57,6 +57,26 @@ namespace OB{
 			}
 		}
 
+	    shared_ptr<Type::Vector2> CoreGui::getAbsolutePosition(){
+			if(irr::IrrlichtDevice* irrDev = getEngine()->getIrrlichtDevice()){
+			    if(irr::video::IVideoDriver* irrDriv = irrDev->getVideoDriver()){
+					irr::core::rect<irr::s32> vpR = irrDriv->getViewPort();
+					return make_shared<Type::Vector2>(vpR.UpperLeftCorner.X, vpR.UpperLeftCorner.Y);
+				}
+			}
+			return make_shared<Type::Vector2>(0, 0);
+		}
+		
+	    shared_ptr<Type::Vector2> CoreGui::getAbsoluteSize(){
+			if(irr::IrrlichtDevice* irrDev = getEngine()->getIrrlichtDevice()){
+			    if(irr::video::IVideoDriver* irrDriv = irrDev->getVideoDriver()){
+					irr::core::rect<irr::s32> vpR = irrDriv->getViewPort();
+					return make_shared<Type::Vector2>(vpR.getWidth(), vpR.getHeight());
+				}
+			}
+			return make_shared<Type::Vector2>(0, 0);
+		}
+
 		#if HAVE_ENET
 		void CoreGui::replicateProperties(shared_ptr<NetworkReplicator> peer){
 			Instance::replicateProperties(peer);
