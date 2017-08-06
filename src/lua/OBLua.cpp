@@ -39,6 +39,8 @@
 #include "type/Vector3.h"
 #include "type/Vector2.h"
 #include "type/CFrame.h"
+#include "type/UDim.h"
+#include "type/UDim2.h"
 
 #include "type/Enum.h"
 
@@ -167,6 +169,22 @@ namespace OB{
 			};
 			luaL_setfuncs(L, cframelib, 0);
 			lua_setglobal(L, "CFrame");
+
+			lua_newtable(L);
+			luaL_Reg udimlib[] = {
+				{"new", lua_newUDim},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, udimlib, 0);
+			lua_setglobal(L, "UDim");
+
+			lua_newtable(L);
+			luaL_Reg udim2lib[] = {
+				{"new", lua_newUDim2},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, udim2lib, 0);
+			lua_setglobal(L, "UDim2");
 
 			Enum::registerLuaEnums(L);
 
@@ -534,6 +552,36 @@ namespace OB{
 										   r20, r21, r22)->wrap_lua(L);
 			}
 			return 0;
+		}
+
+		int lua_newUDim(lua_State* L){
+			double scale = 0;
+			double offset = 0;
+
+			if(!lua_isnone(L, 1) && !lua_isnone(L, 2)){
+				scale = luaL_checknumber(L, 1);
+				offset = luaL_checknumber(L, 2);
+			}
+
+		    shared_ptr<Type::UDim> newGuy = make_shared<Type::UDim>(scale, offset);
+			return newGuy->wrap_lua(L);
+		}
+
+		int lua_newUDim2(lua_State* L){
+			double xScale = 0;
+			double xOffset = 0;
+			double yScale = 0;
+			double yOffset = 0;
+
+			if(!lua_isnone(L, 1) && !lua_isnone(L, 2)){
+				xScale = luaL_checknumber(L, 1);
+				xOffset = luaL_checknumber(L, 2);
+				yScale = luaL_checknumber(L, 3);
+				yOffset = luaL_checknumber(L, 4);
+			}
+
+		    shared_ptr<Type::UDim2> newGuy = make_shared<Type::UDim2>(xScale, xOffset, yScale, yOffset);
+			return newGuy->wrap_lua(L);
 		}
 
 		int lua_listInstanceClasses(lua_State* L){
