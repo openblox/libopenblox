@@ -62,9 +62,9 @@
 #include "instance/NetworkServer.h"
 #include "instance/NetworkClient.h"
 #include "instance/GuiBase.h"
-#include "instance/GuiBase2d.cpp"
-#include "instance/GuiObject.cpp"
-#include "instance/Frame.cpp"
+#include "instance/GuiBase2d.h"
+#include "instance/GuiObject.h"
+#include "instance/Frame.h"
 
 namespace OB{
 	std::map<std::string, ClassMetadata*> ClassFactory::metadataTable;
