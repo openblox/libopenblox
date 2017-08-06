@@ -38,11 +38,14 @@ namespace OB{
 		}
 
 		void Frame::render(){
-			if(irr::IrrlichtDevice* irrDev = getEngine()->getIrrlichtDevice()){
-			    if(irr::video::IVideoDriver* irrDriv = irrDev->getVideoDriver()){
-					shared_ptr<Type::Vector2> pos = getAbsolutePosition();
-					shared_ptr<Type::Vector2> siz = getAbsoluteSize();
-					irrDriv->draw2DRectangle(BackgroundColor3->toIrrlichtSColor(255 / BackgroundTransparency), irr::core::rect<irr::s32>(pos->getX(), pos->getY(), siz->getX(), siz->getY()));
+			if(Visible){
+				if(irr::IrrlichtDevice* irrDev = getEngine()->getIrrlichtDevice()){
+					if(irr::video::IVideoDriver* irrDriv = irrDev->getVideoDriver()){
+						shared_ptr<Type::Vector2> pos = getAbsolutePosition();
+						shared_ptr<Type::Vector2> siz = getAbsoluteSize()->add(pos);
+						
+						irrDriv->draw2DRectangle(BackgroundColor3->toIrrlichtSColor(calculateBackgroundAlpha()), irr::core::rect<irr::s32>(pos->getX(), pos->getY(), siz->getX(), siz->getY()));
+					}
 				}
 			}
 		}

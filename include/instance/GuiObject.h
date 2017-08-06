@@ -64,6 +64,8 @@ namespace OB{
 				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
 				virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
 
+				int calculateBackgroundAlpha();
+
 				DECLARE_LUA_METHOD(getActive);
 				DECLARE_LUA_METHOD(setActive);
 				DECLARE_LUA_METHOD(getBackgroundColor3);

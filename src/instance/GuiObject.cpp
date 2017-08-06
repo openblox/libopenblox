@@ -337,6 +337,16 @@ namespace OB{
 			Instance::setProperty(prop, val);
 		}
 
+		int GuiObject::calculateBackgroundAlpha(){
+			if(BackgroundTransparency == 0){
+				return 255;
+			}else if(BackgroundTransparency == 1){
+				return 0;
+			}else{
+				return (255 / BackgroundTransparency) - 255;
+			}
+		}
+
 		int GuiObject::lua_getActive(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
 			
