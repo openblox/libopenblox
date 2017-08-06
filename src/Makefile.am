@@ -70,6 +70,7 @@ instance/ServerReplicator.cpp \
 instance/NetworkPeer.cpp \
 instance/NetworkServer.cpp \
 instance/NetworkClient.cpp \
+instance/GuiBase.cpp \
 OBSerializer.cpp \
 utility.cpp
 
