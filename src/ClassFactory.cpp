@@ -61,6 +61,10 @@
 #include "instance/NetworkPeer.h"
 #include "instance/NetworkServer.h"
 #include "instance/NetworkClient.h"
+#include "instance/GuiBase.h"
+#include "instance/GuiBase2d.cpp"
+#include "instance/GuiObject.cpp"
+#include "instance/Frame.cpp"
 
 namespace OB{
 	std::map<std::string, ClassMetadata*> ClassFactory::metadataTable;
@@ -178,6 +182,10 @@ namespace OB{
 		Instance::IntValue::registerClass();
 		Instance::NumberValue::registerClass();
 		Instance::ObjectValue::registerClass();
+		Instance::GuiBase::registerClass();
+		Instance::GuiBase2d::registerClass();
+		Instance::GuiObject::registerClass();
+		Instance::Frame::registerClass();
 
 		#if HAVE_ENET
 		Instance::NetworkReplicator::registerClass();
