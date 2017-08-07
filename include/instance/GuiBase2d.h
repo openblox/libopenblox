@@ -42,7 +42,7 @@ namespace OB{
 				 * @param p Point
 				 * @author John M. Harris, Jr.
 				 */
-				virtual bool containsPoint(shared_ptr<Vector3> p);
+				virtual bool containsPoint(shared_ptr<Type::Vector2> p);
 
 				/**
 				 * If this returns true, processing for this click
@@ -51,7 +51,7 @@ namespace OB{
 				 * @param p Point of click
 				 * @author John M. Harris, Jr.
 				 */
-				virtual bool handleClick(shared_ptr<Vector3> p);
+				virtual bool handleClick(shared_ptr<Type::Vector2> p);
 
 				/**
 				 * Returns the absolute position of this GuiBase2d.

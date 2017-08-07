@@ -32,6 +32,9 @@ namespace OB{
 			    GuiObject(OBEngine* eng);
 				virtual ~GuiObject();
 
+				virtual bool containsPoint(shared_ptr<Type::Vector2> p);
+				virtual bool handleClick(shared_ptr<Type::Vector2> p);
+
 				virtual shared_ptr<Type::Vector2> getAbsolutePosition();
 				virtual shared_ptr<Type::Vector2> getAbsoluteSize();
 				

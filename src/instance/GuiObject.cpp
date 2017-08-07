@@ -45,6 +45,26 @@ namespace OB{
 
 	    GuiObject::~GuiObject(){}
 
+	    bool GuiObject::containsPoint(shared_ptr<Type::Vector2> p){
+			double pX = p->getX();
+			double pY = p->getY();
+			
+			shared_ptr<Type::Vector2> pos = getAbsolutePosition();
+			double posX = pos->getX();
+			double posY = pos->getY();
+			shared_ptr<Type::Vector2> siz = getAbsoluteSize()->add(pos);
+			
+			return pX >= posX && pX <= (posX + siz->getX()) && pY >= posY && pY <= (posY + siz->getY());
+		}
+		
+	    bool GuiObject::handleClick(shared_ptr<Type::Vector2> p){
+			if(Visible && Active){
+				return containsPoint(p);
+			}
+
+			GuiBase2d::handleClick(p);
+		}
+
 		shared_ptr<Type::Vector2> GuiObject::getAbsolutePosition(){
 		    shared_ptr<Type::Vector2> seed = make_shared<Type::Vector2>(0, 0);
 			shared_ptr<Type::UDim> pX = Position->getX();

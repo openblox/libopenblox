@@ -31,11 +31,22 @@ namespace OB{
 
 	    GuiBase2d::~GuiBase2d(){}
 
-		bool GuiBase2d::containsPoint(shared_ptr<Type::Vector3> p){
+		bool GuiBase2d::containsPoint(shared_ptr<Type::Vector2> p){
 			return false;
 		}
 
-		bool GuiBase2d::handleClick(shared_ptr<Type::Vector3> p){
+		bool GuiBase2d::handleClick(shared_ptr<Type::Vector2> p){
+			std::vector<shared_ptr<Instance>> kids = GetChildren();
+			
+			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
+				shared_ptr<Instance> kid = kids[i];
+				if(shared_ptr<GuiBase2d> kgb2 = dynamic_pointer_cast<GuiBase2d>(kid)){
+				    if(kgb2->handleClick(p)){
+						return true;
+					}
+				}
+			}
+
 			return false;
 		}
 
