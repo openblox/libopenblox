@@ -40,11 +40,22 @@ namespace OB{
 		//Start Enum Definitions
 
 		LENUM(MessageType,
-			MessageOutput,
-			MessageInfo,
-			MessageWarning,
-			MessageError
-		);
+			  MessageOutput,
+			  MessageInfo,
+			  MessageWarning,
+			  MessageError
+			);
+
+		LENUM(UserInputType,
+			  MouseButton,
+			  MouseWheel,
+			  MouseMovement,
+			  Touch,
+			  Keyboard,
+			  Focus,
+			  Gamepad,
+			  TextInput,
+			  Unknown);
 	}
 }
 

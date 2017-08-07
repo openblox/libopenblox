@@ -28,6 +28,17 @@ namespace OB{
 			"MessageError"
 		);
 
+		DENUM(UserInputType,
+			  "MouseButton",
+			  "MouseWheel",
+			  "MouseMovement",
+			  "Touch",
+			  "Keyboard",
+			  "Focus",
+			  "Gamepad",
+			  "TextInput",
+			  "Unknown");
+
 		void registerLuaEnums(lua_State* L){
 			lua_newtable(L);
 
