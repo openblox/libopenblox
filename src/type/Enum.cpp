@@ -25,8 +25,7 @@ namespace OB{
 			"MessageOutput",
 			"MessageInfo",
 			"MessageWarning",
-			"MessageError"
-		);
+			"MessageError");
 
 		DENUM(UserInputType,
 			  "MouseButton",
