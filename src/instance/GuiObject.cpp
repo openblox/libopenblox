@@ -126,10 +126,11 @@ namespace OB{
 		}
 
 	    struct _ob_rect GuiObject::getAbsoluteClippingArea(){
+			struct _ob_rect clipArea;
+			
+			#if HAVE_IRRLICHT
 			shared_ptr<Type::Vector2> pos = getAbsolutePosition();
 			shared_ptr<Type::Vector2> siz = getAbsoluteSize()->add(pos);
-			
-			struct _ob_rect clipArea;
 
 			if(ClipsDescendants){
 				clipArea.x1 = pos->getX();
@@ -167,9 +168,17 @@ namespace OB{
 			}
 			
 			return clipArea;
+			#else
+			clipArea.x1 = 0;
+			clipArea.y1 = 0;
+			clipArea.x2 = 0;
+			clipArea.y2 = 0;
+			return clipArea;
+			#endif
 		}
 
 		void GuiObject::render(){
+			#if HAVE_IRRLICHT
 			struct _ob_rect clipArea = getAbsoluteClippingArea();
 			bool doesClip = ClipsDescendants;
 
@@ -196,6 +205,7 @@ namespace OB{
 					}
 				}
 			}
+			#endif
 		}
 
 		bool GuiObject::isActive(){

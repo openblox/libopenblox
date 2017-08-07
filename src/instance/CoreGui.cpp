@@ -58,22 +58,26 @@ namespace OB{
 		}
 
 	    shared_ptr<Type::Vector2> CoreGui::getAbsolutePosition(){
+			#if HAVE_IRRLICHT
 			if(irr::IrrlichtDevice* irrDev = getEngine()->getIrrlichtDevice()){
 			    if(irr::video::IVideoDriver* irrDriv = irrDev->getVideoDriver()){
 					irr::core::rect<irr::s32> vpR = irrDriv->getViewPort();
 					return make_shared<Type::Vector2>(vpR.UpperLeftCorner.X, vpR.UpperLeftCorner.Y);
 				}
 			}
+			#endif
 			return make_shared<Type::Vector2>(0, 0);
 		}
 		
 	    shared_ptr<Type::Vector2> CoreGui::getAbsoluteSize(){
+			#if HAVE_IRRLICHT
 			if(irr::IrrlichtDevice* irrDev = getEngine()->getIrrlichtDevice()){
 			    if(irr::video::IVideoDriver* irrDriv = irrDev->getVideoDriver()){
 					irr::core::rect<irr::s32> vpR = irrDriv->getViewPort();
 					return make_shared<Type::Vector2>(vpR.getWidth(), vpR.getHeight());
 				}
 			}
+			#endif
 			return make_shared<Type::Vector2>(0, 0);
 		}
 
