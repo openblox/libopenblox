@@ -36,7 +36,35 @@ namespace OB{
 			    GuiBase2d(OBEngine* eng);
 				virtual ~GuiBase2d();
 
+				/**
+				 * Returns true if this GuiBase2d contains a point.
+				 *
+				 * @param p Point
+				 * @author John M. Harris, Jr.
+				 */
+				virtual bool containsPoint(shared_ptr<Vector3> p);
+
+				/**
+				 * If this returns true, processing for this click
+				 * event stops here.
+				 *
+				 * @param p Point of click
+				 * @author John M. Harris, Jr.
+				 */
+				virtual bool handleClick(shared_ptr<Vector3> p);
+
+				/**
+				 * Returns the absolute position of this GuiBase2d.
+				 *
+				 * @author John M. Harris, Jr.
+				 */
 				virtual shared_ptr<Type::Vector2> getAbsolutePosition();
+
+				/**
+				 * Returns the absolute size of this GuiBase2d.
+				 *
+				 * @author John M. Harris, Jr.
+				 */
 				virtual shared_ptr<Type::Vector2> getAbsoluteSize();
 
 				virtual std::map<std::string, _PropertyInfo> getProperties();

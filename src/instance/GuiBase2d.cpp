@@ -31,6 +31,14 @@ namespace OB{
 
 	    GuiBase2d::~GuiBase2d(){}
 
+		bool GuiBase2d::containsPoint(shared_ptr<Vector3> p){
+			return false;
+		}
+
+		bool GuiBase2d::handleClick(shared_ptr<Vector3> p){
+			return false;
+		}
+
 		shared_ptr<Type::Vector2> GuiBase2d::getAbsolutePosition(){
 			return make_shared<Type::Vector2>();
 		}
