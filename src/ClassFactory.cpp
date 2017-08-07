@@ -65,6 +65,7 @@
 #include "instance/GuiBase2d.h"
 #include "instance/GuiObject.h"
 #include "instance/Frame.h"
+#include "instance/UserInputService.h"
 
 namespace OB{
 	std::map<std::string, ClassMetadata*> ClassFactory::metadataTable;
@@ -186,6 +187,7 @@ namespace OB{
 		Instance::GuiBase2d::registerClass();
 		Instance::GuiObject::registerClass();
 		Instance::Frame::registerClass();
+		Instance::UserInputService::registerClass();
 
 		#if HAVE_ENET
 		Instance::NetworkReplicator::registerClass();

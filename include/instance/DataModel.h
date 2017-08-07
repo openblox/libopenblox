@@ -31,6 +31,7 @@ namespace OB{
 		class LogService;
 		class RunService;
 		class ReplicatedFirst;
+		class UserInputService;
 		
 		/**
 		 * DataModel is the root singleton of the OpenBlox engine.
@@ -95,6 +96,14 @@ namespace OB{
 				 * @author John M. Harris, Jr.
 				 */
 				shared_ptr<RunService> getRunService();
+
+				/**
+				 * Returns the UserInputService service.
+				 *
+				 * @returns UserInputService
+				 * @author John M. Harris, Jr.
+				 */
+				shared_ptr<UserInputService> getUserInputService();
 
 				/**
 				 * Reimplementation of ServiceProvider's GetService,
@@ -165,6 +174,7 @@ namespace OB{
 				shared_ptr<LogService> logService;
 				shared_ptr<RunService> runService;
 				shared_ptr<ReplicatedFirst> replicatedFirst;
+				shared_ptr<UserInputService> userInputService;
 
 				DECLARE_LUA_METHOD(Shutdown);
 

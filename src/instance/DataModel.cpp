@@ -32,6 +32,7 @@
 #include "instance/LogService.h"
 #include "instance/RunService.h"
 #include "instance/ReplicatedFirst.h"
+#include "instance/UserInputService.h"
 
 namespace OB{
 	namespace Instance{
@@ -87,6 +88,10 @@ namespace OB{
 		    replicatedFirst = make_shared<ReplicatedFirst>(eng);
 		    replicatedFirst->setParent(sharedThis, false);
 		    replicatedFirst->ParentLocked = true;
+
+			userInputService = make_shared<UserInputService>(eng);
+			userInputService->setParent(sharedThis, false);
+			userInputService->ParentLocked = true;
 		}
 
 		shared_ptr<Workspace> DataModel::getWorkspace(){
@@ -111,6 +116,10 @@ namespace OB{
 
 		shared_ptr<RunService> DataModel::getRunService(){
 			return runService;
+		}
+
+		shared_ptr<UserInputService> DataModel::getUserInputService(){
+			return userInputService;
 		}
 
 		shared_ptr<Instance> DataModel::cloneImpl(){
