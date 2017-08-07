@@ -132,10 +132,10 @@ namespace OB{
 			struct _ob_rect clipArea;
 
 			if(ClipsDescendants){
-			clipArea.x1 = pos->getX();
-			clipArea.y1 = pos->getY();
-			clipArea.x2 = siz->getX();
-			clipArea.y2 = siz->getY();
+				clipArea.x1 = pos->getX();
+				clipArea.y1 = pos->getY();
+				clipArea.x2 = siz->getX();
+				clipArea.y2 = siz->getY();
 			}else{
 				clipArea.x1 = 0;
 				clipArea.y1 = 0;
