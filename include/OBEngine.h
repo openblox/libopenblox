@@ -313,7 +313,22 @@ namespace OB{
 			 */
 			irr::IrrlichtDevice* getIrrlichtDevice();
 
+			/**
+			 * Returns the post-render function.
+			 *
+			 * @author John M. Harris, Jr.
+			 */
 			post_render_func_t getPostRenderFunc();
+
+			/**
+			 * Sets the post-render function.
+			 *
+			 * As the name would suggest, this function will run after
+			 * rendering is complete, but not before the buffer is
+			 * swapped.
+			 *
+			 * @author John M. Harris, Jr.
+			 */
 			void setPostRenderFunc(post_render_func_t prf);
 
 			#endif
