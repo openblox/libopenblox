@@ -19,6 +19,8 @@
 
 #include "instance/GuiBase2d.h"
 
+#include "obtype.h"
+
 #include "type/Color3.h"
 #include "type/UDim2.h"
 
@@ -27,16 +29,19 @@
 
 namespace OB{
 	namespace Instance{
-		class GuiObject: public GuiBase2d{
+	    class GuiObject: public GuiBase2d{
 			public:
 			    GuiObject(OBEngine* eng);
 				virtual ~GuiObject();
 
+				virtual std::vector<shared_ptr<GuiBase2d>> getRenderableChildren();
 				virtual bool containsPoint(shared_ptr<Type::Vector2> p);
 				virtual bool handleClick(shared_ptr<Type::Vector2> p);
 
 				virtual shared_ptr<Type::Vector2> getAbsolutePosition();
 				virtual shared_ptr<Type::Vector2> getAbsoluteSize();
+				virtual struct _ob_rect getAbsoluteClippingArea();
+				virtual void render();
 				
 				virtual bool isActive();
 				virtual void setActive(bool active);

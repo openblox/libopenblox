@@ -26,7 +26,7 @@
 
 namespace OB{
 	namespace Instance{
-		/**
+	    /**
 		 * GuiBase2d is an abstract class that all 2D GUI objects inherit from.
 		 *
 		 * @author John M. Harris, Jr.
@@ -35,6 +35,13 @@ namespace OB{
 			public:
 			    GuiBase2d(OBEngine* eng);
 				virtual ~GuiBase2d();
+
+				/**
+				 * Returns all GuiBase2d children in order of ZIndex.
+				 *
+				 * @author John M. Harris, Jr.
+				 */
+				virtual std::vector<shared_ptr<GuiBase2d>> getRenderableChildren();
 
 				/**
 				 * Returns true if this GuiBase2d contains a point.
@@ -52,6 +59,8 @@ namespace OB{
 				 * @author John M. Harris, Jr.
 				 */
 				virtual bool handleClick(shared_ptr<Type::Vector2> p);
+
+				virtual void render();
 
 				/**
 				 * Returns the absolute position of this GuiBase2d.

@@ -56,6 +56,8 @@ namespace OB{
 				virtual shared_ptr<Type::Vector2> getAbsolutePosition();
 				virtual shared_ptr<Type::Vector2> getAbsoluteSize();
 
+				virtual void render();
+
 				#if HAVE_ENET
 				/**
 				 * Replicates properties of this Instance.

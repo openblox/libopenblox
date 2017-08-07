@@ -21,6 +21,10 @@
 
 #include "type/Color3.h"
 
+#if HAVE_IRRLICHT
+#include "GL/gl.h"
+#endif
+
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(Frame, true, false, GuiObject){
@@ -38,16 +42,38 @@ namespace OB{
 		}
 
 		void Frame::render(){
+			#if HAVE_IRRLICHT
 			if(Visible){
 				if(irr::IrrlichtDevice* irrDev = getEngine()->getIrrlichtDevice()){
 					if(irr::video::IVideoDriver* irrDriv = irrDev->getVideoDriver()){
+						getEngine()->prepare2DMode();
+
+						shared_ptr<Type::Color3> bgColor = BackgroundColor3;
+						double bgTrans = BackgroundTransparency;
+						shared_ptr<Type::Color3> borderColor = BorderColor3;
+						int borderSize = BorderSizePixel;
 						shared_ptr<Type::Vector2> pos = getAbsolutePosition();
 						shared_ptr<Type::Vector2> siz = getAbsoluteSize()->add(pos);
-						
-						irrDriv->draw2DRectangle(BackgroundColor3->toIrrlichtSColor(calculateBackgroundAlpha()), irr::core::rect<irr::s32>(pos->getX(), pos->getY(), siz->getX(), siz->getY()));
+
+						glColor4d(bgColor->getR(), bgColor->getG(), bgColor->getB(), 1 - bgTrans);
+
+						glRectd(pos->getX(), pos->getY(), siz->getX(), siz->getY());
+
+						glColor4d(borderColor->getR(), borderColor->getB(), borderColor->getB(), 1 - bgTrans);
+						//Border Top
+						glRectd(pos->getX() - borderSize, pos->getY() - borderSize, siz->getX() + borderSize, pos->getY());
+						//Border Left
+						glRectd(pos->getX() - borderSize, pos->getY() - borderSize, pos->getX(), siz->getY() + borderSize);
+						//Border Right
+						glRectd(siz->getX(), pos->getY() - borderSize, siz->getX() + borderSize, siz->getY() + borderSize);
+						//Border Bottom
+						glRectd(pos->getX() - borderSize, siz->getY(), siz->getX() + borderSize, siz->getY() + borderSize);
+
+						GuiObject::render();
 					}
 				}
 			}
+			#endif
 		}
 	}
 }

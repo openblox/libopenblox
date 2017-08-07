@@ -22,8 +22,27 @@
 #include "instance/NetworkReplicator.h"
 #include "instance/NetworkServer.h"
 
+#include <algorithm>
+
+#if HAVE_IRRLICHT
+#include "GL/gl.h"
+#endif
+
 namespace OB{
 	namespace Instance{
+		struct _zIndexSort{
+				bool operator()(shared_ptr<GuiBase2d> x, shared_ptr<GuiBase2d> y){
+					int xzi = 0, yzi = 0;
+				    if(shared_ptr<GuiObject> xgo = dynamic_pointer_cast<GuiObject>(x)){
+						xzi = xgo->getZIndex();
+					}
+					if(shared_ptr<GuiObject> ygo = dynamic_pointer_cast<GuiObject>(y)){
+						yzi = ygo->getZIndex();
+					}
+					return xzi < yzi;
+				}
+		};
+		
 		DEFINE_CLASS_ABS_WCLONE(GuiObject, GuiBase2d){
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
@@ -44,6 +63,14 @@ namespace OB{
 		}
 
 	    GuiObject::~GuiObject(){}
+
+		std::vector<shared_ptr<GuiBase2d>> GuiObject::getRenderableChildren(){
+		    std::vector<shared_ptr<GuiBase2d>> renderableKids = GuiBase2d::getRenderableChildren();
+
+			std::sort(renderableKids.begin(), renderableKids.end(), _zIndexSort());
+
+			return renderableKids;
+		}
 
 	    bool GuiObject::containsPoint(shared_ptr<Type::Vector2> p){
 			double pX = p->getX();
@@ -96,6 +123,79 @@ namespace OB{
 			}
 			
 			return seed;
+		}
+
+	    struct _ob_rect GuiObject::getAbsoluteClippingArea(){
+			shared_ptr<Type::Vector2> pos = getAbsolutePosition();
+			shared_ptr<Type::Vector2> siz = getAbsoluteSize()->add(pos);
+			
+			struct _ob_rect clipArea;
+
+			if(ClipsDescendants){
+			clipArea.x1 = pos->getX();
+			clipArea.y1 = pos->getY();
+			clipArea.x2 = siz->getX();
+			clipArea.y2 = siz->getY();
+			}else{
+				clipArea.x1 = 0;
+				clipArea.y1 = 0;
+				if(irr::IrrlichtDevice* irrDev = getEngine()->getIrrlichtDevice()){
+					if(irr::video::IVideoDriver* irrDriv = irrDev->getVideoDriver()){
+						irr::core::rect<irr::s32> vpR = irrDriv->getViewPort();
+						clipArea.x2 = vpR.getWidth();
+						clipArea.y2 = vpR.getHeight();
+					}
+				}
+			}
+
+			if(Parent){
+				if(shared_ptr<GuiObject> pgo = dynamic_pointer_cast<GuiObject>(Parent)){
+					struct _ob_rect pClipArea = pgo->getAbsoluteClippingArea();
+					if(clipArea.x1 < pClipArea.x1){
+						clipArea.x1 = pClipArea.x1;
+					}
+					if(clipArea.y1 < pClipArea.y1){
+						clipArea.y1 = pClipArea.y1;
+					}
+					if(clipArea.x2 > pClipArea.x2){
+						clipArea.x2 = pClipArea.x2;
+					}
+					if(clipArea.y2 > pClipArea.y2){
+						clipArea.y2 = pClipArea.y2;
+					}
+				}
+			}
+			
+			return clipArea;
+		}
+
+		void GuiObject::render(){
+			struct _ob_rect clipArea = getAbsoluteClippingArea();
+			bool doesClip = ClipsDescendants;
+
+			std::vector<shared_ptr<GuiBase2d>> renderableKids = getRenderableChildren();
+
+			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != renderableKids.size(); i++){
+				shared_ptr<GuiBase2d> kid = renderableKids[i];
+				if(kid){
+					if(doesClip){
+						int x1 = clipArea.x1;
+						int y1 = clipArea.y1;
+						if(irr::IrrlichtDevice* irrDev = getEngine()->getIrrlichtDevice()){
+							if(irr::video::IVideoDriver* irrDriv = irrDev->getVideoDriver()){
+							    int vpH = irrDriv->getViewPort().getHeight();
+								int y2 = clipArea.y2;
+							    glEnable(GL_SCISSOR_TEST);
+								glScissor(x1, vpH - y2, clipArea.x2 - x1, y2 - y1);
+							}
+						}
+					}
+					kid->render();
+					if(doesClip){
+						glDisable(GL_SCISSOR_TEST);
+					}
+				}
+			}
 		}
 
 		bool GuiObject::isActive(){

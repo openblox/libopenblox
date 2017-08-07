@@ -43,8 +43,7 @@ namespace OB{
 			  MessageOutput,
 			  MessageInfo,
 			  MessageWarning,
-			  MessageError
-			);
+			  MessageError);
 
 		LENUM(UserInputType,
 			  MouseButton,

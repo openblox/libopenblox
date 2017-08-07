@@ -77,6 +77,12 @@ namespace OB{
 			return make_shared<Type::Vector2>(0, 0);
 		}
 
+		void CoreGui::render(){
+			if(Enabled){
+				GuiBase2d::render();
+			}
+		}
+
 		#if HAVE_ENET
 		void CoreGui::replicateProperties(shared_ptr<NetworkReplicator> peer){
 			Instance::replicateProperties(peer);

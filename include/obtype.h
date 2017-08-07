@@ -44,6 +44,18 @@ typedef long long int ob_int64;
  */
 typedef unsigned long long int ob_uint64;
 
+/**
+ * Internal type representing a rectangle.
+ *
+ * @author John M. Harris, Jr.
+ */
+struct _ob_rect{
+	int x1;
+	int y1;
+	int x2;
+	int y2;
+};
+
 #define OB_NETID_START 100
 
 #define OB_NETID_UNASSIGNED 0

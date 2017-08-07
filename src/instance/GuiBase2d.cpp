@@ -31,6 +31,21 @@ namespace OB{
 
 	    GuiBase2d::~GuiBase2d(){}
 
+		std::vector<shared_ptr<GuiBase2d>> GuiBase2d::getRenderableChildren(){
+		    std::vector<shared_ptr<GuiBase2d>> renderableKids;
+
+			std::vector<shared_ptr<Instance>> kids = GetChildren();
+			
+			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
+				shared_ptr<Instance> kid = kids[i];
+				if(shared_ptr<GuiBase2d> kgb2 = dynamic_pointer_cast<GuiBase2d>(kid)){
+				    renderableKids.push_back(kgb2);
+				}
+			}
+
+			return renderableKids;
+		}
+
 		bool GuiBase2d::containsPoint(shared_ptr<Type::Vector2> p){
 			return false;
 		}
@@ -48,6 +63,17 @@ namespace OB{
 			}
 
 			return false;
+		}
+
+		void GuiBase2d::render(){
+			std::vector<shared_ptr<GuiBase2d>> renderableKids = getRenderableChildren();
+
+			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != renderableKids.size(); i++){
+				shared_ptr<GuiBase2d> kid = renderableKids[i];
+				if(kid){
+					kid->render();
+				}
+			}
 		}
 
 		shared_ptr<Type::Vector2> GuiBase2d::getAbsolutePosition(){
