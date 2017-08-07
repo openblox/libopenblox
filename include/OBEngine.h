@@ -56,6 +56,10 @@ namespace OB{
 	class AssetLocator;
 	#endif
 
+	#if HAVE_IRRLICHT
+	typedef void (*post_render_func_t)(irr::video::IVideoDriver*);
+	#endif
+
 	/**
 	 * This is the main class of the OpenBlox engine. This class is
 	 * the hierarchical parent of everything else in the engine,
@@ -309,6 +313,9 @@ namespace OB{
 			 */
 			irr::IrrlichtDevice* getIrrlichtDevice();
 
+			post_render_func_t getPostRenderFunc();
+			void setPostRenderFunc(post_render_func_t prf);
+
 			#endif
 
 			/**
@@ -353,6 +360,8 @@ namespace OB{
 			lua_State* globalState;
 
 			#if HAVE_IRRLICHT
+
+			post_render_func_t custPostRender;
 			
 			irr::IrrlichtDevice* irrDev;
 			irr::video::IVideoDriver* irrDriv;

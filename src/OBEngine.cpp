@@ -274,6 +274,10 @@ namespace OB{
 			irrSceneMgr->drawAll();
 
 			dm->render();
+
+			if(custPostRender != NULL){
+				custPostRender(irrDriv);
+			}
 			
 			irrDriv->endScene();
 		}
@@ -294,9 +298,11 @@ namespace OB{
 	}
 
 	void OBEngine::prepare2DMode(){
+		#if HAVE_IRRLICHT
 		if(doRendering && irrDriv){
 			irrDriv->drawPixel(0, 0, irr::video::SColor(0, 255, 255, 255));
 		}
+		#endif
 	}
 
 	lua_State* OBEngine::getGlobalLuaState(){
@@ -374,6 +380,14 @@ namespace OB{
 	
 	irr::IrrlichtDevice* OBEngine::getIrrlichtDevice(){
 		return irrDev;
+	}
+
+	post_render_func_t OBEngine::getPostRenderFunc(){
+		return custPostRender;
+	}
+
+    void OBEngine::setPostRenderFunc(post_render_func_t prf){
+		custPostRender = prf;
 	}
 
 	#endif
