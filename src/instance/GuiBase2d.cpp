@@ -31,11 +31,11 @@ namespace OB{
 
 	    GuiBase2d::~GuiBase2d(){}
 
-		bool GuiBase2d::containsPoint(shared_ptr<Vector3> p){
+		bool GuiBase2d::containsPoint(shared_ptr<Type::Vector3> p){
 			return false;
 		}
 
-		bool GuiBase2d::handleClick(shared_ptr<Vector3> p){
+		bool GuiBase2d::handleClick(shared_ptr<Type::Vector3> p){
 			return false;
 		}
 
