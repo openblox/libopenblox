@@ -77,7 +77,7 @@ namespace OB{
 		}
 		
 		void ScreenGui::setDisplayOrder(int displayOrder){
-			if(BorderSizePixel != displayOrder){
+			if(DisplayOrder != displayOrder){
 			    DisplayOrder = displayOrder;
 
 				REPLICATE_PROPERTY_CHANGE(DisplayOrder);
@@ -113,7 +113,7 @@ namespace OB{
 			return GuiBase2d::getProperty(prop);
 		}
 
-		void GuiObject::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
+		void ScreenGui::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
 		    if(prop == "Enabled"){
 			    setEnabled(val->asBool());
 				return;
