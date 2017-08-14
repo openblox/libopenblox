@@ -22,6 +22,8 @@
 #include "instance/NetworkReplicator.h"
 #include "instance/NetworkServer.h"
 
+#include "instance/ScreenGui.h"
+
 #include <algorithm>
 
 #if HAVE_IRRLICHT
@@ -35,9 +37,13 @@ namespace OB{
 					int xzi = 0, yzi = 0;
 				    if(shared_ptr<GuiObject> xgo = dynamic_pointer_cast<GuiObject>(x)){
 						xzi = xgo->getZIndex();
+					}else if(shared_ptr<ScreenGui> xsg = dynamic_pointer_cast<ScreenGui>(x)){
+						xzi = xsg->getDisplayOrder();
 					}
 					if(shared_ptr<GuiObject> ygo = dynamic_pointer_cast<GuiObject>(y)){
 						yzi = ygo->getZIndex();
+					}else if(shared_ptr<ScreenGui> ysg = dynamic_pointer_cast<ScreenGui>(y)){
+						yzi = ysg->getDisplayOrder();
 					}
 					return xzi < yzi;
 				}
