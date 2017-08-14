@@ -64,8 +64,8 @@ AS_IF([test "x$with_enet" != "xno"],
       [AX_PKG_CHECK_MODULES([LENET], [libenet], [], [AC_DEFINE_UNQUOTED(HAVE_ENET, 1, [Define to 1 if you have the `enet' library (-lenet).])])],
       [have_enet=no])
 
-AS_IF([test "x$target_os" == "xwindows"],
-      [LGL_LIB="-lopengl"],
+AS_IF([test "x$target_os" == "xmingw32"],
+      [LGL_LIB="-lopengl32"],
       [LGL_LIB="-lGL"])
 
 AC_SUBST(LGL_LIB)
