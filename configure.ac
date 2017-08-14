@@ -8,6 +8,7 @@ PKG_PROG_PKG_CONFIG
 PKG_INSTALLDIR
 AC_LIBTOOL_WIN32_DLL
 
+AC_CANONICAL_TARGET
 AC_CANONICAL_SYSTEM
 
 AC_CONFIG_MACRO_DIR([m4])
@@ -62,6 +63,12 @@ AS_IF([test "x$with_curl" != "xno"],
 AS_IF([test "x$with_enet" != "xno"],
       [AX_PKG_CHECK_MODULES([LENET], [libenet], [], [AC_DEFINE_UNQUOTED(HAVE_ENET, 1, [Define to 1 if you have the `enet' library (-lenet).])])],
       [have_enet=no])
+
+AS_IF([test "x$target_os" == "xwindows"],
+      [LGL_LIB="-lopengl"],
+      [LGL_LIB="-lGL"])
+
+AC_SUBST(LGL_LIB)
 
 LT_INIT([win32-dll])
 
