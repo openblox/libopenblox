@@ -74,6 +74,8 @@ instance/GuiBase.cpp \
 instance/GuiBase2d.cpp \
 instance/GuiObject.cpp \
 instance/Frame.cpp \
+instance/LayerCollector.cpp \
+instance/ScreenGui.cpp \
 OBSerializer.cpp \
 utility.cpp
 
