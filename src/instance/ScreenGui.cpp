@@ -41,6 +41,12 @@ namespace OB{
 			return NULL;
 		}
 
+		void ScreenGui::render(){
+			if(Enabled){
+				GuiBase2d::render();
+			}
+		}
+
 		shared_ptr<Type::Vector2> ScreenGui::getAbsolutePosition(){
 			if(Parent){
 				if(shared_ptr<GuiBase2d> pgo = dynamic_pointer_cast<GuiBase2d>(Parent)){
