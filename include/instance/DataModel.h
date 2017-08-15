@@ -50,6 +50,27 @@ namespace OB{
 				void initServices();
 
 				/**
+				 * Returns whether or not Roblox Compatibility Mode is
+				 * enabled.
+				 *
+				 * @sa \ref roblox-compat "Roblox Compatibility Mode"
+				 * @sa setRobloxCompatMode
+				 * @returns bool, true if compat mode is on, otherwise false
+				 * @author John M. Harris, Jr.
+				 */
+				bool getRobloxCompatMode();
+
+				/**
+				 * Sets whether or not Roblox Compatibility Mode is
+				 * enabled.
+				 *
+				 * @sa \ref roblox-compat "Roblox Compatibility Mode"
+				 * @sa getRobloxCompatMode
+				 * @author John M. Harris, Jr.
+				 */
+				void setRobloxCompatMode(bool robloxCompatMode);
+
+				/**
 				 * Returns the Workspace service.
 				 *
 				 * @returns Workspace
@@ -161,9 +182,21 @@ namespace OB{
 				virtual void deserialize(pugi::xml_node thisNode);
 				virtual std::string serializedID();
 				#endif
+
+				virtual std::map<std::string, _PropertyInfo> getProperties();
+				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
+				virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
 				
 			    virtual void preRender();
 				virtual void render();
+
+				DECLARE_LUA_METHOD(Shutdown);
+
+				DECLARE_LUA_METHOD(getRobloxCompatMode);
+				DECLARE_LUA_METHOD(setRobloxCompatMode);
+
+				static void register_lua_property_getters(lua_State* L);
+				static void register_lua_property_setters(lua_State* L);
 				
 				DECLARE_CLASS(DataModel);
 
@@ -176,8 +209,7 @@ namespace OB{
 				shared_ptr<ReplicatedFirst> replicatedFirst;
 				shared_ptr<UserInputService> userInputService;
 
-				DECLARE_LUA_METHOD(Shutdown);
-
+				bool RobloxCompatMode;
 				ob_uint64 netIdStartIdx;
 				ob_uint64 netIdNextIdx;
 				std::map<ob_uint64, weak_ptr<Instance>> instMap;

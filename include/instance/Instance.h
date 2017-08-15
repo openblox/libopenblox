@@ -386,7 +386,7 @@ namespace OB{
 				 * Defaults to OB_NETID_UNASSIGNED.
 				 *
 				 * @internal
-				 * @param Unique 64 bit integer
+				 * @param netId Unique 64 bit integer
 				 * @author John M. Harris, Jr.
 				 */
 				void setNetworkID(ob_int64 netId);
@@ -496,6 +496,7 @@ namespace OB{
 				 * Used to set the Parent property.
 				 *
 				 * @param parent New Parent
+				 * @param useDMNotify Whether or not this change is replicated
 				 *
 				 * @author John M. Harris, Jr.
 				 */
@@ -519,6 +520,8 @@ namespace OB{
 				 *
 				 * @param L Lua State
 				 * @param index Index on the Lua stack
+				 * @param errIfNot Whether or not to 'throw' an error if check fails
+				 * @param allowNil If true, nil is considered a valid instance (but obviously is NULL)
 				 *
 				 * @author John M. Harris, Jr.
 				 * @author DigiTechs

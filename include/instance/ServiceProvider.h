@@ -39,8 +39,8 @@ namespace OB{
 				 * Pretty much the same as FindFirstChildOfClass, but made 
 				 * specifically for services. Doesn't check recursively.
 				 *
-				 * @param std::string className
-				 * @returns Instance* The service requested or NULL
+				 * @param className Class name to look for
+				 * @returns The service requested or NULL
 				 * @author John M. Harris, Jr.
 				 */
 				virtual shared_ptr<Instance> FindService(std::string className);
@@ -49,8 +49,8 @@ namespace OB{
 				 * Calls FindService, and attempts to create the 
 				 * service if it is not found.
 				 *
-				 * @param std::string className
-				 * @returns Instance* The service requested, or NULL if it cannot be created.
+				 * @param className Class name to look for
+				 * @returns The service requested, or NULL if it cannot be created.
 				 * @author John M. Harris, Jr.
 				 */
 				virtual shared_ptr<Instance> GetService(std::string className);

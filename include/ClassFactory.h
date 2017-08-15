@@ -82,6 +82,7 @@ namespace OB{
 			 * classes, it will return NULL.
 			 *
 			 * @param className Name of the class to be created
+			 * @param eng The current OBEngine instance
 			 * @returns New instance or NULL
 			 * @author John M. Harris, Jr.
 			 */
@@ -98,6 +99,7 @@ namespace OB{
 			 *
 			 * @param className Name of the class to be created
 			 * @param isDataModel True if being called from the DataModel, otherwise false.
+			 * @param eng The current OBEngine instance
 			 * @returns New instance or NULL
 			 * @author John M. Harris, Jr.
 			 */
@@ -111,6 +113,7 @@ namespace OB{
 			 * This is only used to Instance replication.
 			 *
 			 * @param className Name of the class to be created
+			 * @param eng The current OBEngine instance
 			 * @returns New instance or NULL
 			 * @author John M. Harris, Jr.
 			 */
