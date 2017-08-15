@@ -24,6 +24,9 @@
 //Helper classes
 #include "instance/Camera.h"
 
+#include "instance/NetworkReplicator.h"
+#include "instance/NetworkServer.h"
+
 //Services we're including just to initiate them ahead of time
 #include "instance/Workspace.h"
 #include "instance/CoreGui.h"
@@ -43,12 +46,27 @@ namespace OB{
 	    DataModel::DataModel(OBEngine* eng) : ServiceProvider(eng){
 			Name = "Game";
 
+			RobloxCompatMode = false;
+
 			netId = OB_NETID_DATAMODEL;
 			netIdStartIdx = (rand() % (101 - OB_NETID_START)) + OB_NETID_START;
 			netIdNextIdx = netIdStartIdx;
 		}
 
 	    DataModel::~DataModel(){}
+
+		bool DataModel::getRobloxCompatMode(){
+			return RobloxCompatMode;
+		}
+
+		void DataModel::setRobloxCompatMode(bool robloxCompatMode){
+			if(RobloxCompatMode != robloxCompatMode){
+				RobloxCompatMode = robloxCompatMode;
+
+				REPLICATE_PROPERTY_CHANGE(RobloxCompatMode);
+				propertyChanged("RobloxCompatMode");
+			}
+		}
 
 		void DataModel::Shutdown(int statusCode){
 			eng->setExitCode(statusCode);
@@ -183,6 +201,8 @@ namespace OB{
 				if(findIt != instMap.end()){
 					instMap.erase(findIt);
 
+					// Fun fact: This situation will literally never happen.
+
 					// This way we aren't wasting memory unless
 					// there's already an insane number of instances.
 					if(netIdNextIdx > (ULONG_MAX / 2)){
@@ -218,10 +238,6 @@ namespace OB{
 		}
 
 		#if HAVE_ENET
-		void DataModel::replicateProperties(shared_ptr<NetworkReplicator> peer){
-			Instance::replicateProperties(peer);
-		}
-
 		void DataModel::replicateChildren(shared_ptr<NetworkReplicator> peer){
 			replicatedFirst->replicate(peer);
 			
@@ -233,6 +249,12 @@ namespace OB{
 					kid->replicate(peer);
 				}
 			}
+		}
+
+		void DataModel::replicateProperties(shared_ptr<NetworkReplicator> peer){
+			Instance::replicateProperties(peer);
+		    
+			peer->sendSetPropertyPacket(netId, "RobloxCompatMode", make_shared<Type::VarWrapper>(RobloxCompatMode));
 		}
 		#endif
 
@@ -248,6 +270,30 @@ namespace OB{
 			return Instance::serializedID();
 		}
 		#endif
+
+		std::map<std::string, _PropertyInfo> DataModel::getProperties(){
+			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
+			propMap["RobloxCompatMode"] = {"bool", false, true, true};
+
+			return propMap;
+		}
+
+		void DataModel::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
+		    if(prop == "RobloxCompatMode"){
+			    setRobloxCompatMode(val->asDouble());
+				return;
+			}
+
+			Instance::setProperty(prop, val);
+		}
+
+		shared_ptr<Type::VarWrapper> DataModel::getProperty(std::string prop){
+			if(prop == "RobloxCompatMode"){
+				return make_shared<Type::VarWrapper>(getRobloxCompatMode());
+			}
+			
+			return Instance::getProperty(prop);
+		}
 
 		void DataModel::preRender(){
 			workspace->preRender();
@@ -274,6 +320,55 @@ namespace OB{
 			}
 			
 			return luaL_error(L, COLONERR, "Shutdown");
+		}
+
+		int DataModel::lua_setRobloxCompatMode(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<DataModel> instDM = dynamic_pointer_cast<DataModel>(inst);
+				if(instDM){
+					bool newV = lua_toboolean(L, 2);
+					instDM->setRobloxCompatMode(newV);
+				}
+			}
+			
+			return 0;
+		}
+
+		int DataModel::lua_getRobloxCompatMode(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+			
+			if(inst){
+				shared_ptr<DataModel> instDM = dynamic_pointer_cast<DataModel>(inst);
+				if(instDM){
+					lua_pushboolean(L, instDM->getRobloxCompatMode());
+					return 1;
+				}
+			}
+			
+			lua_pushnil(L);
+			return 1;
+		}
+
+		void DataModel::register_lua_property_setters(lua_State* L){
+			Instance::register_lua_property_setters(L);
+			
+			luaL_Reg properties[] = {
+				{"RobloxCompatMode", lua_setRobloxCompatMode},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, properties, 0);
+		}
+
+		void DataModel::register_lua_property_getters(lua_State* L){
+			Instance::register_lua_property_getters(L);
+			
+			luaL_Reg properties[] = {
+				{"RobloxCompatMode", lua_getRobloxCompatMode},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, properties, 0);
 		}
 
 		void DataModel::register_lua_methods(lua_State* L){
