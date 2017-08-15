@@ -287,7 +287,7 @@ namespace OB{
 			 * Setting this to NULL will mean that the
 			 * engine will create a window for itself.
 			 *
-			 * @param System-dependent window ID
+			 * @param wId System-dependent window ID
 			 * @author John M. Harris, Jr.
 			 */
 			void setWindowId(void* wId);
@@ -297,8 +297,8 @@ namespace OB{
 			 * this is only necessary (and should only be used) when
 			 * OpenBlox is embedded in an external window.
 			 *
-			 * @param width
-			 * @param height
+			 * @param width Width
+			 * @param height Height
 			 * @author John M. Harris, Jr.
 			 */
 			void resized(int width, int height);

@@ -66,7 +66,7 @@ namespace OB{
 		class Type:
 				// @cond DOXYGEN_IGNORE
 				public std::enable_shared_from_this<Type>
-				// @endconf
+				// @endcond
 		{
 			public:
 				Type();
