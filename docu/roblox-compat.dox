@@ -1,0 +1,25 @@
+/*!
+\page roblox-compat Roblox Compatibility Mode
+
+\section intro Introduction
+
+Roblox Compatibility Mode allows users to easily run games originally
+created for the proprietary Roblox platform. The goal of this
+subsystem of OpenBlox is not necessarily to allow users to run Roblox
+games as they are, but rather to simplify transition to the OpenBlox
+engine. To enable this mode, one would simply set
+\ref OB::Instance::DataModel::setRobloxCompatMode "DataModel::RobloxCompatMode"
+to true.
+
+\section changes Changes Applied
+
+When Roblox Compatibility Mode (RCM) is enabled, there are a number of
+changes to the behavior of the OpenBlox engine.
+
+- If there is currently no instance of StarterGui in your game, an instance is created.
+- Any incoming connections will automatically have a Player object created for them.
+- Some default controls are added, such as WASD or arrow keys to move or control the \ref OB::Instance::Camera "Camera".
+- Some basic graphical elements such as a player list and chat window are added to \ref OB::Instance::CoreGui "CoreGui".
+	- This is not the case if such objects were previously created within this game instance. The first time RobloxCompatMode is set to true is the only time these objects are added to CoreGui.
+- A \ref OB::Instance::PlayerGui "PlayerGui" instance is created for each Player currently connected, and for all newly created Players while RCM is on.
+*/
