@@ -33,7 +33,6 @@ namespace OB{
 			    ClientReplicator(ENetPeer* peer, OBEngine* eng);
 				virtual ~ClientReplicator();
 
-				shared_ptr<Player> CreatePlayer();
 				shared_ptr<Player> GetPlayer();
 
 				DECLARE_CLASS(ClientReplicator);

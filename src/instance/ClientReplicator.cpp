@@ -48,20 +48,6 @@ namespace OB{
 			return NULL;
 		}
 
-		shared_ptr<Player> ClientReplicator::CreatePlayer(){
-			if(!plr){
-				shared_ptr<DataModel> dm = getEngine()->getDataModel();
-				if(dm){
-					shared_ptr<Players> plrs = dm->getPlayers();
-					plr = make_shared<Player>(getEngine());
-					return plr;
-				}
-			}else{
-				return plr;
-			}
-			return NULL;
-		}
-
 		shared_ptr<Player> ClientReplicator::GetPlayer(){
 			return plr;
 		}
