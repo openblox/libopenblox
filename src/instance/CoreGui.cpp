@@ -34,6 +34,7 @@ namespace OB{
 
 	    CoreGui::CoreGui(OBEngine* eng) : BasePlayerGui(eng){
 			Name = ClassName;
+			netId = OB_NETID_COREGUI;
 			
 			Enabled = true;
 		}
