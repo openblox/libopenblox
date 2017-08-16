@@ -70,6 +70,8 @@ namespace OB{
 
 		windowId = NULL;
 
+		custPostRender = NULL;
+
 		#if HAVE_IRRLICHT
 		
 		irrDev = NULL;
