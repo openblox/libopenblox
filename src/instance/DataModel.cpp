@@ -183,6 +183,21 @@ namespace OB{
 					case OB_NETID_LIGHTING: {
 						return lighting;
 					}
+					case OB_NETID_REPLICATEDFIRST: {
+						return replicatedFirst;
+					}
+					case OB_NETID_REPLICATEDSTORAGE: {
+						return GetService("ReplicatedStorage");
+					}
+					case OB_NETID_STARTERGUI: {
+						return GetService("StarterGui");
+					}
+					case OB_NETID_COREGUI: {
+						return coreGui;
+					}
+					case OB_NETID_PLAYERS: {
+						return players;
+					}
 				}
 			}
 
