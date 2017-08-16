@@ -28,8 +28,37 @@ namespace OB{
 			public:
 			    BaseScript(OBEngine* eng);
 				virtual ~BaseScript();
+
+				void runScript();
+
+				bool isDisabled();
+				
+				void setDisabled(bool disabled);
+
+				std::string getLinkedSource();
+
+				void setLinkedSource(std::string linkedSource);
+
+				#if HAVE_ENET
+				virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
+				#endif
+
+				virtual std::map<std::string, _PropertyInfo> getProperties();
+				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
+				virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
+
+				DECLARE_LUA_METHOD(getDisabled);
+				DECLARE_LUA_METHOD(setDisabled);
+				DECLARE_LUA_METHOD(getLinkedSource);
+				DECLARE_LUA_METHOD(setLinkedSource);
+
+				static void register_lua_property_getters(lua_State* L);
+				static void register_lua_property_setters(lua_State* L);
 				
 				DECLARE_CLASS(BaseScript);
+
+				bool Disabled;
+				std::string LinkedSource;
 		};
 	}
 }

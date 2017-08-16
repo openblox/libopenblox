@@ -35,6 +35,7 @@ type/CFrame.cpp \
 instance/Instance.cpp \
 instance/LuaSourceContainer.cpp \
 instance/BaseScript.cpp \
+instance/Script.cpp \
 instance/Camera.cpp \
 instance/PVInstance.cpp \
 instance/Model.cpp \

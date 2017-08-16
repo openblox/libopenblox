@@ -27,6 +27,7 @@
 #include "instance/Instance.h"
 #include "instance/LuaSourceContainer.h"
 #include "instance/BaseScript.h"
+#include "instance/Script.h"
 #include "instance/Camera.h"
 #include "instance/PVInstance.h"
 #include "instance/Model.h"
@@ -159,6 +160,7 @@ namespace OB{
 		Instance::Instance::registerClass();
 		Instance::LuaSourceContainer::registerClass();
 		Instance::BaseScript::registerClass();
+		Instance::Script::registerClass();
 		Instance::Camera::registerClass();
 		Instance::PVInstance::registerClass();
 		Instance::Model::registerClass();
