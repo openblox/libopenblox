@@ -33,6 +33,8 @@ type/UDim.cpp \
 type/UDim2.cpp \
 type/CFrame.cpp \
 instance/Instance.cpp \
+instance/LuaSourceContainer.cpp \
+instance/BaseScript.cpp \
 instance/Camera.cpp \
 instance/PVInstance.cpp \
 instance/Model.cpp \
