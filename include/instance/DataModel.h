@@ -27,6 +27,7 @@ namespace OB{
 		class Workspace;
 		class CoreGui;
 		class Lighting;
+		class Players;
 		class ContentProvider;
 		class LogService;
 		class RunService;
@@ -93,6 +94,14 @@ namespace OB{
 				 * @author John M. Harris, Jr.
 				 */
 				shared_ptr<Lighting> getLighting();
+
+				/**
+				 * Returns the Players service.
+				 *
+				 * @returns Players
+				 * @author John M. Harris, Jr.
+				 */
+				shared_ptr<Players> getPlayers();
 
 				/**
 				 * Returns the ContentProvider service.
@@ -203,6 +212,7 @@ namespace OB{
 				shared_ptr<Workspace> workspace;
 				shared_ptr<CoreGui> coreGui;
 				shared_ptr<Lighting> lighting;
+				shared_ptr<Players> players;
 				shared_ptr<ContentProvider> contentProvider;
 				shared_ptr<LogService> logService;
 				shared_ptr<RunService> runService;

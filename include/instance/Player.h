@@ -17,35 +17,25 @@
  * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "instance/NetworkReplicator.h"
+#include "instance/Instance.h"
 
-#if HAVE_ENET
-#ifndef OB_INST_CLIENTREPLICATOR
-#define OB_INST_CLIENTREPLICATOR
+#ifndef OB_INST_PLAYER
+#define OB_INST_PLAYER
 
 namespace OB{
 	namespace Instance{
-		class Player;
-		
-		class ClientReplicator: public NetworkReplicator{
+		class Player: public Instance{
 			public:
-			    ClientReplicator(OBEngine* eng);
-			    ClientReplicator(ENetPeer* peer, OBEngine* eng);
-				virtual ~ClientReplicator();
-
-				shared_ptr<Player> CreatePlayer();
-				shared_ptr<Player> GetPlayer();
-
-				DECLARE_CLASS(ClientReplicator);
-
-				shared_ptr<Player> plr;
+			    Player(OBEngine* eng);
+				virtual ~Player();
+				
+				DECLARE_CLASS(Player);
 		};
 	}
 }
 
-#endif // OB_INST_CLIENTREPLICATOR
+#endif // OB_INST_PLAYER
 
-#endif // HAVE_ENET
 
 // Local Variables:
 // mode: c++

@@ -17,36 +17,27 @@
  * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "instance/NetworkReplicator.h"
+#include "instance/Player.h"
 
-#if HAVE_ENET
-#ifndef OB_INST_CLIENTREPLICATOR
-#define OB_INST_CLIENTREPLICATOR
+#include "utility.h"
 
 namespace OB{
 	namespace Instance{
-		class Player;
-		
-		class ClientReplicator: public NetworkReplicator{
-			public:
-			    ClientReplicator(OBEngine* eng);
-			    ClientReplicator(ENetPeer* peer, OBEngine* eng);
-				virtual ~ClientReplicator();
+		DEFINE_CLASS(Player, false, false, Instance){
+			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
+		}
 
-				shared_ptr<Player> CreatePlayer();
-				shared_ptr<Player> GetPlayer();
+	    Player::Player(OBEngine* eng) : Instance(eng){
+			Name = ClassName;
+			netId = OB_NETID_PLAYERS;
 
-				DECLARE_CLASS(ClientReplicator);
+			Archivable = false;
+		}
 
-				shared_ptr<Player> plr;
-		};
+	    Player::~Player(){}
+
+		shared_ptr<Instance> Player::cloneImpl(){
+			return NULL;
+		}
 	}
 }
-
-#endif // OB_INST_CLIENTREPLICATOR
-
-#endif // HAVE_ENET
-
-// Local Variables:
-// mode: c++
-// End:

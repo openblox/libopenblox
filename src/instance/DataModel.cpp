@@ -27,10 +27,11 @@
 #include "instance/NetworkReplicator.h"
 #include "instance/NetworkServer.h"
 
-//Services we're including just to initiate them ahead of time
+//Services we're including just to init them ahead of time
 #include "instance/Workspace.h"
 #include "instance/CoreGui.h"
 #include "instance/Lighting.h"
+#include "instance/Players.h"
 #include "instance/ContentProvider.h"
 #include "instance/LogService.h"
 #include "instance/RunService.h"
@@ -91,6 +92,10 @@ namespace OB{
 			lighting->setParent(sharedThis, false);
 			lighting->ParentLocked = true;
 
+			players = make_shared<Players>(eng);
+		    players->setParent(sharedThis, false);
+			players->ParentLocked = true;
+
 			contentProvider = make_shared<ContentProvider>(eng);
 		    contentProvider->setParent(sharedThis, false);
 		    contentProvider->ParentLocked = true;
@@ -122,6 +127,10 @@ namespace OB{
 
 		shared_ptr<Lighting> DataModel::getLighting(){
 			return lighting;
+		}
+
+		shared_ptr<Players> DataModel::getPlayers(){
+			return players;
 		}
 
 		shared_ptr<ContentProvider> DataModel::getContentProvider(){

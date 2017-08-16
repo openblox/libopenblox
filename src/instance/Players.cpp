@@ -19,6 +19,8 @@
 
 #include "instance/Players.h"
 
+#include "instance/Player.h"
+
 #include "utility.h"
 
 namespace OB{
@@ -49,6 +51,28 @@ namespace OB{
 
 		shared_ptr<Instance> Players::cloneImpl(){
 			return NULL;
+		}
+
+		void Players::removeChild(shared_ptr<Instance> kid){
+			if(kid){
+				if(shared_ptr<Player> kplr = dynamic_pointer_cast<Player>(kid)){
+					std::vector<shared_ptr<Type::VarWrapper>> args = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(kplr)});
+				    PlayerRemoving->Fire(eng, args);
+				}
+				
+				Instance::removeChild(kid);
+			}
+		}
+
+		void Players::addChild(shared_ptr<Instance> kid){
+			if(kid){
+				Instance::addChild(kid);
+
+				if(shared_ptr<Player> kplr = dynamic_pointer_cast<Player>(kid)){
+					std::vector<shared_ptr<Type::VarWrapper>> args = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(kplr)});
+				    PlayerAdded->Fire(eng, args);
+				}
+			}
 		}
 
 		shared_ptr<Type::Event> Players::getPlayerAdded(){

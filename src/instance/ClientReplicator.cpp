@@ -19,6 +19,8 @@
 
 #include "instance/ClientReplicator.h"
 
+#include "instance/Player.h"
+
 #if HAVE_ENET
 namespace OB{
 	namespace Instance{
@@ -36,10 +38,32 @@ namespace OB{
 		    netId = OB_NETID_NOT_REPLICATED;
 		}
 
-	    ClientReplicator::~ClientReplicator(){}
+	    ClientReplicator::~ClientReplicator(){
+			if(plr){
+				plr->Destroy();
+			}
+		}
 
 		shared_ptr<Instance> ClientReplicator::cloneImpl(){
 			return NULL;
+		}
+
+		shared_ptr<Player> ClientReplicator::CreatePlayer(){
+			if(!plr){
+				shared_ptr<DataModel> dm = getEngine()->getDataModel();
+				if(dm){
+					shared_ptr<Players> plrs = dm->getPlayers();
+					plr = make_shared<Player>(getEngine());
+					return plr;
+				}
+			}else{
+				return plr;
+			}
+			return NULL;
+		}
+
+		shared_ptr<Player> ClientReplicator::GetPlayer(){
+			return plr;
 		}
 	}
 }

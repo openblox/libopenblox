@@ -50,6 +50,7 @@ instance/ReplicatedStorage.cpp \
 instance/ReplicatedFirst.cpp \
 instance/PlayerGui.cpp \
 instance/Workspace.cpp \
+instance/Player.cpp \
 instance/Players.cpp \
 instance/LogService.cpp \
 instance/DataModel.cpp \

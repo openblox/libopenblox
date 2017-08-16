@@ -48,6 +48,9 @@ namespace OB{
 				virtual std::string serializedID();
 				#endif
 
+				virtual void removeChild(shared_ptr<Instance> kid);
+				virtual void addChild(shared_ptr<Instance> kid);
+
 				shared_ptr<Type::Event> getPlayerAdded();
 				shared_ptr<Type::Event> getPlayerRemoving();
 				

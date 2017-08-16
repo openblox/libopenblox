@@ -66,6 +66,8 @@
 #include "instance/GuiObject.h"
 #include "instance/Frame.h"
 #include "instance/UserInputService.h"
+#include "instance/Player.h"
+#include "instance/Players.h"
 
 namespace OB{
 	std::map<std::string, ClassMetadata*> ClassFactory::metadataTable;
@@ -188,6 +190,8 @@ namespace OB{
 		Instance::GuiObject::registerClass();
 		Instance::Frame::registerClass();
 		Instance::UserInputService::registerClass();
+		Instance::Players::registerClass();
+		Instance::Player::registerClass();
 
 		#if HAVE_ENET
 		Instance::NetworkReplicator::registerClass();
