@@ -58,5 +58,31 @@ namespace OB{
 		void Script::setSource(std::string source){
 			Source = source;
 		}
+
+		void Script::serialize(pugi::xml_node parentNode, shared_ptr<Instance> model){
+			if(Archivable){
+				pugi::xml_node thisNode = parentNode.append_child(pugi::node_element);
+				thisNode.set_name("instance");
+
+				pugi::xml_node srcNode = thisNode.append_child(pugi::node_element);
+				srcNode.set_name("source");
+				srcNode.append_child(pugi::node_cdata).set_value(Source.c_str());
+				
+				serializeThis(thisNode, model);
+			}
+		}
+
+		void Script::deserializeProperties(pugi::xml_node thisNode){
+			//This isn't a property, but it was either in deserializeCreate or deserializeProperties
+		    pugi::xml_node csrc =thisNode.child("source");
+			if(csrc.type() == pugi::node_element && !csrc.empty()){
+				pugi::xml_node srcCode = csrc.first_child();
+				if(srcCode.type() == pugi::node_cdata){
+					Source = std::string(srcCode.value());
+				}
+			}
+			
+			Instance::deserializeProperties(thisNode);
+		}
 	}
 }

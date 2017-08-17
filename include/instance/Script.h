@@ -34,6 +34,11 @@ namespace OB{
 				//internal
 				void setSource(std::string source);
 
+				#if HAVE_PUGIXML
+				virtual void serialize(pugi::xml_node parentNode, shared_ptr<Instance> model);
+				virtual void deserializeProperties(pugi::xml_node thisNode);
+				#endif
+
 				DECLARE_CLASS(Script);
 				
 				std::string Source;

@@ -103,7 +103,7 @@ namespace OB{
 		std::map<std::string, _PropertyInfo> BaseScript::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
 			propMap["Disabled"] = {"bool", false, true, true};
-			propMap["Disabled"] = {"string", false, true, true};
+			propMap["LinkedSource"] = {"string", false, true, true};
 
 			return propMap;
 		}
