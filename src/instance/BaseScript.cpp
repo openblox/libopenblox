@@ -22,6 +22,8 @@
 #include "instance/NetworkReplicator.h"
 #include "instance/NetworkServer.h"
 
+#include "instance/RunService.h"
+
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS_ABS_WCLONE(BaseScript, LuaSourceContainer){
@@ -37,11 +39,21 @@ namespace OB{
 
 	    BaseScript::~BaseScript(){}
 
-		void BaseScript::runScript(){
+		bool BaseScript::canRun(){
 			if(!Disabled){
+				//TODO: Look at RobloxCompatMode and see if we need to check what service we're in
+				shared_ptr<DataModel> dm = getEngine()->getDataModel();
+				shared_ptr<RunService> rs = dm->getRunService();
+				return rs->IsRunning();
+			}
+			return false;
+		}
+
+		void BaseScript::runScript(){
+			if(canRun()){
 				std::string strSource = getSource();
 
-				if(strSource.size() < 0){
+				if(strSource.size() > 0){
 					lua_State* gL = getEngine()->getGlobalLuaState();
 					if(!gL){
 						return;
@@ -49,7 +61,16 @@ namespace OB{
 					
 					lua_State* L = Lua::initThread(gL);
 
-					int s = luaL_loadbuffer(L, strSource.c_str(), strSource.size(), ("@" + getName()).c_str());
+					int ts = wrap_lua(L);
+					lua_pushvalue(L, -ts);
+					lua_setglobal(L, "script");
+
+					lua_pushvalue(L, -ts);
+					lua_setglobal(L, "Script");
+
+					lua_pop(L, 1);
+
+					int s = luaL_loadbuffer(L, strSource.c_str(), strSource.size(), ("@" + GetFullName()).c_str());
 					if(s == 0){
 						s = lua_resume(L, NULL, 0);
 					}
@@ -189,6 +210,22 @@ namespace OB{
 			return 0;
 		}
 
+		int BaseScript::lua_GetSource(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
+			if(inst){
+				shared_ptr<BaseScript> instBS = dynamic_pointer_cast<BaseScript>(inst);
+				if(instBS){
+					lua_pushstring(L, instBS->getSource().c_str());
+				}else{
+					lua_pushnil(L);
+				}
+				return 1;
+			}
+			
+			return 0;
+		}
+
 		void BaseScript::register_lua_property_setters(lua_State* L){
 			Instance::register_lua_property_setters(L);
 			
@@ -209,6 +246,16 @@ namespace OB{
 				{NULL, NULL}
 			};
 			luaL_setfuncs(L, properties, 0);
+		}
+
+		void BaseScript::register_lua_methods(lua_State* L){
+			Instance::register_lua_methods(L);
+			
+			luaL_Reg methods[] = {
+				{"GetSource", lua_GetSource},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, methods, 0);
 		}
 	}
 }

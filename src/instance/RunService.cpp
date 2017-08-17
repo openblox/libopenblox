@@ -33,6 +33,10 @@ namespace OB{
 
 			Archivable = false;
 
+			wasRunning = false;
+			running = false;
+			isStudio = false;
+
 		    Stepped = make_shared<Type::Event>("Stepped");
 		}
 
@@ -42,6 +46,14 @@ namespace OB{
 			return NULL;
 		}
 
+		bool RunService::IsRunMode(){
+			return IsStudio() && IsRunning();
+		}
+
+		bool RunService::IsRunning(){
+			return running;
+		}
+
 		bool RunService::IsClient(){
 			return !IsServer();
 		}
@@ -49,6 +61,34 @@ namespace OB{
 		bool RunService::IsServer(){
 			shared_ptr<DataModel> dm = eng->getDataModel();
 			return dm->FindService("NetworkServer") != NULL;
+		}
+
+		bool RunService::IsStudio(){
+			return isStudio;
+		}
+
+		void RunService::Pause(){
+			running = false;
+		}
+
+		void RunService::Run(){
+			if(!running){
+				running = true;
+				if(!wasRunning){
+					wasRunning = true;
+					//TODO: wake scripts in DataModel
+				}
+			}
+		}
+
+		void RunService::Stop(){
+			running = false;
+		    wasRunning = false;
+			//TODO: Remove tasks from previous game state from TaskScheduler
+		}
+
+		void RunService::setIsStudio(bool isStudio){
+		    this->isStudio = isStudio;
 		}
 
 		void RunService::tick(){

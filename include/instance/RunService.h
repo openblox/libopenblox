@@ -35,8 +35,17 @@ namespace OB{
 			    RunService(OBEngine* eng);
 				virtual ~RunService();
 
+				bool IsRunMode();
+				bool IsRunning();
 				bool IsClient();
 				bool IsServer();
+				bool IsStudio();
+
+				void Pause();
+				void Run();
+				void Stop();
+
+				void setIsStudio(bool isStudio);
 
 				virtual void tick();
 
@@ -48,7 +57,12 @@ namespace OB{
 				
 				DECLARE_CLASS(RunService);
 
+				bool wasRunning;
+				bool running;
+				bool isStudio;
+
 				shared_ptr<Type::Event> Stepped;
+				
 		};
 	}
 }

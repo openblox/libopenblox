@@ -29,11 +29,12 @@ namespace OB{
 			    BaseScript(OBEngine* eng);
 				virtual ~BaseScript();
 
-				void runScript();
+				virtual bool canRun();
+				virtual void runScript();
 
 				bool isDisabled();
 				
-				void setDisabled(bool disabled);
+				virtual void setDisabled(bool disabled);
 
 				std::string getLinkedSource();
 
@@ -51,9 +52,11 @@ namespace OB{
 				DECLARE_LUA_METHOD(setDisabled);
 				DECLARE_LUA_METHOD(getLinkedSource);
 				DECLARE_LUA_METHOD(setLinkedSource);
+				DECLARE_LUA_METHOD(GetSource);
 
 				static void register_lua_property_getters(lua_State* L);
 				static void register_lua_property_setters(lua_State* L);
+				static void register_lua_methods(lua_State* L);
 				
 				DECLARE_CLASS(BaseScript);
 

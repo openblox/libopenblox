@@ -46,10 +46,23 @@ namespace OB{
 			return nScript;
 		}
 
+		void Script::setDisabled(bool disabled){
+			bool orig = Disabled;
+			BaseScript::setDisabled(disabled);
+
+			if(Disabled != orig){
+				runScript();
+			}
+		}
+
 		std::string Script::getSource(){
 			std::string linkedSource = getLinkedSource();
 			if(linkedSource.size() > 0){
-				
+				shared_ptr<AssetLocator> aL = getEngine()->getAssetLocator();
+				if(!aL->hasAsset(LinkedSource)){
+					aL->loadAssetSync(LinkedSource);
+				}
+				shared_ptr<AssetResponse> aR = aL->getAsset(LinkedSource);
 			}else{
 				return Source;
 			}

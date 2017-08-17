@@ -34,6 +34,8 @@ namespace OB{
 				//internal
 				void setSource(std::string source);
 
+				virtual void setDisabled(bool disabled);
+
 				#if HAVE_PUGIXML
 				virtual void serialize(pugi::xml_node parentNode, shared_ptr<Instance> model);
 				virtual void deserializeProperties(pugi::xml_node thisNode);
