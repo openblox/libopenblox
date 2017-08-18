@@ -66,6 +66,9 @@ namespace OB{
 			bool initUseOver;
 			OBLState* parent;
 			OBEngine* eng;
+				
+			bool getsPaused;
+			bool dmBound;
 		};
 
 		/**
@@ -119,6 +122,42 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		void close_state(lua_State* L);
+
+		/**
+		 * Gets whether or not a Lua state gets paused.
+		 *
+		 * @param L Lua state
+		 * @returns bool
+		 * @author John M. Harris, Jr.
+		 */
+		bool getsPaused(lua_State* L);
+
+		/**
+		 * Gets whether or not a Lua state gets paused.
+		 *
+		 * @param L Lua state
+		 * @param getsPaused Whether or not this state gets paused
+		 * @author John M. Harris, Jr.
+		 */
+		void setGetsPaused(lua_State* L, bool getsPaused);
+
+		/**
+		 * Gets whether or not a Lua state is DM bound.
+		 *
+		 * @param L Lua state
+		 * @returns bool
+		 * @author John M. Harris, Jr.
+		 */
+		bool isDMBound(lua_State* L);
+
+		/**
+		 * Gets whether or not a Lua state is DM bound.
+		 *
+		 * @param L Lua state
+		 * @param dmBound DM Bound
+		 * @author John M. Harris, Jr.
+		 */
+		void setDMBound(lua_State* L, bool dmBound);
 
 		/**
 		 * Used internally to handle errors. Returns a Lua error as a

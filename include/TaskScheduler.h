@@ -74,6 +74,8 @@ namespace OB{
 			ob_int64 start;
 			void* metad;
 			ob_task_fnc task_fnc;
+			bool getsPaused;
+			bool dmBound;
 	};
 	
 	/**
@@ -144,15 +146,24 @@ namespace OB{
 			void tick();
 
 			/**
+			 * Removes DM bound tasks from the queue.
+			 *
+			 * @author John M. Harris, Jr.
+			 */
+			void removeDMBound();
+
+			/**
 			 * Queues a task to be run at a given time.
 			 *
 			 * @param fnc Function to queue
 			 * @param metad Metadata to be passed to the function.
 			 * @param at When this task needs to run.
+			 * @param getsPaused Whether or not this task gets paused with RunService.
+			 * @param dmBound If a task is 'DM bound', it is removed from the TaskScheduler when RunService::Stop is called.
 			 *
 			 * @author John M. Harris, Jr.
 			 */
-			void enqueue(ob_task_fnc fnc, void* metad, ob_int64 at);
+			void enqueue(ob_task_fnc fnc, void* metad, ob_int64 at, bool getsPaused, bool dmBound);
 		private:
 			std::vector<_ob_waiting_task> tasks;
 

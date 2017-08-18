@@ -427,7 +427,7 @@ namespace OB{
 
 		contentCache.emplace(url, loadingResponse);
 		
-		taskS->enqueue(loadAssetAsyncTask, metad, 0);
+		taskS->enqueue(loadAssetAsyncTask, metad, 0, false, false);
 	}
 	
 	shared_ptr<AssetResponse> AssetLocator::getAsset(std::string url, bool loadIfNotPresent){

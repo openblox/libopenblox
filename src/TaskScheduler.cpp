@@ -131,7 +131,21 @@ namespace OB{
 		}
 	}
 
-	void TaskScheduler::enqueue(ob_task_fnc fnc, void* metad, ob_int64 at){
+	void TaskScheduler::removeDMBound(){
+	    std::vector<_ob_waiting_task> tmpPopped;
+		while(!tasks.empty()){
+			_ob_waiting_task t = tasks.back();
+				
+			if(!t.dmBound){
+			    tmpPopped.push_back(t);
+			}
+		    tasks.pop_back();
+		}
+
+	    tasks = tmpPopped;
+	}
+
+    void TaskScheduler::enqueue(ob_task_fnc fnc, void* metad, ob_int64 at, bool getsPaused, bool dmBound){
 		ob_int64 curTime = currentTimeMillis();
 		
 		_ob_waiting_task t;
@@ -139,6 +153,8 @@ namespace OB{
 		t.at = at;
 		t.metad = metad;
 		t.task_fnc = fnc;
+		t.getsPaused = getsPaused;
+		t.dmBound = dmBound;
 		
 		tasks.push_back(t);
 

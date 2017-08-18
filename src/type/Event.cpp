@@ -109,7 +109,7 @@ namespace OB{
 					conn->evtCon = conns[i];
 					conn->args = argList;
 					
-					tasks->enqueue(evt_do_fire_connection, conn, 0);
+					tasks->enqueue(evt_do_fire_connection, conn, 0, false, false);
 				}
 			}
 		}

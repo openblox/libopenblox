@@ -20,6 +20,7 @@
 #include "instance/RunService.h"
 
 #include "instance/DataModel.h"
+#include "TaskScheduler.h"
 
 namespace OB{
 	namespace Instance{
@@ -84,7 +85,8 @@ namespace OB{
 		void RunService::Stop(){
 			running = false;
 		    wasRunning = false;
-			//TODO: Remove tasks from previous game state from TaskScheduler
+		    getEngine()->getTaskScheduler()->removeDMBound();
+			//TODO: Disconnect events
 		}
 
 		void RunService::setIsStudio(bool isStudio){

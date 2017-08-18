@@ -75,6 +75,8 @@ namespace OB{
 			LState->parent = NULL;
 			LState->initUseOver = false;
 			LState->eng = eng;
+			LState->getsPaused = false;
+			LState->dmBound = false;
 
 			lStates[L] = LState;
 			
@@ -99,6 +101,8 @@ namespace OB{
 			LState->parent = NULL;
 			LState->initUseOver = false;
 			LState->eng = getEngine(gL);
+			LState->getsPaused = true;
+			LState->dmBound = true;
 
 			lStates[L] = LState;
 
@@ -214,6 +218,8 @@ namespace OB{
 			LState->numChildStates = 0;
 			LState->initUseOver = false;
 			LState->eng = getEngine(pL);
+			LState->getsPaused = false;
+			LState->dmBound = false;
 
 			if(lStates.count(pL)){
 				struct OBLState* oL = lStates[pL];
@@ -222,6 +228,8 @@ namespace OB{
 				}
 				
 				LState->parent = oL;
+				LState->getsPaused = oL->getsPaused;
+				LState->dmBound = oL->dmBound;
 			}
 
 			lStates[L] = LState;
@@ -262,6 +270,36 @@ namespace OB{
 			}/*else{
 				lua_close(L);
 				}*/
+		}
+
+		bool getsPaused(lua_State* L){
+			if(lStates.count(L)){
+				struct OBLState* LState = lStates[L];
+				return LState->getsPaused;
+		    }
+			return false;
+		}
+
+	    void setGetsPaused(lua_State* L, bool getsPaused){
+			if(lStates.count(L)){
+				struct OBLState* LState = lStates[L];
+			    LState->getsPaused = getsPaused;
+		    }
+		}
+
+		bool isDMBound(lua_State* L){
+			if(lStates.count(L)){
+				struct OBLState* LState = lStates[L];
+				return LState->dmBound;
+		    }
+			return false;
+		}
+
+	    void setDMBound(lua_State* L, bool dmBound){
+			if(lStates.count(L)){
+				struct OBLState* LState = lStates[L];
+			    LState->dmBound = dmBound;
+		    }
 		}
 		
 		std::string handle_errors(lua_State* L){
@@ -377,13 +415,14 @@ namespace OB{
 				waitTime = luaL_checknumber(L, 1);
 			}
 
-		    OBEngine* eng = getEngine(L);
+			struct OBLState* LState = lStates[L];
+		    OBEngine* eng = LState->eng;
 		    shared_ptr<TaskScheduler> tasks = eng->getTaskScheduler();
 
 			ob_int64 curTime = currentTimeMillis();
 			ob_int64 at = curTime + (int)(waitTime * 1000);
 
-			tasks->enqueue(_ob_lua_wake_wait, L, at);
+			tasks->enqueue(_ob_lua_wake_wait, L, at, LState->getsPaused, LState->dmBound);
 
 			return lua_yield(L, 0);
 		}
@@ -422,13 +461,14 @@ namespace OB{
 			lua_pushvalue(L, idx);
 			lua_xmove(L, cL, 1);
 
-		    OBEngine* eng = getEngine(L);
+			struct OBLState* LState = lStates[L];
+		    OBEngine* eng = LState->eng;
 		    shared_ptr<TaskScheduler> tasks = eng->getTaskScheduler();
 
 			ob_int64 curTime = currentTimeMillis();
 			ob_int64 at = curTime + (int)(secs * 1000);
 
-			tasks->enqueue(_ob_lua_wake_delay, cL, at);
+			tasks->enqueue(_ob_lua_wake_delay, cL, at, LState->getsPaused, LState->dmBound);
 
 			return 0;
 		}
