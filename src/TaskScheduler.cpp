@@ -21,6 +21,8 @@
 
 #include "OBEngine.h"
 
+#include "instance/RunService.h"
+
 #include <algorithm>
 
 #include "OBException.h"
@@ -84,11 +86,20 @@ namespace OB{
 			}
 
 			numWaiting = runThisTick.size();
+
+			shared_ptr<Instance::RunService> rS = eng->getDataModel()->getRunService();
 			
 			while(!runThisTick.empty() && !stopProcTasks){
 				_ob_waiting_task t = runThisTick.back();
 				runThisTick.pop_back();
 				numWaiting--;
+
+			    if(t.getsPaused){
+					if(!rS->IsRunning()){
+						tmpPopped.push_back(t);
+						break;
+					}
+				}
 				
 				int retCode = t.task_fnc(t.metad, t.start);
 				

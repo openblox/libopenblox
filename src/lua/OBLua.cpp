@@ -218,8 +218,8 @@ namespace OB{
 			LState->numChildStates = 0;
 			LState->initUseOver = false;
 			LState->eng = getEngine(pL);
-			LState->getsPaused = false;
-			LState->dmBound = false;
+			LState->getsPaused = true;
+			LState->dmBound = true;
 
 			if(lStates.count(pL)){
 				struct OBLState* oL = lStates[pL];
