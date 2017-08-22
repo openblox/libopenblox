@@ -81,6 +81,8 @@ instance/GuiObject.cpp \
 instance/Frame.cpp \
 instance/LayerCollector.cpp \
 instance/ScreenGui.cpp \
+instance/GuiLabel.cpp \
+instance/ImageLabel.cpp \
 OBSerializer.cpp \
 utility.cpp
 

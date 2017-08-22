@@ -66,8 +66,12 @@
 #include "instance/NetworkClient.h"
 #include "instance/GuiBase.h"
 #include "instance/GuiBase2d.h"
+#include "instance/LayerCollector.h"
+#include "instance/ScreenGui.h"
 #include "instance/GuiObject.h"
 #include "instance/Frame.h"
+#include "instance/GuiLabel.h"
+#include "instance/ImageLabel.h"
 #include "instance/UserInputService.h"
 #include "instance/Player.h"
 #include "instance/Players.h"
@@ -193,8 +197,12 @@ namespace OB{
 		Instance::ObjectValue::registerClass();
 		Instance::GuiBase::registerClass();
 		Instance::GuiBase2d::registerClass();
+		Instance::LayerCollector::registerClass();
+		Instance::ScreenGui::registerClass();
 		Instance::GuiObject::registerClass();
 		Instance::Frame::registerClass();
+		Instance::GuiLabel::registerClass();
+		Instance::ImageLabel::registerClass();
 		Instance::UserInputService::registerClass();
 		Instance::Players::registerClass();
 		Instance::Player::registerClass();
