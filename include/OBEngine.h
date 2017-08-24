@@ -165,13 +165,6 @@ namespace OB{
 			void render();
 
 			/**
-			 * Prepares the rendering pipeline for 2D rendering.
-			 *
-			 * @author John M. Harris, Jr.
-			 */
-			void prepare2DMode();
-
-			/**
 			 * Save an image of the last frame to a file.
 			 *
 			 * @param file File to write to

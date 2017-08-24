@@ -16,6 +16,7 @@ ClassFactory.cpp \
 TaskScheduler.cpp \
 AssetLocator.cpp \
 OBEngine.cpp \
+RenderUtils.cpp \
 lua/OBLua.cpp \
 lua/OBLua_OBBase.cpp \
 lua/OBLua_OBOS.cpp \

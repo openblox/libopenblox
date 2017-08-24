@@ -19,6 +19,8 @@
 
 #include "instance/Frame.h"
 
+#include "RenderUtils.h"
+
 #include "type/Color3.h"
 
 #if HAVE_IRRLICHT
@@ -46,7 +48,7 @@ namespace OB{
 			if(Visible){
 				if(irr::IrrlichtDevice* irrDev = getEngine()->getIrrlichtDevice()){
 					if(irr::video::IVideoDriver* irrDriv = irrDev->getVideoDriver()){
-						getEngine()->prepare2DMode();
+						RenderUtils::prepare2D(getEngine());
 
 						shared_ptr<Type::Color3> bgColor = BackgroundColor3;
 						double bgTrans = BackgroundTransparency;

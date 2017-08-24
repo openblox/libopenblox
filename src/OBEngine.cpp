@@ -299,14 +299,6 @@ namespace OB{
 		return false;
 	}
 
-	void OBEngine::prepare2DMode(){
-		#if HAVE_IRRLICHT
-		if(doRendering && irrDriv){
-			irrDriv->drawPixel(0, 0, irr::video::SColor(0, 255, 255, 255));
-		}
-		#endif
-	}
-
 	lua_State* OBEngine::getGlobalLuaState(){
 		return globalState;
 	}
