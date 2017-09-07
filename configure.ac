@@ -41,10 +41,15 @@ AS_IF([test "x$with_irrlicht" != "xno"],
       [have_irrlicht=no])
 
 AS_IF([test "x$have_irrlicht" = "xyes"],
-      [[LIRRLICHT_LIBS="-lIrrlicht"] AC_DEFINE_UNQUOTED(HAVE_IRRLICHT, 1, [Define to 1 if you have the `Irrlicht' library (-lIrrlicht).])],
+      [
+		[LIRRLICHT_LIBS="-lIrrlicht"]
+		AC_DEFINE_UNQUOTED(HAVE_IRRLICHT, 1, [Define to 1 if you have the `Irrlicht' library (-lIrrlicht).])
+		AX_PKG_CHECK_MODULES([LSDL], [sdl2], [], [AC_DEFINE_UNQUOTED(HAVE_SDL2, 1, [Define to 1 if you have the `sdl2' library (-lSDL2).]) LSDL2IMGLIBS="-lSDL2_image"], [LSDL2IMGLIBS=""])
+	  ],
       [LIRRLICHT_LIBS=""])
 
 AC_SUBST(LIRRLICHT_LIBS)
+AC_SUBST(LSDL2IMGLIBS)
 
 AS_IF([test "x$with_pugixml" != "xno"],
       [[LPUGIXML_LIBS="-lpugixml"] AC_DEFINE_UNQUOTED(HAVE_PUGIXML, 1, [Define to 1 if you have the `pugixml' library (-lpugixml).])],
