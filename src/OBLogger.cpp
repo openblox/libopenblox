@@ -65,34 +65,34 @@ namespace OB{
 		}
 
 		switch(logLevel){
-		case OLL_Debug: {
-			logLevelStr = "[DEBUG] ";
-			if(ls){
-				ls->postLog(textMsg, Enum::MessageType::MessageOutput);
+			case OLL_Debug: {
+				logLevelStr = "[DEBUG] ";
+				if(ls){
+					ls->postLog(textMsg, Enum::MessageType::MessageOutput);
+				}
+				break;
 			}
-			break;
-		}
-		case OLL_Information: {
-			logLevelStr = "[INFO] ";
-			if(ls){
-				ls->postLog(textMsg, Enum::MessageType::MessageInfo);
+			case OLL_Information: {
+				logLevelStr = "[INFO] ";
+				if(ls){
+					ls->postLog(textMsg, Enum::MessageType::MessageInfo);
+				}
+				break;
 			}
-			break;
-		}
-		case OLL_Warning: {
-			logLevelStr = "[WARN] ";
-			if(ls){
-				ls->postLog(textMsg, Enum::MessageType::MessageWarning);
+			case OLL_Warning: {
+				logLevelStr = "[WARN] ";
+				if(ls){
+					ls->postLog(textMsg, Enum::MessageType::MessageWarning);
+				}
+				break;
 			}
-			break;
-		}
-		case OLL_Error: {
-			logLevelStr = "[ERROR ]";
-			if(ls){
-				ls->postLog(textMsg, Enum::MessageType::MessageError);
+			case OLL_Error: {
+				logLevelStr = "[ERROR ]";
+				if(ls){
+					ls->postLog(textMsg, Enum::MessageType::MessageError);
+				}
+				break;
 			}
-			break;
-		}
 		}
 
 		if(logLevel >= _logLevel){

@@ -136,45 +136,45 @@ namespace OB{
 					int ltype = lua_type(L, i);
 
 					switch(ltype){
-					case LUA_TNIL: {
-						fireArgs.push_back(make_shared<VarWrapper>((void*)NULL, TYPE_NULL));
-						break;
-					}
-					case LUA_TNUMBER: {
-						fireArgs.push_back(make_shared<VarWrapper>(lua_tonumber(L, i)));
-						break;
-					}
-					case LUA_TBOOLEAN: {
-						fireArgs.push_back(make_shared<VarWrapper>(lua_toboolean(L, i)));
-						break;
-					}
-					case LUA_TSTRING: {
-						const char* tmpStr = lua_tostring(L, i);
-						fireArgs.push_back(make_shared<VarWrapper>(std::string(tmpStr)));
-						break;
-					}
-					case LUA_TUSERDATA: {
-						shared_ptr<Type> tl = checkType(L, i);
-						if(tl){
-							fireArgs.push_back(make_shared<VarWrapper>(tl));
+						case LUA_TNIL: {
+							fireArgs.push_back(make_shared<VarWrapper>((void*)NULL, TYPE_NULL));
 							break;
 						}
+						case LUA_TNUMBER: {
+							fireArgs.push_back(make_shared<VarWrapper>(lua_tonumber(L, i)));
+							break;
+						}
+						case LUA_TBOOLEAN: {
+							fireArgs.push_back(make_shared<VarWrapper>(lua_toboolean(L, i)));
+							break;
+						}
+						case LUA_TSTRING: {
+							const char* tmpStr = lua_tostring(L, i);
+							fireArgs.push_back(make_shared<VarWrapper>(std::string(tmpStr)));
+							break;
+						}
+						case LUA_TUSERDATA: {
+							shared_ptr<Type> tl = checkType(L, i);
+							if(tl){
+								fireArgs.push_back(make_shared<VarWrapper>(tl));
+								break;
+							}
 
-						shared_ptr<Instance::Instance> ti = Instance::Instance::checkInstance(L, i);
-						if(ti){
-							fireArgs.push_back(make_shared<VarWrapper>(ti));
+							shared_ptr<Instance::Instance> ti = Instance::Instance::checkInstance(L, i);
+							if(ti){
+								fireArgs.push_back(make_shared<VarWrapper>(ti));
+								break;
+							}
+						}
+						case LUA_TTABLE:
+						case LUA_TFUNCTION:
+						case LUA_TTHREAD:
+						case LUA_TLIGHTUSERDATA: {
+							lua_pushvalue(L, i);
+							int ref = luaL_ref(L, LUA_REGISTRYINDEX);
+							fireArgs.push_back(make_shared<VarWrapper>(L, ref));
 							break;
 						}
-					}
-					case LUA_TTABLE:
-					case LUA_TFUNCTION:
-					case LUA_TTHREAD:
-					case LUA_TLIGHTUSERDATA: {
-						lua_pushvalue(L, i);
-						int ref = luaL_ref(L, LUA_REGISTRYINDEX);
-						fireArgs.push_back(make_shared<VarWrapper>(L, ref));
-						break;
-					}
 					}
 				}
 			}

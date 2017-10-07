@@ -83,61 +83,61 @@ namespace OB{
 
 		VarWrapper::~VarWrapper(){
 			switch(type){
-			case TYPE_INT: {
-				IntWrapper* iw = static_cast<IntWrapper*>(wrapped);
-				delete iw;
-				break;
-			}
-			case TYPE_DOUBLE: {
-				DoubleWrapper* dw = static_cast<DoubleWrapper*>(wrapped);
-				delete dw;
-				break;
-			}
-			case TYPE_FLOAT: {
-				FloatWrapper* fw = static_cast<FloatWrapper*>(wrapped);
-				delete fw;
-				break;
-			}
-			case TYPE_LONG: {
-				LongWrapper* lw = static_cast<LongWrapper*>(wrapped);
-				delete lw;
-				break;
-			}
-			case TYPE_UNSIGNED_LONG: {
-				UnsignedLongWrapper* ulw = static_cast<UnsignedLongWrapper*>(wrapped);
-				delete ulw;
-				break;
-			}
-			case TYPE_BOOL: {
-				BoolWrapper* bw = static_cast<BoolWrapper*>(wrapped);
-				delete bw;
-				break;
-			}
-			case TYPE_STRING: {
-				StringWrapper* sw = static_cast<StringWrapper*>(wrapped);
-				delete sw;
-				break;
-			}
-			case TYPE_INSTANCE: {
-				(*static_cast<shared_ptr<Instance::Instance>*>(wrapped)).reset();
-				delete static_cast<shared_ptr<Instance::Instance>*>(wrapped);
-				break;
-			}
-			case TYPE_TYPE: {
-				(*static_cast<shared_ptr<Type>*>(wrapped)).reset();
-				delete static_cast<shared_ptr<Type>*>(wrapped);
-				break;
-			}
-			case TYPE_LUA_OBJECT: {
-				LuaReferencedWrapper* lrw = static_cast<LuaReferencedWrapper*>(wrapped);
-				delete lrw;
-				break;
-			}
-			case TYPE_UNKNOWN: {
-				//This might end very badly!
-				free(wrapped);
-				break;
-			}
+				case TYPE_INT: {
+					IntWrapper* iw = static_cast<IntWrapper*>(wrapped);
+					delete iw;
+					break;
+				}
+				case TYPE_DOUBLE: {
+					DoubleWrapper* dw = static_cast<DoubleWrapper*>(wrapped);
+					delete dw;
+					break;
+				}
+				case TYPE_FLOAT: {
+					FloatWrapper* fw = static_cast<FloatWrapper*>(wrapped);
+					delete fw;
+					break;
+				}
+				case TYPE_LONG: {
+					LongWrapper* lw = static_cast<LongWrapper*>(wrapped);
+					delete lw;
+					break;
+				}
+				case TYPE_UNSIGNED_LONG: {
+					UnsignedLongWrapper* ulw = static_cast<UnsignedLongWrapper*>(wrapped);
+					delete ulw;
+					break;
+				}
+				case TYPE_BOOL: {
+					BoolWrapper* bw = static_cast<BoolWrapper*>(wrapped);
+					delete bw;
+					break;
+				}
+				case TYPE_STRING: {
+					StringWrapper* sw = static_cast<StringWrapper*>(wrapped);
+					delete sw;
+					break;
+				}
+				case TYPE_INSTANCE: {
+					(*static_cast<shared_ptr<Instance::Instance>*>(wrapped)).reset();
+					delete static_cast<shared_ptr<Instance::Instance>*>(wrapped);
+					break;
+				}
+				case TYPE_TYPE: {
+					(*static_cast<shared_ptr<Type>*>(wrapped)).reset();
+					delete static_cast<shared_ptr<Type>*>(wrapped);
+					break;
+				}
+				case TYPE_LUA_OBJECT: {
+					LuaReferencedWrapper* lrw = static_cast<LuaReferencedWrapper*>(wrapped);
+					delete lrw;
+					break;
+				}
+				case TYPE_UNKNOWN: {
+					// This might end very badly!
+					free(wrapped);
+					break;
+				}
 			}
 			wrapped = NULL;
 		}
@@ -252,104 +252,104 @@ namespace OB{
 				return false;
 			}
 			switch(type){
-			case TYPE_INT: {
-				return static_cast<IntWrapper*>(wrapped)->val == static_cast<IntWrapper*>(other->wrapped)->val;
-			}
-			case TYPE_DOUBLE: {
-				return static_cast<DoubleWrapper*>(wrapped)->val == static_cast<DoubleWrapper*>(other->wrapped)->val;
-			}
-			case TYPE_FLOAT: {
-				return static_cast<FloatWrapper*>(wrapped)->val == static_cast<FloatWrapper*>(other->wrapped)->val;
-				break;
-			}
-			case TYPE_LONG: {
-				return static_cast<LongWrapper*>(wrapped)->val == static_cast<LongWrapper*>(other->wrapped)->val;
-			}
-			case TYPE_UNSIGNED_LONG: {
-				return static_cast<UnsignedLongWrapper*>(wrapped)->val == static_cast<UnsignedLongWrapper*>(other->wrapped)->val;
-			}
-			case TYPE_BOOL: {
-				return static_cast<BoolWrapper*>(wrapped)->val == static_cast<BoolWrapper*>(other->wrapped)->val;
-			}
-			case TYPE_STRING: {
-				return static_cast<StringWrapper*>(wrapped)->val == static_cast<StringWrapper*>(other->wrapped)->val;
-			}
-			case TYPE_INSTANCE: {
-				shared_ptr<Instance::Instance> inst = *static_cast<shared_ptr<Instance::Instance>*>(wrapped);
-				shared_ptr<Instance::Instance> oinst = *static_cast<shared_ptr<Instance::Instance>*>(other->wrapped);
-				return oinst == inst;
-			}
-			case TYPE_TYPE: {
-				shared_ptr<Type> tp = *static_cast<shared_ptr<Type>*>(wrapped);
-				shared_ptr<Type> otp = *static_cast<shared_ptr<Type>*>(other->wrapped);
-
-				if(tp){
-					return tp->equals(otp);
-				}else{
-					return tp == otp;
+				case TYPE_INT: {
+					return static_cast<IntWrapper*>(wrapped)->val == static_cast<IntWrapper*>(other->wrapped)->val;
 				}
-			}
-			case TYPE_LUA_OBJECT: {
-				return false;//This shouldn't really be seeing any equality tests..
-			}
-			case TYPE_NULL:
-			case TYPE_UNKNOWN: {
-				return true;
-			}
+				case TYPE_DOUBLE: {
+					return static_cast<DoubleWrapper*>(wrapped)->val == static_cast<DoubleWrapper*>(other->wrapped)->val;
+				}
+				case TYPE_FLOAT: {
+					return static_cast<FloatWrapper*>(wrapped)->val == static_cast<FloatWrapper*>(other->wrapped)->val;
+					break;
+				}
+				case TYPE_LONG: {
+					return static_cast<LongWrapper*>(wrapped)->val == static_cast<LongWrapper*>(other->wrapped)->val;
+				}
+				case TYPE_UNSIGNED_LONG: {
+					return static_cast<UnsignedLongWrapper*>(wrapped)->val == static_cast<UnsignedLongWrapper*>(other->wrapped)->val;
+				}
+				case TYPE_BOOL: {
+					return static_cast<BoolWrapper*>(wrapped)->val == static_cast<BoolWrapper*>(other->wrapped)->val;
+				}
+				case TYPE_STRING: {
+					return static_cast<StringWrapper*>(wrapped)->val == static_cast<StringWrapper*>(other->wrapped)->val;
+				}
+				case TYPE_INSTANCE: {
+					shared_ptr<Instance::Instance> inst = *static_cast<shared_ptr<Instance::Instance>*>(wrapped);
+					shared_ptr<Instance::Instance> oinst = *static_cast<shared_ptr<Instance::Instance>*>(other->wrapped);
+					return oinst == inst;
+				}
+				case TYPE_TYPE: {
+					shared_ptr<Type> tp = *static_cast<shared_ptr<Type>*>(wrapped);
+					shared_ptr<Type> otp = *static_cast<shared_ptr<Type>*>(other->wrapped);
+
+					if(tp){
+						return tp->equals(otp);
+					}else{
+						return tp == otp;
+					}
+				}
+				case TYPE_LUA_OBJECT: {
+					return false;//This shouldn't really be seeing any equality tests..
+				}
+				case TYPE_NULL:
+				case TYPE_UNKNOWN: {
+					return true;
+				}
 			}
 			return false;
 		}
 
 		void VarWrapper::wrap_lua(lua_State* L){
 			switch(type){
-			case TYPE_INT: {
-				lua_pushinteger(L, static_cast<IntWrapper*>(wrapped)->val);
-				break;
-			}
-			case TYPE_DOUBLE: {
-				lua_pushnumber(L, static_cast<DoubleWrapper*>(wrapped)->val);
-				break;
-			}
-			case TYPE_FLOAT: {
-				lua_pushnumber(L, static_cast<FloatWrapper*>(wrapped)->val);
-				break;
-			}
-			case TYPE_LONG: {
-				lua_pushnumber(L, static_cast<LongWrapper*>(wrapped)->val);
-				break;
-			}
-			case TYPE_UNSIGNED_LONG: {
-				lua_pushnumber(L, static_cast<UnsignedLongWrapper*>(wrapped)->val);
-				break;
-			}
-			case TYPE_BOOL: {
-				lua_pushboolean(L, static_cast<BoolWrapper*>(wrapped)->val);
-				break;
-			}
-			case TYPE_STRING: {
-				lua_pushstring(L, static_cast<StringWrapper*>(wrapped)->val.c_str());
-				break;
-			}
-			case TYPE_INSTANCE: {
-				shared_ptr<Instance::Instance> inst = *static_cast<shared_ptr<Instance::Instance>*>(wrapped);
-				inst->wrap_lua(L);
-				break;
-			}
-			case TYPE_TYPE: {
-				shared_ptr<Type> tp = *static_cast<shared_ptr<Type>*>(wrapped);
-				tp->wrap_lua(L);
-				break;
-			}
-			case TYPE_LUA_OBJECT: {
-				LuaReferencedWrapper* lrw = static_cast<LuaReferencedWrapper*>(wrapped);
-				lua_rawgeti(L, LUA_REGISTRYINDEX, lrw->ref);
-				break;
-			}
-			case TYPE_NULL:
-			case TYPE_UNKNOWN: {
-				lua_pushnil(L);
-				break;
-			}
+				case TYPE_INT: {
+					lua_pushinteger(L, static_cast<IntWrapper*>(wrapped)->val);
+					break;
+				}
+				case TYPE_DOUBLE: {
+					lua_pushnumber(L, static_cast<DoubleWrapper*>(wrapped)->val);
+					break;
+				}
+				case TYPE_FLOAT: {
+					lua_pushnumber(L, static_cast<FloatWrapper*>(wrapped)->val);
+					break;
+				}
+				case TYPE_LONG: {
+					lua_pushnumber(L, static_cast<LongWrapper*>(wrapped)->val);
+					break;
+				}
+				case TYPE_UNSIGNED_LONG: {
+					lua_pushnumber(L, static_cast<UnsignedLongWrapper*>(wrapped)->val);
+					break;
+				}
+				case TYPE_BOOL: {
+					lua_pushboolean(L, static_cast<BoolWrapper*>(wrapped)->val);
+					break;
+				}
+				case TYPE_STRING: {
+					lua_pushstring(L, static_cast<StringWrapper*>(wrapped)->val.c_str());
+					break;
+				}
+				case TYPE_INSTANCE: {
+					shared_ptr<Instance::Instance> inst = *static_cast<shared_ptr<Instance::Instance>*>(wrapped);
+					inst->wrap_lua(L);
+					break;
+				}
+				case TYPE_TYPE: {
+					shared_ptr<Type> tp = *static_cast<shared_ptr<Type>*>(wrapped);
+					tp->wrap_lua(L);
+					break;
+				}
+				case TYPE_LUA_OBJECT: {
+					LuaReferencedWrapper* lrw = static_cast<LuaReferencedWrapper*>(wrapped);
+					lua_rawgeti(L, LUA_REGISTRYINDEX, lrw->ref);
+					break;
+				}
+				case TYPE_NULL:
+				case TYPE_UNKNOWN: {
+					lua_pushnil(L);
+					break;
+				}
 			}
 		}
 	}

@@ -95,23 +95,23 @@ namespace OB{
 					return_path = 0;
 
 					switch(GetLastError()){
-					case ERROR_FILE_NOT_FOUND: {
-						errno = ENOENT;
-						break;
-					}
-					case ERROR_PATH_NOT_FOUND:
-					case ERROR_INVALID_DRIVE: {
-						errno = ENOTDIR;
-						break;
-					}
-					case ERROR_ACCESS_DENIED: {
-						errno = EACCES;
-						break;
-					}
-					default: {
-						errno = EIO;
-						break;
-					}
+						case ERROR_FILE_NOT_FOUND: {
+							errno = ENOENT;
+							break;
+						}
+						case ERROR_PATH_NOT_FOUND:
+						case ERROR_INVALID_DRIVE: {
+							errno = ENOTDIR;
+							break;
+						}
+						case ERROR_ACCESS_DENIED: {
+							errno = EACCES;
+							break;
+						}
+						default: {
+							errno = EIO;
+							break;
+						}
 					}
 				}
 

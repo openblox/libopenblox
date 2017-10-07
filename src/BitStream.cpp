@@ -395,91 +395,91 @@ namespace OB{
 		size_t var_type = var->type;
 		if(var){
 			switch(var_type){
-			case Type::TYPE_INT: {
-				writeSizeT(var_type);
-				writeInt(static_cast<Type::IntWrapper*>(var->wrapped)->val);
-				break;
-			}
-			case Type::TYPE_DOUBLE: {
-				writeSizeT(var_type);
-				writeDouble(static_cast<Type::DoubleWrapper*>(var->wrapped)->val);
-				break;
-			}
-			case Type::TYPE_FLOAT: {
-				writeSizeT(var_type);
-				writeFloat(static_cast<Type::FloatWrapper*>(var->wrapped)->val);
-				break;
-			}
-			case Type::TYPE_LONG: {
-				writeSizeT(var_type);
-				writeLong(static_cast<Type::LongWrapper*>(var->wrapped)->val);
-				break;
-			}
-			case Type::TYPE_UNSIGNED_LONG: {
-				writeSizeT(var_type);
-				writeULong(static_cast<Type::UnsignedLongWrapper*>(var->wrapped)->val);
-				break;
-			}
-			case Type::TYPE_BOOL: {
-				writeSizeT(var_type);
-				writeBool(static_cast<Type::BoolWrapper*>(var->wrapped)->val);
-				break;
-			}
-			case Type::TYPE_STRING: {
-				writeSizeT(var_type);
-				writeString(static_cast<Type::StringWrapper*>(var->wrapped)->val);
-				break;
-			}
-			case Type::TYPE_INSTANCE: {
-				writeSizeT(var_type);
-
-				shared_ptr<Instance::Instance> inst = *static_cast<shared_ptr<Instance::Instance>*>(var->wrapped);
-				ob_uint64 netId = inst->GetNetworkID();
-				writeUInt64(netId);
-
-				break;
-			}
-			case Type::TYPE_TYPE: {
-				writeSizeT(var_type);
-
-				shared_ptr<Type::Type> typ = *static_cast<shared_ptr<Type::Type>*>(var->wrapped);
-				if(typ){
-					std::string typName = typ->getClassName();
-
-					if(typName == "UDim2"){
-						writeSizeT(OB_NET_TYPE_UDIM2);
-						writeUDim2(dynamic_pointer_cast<Type::UDim2>(typ));
-					}else if(typName == "UDim"){
-						writeSizeT(OB_NET_TYPE_UDIM);
-						writeUDim(dynamic_pointer_cast<Type::UDim>(typ));
-					}else if(typName == "Color3"){
-						writeSizeT(OB_NET_TYPE_COLOR3);
-						writeColor3(dynamic_pointer_cast<Type::Color3>(typ));
-					}else if(typName == "Vector3"){
-						writeSizeT(OB_NET_TYPE_VECTOR3);
-						writeVector3(dynamic_pointer_cast<Type::Vector3>(typ));
-					}else if(typName == "Vector2"){
-						writeSizeT(OB_NET_TYPE_VECTOR2);
-						writeVector2(dynamic_pointer_cast<Type::Vector2>(typ));
-					}else if(typName == "LuaEnum"){
-						writeSizeT(OB_NET_TYPE_LUAENUM);
-						writeLuaEnum(dynamic_pointer_cast<Type::LuaEnum>(typ));
-					}else if(typName == "LuaEnumItem"){
-						writeSizeT(OB_NET_TYPE_LUAENUMITEM);
-						writeLuaEnumItem(dynamic_pointer_cast<Type::LuaEnumItem>(typ));
-					}
-				}else{
-					writeSizeT(1);
+				case Type::TYPE_INT: {
+					writeSizeT(var_type);
+					writeInt(static_cast<Type::IntWrapper*>(var->wrapped)->val);
+					break;
 				}
+				case Type::TYPE_DOUBLE: {
+					writeSizeT(var_type);
+					writeDouble(static_cast<Type::DoubleWrapper*>(var->wrapped)->val);
+					break;
+				}
+				case Type::TYPE_FLOAT: {
+					writeSizeT(var_type);
+					writeFloat(static_cast<Type::FloatWrapper*>(var->wrapped)->val);
+					break;
+				}
+				case Type::TYPE_LONG: {
+					writeSizeT(var_type);
+					writeLong(static_cast<Type::LongWrapper*>(var->wrapped)->val);
+					break;
+				}
+				case Type::TYPE_UNSIGNED_LONG: {
+					writeSizeT(var_type);
+					writeULong(static_cast<Type::UnsignedLongWrapper*>(var->wrapped)->val);
+					break;
+				}
+				case Type::TYPE_BOOL: {
+					writeSizeT(var_type);
+					writeBool(static_cast<Type::BoolWrapper*>(var->wrapped)->val);
+					break;
+				}
+				case Type::TYPE_STRING: {
+					writeSizeT(var_type);
+					writeString(static_cast<Type::StringWrapper*>(var->wrapped)->val);
+					break;
+				}
+				case Type::TYPE_INSTANCE: {
+					writeSizeT(var_type);
 
-				break;
-			}
-			case Type::TYPE_LUA_OBJECT:
-			case Type::TYPE_NULL:
-			case Type::TYPE_UNKNOWN: {
-				writeSizeT(Type::TYPE_NULL);
-				break;
-			}
+					shared_ptr<Instance::Instance> inst = *static_cast<shared_ptr<Instance::Instance>*>(var->wrapped);
+					ob_uint64 netId = inst->GetNetworkID();
+					writeUInt64(netId);
+
+					break;
+				}
+				case Type::TYPE_TYPE: {
+					writeSizeT(var_type);
+
+					shared_ptr<Type::Type> typ = *static_cast<shared_ptr<Type::Type>*>(var->wrapped);
+					if(typ){
+						std::string typName = typ->getClassName();
+
+						if(typName == "UDim2"){
+							writeSizeT(OB_NET_TYPE_UDIM2);
+							writeUDim2(dynamic_pointer_cast<Type::UDim2>(typ));
+						}else if(typName == "UDim"){
+							writeSizeT(OB_NET_TYPE_UDIM);
+							writeUDim(dynamic_pointer_cast<Type::UDim>(typ));
+						}else if(typName == "Color3"){
+							writeSizeT(OB_NET_TYPE_COLOR3);
+							writeColor3(dynamic_pointer_cast<Type::Color3>(typ));
+						}else if(typName == "Vector3"){
+							writeSizeT(OB_NET_TYPE_VECTOR3);
+							writeVector3(dynamic_pointer_cast<Type::Vector3>(typ));
+						}else if(typName == "Vector2"){
+							writeSizeT(OB_NET_TYPE_VECTOR2);
+							writeVector2(dynamic_pointer_cast<Type::Vector2>(typ));
+						}else if(typName == "LuaEnum"){
+							writeSizeT(OB_NET_TYPE_LUAENUM);
+							writeLuaEnum(dynamic_pointer_cast<Type::LuaEnum>(typ));
+						}else if(typName == "LuaEnumItem"){
+							writeSizeT(OB_NET_TYPE_LUAENUMITEM);
+							writeLuaEnumItem(dynamic_pointer_cast<Type::LuaEnumItem>(typ));
+						}
+					}else{
+						writeSizeT(1);
+					}
+
+					break;
+				}
+				case Type::TYPE_LUA_OBJECT:
+				case Type::TYPE_NULL:
+				case Type::TYPE_UNKNOWN: {
+					writeSizeT(Type::TYPE_NULL);
+					break;
+				}
 			}
 		}else{
 			writeSizeT(Type::TYPE_NULL);
@@ -490,68 +490,68 @@ namespace OB{
 		size_t var_type = readSizeT();
 
 		switch(var_type){
-		case Type::TYPE_INT: {
-			return make_shared<Type::VarWrapper>(readInt());
-		}
-		case Type::TYPE_DOUBLE: {
-			return make_shared<Type::VarWrapper>(readDouble());
-		}
-		case Type::TYPE_FLOAT: {
-			return make_shared<Type::VarWrapper>(readFloat());
-		}
-		case Type::TYPE_LONG: {
-			return make_shared<Type::VarWrapper>(readLong());
-		}
-		case Type::TYPE_UNSIGNED_LONG: {
-			return make_shared<Type::VarWrapper>(readULong());
-		}
-		case Type::TYPE_BOOL: {
-			return make_shared<Type::VarWrapper>(readBool());
-		}
-		case Type::TYPE_STRING: {
-			return make_shared<Type::VarWrapper>(readString());
-		}
-		case Type::TYPE_INSTANCE: {
-			ob_uint64 netId = readUInt64();
+			case Type::TYPE_INT: {
+				return make_shared<Type::VarWrapper>(readInt());
+			}
+			case Type::TYPE_DOUBLE: {
+				return make_shared<Type::VarWrapper>(readDouble());
+			}
+			case Type::TYPE_FLOAT: {
+				return make_shared<Type::VarWrapper>(readFloat());
+			}
+			case Type::TYPE_LONG: {
+				return make_shared<Type::VarWrapper>(readLong());
+			}
+			case Type::TYPE_UNSIGNED_LONG: {
+				return make_shared<Type::VarWrapper>(readULong());
+			}
+			case Type::TYPE_BOOL: {
+				return make_shared<Type::VarWrapper>(readBool());
+			}
+			case Type::TYPE_STRING: {
+				return make_shared<Type::VarWrapper>(readString());
+			}
+			case Type::TYPE_INSTANCE: {
+				ob_uint64 netId = readUInt64();
 
-			shared_ptr<Instance::DataModel> dm = eng->getDataModel();
-			if(dm){
-				weak_ptr<Instance::Instance> weakInst = dm->lookupInstance(netId);
-				if(!weakInst.expired()){
-					return make_shared<Type::VarWrapper>(weakInst.lock());
+				shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+				if(dm){
+					weak_ptr<Instance::Instance> weakInst = dm->lookupInstance(netId);
+					if(!weakInst.expired()){
+						return make_shared<Type::VarWrapper>(weakInst.lock());
+					}
 				}
-			}
 
-			return make_shared<Type::VarWrapper>(shared_ptr<Instance::Instance>(NULL));
-		}
-		case Type::TYPE_TYPE: {
-			size_t typeType = readSizeT();
+				return make_shared<Type::VarWrapper>(shared_ptr<Instance::Instance>(NULL));
+			}
+			case Type::TYPE_TYPE: {
+				size_t typeType = readSizeT();
 
-			switch(typeType){
-			case OB_NET_TYPE_COLOR3: {
-				return make_shared<Type::VarWrapper>(readColor3());
-			}
-			case OB_NET_TYPE_VECTOR3: {
-				return make_shared<Type::VarWrapper>(readVector3());
-			}
-			case OB_NET_TYPE_VECTOR2: {
-				return make_shared<Type::VarWrapper>(readVector3());
-			}
-			case OB_NET_TYPE_LUAENUM: {
-				return make_shared<Type::VarWrapper>(readLuaEnum());
-			}
-			case OB_NET_TYPE_LUAENUMITEM: {
-				return make_shared<Type::VarWrapper>(readLuaEnumItem());
-			}
-			}
+				switch(typeType){
+					case OB_NET_TYPE_COLOR3: {
+						return make_shared<Type::VarWrapper>(readColor3());
+					}
+					case OB_NET_TYPE_VECTOR3: {
+						return make_shared<Type::VarWrapper>(readVector3());
+					}
+					case OB_NET_TYPE_VECTOR2: {
+						return make_shared<Type::VarWrapper>(readVector3());
+					}
+					case OB_NET_TYPE_LUAENUM: {
+						return make_shared<Type::VarWrapper>(readLuaEnum());
+					}
+					case OB_NET_TYPE_LUAENUMITEM: {
+						return make_shared<Type::VarWrapper>(readLuaEnumItem());
+					}
+				}
 
-			return make_shared<Type::VarWrapper>();
-		}
-		case Type::TYPE_LUA_OBJECT:
-		case Type::TYPE_NULL:
-		case Type::TYPE_UNKNOWN: {
-			return make_shared<Type::VarWrapper>();
-		}
+				return make_shared<Type::VarWrapper>();
+			}
+			case Type::TYPE_LUA_OBJECT:
+			case Type::TYPE_NULL:
+			case Type::TYPE_UNKNOWN: {
+				return make_shared<Type::VarWrapper>();
+			}
 		}
 		return make_shared<Type::VarWrapper>();
 	}

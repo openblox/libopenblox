@@ -104,19 +104,19 @@ namespace OB{
 				int retCode = t.task_fnc(t.metad, t.start);
 
 				switch(retCode){
-				case 1: {
-					tmpPopped.push_back(t);
-					break;
-				}
-				case 2: {
-					stopProcTasks = true;
-					break;
-				}
-				case 3: {
-					tmpPopped.push_back(t);
-					stopProcTasks = true;
-					break;
-				}
+					case 1: {
+						tmpPopped.push_back(t);
+						break;
+					}
+					case 2: {
+						stopProcTasks = true;
+						break;
+					}
+					case 3: {
+						tmpPopped.push_back(t);
+						stopProcTasks = true;
+						break;
+					}
 				}
 			}
 

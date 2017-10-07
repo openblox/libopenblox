@@ -28,7 +28,7 @@ namespace OB{
 
 		NetworkReplicator::NetworkReplicator(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
-			
+
 			Archivable = false;
 
 			enet_peer = NULL;
@@ -40,11 +40,11 @@ namespace OB{
 			enet_peer = peer;
 		}
 
-	    NetworkReplicator::~NetworkReplicator(){}
+		NetworkReplicator::~NetworkReplicator(){}
 
 		void NetworkReplicator::_initReplicator(){
 			shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
-			
+
 			void* udata = malloc(sizeof(shared_ptr<Instance>));
 			new(udata) shared_ptr<Instance>(sharedThis);
 
@@ -63,92 +63,92 @@ namespace OB{
 		}
 
 		int NetworkReplicator::getHighestRoundTripTimeVariance(){
-		    if(enet_peer){
-			    return enet_peer->highestRoundTripTimeVariance;
+			if(enet_peer){
+				return enet_peer->highestRoundTripTimeVariance;
 			}
 			return -1;
 		}
-		
+
 		int NetworkReplicator::getLastReceiveTime(){
 			if(enet_peer){
-			    return enet_peer->lastReceiveTime;
+				return enet_peer->lastReceiveTime;
 			}
 			return -1;
 		}
-		
+
 		int NetworkReplicator::getLastRoundTripTime(){
 			if(enet_peer){
-			    return enet_peer->lastRoundTripTime;
+				return enet_peer->lastRoundTripTime;
 			}
 			return -1;
 		}
-		
+
 		int NetworkReplicator::getLastRoundTripTimeVariance(){
 			if(enet_peer){
-			    return enet_peer->lastRoundTripTimeVariance;
+				return enet_peer->lastRoundTripTimeVariance;
 			}
 			return -1;
 		}
-		
+
 		int NetworkReplicator::getLastSendTime(){
 			if(enet_peer){
-			    return enet_peer->lastSendTime;
+				return enet_peer->lastSendTime;
 			}
 			return -1;
 		}
-		
+
 		int NetworkReplicator::getLowestRoundTripTime(){
 			if(enet_peer){
-			    return enet_peer->lowestRoundTripTime;
+				return enet_peer->lowestRoundTripTime;
 			}
 			return -1;
 		}
-		
+
 		int NetworkReplicator::getMTU(){
 			if(enet_peer){
-			    return enet_peer->mtu;
+				return enet_peer->mtu;
 			}
 			return -1;
 		}
-		
+
 		int NetworkReplicator::getPacketLoss(){
 			if(enet_peer){
-			    return enet_peer->packetLoss;
+				return enet_peer->packetLoss;
 			}
 			return -1;
 		}
-		
+
 		int NetworkReplicator::getPacketLossVariance(){
 			if(enet_peer){
-			    return enet_peer->packetLossVariance;
+				return enet_peer->packetLossVariance;
 			}
 			return -1;
 		}
-		
+
 		int NetworkReplicator::getPacketsLost(){
 			if(enet_peer){
-			    return enet_peer->packetsLost;
+				return enet_peer->packetsLost;
 			}
 			return -1;
 		}
-		
+
 		int NetworkReplicator::getPacketsSent(){
 			if(enet_peer){
-			    return enet_peer->packetsSent;
+				return enet_peer->packetsSent;
 			}
 			return -1;
 		}
-		
+
 		int NetworkReplicator::getRoundTripTime(){
 			if(enet_peer){
-			    return enet_peer->roundTripTime;
+				return enet_peer->roundTripTime;
 			}
 			return -1;
 		}
-		
+
 		int NetworkReplicator::getRoundTripTimeVariance(){
 			if(enet_peer){
-			    return enet_peer->packetsLost;
+				return enet_peer->packetsLost;
 			}
 			return -1;
 		}
@@ -177,17 +177,17 @@ namespace OB{
 				if(!pkt){
 					throw new OBException("Failed to create ENet packet.");
 				}
-			    
+
 				enet_peer_send(enet_peer, channel, pkt);
 			}
 		}
 
 		void NetworkReplicator::sendSetPropertyPacket(ob_uint64 netId, std::string prop, shared_ptr<Type::VarWrapper> val){
-		    BitStream bs;
-		    bs.writeSizeT(OB_NET_PKT_SET_PROPERTY);
+			BitStream bs;
+			bs.writeSizeT(OB_NET_PKT_SET_PROPERTY);
 			bs.writeUInt64(netId);
 			bs.writeString(prop);
-		    bs.writeVar(val);
+			bs.writeVar(val);
 
 			Send(OB_NET_CHAN_REPLICATION, bs);
 		}

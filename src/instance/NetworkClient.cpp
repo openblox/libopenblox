@@ -118,132 +118,132 @@ namespace OB{
 			size_t pkt_type = bs.readSizeT();
 
 			switch(pkt_type){
-			case OB_NET_PKT_CREATE_INSTANCE: {
-				ob_uint64 netId = bs.readUInt64();
-				std::string className = bs.readString();
+				case OB_NET_PKT_CREATE_INSTANCE: {
+					ob_uint64 netId = bs.readUInt64();
+					std::string className = bs.readString();
 
-				shared_ptr<DataModel> dm = eng->getDataModel();
-				if(dm){
-					weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
-					if(lookedUpInst.expired()){
-						shared_ptr<Instance> createdInst = ClassFactory::createReplicate(className, eng);
-						if(createdInst){
-							createdInst->setNetworkID(netId);
+					shared_ptr<DataModel> dm = eng->getDataModel();
+					if(dm){
+						weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
+						if(lookedUpInst.expired()){
+							shared_ptr<Instance> createdInst = ClassFactory::createReplicate(className, eng);
+							if(createdInst){
+								createdInst->setNetworkID(netId);
 
-							HeldInstance hi;
-							// We hold instances for up to 10 seconds
-							hi.holdEnd = currentTimeMillis() + (10 * 1000);
-							hi.inst = createdInst;
+								HeldInstance hi;
+								// We hold instances for up to 10 seconds
+								hi.holdEnd = currentTimeMillis() + (10 * 1000);
+								hi.inst = createdInst;
 
-							heldInstances.push(hi);
+								heldInstances.push(hi);
+							}
 						}
 					}
+					break;
 				}
-				break;
-			}
-			case OB_NET_PKT_SET_PARENT: {
-				ob_uint64 netId = bs.readUInt64();
-				ob_uint64 parentNetId = bs.readUInt64();
+				case OB_NET_PKT_SET_PARENT: {
+					ob_uint64 netId = bs.readUInt64();
+					ob_uint64 parentNetId = bs.readUInt64();
 
-				shared_ptr<DataModel> dm = eng->getDataModel();
-				if(dm){
-					weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
+					shared_ptr<DataModel> dm = eng->getDataModel();
+					if(dm){
+						weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
 
-					if(lookedUpInst.expired()){
-						return;
-					}
-
-					if(shared_ptr<Instance> kid = lookedUpInst.lock()){
-						bool wasParentLocked = false;
-						if(kid->ParentLocked){
-							wasParentLocked = true;
-							kid->ParentLocked = false;
+						if(lookedUpInst.expired()){
+							return;
 						}
 
-						if(parentNetId > OB_NETID_NULL){
-							weak_ptr<Instance> lookedUpParent = dm->lookupInstance(parentNetId);
-							if(lookedUpParent.expired()){
-								return;
+						if(shared_ptr<Instance> kid = lookedUpInst.lock()){
+							bool wasParentLocked = false;
+							if(kid->ParentLocked){
+								wasParentLocked = true;
+								kid->ParentLocked = false;
 							}
 
-							if(shared_ptr<Instance> par = lookedUpParent.lock()){
-								kid->setParent(par, true);
+							if(parentNetId > OB_NETID_NULL){
+								weak_ptr<Instance> lookedUpParent = dm->lookupInstance(parentNetId);
+								if(lookedUpParent.expired()){
+									return;
+								}
+
+								if(shared_ptr<Instance> par = lookedUpParent.lock()){
+									kid->setParent(par, true);
+								}
+							}else{
+								kid->setParent(NULL, true);
 							}
-						}else{
-							kid->setParent(NULL, true);
-						}
 
-						if(wasParentLocked){
-							kid->ParentLocked = true;
+							if(wasParentLocked){
+								kid->ParentLocked = true;
+							}
 						}
 					}
+					break;
 				}
-				break;
-			}
-			case OB_NET_PKT_SET_PROPERTY: {
-				ob_uint64 netId = bs.readUInt64();
-				std::string prop = bs.readString();
-				shared_ptr<Type::VarWrapper> val = bs.readVar(eng);
+				case OB_NET_PKT_SET_PROPERTY: {
+					ob_uint64 netId = bs.readUInt64();
+					std::string prop = bs.readString();
+					shared_ptr<Type::VarWrapper> val = bs.readVar(eng);
 
-				shared_ptr<DataModel> dm = eng->getDataModel();
-				if(dm){
-					weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
-					if(lookedUpInst.expired()){
-						return;
-					}
+					shared_ptr<DataModel> dm = eng->getDataModel();
+					if(dm){
+						weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
+						if(lookedUpInst.expired()){
+							return;
+						}
 
-					if(shared_ptr<Instance> kid = lookedUpInst.lock()){
-						kid->setProperty(prop, val);
+						if(shared_ptr<Instance> kid = lookedUpInst.lock()){
+							kid->setProperty(prop, val);
+						}
 					}
+					break;
 				}
-				break;
-			}
-			default: {
-				printf("Unknown packet type: %i\n", pkt_type);
-			}
+				default: {
+					printf("Unknown packet type: %i\n", pkt_type);
+				}
 			}
 		}
 
 		void NetworkClient::processEvent(ENetEvent evt){
 			switch(evt.type){
-			case ENET_EVENT_TYPE_CONNECT: {
-				shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
+				case ENET_EVENT_TYPE_CONNECT: {
+					shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
 
-				shared_ptr<ClientReplicator> cliRep = make_shared<ClientReplicator>(evt.peer, eng);
-				cliRep->_initReplicator();
-				cliRep->setParent(sharedThis, false);
-				cliRep->ParentLocked = true;
-				break;
-			}
-			case ENET_EVENT_TYPE_RECEIVE: {
-				ENetPacket* pkt = evt.packet;
-
-				BitStream bs(pkt->data, pkt->dataLength, true);
-
-				try{
-					processPacket(evt, bs);
-				}catch(OBException* ex){
-					printf("Error reading packet: %s\n", ex->getMessage().c_str());
+					shared_ptr<ClientReplicator> cliRep = make_shared<ClientReplicator>(evt.peer, eng);
+					cliRep->_initReplicator();
+					cliRep->setParent(sharedThis, false);
+					cliRep->ParentLocked = true;
+					break;
 				}
+				case ENET_EVENT_TYPE_RECEIVE: {
+					ENetPacket* pkt = evt.packet;
 
-				enet_packet_destroy(pkt);
-				break;
-			}
-			case ENET_EVENT_TYPE_DISCONNECT: {
-				ENetPeer* peer = evt.peer;
-				if(peer->data){
-					shared_ptr<Instance> dataInst = (*static_cast<shared_ptr<Instance>*>(peer->data));
+					BitStream bs(pkt->data, pkt->dataLength, true);
 
-					if(shared_ptr<NetworkReplicator> netRep = dynamic_pointer_cast<NetworkReplicator>(dataInst)){
-						netRep->_dropPeer();
+					try{
+						processPacket(evt, bs);
+					}catch(OBException* ex){
+						printf("Error reading packet: %s\n", ex->getMessage().c_str());
 					}
-				}
 
-				enet_host_destroy(enet_host);
-				enet_host = NULL;
-				server_peer = NULL;
-				break;
-			}
+					enet_packet_destroy(pkt);
+					break;
+				}
+				case ENET_EVENT_TYPE_DISCONNECT: {
+					ENetPeer* peer = evt.peer;
+					if(peer->data){
+						shared_ptr<Instance> dataInst = (*static_cast<shared_ptr<Instance>*>(peer->data));
+
+						if(shared_ptr<NetworkReplicator> netRep = dynamic_pointer_cast<NetworkReplicator>(dataInst)){
+							netRep->_dropPeer();
+						}
+					}
+
+					enet_host_destroy(enet_host);
+					enet_host = NULL;
+					server_peer = NULL;
+					break;
+				}
 			}
 		}
 

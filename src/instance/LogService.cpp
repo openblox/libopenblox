@@ -68,25 +68,25 @@ namespace OB{
 
 			shared_ptr<Type::LuaEnumItem> val;
 			switch(messageType){
-			case Enum::MessageType::MessageOutput: {
-				val = MessageOutput;
-				break;
-			}
-			case Enum::MessageType::MessageInfo: {
-				val = MessageInfo;
-				break;
-			}
-			case Enum::MessageType::MessageWarning: {
-				val = MessageWarning;
-				break;
-			}
-			case Enum::MessageType::MessageError: {
-				val = MessageError;
-				break;
-			}
-			default: {
-				return;
-			}
+				case Enum::MessageType::MessageOutput: {
+					val = MessageOutput;
+					break;
+				}
+				case Enum::MessageType::MessageInfo: {
+					val = MessageInfo;
+					break;
+				}
+				case Enum::MessageType::MessageWarning: {
+					val = MessageWarning;
+					break;
+				}
+				case Enum::MessageType::MessageError: {
+					val = MessageError;
+					break;
+				}
+				default: {
+					return;
+				}
 			}
 
 			if(!val){

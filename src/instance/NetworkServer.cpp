@@ -130,34 +130,34 @@ namespace OB{
 
 		void NetworkServer::processEvent(ENetEvent evt){
 			switch(evt.type){
-			case ENET_EVENT_TYPE_CONNECT: {
-				shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
+				case ENET_EVENT_TYPE_CONNECT: {
+					shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
 
-				shared_ptr<ServerReplicator> servRep = make_shared<ServerReplicator>(evt.peer, eng);
-				servRep->_initReplicator();
-				servRep->setParent(sharedThis, false);
-				servRep->ParentLocked = true;
+					shared_ptr<ServerReplicator> servRep = make_shared<ServerReplicator>(evt.peer, eng);
+					servRep->_initReplicator();
+					servRep->setParent(sharedThis, false);
+					servRep->ParentLocked = true;
 
-				shared_ptr<DataModel> dm = eng->getDataModel();
-				if(dm){
-					dm->replicate(servRep);
-				}
-				break;
-			}
-			case ENET_EVENT_TYPE_RECEIVE: {
-				break;
-			}
-			case ENET_EVENT_TYPE_DISCONNECT: {
-				ENetPeer* peer = evt.peer;
-				if(peer->data){
-					shared_ptr<Instance> dataInst = (*static_cast<shared_ptr<Instance>*>(peer->data));
-
-					if(shared_ptr<NetworkReplicator> netRep = dynamic_pointer_cast<NetworkReplicator>(dataInst)){
-						netRep->_dropPeer();
+					shared_ptr<DataModel> dm = eng->getDataModel();
+					if(dm){
+						dm->replicate(servRep);
 					}
+					break;
 				}
-				break;
-			}
+				case ENET_EVENT_TYPE_RECEIVE: {
+					break;
+				}
+				case ENET_EVENT_TYPE_DISCONNECT: {
+					ENetPeer* peer = evt.peer;
+					if(peer->data){
+						shared_ptr<Instance> dataInst = (*static_cast<shared_ptr<Instance>*>(peer->data));
+
+						if(shared_ptr<NetworkReplicator> netRep = dynamic_pointer_cast<NetworkReplicator>(dataInst)){
+							netRep->_dropPeer();
+						}
+					}
+					break;
+				}
 			}
 		}
 
