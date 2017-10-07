@@ -33,7 +33,7 @@ namespace OB{
 		DEFINE_TYPE(CFrame){
 			registerLuaType(eng, LuaTypeName, TypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
 		}
-		
+
 		CFrame::CFrame(){
 			setIdentity();
 		}
@@ -51,29 +51,29 @@ namespace OB{
 
 		CFrame::CFrame(double x, double y, double z){
 			setIdentity();
-			
-		    m[3][0] = x;
+
+			m[3][0] = x;
 			m[3][1] = y;
 			m[3][2] = z;
 			fB = CFPerfT::Translation;
 		}
 
 		CFrame::CFrame(double x, double y, double z,
-					   double qX, double qY, double qZ, double qW){
+			       double qX, double qY, double qZ, double qW){
 			setIdentity();
-			
-		    m[3][0] = x;
+
+			m[3][0] = x;
 			m[3][1] = y;
 			m[3][2] = z;
 			fB = CFPerfT::Translation;
-			
-		    rotateQ(qX, qY, qZ, qW);
+
+			rotateQ(qX, qY, qZ, qW);
 		}
 
 		CFrame::CFrame(double x, double y, double z,
-					   double R00, double R01, double R02,
-					   double R10, double R11, double R12,
-					   double R20, double R21, double R22){
+			       double R00, double R01, double R02,
+			       double R10, double R11, double R12,
+			       double R20, double R21, double R22){
 			m[0][0] = R00;
 			m[0][1] = R01;
 			m[0][2] = R02;
@@ -90,11 +90,11 @@ namespace OB{
 			m[3][1] = 0;
 			m[3][2] = 0;
 			m[3][3] = 1;
-			
+
 			fB = CFPerfT::Unknown;
 		}
 
-		#if HAVE_IRRLICHT
+#if HAVE_IRRLICHT
 		CFrame::CFrame(irr::core::matrix4 m4p){
 			m[0][0] = m4p(0, 0);
 			m[0][1] = m4p(0, 1);
@@ -112,10 +112,10 @@ namespace OB{
 			m[3][1] = m4p(3, 1);
 			m[3][2] = m4p(3, 2);
 			m[3][3] = m4p(3, 3);
-			
+
 			fB = CFPerfT::Unknown;
 		}
-		#endif
+#endif
 
 		CFrame::CFrame(shared_ptr<CFrame> cf){
 			m[0][0] = cf->m[0][0];
@@ -202,15 +202,15 @@ namespace OB{
 		double CFrame::getX(){
 			return m[3][0];
 		}
-			
+
 		double CFrame::getY(){
 			return m[3][1];
 		}
-		
+
 		double CFrame::getZ(){
 			return m[3][2];
 		}
-		
+
 		shared_ptr<Vector3> CFrame::getPosition(){
 			return make_shared<Vector3>(m[3][0], m[3][1], m[3][2]);
 		}
@@ -310,7 +310,7 @@ namespace OB{
 				mm->m[2][3] = 0;
 				mm->m[3][3] = 1;
 			}
-			
+
 			int flag = fB;
 			multiplyInternal(mm);
 			if(flag != Identity){
@@ -349,7 +349,7 @@ namespace OB{
 			mm->m[1][3] = 0;
 			mm->m[2][3] = 0;
 			mm->m[3][3] = 1;
-			
+
 			int flag = fB;
 			multiplyInternal(mm);
 			if(flag != Identity){
@@ -513,29 +513,29 @@ namespace OB{
 			translate(-pos->getX(), -pos->getY(), -pos->getZ());
 		}
 
-		#if HAVE_IRRLICHT
+#if HAVE_IRRLICHT
 
 		/*
-		irr::core::vector3d<double> Vector3::toIrrlichtVector3d(){
-			return irr::core::vector3d<double>(x, y, z);
-		}*/
-		
-		#endif
+		  irr::core::vector3d<double> Vector3::toIrrlichtVector3d(){
+		  return irr::core::vector3d<double>(x, y, z);
+		  }*/
 
-		#if HAVE_BULLET
+#endif
+
+#if HAVE_BULLET
 		/*
-		btVector3 Vector3::toBulletVector3(){
-			return btVector3(x, y, z);
-		}
+		  btVector3 Vector3::toBulletVector3(){
+		  return btVector3(x, y, z);
+		  }
 		*/
-		#endif
+#endif
 
 		bool CFrame::equals(shared_ptr<Type> other){
 			shared_ptr<CFrame> co = dynamic_pointer_cast<CFrame>(other);
 			if(!co){
 				return false;
 			}
-			
+
 			return
 				(m[0][0] == co->m[0][0]) &&
 				(m[0][1] == co->m[0][1]) &&
@@ -554,23 +554,24 @@ namespace OB{
 				(m[3][2] == co->m[3][2]) &&
 				(m[3][3] == co->m[3][3]);
 		}
+
 		shared_ptr<CFrame> CFrame::add(shared_ptr<Vector3> v){
 			if(!v){
 				return NULL;
 			}
 			shared_ptr<CFrame> sharedThis = dynamic_pointer_cast<CFrame>(shared_from_this());
 			shared_ptr<CFrame> cfC = make_shared<CFrame>(sharedThis);
-		    cfC->translate(v->getX(), v->getY(), v->getZ());
+			cfC->translate(v->getX(), v->getY(), v->getZ());
 			return cfC;
 		}
-	    
+
 		shared_ptr<CFrame> CFrame::sub(shared_ptr<Vector3> v){
 			if(!v){
-			    return NULL;
+				return NULL;
 			}
 			return add(v->neg());
 		}
-		
+
 		shared_ptr<CFrame> CFrame::mul(shared_ptr<CFrame> v){
 			if(!v){
 				return NULL;
@@ -596,7 +597,7 @@ namespace OB{
 				return NULL;
 			}
 		}
-		
+
 		std::string CFrame::toString(){
 			return "CFrame";
 		}
@@ -606,7 +607,7 @@ namespace OB{
 			if(!LuaCFrame){
 				return 0;
 			}
-			
+
 			lua_pushnumber(L, LuaCFrame->getX());
 			return 1;
 		}
@@ -616,7 +617,7 @@ namespace OB{
 			if(!LuaCFrame){
 				return 0;
 			}
-			
+
 			lua_pushnumber(L, LuaCFrame->getY());
 			return 1;
 		}
@@ -626,7 +627,7 @@ namespace OB{
 			if(!LuaCFrame){
 				return 0;
 			}
-			
+
 			lua_pushnumber(L, LuaCFrame->getZ());
 			return 1;
 		}
@@ -636,8 +637,8 @@ namespace OB{
 			if(!LuaCFrame){
 				return 0;
 			}
-			
-		    shared_ptr<Vector3> vec3 = LuaCFrame->getPosition();
+
+			shared_ptr<Vector3> vec3 = LuaCFrame->getPosition();
 			if(vec3){
 				vec3->wrap_lua(L);
 			}else{
@@ -651,21 +652,21 @@ namespace OB{
 			if(!LuaCFrame){
 				return luaL_error(L, COLONERR, "Lerp");
 			}
-			
+
 			shared_ptr<CFrame> cfr = checkCFrame(L, 2);
 			double alpha = luaL_checknumber(L, 3);
-			
+
 			return LuaCFrame->lerp(cfr, alpha)->wrap_lua(L);
 		}
 
 		int CFrame::lua_eq(lua_State* L){
 			shared_ptr<CFrame> LuaCFrame = checkCFrame(L, 1, false);
-			
+
 			if(LuaCFrame){
 				shared_ptr<CFrame> OtherCFrame = checkCFrame(L, 2, false);
 				lua_pushboolean(L, LuaCFrame->equals(OtherCFrame));
 			}
-			
+
 			lua_pushboolean(L, false);
 			return 1;
 		}
@@ -675,12 +676,12 @@ namespace OB{
 			if(!LuaCFrame){
 				return 0;
 			}
-			
-		    shared_ptr<Vector3> OtherVec3 = checkVector3(L, 2, false);
+
+			shared_ptr<Vector3> OtherVec3 = checkVector3(L, 2, false);
 			if(OtherVec3){
 				return LuaCFrame->add(OtherVec3)->wrap_lua(L);
 			}
-			
+
 			return 0;
 		}
 
@@ -689,12 +690,12 @@ namespace OB{
 			if(!LuaCFrame){
 				return 0;
 			}
-			
-		    shared_ptr<Vector3> OtherVec3 = checkVector3(L, 2, false);
+
+			shared_ptr<Vector3> OtherVec3 = checkVector3(L, 2, false);
 			if(OtherVec3){
 				return LuaCFrame->sub(OtherVec3)->wrap_lua(L);
 			}
-			
+
 			return 0;
 		}
 
@@ -703,12 +704,12 @@ namespace OB{
 			if(!LuaCFrame){
 				return 0;
 			}
-			
-		    shared_ptr<CFrame> OtherCFrame = checkCFrame(L, 2, false);
+
+			shared_ptr<CFrame> OtherCFrame = checkCFrame(L, 2, false);
 			if(OtherCFrame){
 				return LuaCFrame->mul(OtherCFrame)->wrap_lua(L);
 			}
-			
+
 			return 0;
 		}
 
@@ -769,7 +770,7 @@ namespace OB{
 					return NULL;
 				}
 			}
-			
+
 			if(lua_isuserdata(L, index)){
 				void* udata = lua_touserdata(L, index);
 				int meta = lua_getmetatable(L, index);

@@ -27,14 +27,14 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    Player::Player(OBEngine* eng) : Instance(eng){
+		Player::Player(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 			netId = OB_NETID_PLAYERS;
 
 			Archivable = false;
 		}
 
-	    Player::~Player(){}
+		Player::~Player(){}
 
 		shared_ptr<Instance> Player::cloneImpl(){
 			return NULL;

@@ -50,7 +50,7 @@ namespace OB{
 		}
 
 		shared_ptr<EventConnection> Event::Connect(void (*fnc)(std::vector<shared_ptr<VarWrapper>>, void*), void* ud){
-		    using namespace std::placeholders;
+			using namespace std::placeholders;
 
 			std::function<void(std::vector<shared_ptr<VarWrapper>>)> nfnc = std::bind(fnc, _1, ud);
 			shared_ptr<EventConnection> evtCon = make_shared<EventConnection>(dynamic_pointer_cast<Event>(std::enable_shared_from_this<Type>::shared_from_this()), nfnc, ud);
@@ -64,7 +64,7 @@ namespace OB{
 		}
 
 		void Event::disconnect(shared_ptr<EventConnection> conn){
-		    if(conns.empty()){
+			if(conns.empty()){
 				return;
 			}
 
@@ -87,38 +87,38 @@ namespace OB{
 			shared_ptr<EventConnection> evtCon;
 			std::vector<shared_ptr<VarWrapper>> args;
 		};
-		
+
 		int evt_do_fire_connection(void* vconn, ob_int64 startTime){
 			struct evt_vconn_t* conn = (struct evt_vconn_t*)vconn;
-			
+
 			conn->evtCon->fire(conn->args);
 
 			delete conn;
 
 			return 0;
 		}
-		
+
 		void Event::Fire(OBEngine* eng, std::vector<shared_ptr<VarWrapper>> argList){
 			if(!conns.empty()){
 				shared_ptr<TaskScheduler> tasks = eng->getTaskScheduler();
-				
-			    for(std::vector<shared_ptr<EventConnection>>::size_type i = 0; i != conns.size(); i++){					
-				    /* We push these tasks onto the TaskScheduler so that
+
+				for(std::vector<shared_ptr<EventConnection>>::size_type i = 0; i != conns.size(); i++){
+					/* We push these tasks onto the TaskScheduler so that
 					   they can call Disconnect without messing up this loop. */
 					struct evt_vconn_t* conn = new struct evt_vconn_t;
 					conn->evtCon = conns[i];
 					conn->args = argList;
-					
+
 					tasks->enqueue(evt_do_fire_connection, conn, 0, false, false);
 				}
 			}
 		}
-		
+
 		void Event::Fire(OBEngine* eng){
 			Fire(eng, std::vector<shared_ptr<VarWrapper>>());
 		}
 
-	    std::string Event::toString(){
+		std::string Event::toString(){
 			return "Event: " + name;
 		}
 
@@ -129,71 +129,71 @@ namespace OB{
 			}
 
 			std::vector<shared_ptr<VarWrapper>> fireArgs;
-				
+
 			int nargs = lua_gettop(L);
 			if(nargs > 1){
 				for(int i = 2; i <= nargs; i++){
 					int ltype = lua_type(L, i);
 
 					switch(ltype){
-						case LUA_TNIL: {
-							fireArgs.push_back(make_shared<VarWrapper>((void*)NULL, TYPE_NULL));
+					case LUA_TNIL: {
+						fireArgs.push_back(make_shared<VarWrapper>((void*)NULL, TYPE_NULL));
+						break;
+					}
+					case LUA_TNUMBER: {
+						fireArgs.push_back(make_shared<VarWrapper>(lua_tonumber(L, i)));
+						break;
+					}
+					case LUA_TBOOLEAN: {
+						fireArgs.push_back(make_shared<VarWrapper>(lua_toboolean(L, i)));
+						break;
+					}
+					case LUA_TSTRING: {
+						const char* tmpStr = lua_tostring(L, i);
+						fireArgs.push_back(make_shared<VarWrapper>(std::string(tmpStr)));
+						break;
+					}
+					case LUA_TUSERDATA: {
+						shared_ptr<Type> tl = checkType(L, i);
+						if(tl){
+							fireArgs.push_back(make_shared<VarWrapper>(tl));
 							break;
 						}
-						case LUA_TNUMBER: {
-							fireArgs.push_back(make_shared<VarWrapper>(lua_tonumber(L, i)));
-							break;
-						}
-						case LUA_TBOOLEAN: {
-							fireArgs.push_back(make_shared<VarWrapper>(lua_toboolean(L, i)));
-							break;
-						}
-						case LUA_TSTRING: {
-							const char* tmpStr = lua_tostring(L, i);
-							fireArgs.push_back(make_shared<VarWrapper>(std::string(tmpStr)));
-							break;
-						}
-						case LUA_TUSERDATA: {
-							shared_ptr<Type> tl = checkType(L, i);
-							if(tl){
-								fireArgs.push_back(make_shared<VarWrapper>(tl));
-								break;
-							}
 
-							shared_ptr<Instance::Instance> ti = Instance::Instance::checkInstance(L, i);
-							if(ti){
-								fireArgs.push_back(make_shared<VarWrapper>(ti));
-								break;
-							}
-						}
-						case LUA_TTABLE:
-						case LUA_TFUNCTION:
-						case LUA_TTHREAD:
-						case LUA_TLIGHTUSERDATA: {
-							lua_pushvalue(L, i);
-							int ref = luaL_ref(L, LUA_REGISTRYINDEX);
-							fireArgs.push_back(make_shared<VarWrapper>(L, ref));
+						shared_ptr<Instance::Instance> ti = Instance::Instance::checkInstance(L, i);
+						if(ti){
+							fireArgs.push_back(make_shared<VarWrapper>(ti));
 							break;
 						}
 					}
+					case LUA_TTABLE:
+					case LUA_TFUNCTION:
+					case LUA_TTHREAD:
+					case LUA_TLIGHTUSERDATA: {
+						lua_pushvalue(L, i);
+						int ref = luaL_ref(L, LUA_REGISTRYINDEX);
+						fireArgs.push_back(make_shared<VarWrapper>(L, ref));
+						break;
+					}
+					}
 				}
 			}
-			    
+
 			evt->Fire(Lua::getEngine(L), fireArgs);
 			return 0;
 		}
 
 		struct evt_lua_connection_ud_t{
-		    int fncRef;
+			int fncRef;
 			lua_State* thread;
 			bool blockedLogService;
 		};
-		
+
 		void evt_lua_connection_fnc(std::vector<shared_ptr<VarWrapper>> args, void* ud){
-		    struct evt_lua_connection_ud_t* eud = (struct evt_lua_connection_ud_t*)ud;
+			struct evt_lua_connection_ud_t* eud = (struct evt_lua_connection_ud_t*)ud;
 
 			lua_State* L = Lua::initCoroutine(eud->thread);
-			
+
 			lua_rawgeti(L, LUA_REGISTRYINDEX, eud->fncRef);
 
 			for(std::vector<shared_ptr<VarWrapper>>::size_type i = 0; i != args.size(); i++){
@@ -214,13 +214,13 @@ namespace OB{
 					}
 				}
 			}
-			
+
 			int ret = lua_resume(L, NULL, args.size());
 
 			if(ls){
 				ls->unblock();
 			}
-			
+
 			if(ret != LUA_OK && ret != LUA_YIELD){
 				std::string lerr = Lua::handle_errors(L);
 				std::cerr << lerr << std::endl;
@@ -232,7 +232,7 @@ namespace OB{
 				Lua::close_state(L);
 			}
 		}
-		
+
 		int Event::lua_connect(lua_State* L){
 			shared_ptr<Event> evt = checkEvent(L, 1, false);
 			if(!evt){
@@ -242,7 +242,7 @@ namespace OB{
 			luaL_checktype(L, 2, LUA_TFUNCTION);
 			lua_pushvalue(L, 2);
 
-			//Pop the function into the Lua registry so it won't be GC'd
+			// Pop the function into the Lua registry so it won't be GC'd
 			int r = luaL_ref(L, LUA_REGISTRYINDEX);
 
 			struct evt_lua_connection_ud_t* eud = new struct evt_lua_connection_ud_t;
@@ -255,13 +255,13 @@ namespace OB{
 			shared_ptr<EventConnection> evtCon = evt->Connect(evt_lua_connection_fnc, eud);
 			return evtCon->wrap_lua(L);
 		}
-		
+
 		int Event::lua_wait(lua_State* L){
 			shared_ptr<Event> evt = checkEvent(L, 1, false);
 			if(!evt){
 				return luaL_error(L, COLONERR, "Wait");
 			}
-			//TODO:
+			// TODO:
 			return 0;
 		}
 
@@ -275,13 +275,13 @@ namespace OB{
 			luaL_setfuncs(L, methods, 0);
 		}
 
-	    shared_ptr<Event> checkEvent(lua_State* L, int index, bool errIfNot, bool allowNil){
+		shared_ptr<Event> checkEvent(lua_State* L, int index, bool errIfNot, bool allowNil){
 			if(allowNil){
 				if(lua_isnoneornil(L, index)){
 					return NULL;
 				}
 			}
-			
+
 			if(lua_isuserdata(L, index)){
 				void* udata = lua_touserdata(L, index);
 				int meta = lua_getmetatable(L, index);
@@ -294,7 +294,7 @@ namespace OB{
 					lua_pop(L, 1);
 				}
 			}
-			
+
 			if(errIfNot){
 				luaO_typeerror(L, index, "Event");
 			}

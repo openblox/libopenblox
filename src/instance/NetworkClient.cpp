@@ -32,7 +32,7 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    NetworkClient::NetworkClient(OBEngine* eng) : NetworkPeer(eng){
+		NetworkClient::NetworkClient(OBEngine* eng) : NetworkPeer(eng){
 			Name = ClassName;
 			netId = OB_NETID_NOT_REPLICATED;
 
@@ -41,7 +41,7 @@ namespace OB{
 			server_peer = NULL;
 		}
 
-	    NetworkClient::~NetworkClient(){}
+		NetworkClient::~NetworkClient(){}
 
 		shared_ptr<Instance> NetworkClient::cloneImpl(){
 			return NULL;
@@ -50,14 +50,14 @@ namespace OB{
 		void NetworkClient::tick(){
 			if(enet_host){
 				ENetEvent evt;
-			    while(enet_host && enet_host_service(enet_host, &evt, 10) > 0){
+				while(enet_host && enet_host_service(enet_host, &evt, 10) > 0){
 					processEvent(evt);
 				}
 			}
 
 			if(!heldInstances.empty()){
 				ob_int64 curTime = currentTimeMillis();
-				
+
 				while(!heldInstances.empty()){
 					HeldInstance hi = heldInstances.front();
 					if(hi.holdEnd < curTime){
@@ -68,7 +68,7 @@ namespace OB{
 					}
 				}
 			}
-			
+
 			tickChildren();
 		}
 
@@ -87,7 +87,7 @@ namespace OB{
 				enet_address_set_host(&servAddr, server.c_str());
 				servAddr.port = serverPort;
 
-			    server_peer = enet_host_connect(enet_host, &servAddr, OB_NET_CHANNELS, 0);
+				server_peer = enet_host_connect(enet_host, &servAddr, OB_NET_CHANNELS, 0);
 				if(!server_peer){
 					enet_host_destroy(enet_host);
 					enet_host = NULL;
@@ -105,8 +105,8 @@ namespace OB{
 					processEvent(evt);
 				}
 
-				
-			    server_peer = NULL;
+
+				server_peer = NULL;
 				if(enet_host){
 					enet_host_destroy(enet_host);
 					enet_host = NULL;
@@ -118,151 +118,151 @@ namespace OB{
 			size_t pkt_type = bs.readSizeT();
 
 			switch(pkt_type){
-				case OB_NET_PKT_CREATE_INSTANCE: {
-					ob_uint64 netId = bs.readUInt64();
-					std::string className = bs.readString();
+			case OB_NET_PKT_CREATE_INSTANCE: {
+				ob_uint64 netId = bs.readUInt64();
+				std::string className = bs.readString();
 
-					shared_ptr<DataModel> dm = eng->getDataModel();
-					if(dm){
-						weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
-						if(lookedUpInst.expired()){
-							shared_ptr<Instance> createdInst = ClassFactory::createReplicate(className, eng);
-							if(createdInst){
-								createdInst->setNetworkID(netId);
+				shared_ptr<DataModel> dm = eng->getDataModel();
+				if(dm){
+					weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
+					if(lookedUpInst.expired()){
+						shared_ptr<Instance> createdInst = ClassFactory::createReplicate(className, eng);
+						if(createdInst){
+							createdInst->setNetworkID(netId);
 
-								HeldInstance hi;
-								// We hold instances for up to 10 seconds
-								hi.holdEnd = currentTimeMillis() + (10 * 1000);
-								hi.inst = createdInst;
+							HeldInstance hi;
+							// We hold instances for up to 10 seconds
+							hi.holdEnd = currentTimeMillis() + (10 * 1000);
+							hi.inst = createdInst;
 
-								heldInstances.push(hi);
-							}
+							heldInstances.push(hi);
 						}
 					}
-					break;
 				}
-				case OB_NET_PKT_SET_PARENT: {
-					ob_uint64 netId = bs.readUInt64();
-					ob_uint64 parentNetId = bs.readUInt64();
+				break;
+			}
+			case OB_NET_PKT_SET_PARENT: {
+				ob_uint64 netId = bs.readUInt64();
+				ob_uint64 parentNetId = bs.readUInt64();
 
-					shared_ptr<DataModel> dm = eng->getDataModel();
-					if(dm){
-						weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
+				shared_ptr<DataModel> dm = eng->getDataModel();
+				if(dm){
+					weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
 
-						if(lookedUpInst.expired()){
-							return;
+					if(lookedUpInst.expired()){
+						return;
+					}
+
+					if(shared_ptr<Instance> kid = lookedUpInst.lock()){
+						bool wasParentLocked = false;
+						if(kid->ParentLocked){
+							wasParentLocked = true;
+							kid->ParentLocked = false;
 						}
 
-						if(shared_ptr<Instance> kid = lookedUpInst.lock()){
-							bool wasParentLocked = false;
-							if(kid->ParentLocked){
-								wasParentLocked = true;
-								kid->ParentLocked = false;
+						if(parentNetId > OB_NETID_NULL){
+							weak_ptr<Instance> lookedUpParent = dm->lookupInstance(parentNetId);
+							if(lookedUpParent.expired()){
+								return;
 							}
 
-							if(parentNetId > OB_NETID_NULL){
-								weak_ptr<Instance> lookedUpParent = dm->lookupInstance(parentNetId);
-								if(lookedUpParent.expired()){
-									return;
-								}
-
-								if(shared_ptr<Instance> par = lookedUpParent.lock()){
-									kid->setParent(par, true);
-								}
-							}else{
-								kid->setParent(NULL, true);
+							if(shared_ptr<Instance> par = lookedUpParent.lock()){
+								kid->setParent(par, true);
 							}
+						}else{
+							kid->setParent(NULL, true);
+						}
 
-							if(wasParentLocked){
-								kid->ParentLocked = true;
-							}
+						if(wasParentLocked){
+							kid->ParentLocked = true;
 						}
 					}
-					break;
 				}
-				case OB_NET_PKT_SET_PROPERTY: {
-				    ob_uint64 netId = bs.readUInt64();
-					std::string prop = bs.readString();
-					shared_ptr<Type::VarWrapper> val = bs.readVar(eng);
+				break;
+			}
+			case OB_NET_PKT_SET_PROPERTY: {
+				ob_uint64 netId = bs.readUInt64();
+				std::string prop = bs.readString();
+				shared_ptr<Type::VarWrapper> val = bs.readVar(eng);
 
-					shared_ptr<DataModel> dm = eng->getDataModel();
-					if(dm){
-						weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
-						if(lookedUpInst.expired()){
-							return;
-						}
-							
-						if(shared_ptr<Instance> kid = lookedUpInst.lock()){
-							kid->setProperty(prop, val);
-						}
+				shared_ptr<DataModel> dm = eng->getDataModel();
+				if(dm){
+					weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
+					if(lookedUpInst.expired()){
+						return;
 					}
-					break;
+
+					if(shared_ptr<Instance> kid = lookedUpInst.lock()){
+						kid->setProperty(prop, val);
+					}
 				}
-				default: {
-					printf("Unknown packet type: %i\n", pkt_type);
-				}
+				break;
+			}
+			default: {
+				printf("Unknown packet type: %i\n", pkt_type);
+			}
 			}
 		}
 
 		void NetworkClient::processEvent(ENetEvent evt){
 			switch(evt.type){
-				case ENET_EVENT_TYPE_CONNECT: {
-				    shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
-					
-					shared_ptr<ClientReplicator> cliRep = make_shared<ClientReplicator>(evt.peer, eng);
-					cliRep->_initReplicator();
-					cliRep->setParent(sharedThis, false);
-					cliRep->ParentLocked = true;
-					break;
+			case ENET_EVENT_TYPE_CONNECT: {
+				shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
+
+				shared_ptr<ClientReplicator> cliRep = make_shared<ClientReplicator>(evt.peer, eng);
+				cliRep->_initReplicator();
+				cliRep->setParent(sharedThis, false);
+				cliRep->ParentLocked = true;
+				break;
+			}
+			case ENET_EVENT_TYPE_RECEIVE: {
+				ENetPacket* pkt = evt.packet;
+
+				BitStream bs(pkt->data, pkt->dataLength, true);
+
+				try{
+					processPacket(evt, bs);
+				}catch(OBException* ex){
+					printf("Error reading packet: %s\n", ex->getMessage().c_str());
 				}
-				case ENET_EVENT_TYPE_RECEIVE: {
-					ENetPacket* pkt = evt.packet;
 
-				    BitStream bs(pkt->data, pkt->dataLength, true);
+				enet_packet_destroy(pkt);
+				break;
+			}
+			case ENET_EVENT_TYPE_DISCONNECT: {
+				ENetPeer* peer = evt.peer;
+				if(peer->data){
+					shared_ptr<Instance> dataInst = (*static_cast<shared_ptr<Instance>*>(peer->data));
 
-					try{
-						processPacket(evt, bs);
-					}catch(OBException* ex){
-						printf("Error reading packet: %s\n", ex->getMessage().c_str());
+					if(shared_ptr<NetworkReplicator> netRep = dynamic_pointer_cast<NetworkReplicator>(dataInst)){
+						netRep->_dropPeer();
 					}
-					
-				    enet_packet_destroy(pkt);
-					break;
 				}
-				case ENET_EVENT_TYPE_DISCONNECT: {
-					ENetPeer* peer = evt.peer;
-					if(peer->data){
-						shared_ptr<Instance> dataInst = (*static_cast<shared_ptr<Instance>*>(peer->data));
 
-						if(shared_ptr<NetworkReplicator> netRep = dynamic_pointer_cast<NetworkReplicator>(dataInst)){
-							netRep->_dropPeer();
-						}
-					}
-
-					enet_host_destroy(enet_host);
-					enet_host = NULL;
-					server_peer = NULL;
-					break;
-				}
+				enet_host_destroy(enet_host);
+				enet_host = NULL;
+				server_peer = NULL;
+				break;
+			}
 			}
 		}
 
-		#if HAVE_PUGIXML
-	    std::string NetworkClient::serializedID(){
+#if HAVE_PUGIXML
+		std::string NetworkClient::serializedID(){
 			shared_ptr<OBSerializer> serializer = eng->getSerializer();
 			serializer->SetID(shared_from_this(), "NetworkClient");
-			
+
 			return Instance::serializedID();
 		}
-		#endif
+#endif
 
 		int NetworkClient::lua_Connect(lua_State* L){
-		    shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
 			if(shared_ptr<NetworkClient> nc = dynamic_pointer_cast<NetworkClient>(inst)){
 				std::string servAddr = std::string(luaL_checkstring(L, 2));
 				int servPort = luaL_checkinteger(L, 3);
-				
+
 				try{
 					if(!lua_isnoneornil(L, 4)){
 						nc->Connect(servAddr, servPort, luaL_checkinteger(L, 4));
@@ -272,18 +272,18 @@ namespace OB{
 				}catch(OBException& ex){
 					return luaL_error(L, ex.getMessage().c_str());
 				}
-				
+
 				return 0;
 			}
-			
+
 			return luaL_error(L, COLONERR, "Connect");
 		}
 
 		int NetworkClient::lua_Disconnect(lua_State* L){
-		    shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
 			if(shared_ptr<NetworkClient> nc = dynamic_pointer_cast<NetworkClient>(inst)){
-			    try{
+				try{
 					if(!lua_isnoneornil(L, 2)){
 						nc->Disconnect(luaL_checkinteger(L, 2));
 					}else{
@@ -292,20 +292,20 @@ namespace OB{
 				}catch(OBException& ex){
 					return luaL_error(L, ex.getMessage().c_str());
 				}
-				
+
 				return 0;
 			}
-			
+
 			return luaL_error(L, COLONERR, "Disconnect");
 		}
 
 		void NetworkClient::register_lua_methods(lua_State* L){
-		    Instance::register_lua_methods(L);
+			Instance::register_lua_methods(L);
 
 			luaL_Reg methods[] = {
 				{"Connect", lua_Connect},
 				{"Disconnect", lua_Disconnect},
-			    {NULL, NULL}
+				{NULL, NULL}
 			};
 			luaL_setfuncs(L, methods, 0);
 		}

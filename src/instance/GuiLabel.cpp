@@ -25,10 +25,10 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    GuiLabel::GuiLabel(OBEngine* eng) : GuiObject(eng){
+		GuiLabel::GuiLabel(OBEngine* eng) : GuiObject(eng){
 			Name = ClassName;
 		}
 
-	    GuiLabel::~GuiLabel(){}
+		GuiLabel::~GuiLabel(){}
 	}
 }

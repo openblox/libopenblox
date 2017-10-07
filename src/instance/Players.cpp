@@ -29,25 +29,25 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    Players::Players(OBEngine* eng) : Instance(eng){
+		Players::Players(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 			netId = OB_NETID_PLAYERS;
 
 			Archivable = false;
-		    PlayerAdded = make_shared<Type::Event>("PlayerAdded");
+			PlayerAdded = make_shared<Type::Event>("PlayerAdded");
 			PlayerRemoving = make_shared<Type::Event>("PlayerRemoving");
 		}
 
-	    Players::~Players(){}
+		Players::~Players(){}
 
-		#if HAVE_PUGIXML
-	    std::string Players::serializedID(){
+#if HAVE_PUGIXML
+		std::string Players::serializedID(){
 			shared_ptr<OBSerializer> serializer = eng->getSerializer();
 			serializer->SetID(shared_from_this(), getClassName());
-			
+
 			return Instance::serializedID();
 		}
-		#endif
+#endif
 
 		shared_ptr<Instance> Players::cloneImpl(){
 			return NULL;
@@ -57,9 +57,9 @@ namespace OB{
 			if(kid){
 				if(shared_ptr<Player> kplr = dynamic_pointer_cast<Player>(kid)){
 					std::vector<shared_ptr<Type::VarWrapper>> args = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(kplr)});
-				    PlayerRemoving->Fire(eng, args);
+					PlayerRemoving->Fire(eng, args);
 				}
-				
+
 				Instance::removeChild(kid);
 			}
 		}
@@ -70,7 +70,7 @@ namespace OB{
 
 				if(shared_ptr<Player> kplr = dynamic_pointer_cast<Player>(kid)){
 					std::vector<shared_ptr<Type::VarWrapper>> args = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(kplr)});
-				    PlayerAdded->Fire(eng, args);
+					PlayerAdded->Fire(eng, args);
 				}
 			}
 		}
@@ -85,7 +85,7 @@ namespace OB{
 
 		void Players::register_lua_events(lua_State* L){
 			Instance::register_lua_events(L);
-			
+
 			luaL_Reg events[] = {
 				{"PlayerAdded", WRAP_EVT(Players, PlayerAdded)},
 				{"PlayerRemoving", WRAP_EVT(Players, PlayerRemoving)},

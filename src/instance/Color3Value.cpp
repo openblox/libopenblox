@@ -28,15 +28,15 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    Color3Value::Color3Value(OBEngine* eng) : Instance(eng){
+		Color3Value::Color3Value(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 
 			Value = make_shared<Type::Color3>(0, 0, 0);
 		}
 
-	    Color3Value::~Color3Value(){}
+		Color3Value::~Color3Value(){}
 
-	    shared_ptr<Type::Color3> Color3Value::getValue(){
+		shared_ptr<Type::Color3> Color3Value::getValue(){
 			return Value;
 		}
 
@@ -44,7 +44,7 @@ namespace OB{
 			if(!value){
 				value = make_shared<Type::Color3>();
 			}
-		    if(!Value->equals(value)){
+			if(!Value->equals(value)){
 				Value = value;
 
 				REPLICATE_PROPERTY_CHANGE(Value);
@@ -59,17 +59,17 @@ namespace OB{
 			cv->ParentLocked = ParentLocked;
 
 			cv->Value = Value;
-			
+
 			return cv;
 		}
 
-		#if HAVE_ENET
+#if HAVE_ENET
 		void Color3Value::replicateProperties(shared_ptr<NetworkReplicator> peer){
 			Instance::replicateProperties(peer);
-			
+
 			peer->sendSetPropertyPacket(netId, "Value", make_shared<Type::VarWrapper>(Value));
 		}
-		#endif
+#endif
 
 		std::map<std::string, _PropertyInfo> Color3Value::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
@@ -79,7 +79,7 @@ namespace OB{
 		}
 
 		void Color3Value::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
-		    if(prop == "Value"){
+			if(prop == "Value"){
 				setValue(val->asColor3());
 				return;
 			}
@@ -91,31 +91,31 @@ namespace OB{
 			if(prop == "Value"){
 				return make_shared<Type::VarWrapper>(getValue());
 			}
-			
+
 			return Instance::getProperty(prop);
 		}
 
 		int Color3Value::lua_setValue(lua_State* L){
-		    shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
 			if(inst){
 				shared_ptr<Color3Value> instCV = dynamic_pointer_cast<Color3Value>(inst);
 				if(instCV){
-				    shared_ptr<Type::Color3> col3 = Type::checkColor3(L, 2, true, true);
+					shared_ptr<Type::Color3> col3 = Type::checkColor3(L, 2, true, true);
 					instCV->setValue(col3);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int Color3Value::lua_getValue(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Color3Value> instCV = dynamic_pointer_cast<Color3Value>(inst);
 				if(instCV){
-				    shared_ptr<Type::Color3> col3 = instCV->getValue();
+					shared_ptr<Type::Color3> col3 = instCV->getValue();
 					if(col3){
 						return col3->wrap_lua(L);
 					}else{
@@ -124,14 +124,14 @@ namespace OB{
 					}
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		void Color3Value::register_lua_property_setters(lua_State* L){
 			Instance::register_lua_property_setters(L);
-			
+
 			luaL_Reg properties[] = {
 				{"Value", lua_setValue},
 				{NULL, NULL}
@@ -141,7 +141,7 @@ namespace OB{
 
 		void Color3Value::register_lua_property_getters(lua_State* L){
 			Instance::register_lua_property_getters(L);
-			
+
 			luaL_Reg properties[] = {
 				{"Value", lua_getValue},
 				{NULL, NULL}

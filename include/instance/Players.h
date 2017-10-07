@@ -31,7 +31,7 @@ namespace OB{
 		 * CreatePlayer method of ClientReplicator during or before
 		 * the authentication stage of an incoming connection.
 		 *
-		 * When the RobloxCompatMode property of DataModel is true, 
+		 * When the RobloxCompatMode property of DataModel is true,
 		 * this service will automatically create a Player object for
 		 * connecting players and will automatically create a local
 		 * player in some situations.
@@ -40,26 +40,26 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class Players: public Instance{
-			public:
-			    Players(OBEngine* eng);
-				virtual ~Players();
+		public:
+			Players(OBEngine* eng);
+			virtual ~Players();
 
-				#if HAVE_PUGIXML
-				virtual std::string serializedID();
-				#endif
+#if HAVE_PUGIXML
+			virtual std::string serializedID();
+#endif
 
-				virtual void removeChild(shared_ptr<Instance> kid);
-				virtual void addChild(shared_ptr<Instance> kid);
+			virtual void removeChild(shared_ptr<Instance> kid);
+			virtual void addChild(shared_ptr<Instance> kid);
 
-				shared_ptr<Type::Event> getPlayerAdded();
-				shared_ptr<Type::Event> getPlayerRemoving();
-				
-				static void register_lua_events(lua_State* L);
-				
-				DECLARE_CLASS(Players);
+			shared_ptr<Type::Event> getPlayerAdded();
+			shared_ptr<Type::Event> getPlayerRemoving();
 
-				shared_ptr<Type::Event> PlayerAdded;
-				shared_ptr<Type::Event> PlayerRemoving;
+			static void register_lua_events(lua_State* L);
+
+			DECLARE_CLASS(Players);
+
+			shared_ptr<Type::Event> PlayerAdded;
+			shared_ptr<Type::Event> PlayerRemoving;
 		};
 	}
 }

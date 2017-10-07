@@ -25,21 +25,21 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    ReplicatedStorage::ReplicatedStorage(OBEngine* eng) : Instance(eng){
+		ReplicatedStorage::ReplicatedStorage(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 			netId = OB_NETID_REPLICATEDSTORAGE;
 		}
 
-	    ReplicatedStorage::~ReplicatedStorage(){}
+		ReplicatedStorage::~ReplicatedStorage(){}
 
-		#if HAVE_PUGIXML
-	    std::string ReplicatedStorage::serializedID(){
+#if HAVE_PUGIXML
+		std::string ReplicatedStorage::serializedID(){
 			shared_ptr<OBSerializer> serializer = eng->getSerializer();
 			serializer->SetID(shared_from_this(), getClassName());
-			
+
 			return Instance::serializedID();
 		}
-		#endif
+#endif
 
 		shared_ptr<Instance> ReplicatedStorage::cloneImpl(){
 			return NULL;

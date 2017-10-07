@@ -34,26 +34,26 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    ImageLabel::ImageLabel(OBEngine* eng) : GuiLabel(eng){
+		ImageLabel::ImageLabel(OBEngine* eng) : GuiLabel(eng){
 			Name = ClassName;
 
 			Image = "";
 			ImageColor3 = make_shared<Type::Color3>(1, 1, 1);
 			ImageTransparency = 1;
 
-			#if HAVE_IRRLICHT
+#if HAVE_IRRLICHT
 			img = NULL;
-			#endif
+#endif
 		}
 
-	    ImageLabel::~ImageLabel(){}
+		ImageLabel::~ImageLabel(){}
 
 		shared_ptr<Instance> ImageLabel::cloneImpl(){
 			return NULL;
 		}
 
 		void ImageLabel::updateImage(){
-			#if HAVE_IRRLICHT
+#if HAVE_IRRLICHT
 			shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
 			if(assetLoc){
 				shared_ptr<AssetResponse> resp = assetLoc->getAsset(Image);
@@ -70,12 +70,12 @@ namespace OB{
 					}
 				}
 			}
-			#endif
+#endif
 		}
 
 		void ImageLabel::setImage(std::string image){
 			if(image != Image){
-			    Image = image;
+				Image = image;
 
 				if(!Image.empty()){
 					shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
@@ -102,9 +102,9 @@ namespace OB{
 		void ImageLabel::setImageColor3(shared_ptr<Type::Color3> imageColor3){
 			if(!ImageColor3->equals(imageColor3)){
 				if(imageColor3){
-				    ImageColor3 = imageColor3;
+					ImageColor3 = imageColor3;
 				}else{
-				    ImageColor3 = make_shared<Type::Color3>();
+					ImageColor3 = make_shared<Type::Color3>();
 				}
 
 				REPLICATE_PROPERTY_CHANGE(ImageColor3);
@@ -138,12 +138,12 @@ namespace OB{
 				updateImage();
 				return true;
 			}
-			
+
 			return false;
 		}
 
 		void ImageLabel::render(){
-			#if HAVE_IRRLICHT
+#if HAVE_IRRLICHT
 			if(Visible){
 				if(irr::IrrlichtDevice* irrDev = getEngine()->getIrrlichtDevice()){
 					if(irr::video::IVideoDriver* irrDriv = irrDev->getVideoDriver()){
@@ -161,31 +161,31 @@ namespace OB{
 						glRectd(pos->getX(), pos->getY(), siz->getX(), siz->getY());
 
 						glColor4d(borderColor->getR(), borderColor->getB(), borderColor->getB(), 1 - bgTrans);
-						//Border Top
+						// Border Top
 						glRectd(pos->getX() - borderSize, pos->getY() - borderSize, siz->getX() + borderSize, pos->getY());
-						//Border Left
+						// Border Left
 						glRectd(pos->getX() - borderSize, pos->getY() - borderSize, pos->getX(), siz->getY() + borderSize);
-						//Border Right
+						// Border Right
 						glRectd(siz->getX(), pos->getY() - borderSize, siz->getX() + borderSize, siz->getY() + borderSize);
-						//Border Bottom
+						// Border Bottom
 						glRectd(pos->getX() - borderSize, siz->getY(), siz->getX() + borderSize, siz->getY() + borderSize);
 
 						GuiObject::render();
 					}
 				}
 			}
-			#endif
+#endif
 		}
 
-		#if HAVE_ENET
+#if HAVE_ENET
 		void ImageLabel::replicateProperties(shared_ptr<NetworkReplicator> peer){
-		    GuiObject::replicateProperties(peer);
-			
+			GuiObject::replicateProperties(peer);
+
 			peer->sendSetPropertyPacket(netId, "Image", make_shared<Type::VarWrapper>(Image));
 			peer->sendSetPropertyPacket(netId, "ImageColor3", make_shared<Type::VarWrapper>(ImageColor3));
 			peer->sendSetPropertyPacket(netId, "ImageTransparency", make_shared<Type::VarWrapper>(ImageTransparency));
 		}
-		#endif
+#endif
 
 		std::map<std::string, _PropertyInfo> ImageLabel::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = GuiObject::getProperties();
@@ -198,20 +198,20 @@ namespace OB{
 		}
 
 		void ImageLabel::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
-		    if(prop == "Image"){
-			    setImage(val->asString());
+			if(prop == "Image"){
+				setImage(val->asString());
 				return;
 			}
 			if(prop == "ImageColor3"){
-			    setImageColor3(val->asColor3());
+				setImageColor3(val->asColor3());
 				return;
 			}
 			if(prop == "ImageTransparency"){
-			    setImageTransparency(val->asDouble());
+				setImageTransparency(val->asDouble());
 				return;
 			}
 
-		    GuiObject::setProperty(prop, val);
+			GuiObject::setProperty(prop, val);
 		}
 
 		shared_ptr<Type::VarWrapper> ImageLabel::getProperty(std::string prop){
@@ -224,13 +224,13 @@ namespace OB{
 			if(prop == "ImageTransparency"){
 				return make_shared<Type::VarWrapper>(getImage());
 			}
-			
+
 			return GuiObject::getProperty(prop);
 		}
 
 		int ImageLabel::lua_setImage(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<ImageLabel> instIL = dynamic_pointer_cast<ImageLabel>(inst);
 				if(instIL){
@@ -238,7 +238,7 @@ namespace OB{
 					instIL->setImage(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
@@ -248,11 +248,11 @@ namespace OB{
 			if(inst){
 				shared_ptr<ImageLabel> instIL = dynamic_pointer_cast<ImageLabel>(inst);
 				if(instIL){
-				    lua_pushstring(L, instIL->getImage().c_str());
+					lua_pushstring(L, instIL->getImage().c_str());
 					return 1;
 				}
 			}
-		    
+
 			lua_pushnil(L);
 			return 1;
 		}
@@ -263,7 +263,7 @@ namespace OB{
 			if(inst){
 				shared_ptr<ImageLabel> instIL = dynamic_pointer_cast<ImageLabel>(inst);
 				if(instIL){
-				    shared_ptr<Type::Color3> col3 = instIL->getImageColor3();
+					shared_ptr<Type::Color3> col3 = instIL->getImageColor3();
 					if(col3){
 						return col3->wrap_lua(L);
 					}else{
@@ -288,7 +288,7 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			return 0;
 		}
 
@@ -302,14 +302,14 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int ImageLabel::lua_setImageTransparency(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<ImageLabel> instIL = dynamic_pointer_cast<ImageLabel>(inst);
 				if(instIL){
@@ -317,13 +317,13 @@ namespace OB{
 					instIL->setImageTransparency(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int ImageLabel::lua_getLoaded(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<ImageLabel> instIL = dynamic_pointer_cast<ImageLabel>(inst);
 				if(instIL){
@@ -331,14 +331,14 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		void ImageLabel::register_lua_property_setters(lua_State* L){
-		    GuiObject::register_lua_property_setters(L);
-			
+			GuiObject::register_lua_property_setters(L);
+
 			luaL_Reg properties[] = {
 				{"Image", lua_setImage},
 				{"ImageColor3", lua_setImageColor3},
@@ -350,9 +350,9 @@ namespace OB{
 		}
 
 		void ImageLabel::register_lua_property_getters(lua_State* L){
-		    GuiObject::register_lua_property_getters(L);
-			
-		    luaL_Reg properties[] = {
+			GuiObject::register_lua_property_getters(L);
+
+			luaL_Reg properties[] = {
 				{"Image", lua_getImage},
 				{"ImageColor3", lua_getImageColor3},
 				{"ImageTransparency", lua_getImageTransparency},

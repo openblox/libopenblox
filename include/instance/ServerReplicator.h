@@ -27,24 +27,24 @@
 namespace OB{
 	namespace Instance{
 		class Player;
-		
+
 		class ServerReplicator: public NetworkReplicator{
-			public:
-			    ServerReplicator(OBEngine* eng);
-			    ServerReplicator(ENetPeer* peer, OBEngine* eng);
-				virtual ~ServerReplicator();
+		public:
+			ServerReplicator(OBEngine* eng);
+			ServerReplicator(ENetPeer* peer, OBEngine* eng);
+			virtual ~ServerReplicator();
 
-				shared_ptr<Player> CreatePlayer();
-				shared_ptr<Player> GetPlayer();
+			shared_ptr<Player> CreatePlayer();
+			shared_ptr<Player> GetPlayer();
 
-				DECLARE_LUA_METHOD(CreatePlayer);
-				DECLARE_LUA_METHOD(GetPlayer);
+			DECLARE_LUA_METHOD(CreatePlayer);
+			DECLARE_LUA_METHOD(GetPlayer);
 
-				static void register_lua_methods(lua_State* L);
+			static void register_lua_methods(lua_State* L);
 
-				DECLARE_CLASS(ServerReplicator);
+			DECLARE_CLASS(ServerReplicator);
 
-				shared_ptr<Player> plr;
+			shared_ptr<Player> plr;
 		};
 	}
 }

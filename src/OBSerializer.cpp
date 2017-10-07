@@ -38,10 +38,10 @@ namespace OB{
 		this->eng = eng;
 	}
 
-	#if HAVE_PUGIXML
+#if HAVE_PUGIXML
 	// Attempts to convert file paths to file:// URI
 	std::string _ob_obserializer_load_uri_to_std(std::string ouri){
-	    if(ouri.at(0) == '/'){
+		if(ouri.at(0) == '/'){
 			char* canonPath = realpath(ouri.c_str(), NULL);
 			if(canonPath){
 				if(canonPath[0] == '/'){
@@ -55,12 +55,12 @@ namespace OB{
 	}
 
 	shared_ptr<Instance::Instance> OBSerializer::LoadModelFromMemory(char* buf, size_t size){
-		
+
 	}
-	
+
 	shared_ptr<Instance::Instance> OBSerializer::LoadModel(std::string resURI){
 		std::string loadURI = _ob_obserializer_load_uri_to_std(resURI);
-		
+
 		return NULL;
 	}
 
@@ -92,8 +92,8 @@ namespace OB{
 
 		return true;
 	}
-	
-    bool OBSerializer::Load(std::string resURI){
+
+	bool OBSerializer::Load(std::string resURI){
 		std::string loadURI = _ob_obserializer_load_uri_to_std(resURI);
 
 		if(eng){
@@ -102,11 +102,11 @@ namespace OB{
 				assetLoc->loadAssetSync(loadURI, false, true);
 				shared_ptr<AssetResponse> resp = assetLoc->getAsset(loadURI, false);
 				if(resp){
-				    return LoadFromMemory(resp->getData(), resp->getSize());
+					return LoadFromMemory(resp->getData(), resp->getSize());
 				}
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -131,19 +131,19 @@ namespace OB{
 		instanceMap.clear();
 		dynamic_instance_count = 0;
 
-	    model->serializeThis(model_node, model);
+		model->serializeThis(model_node, model);
 
 		instanceMap.clear();
 		dynamic_instance_count = 0;
-		
+
 		return doc.save_file(file.c_str(), "\t", pugi::format_indent, pugi::encoding_utf8);
 	}
 
-    std::string OBSerializer::SaveModelInMemory(shared_ptr<Instance::Instance> model){
+	std::string OBSerializer::SaveModelInMemory(shared_ptr<Instance::Instance> model){
 		if(!model){
 			return "";
 		}
-		
+
 		pugi::xml_document doc;
 
 		_ob_obserializer_add_warning(doc);
@@ -155,13 +155,13 @@ namespace OB{
 		instanceMap.clear();
 		dynamic_instance_count = 0;
 
-	    model->serializeThis(model_node, model);
+		model->serializeThis(model_node, model);
 
 		instanceMap.clear();
 		dynamic_instance_count = 0;
-		
+
 		std::stringstream ss;
-	    doc.save(ss, "\t", pugi::format_indent, pugi::encoding_utf8);
+		doc.save(ss, "\t", pugi::format_indent, pugi::encoding_utf8);
 
 		return ss.str();
 	}
@@ -172,8 +172,8 @@ namespace OB{
 		_ob_obserializer_add_warning(doc);
 
 		pugi::xml_node game_node = doc.append_child(pugi::node_element);
-	    game_node.set_name("game");
-	    game_node.append_attribute("version").set_value(OB_SERIALIZER_XML_CURRENT_VERSION_ID);
+		game_node.set_name("game");
+		game_node.append_attribute("version").set_value(OB_SERIALIZER_XML_CURRENT_VERSION_ID);
 
 		instanceMap.clear();
 		dynamic_instance_count = 0;
@@ -186,12 +186,12 @@ namespace OB{
 
 		instanceMap.clear();
 		dynamic_instance_count = 0;
-		
+
 		return doc.save_file(file.c_str(), "\t", pugi::format_indent, pugi::encoding_utf8);
 	}
 
 	std::string OBSerializer::SaveInMemory(){
-	    pugi::xml_document doc;
+		pugi::xml_document doc;
 
 		_ob_obserializer_add_warning(doc);
 
@@ -199,8 +199,8 @@ namespace OB{
 		dynamic_instance_count = 0;
 
 		pugi::xml_node game_node = doc.append_child(pugi::node_element);
-	    game_node.set_name("game");
-	    game_node.append_attribute("version").set_value(OB_SERIALIZER_XML_CURRENT_VERSION_ID);
+		game_node.set_name("game");
+		game_node.append_attribute("version").set_value(OB_SERIALIZER_XML_CURRENT_VERSION_ID);
 
 		//We don't *need* to know it's a DataModel
 		shared_ptr<Instance::Instance> dm = eng->getDataModel();
@@ -212,14 +212,14 @@ namespace OB{
 		dynamic_instance_count = 0;
 
 		std::stringstream ss;
-	    doc.save(ss, "\t", pugi::format_indent, pugi::encoding_utf8);
+		doc.save(ss, "\t", pugi::format_indent, pugi::encoding_utf8);
 
 		return ss.str();
 	}
-	#endif
+#endif
 
 	std::string OBSerializer::GetID(shared_ptr<Instance::Instance> inst){
-	    auto it = instanceMap.find(inst);
+		auto it = instanceMap.find(inst);
 		if(it != instanceMap.end()){
 			return it->second;
 		}else{
@@ -242,7 +242,7 @@ namespace OB{
 		if(inst){
 			return inst;
 		}
-		
+
 		for(auto it = instanceMap.begin(); it != instanceMap.end(); it++){
 			shared_ptr<Instance::Instance> inst = it->first;
 			std::string iid = it->second;

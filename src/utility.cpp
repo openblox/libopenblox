@@ -48,7 +48,7 @@ namespace OB{
 	}
 
 	// Windows compat
-    #ifdef _WIN32
+#ifdef _WIN32
 	char* realpath(const char* path, char resolved_path[PATH_MAX]){
 		char* return_path = 0;
 
@@ -95,23 +95,23 @@ namespace OB{
 					return_path = 0;
 
 					switch(GetLastError()){
-						case ERROR_FILE_NOT_FOUND: {
-							errno = ENOENT;
-							break;
-						}
-						case ERROR_PATH_NOT_FOUND:
-						case ERROR_INVALID_DRIVE: {
-							errno = ENOTDIR;
-							break;
-						}
-						case ERROR_ACCESS_DENIED: {
-							errno = EACCES;
-							break;
-						}
-						default: {
-							errno = EIO;
-							break;
-						}
+					case ERROR_FILE_NOT_FOUND: {
+						errno = ENOENT;
+						break;
+					}
+					case ERROR_PATH_NOT_FOUND:
+					case ERROR_INVALID_DRIVE: {
+						errno = ENOTDIR;
+						break;
+					}
+					case ERROR_ACCESS_DENIED: {
+						errno = EACCES;
+						break;
+					}
+					default: {
+						errno = EIO;
+						break;
+					}
 					}
 				}
 
@@ -153,11 +153,11 @@ namespace OB{
 		CloseHandle(timer);
 	}
 
-	#ifdef _MSC_VER
+#ifdef _MSC_VER
 	int gettimeofday(struct timeval* tp, void* tzp){
 		// Note: some broken versions only have 8 trailing zero's, the correct epoch has 9 trailing zero's
 		// This magic number is the number of 100 nanosecond intervals since January 1, 1601 (UTC)
-		// until 00:00:00 January 1, 1970 
+		// until 00:00:00 January 1, 1970
 		static const uint64_t EPOCH = ((uint64_t)116444736000000000ULL);
 
 		SYSTEMTIME system_time;
@@ -173,6 +173,6 @@ namespace OB{
 		tp->tv_usec = (long) (system_time.wMilliseconds * 1000);
 		return 0;
 	}
-	#endif
-	#endif
+#endif
+#endif
 }

@@ -37,60 +37,60 @@
 
 namespace OB{
 	class OBEngine;
-	
+
 	namespace Instance{
 		class Instance;
 	}
-	
+
 	class AssetResponse{
-		public:
-			AssetResponse(size_t size, char* data, std::string resURI, OBEngine* eng);
-			~AssetResponse();
+	public:
+		AssetResponse(size_t size, char* data, std::string resURI, OBEngine* eng);
+		~AssetResponse();
 
-			size_t getSize();
-		    char* getData();
-			std::string getResURI();
+		size_t getSize();
+		char* getData();
+		std::string getResURI();
 
-			#if HAVE_IRRLICHT
-			irr::io::IReadFile* toIReadFile();
-			#endif
+#if HAVE_IRRLICHT
+		irr::io::IReadFile* toIReadFile();
+#endif
 
-		private:
-			size_t size;
-			char* data;
-			std::string resURI;
+	private:
+		size_t size;
+		char* data;
+		std::string resURI;
 
-			OBEngine* eng;
+		OBEngine* eng;
 	};
-	
+
 	class AssetLocator{
-		public:
-		    AssetLocator(OBEngine* eng);
-			virtual ~AssetLocator();
+	public:
+		AssetLocator(OBEngine* eng);
+		virtual ~AssetLocator();
 
-			void tick();
+		void tick();
 
-			void loadAssetSync(std::string url, bool decCount = false, bool allowFile = false);
-			static int loadAssetAsyncTask(void* metad, ob_int64 startTime);
-			void loadAsset(std::string url);
-			shared_ptr<AssetResponse> getAsset(std::string url, bool loadIfNotPresent = false);
-			bool hasAsset(std::string url);
-			void putAsset(std::string url, size_t size, char* data);
-			
-			void addWaitingInstance(shared_ptr<Instance::Instance> inst);
+		void loadAssetSync(std::string url, bool decCount = false, bool allowFile = false);
+		static int loadAssetAsyncTask(void* metad, ob_int64 startTime);
+		void loadAsset(std::string url);
+		shared_ptr<AssetResponse> getAsset(std::string url, bool loadIfNotPresent = false);
+		bool hasAsset(std::string url);
+		void putAsset(std::string url, size_t size, char* data);
 
-			int getRequestQueueSize();
-			
-		private:
-			std::map<std::string, shared_ptr<AssetResponse>> contentCache;
-			OBEngine* eng;
+		void addWaitingInstance(shared_ptr<Instance::Instance> inst);
 
-			std::vector<weak_ptr<Instance::Instance>> instancesWaiting;
+		int getRequestQueueSize();
 
-			shared_ptr<AssetResponse> loadingResponse;
-			pthread_mutex_t mmutex;
+	private:
+		std::map<std::string, shared_ptr<AssetResponse>> contentCache;
+		OBEngine* eng;
 
-			int requestQueueSize;
+		std::vector<weak_ptr<Instance::Instance>> instancesWaiting;
+
+		shared_ptr<AssetResponse> loadingResponse;
+		pthread_mutex_t mmutex;
+
+		int requestQueueSize;
 	};
 }
 

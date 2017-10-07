@@ -25,11 +25,11 @@
 namespace OB{
 	namespace Instance{
 		class Player: public Instance{
-			public:
-			    Player(OBEngine* eng);
-				virtual ~Player();
-				
-				DECLARE_CLASS(Player);
+		public:
+			Player(OBEngine* eng);
+			virtual ~Player();
+
+			DECLARE_CLASS(Player);
 		};
 	}
 }

@@ -31,15 +31,15 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class ReplicatedFirst: public Instance{
-			public:
-			    ReplicatedFirst(OBEngine* eng);
-				virtual ~ReplicatedFirst();
+		public:
+			ReplicatedFirst(OBEngine* eng);
+			virtual ~ReplicatedFirst();
 
-				#if HAVE_PUGIXML
-				virtual std::string serializedID();
-				#endif
+#if HAVE_PUGIXML
+			virtual std::string serializedID();
+#endif
 
-				DECLARE_CLASS(ReplicatedFirst);
+			DECLARE_CLASS(ReplicatedFirst);
 		};
 	}
 }

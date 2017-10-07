@@ -34,99 +34,99 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class Humanoid: public Instance{
-			public:
-			    Humanoid(OBEngine* eng);
-				virtual ~Humanoid();
+		public:
+			Humanoid(OBEngine* eng);
+			virtual ~Humanoid();
 
-				double getHealth();
-				void setHealth(double health);
+			double getHealth();
+			void setHealth(double health);
 
-				double getMaxHealth();
-				void setMaxHealth(double maxHealth);
+			double getMaxHealth();
+			void setMaxHealth(double maxHealth);
 
-				bool getInvincible();
-			    void setInvincible(bool invincible);
+			bool getInvincible();
+			void setInvincible(bool invincible);
 
-				bool getNameVisible();
-			    void setNameVisible(bool nameVisible);
-				
-				bool getHealthVisible();
-			    void setHealthVisible(bool healthVisible);
+			bool getNameVisible();
+			void setNameVisible(bool nameVisible);
 
-				double getJumpPower();
-				void setJumpPower(double jumpPower);
+			bool getHealthVisible();
+			void setHealthVisible(bool healthVisible);
 
-				double getWalkSpeed();
-				void setWalkSpeed(double walkSpeed);
+			double getJumpPower();
+			void setJumpPower(double jumpPower);
 
-				shared_ptr<Type::Vector3> getMoveDirection();
+			double getWalkSpeed();
+			void setWalkSpeed(double walkSpeed);
 
-				int getState();
-				void setState(int state);
+			shared_ptr<Type::Vector3> getMoveDirection();
 
-				shared_ptr<Type::Vector3> getWalkTarget();
+			int getState();
+			void setState(int state);
 
-				double TakeDamage(double damage, std::string damage_metadata = "");
-				void Move(shared_ptr<Type::Vector3> direction);
-				void MoveTo(shared_ptr<Type::Vector3> location);
+			shared_ptr<Type::Vector3> getWalkTarget();
 
-				#if HAVE_ENET
-				/**
-				 * Replicates properties of this Instance.
-				 * 
-				 * @param peer Peer
-				 * @author John M. Harris, Jr.
-				 */
-				virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
-				#endif
+			double TakeDamage(double damage, std::string damage_metadata = "");
+			void Move(shared_ptr<Type::Vector3> direction);
+			void MoveTo(shared_ptr<Type::Vector3> location);
 
-				virtual std::map<std::string, _PropertyInfo> getProperties();
-				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
-				virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
+#if HAVE_ENET
+			/**
+			 * Replicates properties of this Instance.
+			 *
+			 * @param peer Peer
+			 * @author John M. Harris, Jr.
+			 */
+			virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
+#endif
 
-				DECLARE_LUA_METHOD(getHealth);
-				DECLARE_LUA_METHOD(setHealth);
-				DECLARE_LUA_METHOD(getMaxHealth);
-				DECLARE_LUA_METHOD(setMaxHealth);
-				DECLARE_LUA_METHOD(getInvincible);
-				DECLARE_LUA_METHOD(setInvincible);
-				DECLARE_LUA_METHOD(getNameVisible);
-				DECLARE_LUA_METHOD(setNameVisible);
-				DECLARE_LUA_METHOD(getHealthVisible);
-				DECLARE_LUA_METHOD(setHealthVisible);
-				DECLARE_LUA_METHOD(getJumpPower);
-				DECLARE_LUA_METHOD(setJumpPower);
-				DECLARE_LUA_METHOD(getWalkSpeed);
-				DECLARE_LUA_METHOD(setWalkSpeed);
-				DECLARE_LUA_METHOD(getMoveDirection);
-				DECLARE_LUA_METHOD(getState);
-				DECLARE_LUA_METHOD(setState);
-				DECLARE_LUA_METHOD(getWalkTarget);
+			virtual std::map<std::string, _PropertyInfo> getProperties();
+			virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
+			virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
 
-				DECLARE_LUA_METHOD(TakeDamage);
-				DECLARE_LUA_METHOD(Move);
-				DECLARE_LUA_METHOD(MoveTo);
+			DECLARE_LUA_METHOD(getHealth);
+			DECLARE_LUA_METHOD(setHealth);
+			DECLARE_LUA_METHOD(getMaxHealth);
+			DECLARE_LUA_METHOD(setMaxHealth);
+			DECLARE_LUA_METHOD(getInvincible);
+			DECLARE_LUA_METHOD(setInvincible);
+			DECLARE_LUA_METHOD(getNameVisible);
+			DECLARE_LUA_METHOD(setNameVisible);
+			DECLARE_LUA_METHOD(getHealthVisible);
+			DECLARE_LUA_METHOD(setHealthVisible);
+			DECLARE_LUA_METHOD(getJumpPower);
+			DECLARE_LUA_METHOD(setJumpPower);
+			DECLARE_LUA_METHOD(getWalkSpeed);
+			DECLARE_LUA_METHOD(setWalkSpeed);
+			DECLARE_LUA_METHOD(getMoveDirection);
+			DECLARE_LUA_METHOD(getState);
+			DECLARE_LUA_METHOD(setState);
+			DECLARE_LUA_METHOD(getWalkTarget);
 
-				static void register_lua_property_getters(lua_State* L);
-				static void register_lua_property_setters(lua_State* L);
-				static void register_lua_methods(lua_State* L);
+			DECLARE_LUA_METHOD(TakeDamage);
+			DECLARE_LUA_METHOD(Move);
+			DECLARE_LUA_METHOD(MoveTo);
 
-				DECLARE_CLASS(Humanoid);
+			static void register_lua_property_getters(lua_State* L);
+			static void register_lua_property_setters(lua_State* L);
+			static void register_lua_methods(lua_State* L);
 
-				shared_ptr<Type::Event> MoveToFinished; // Params: bool success
-				shared_ptr<Type::Event> HealthChanged; // Params: double previousHealth, string metadata (nil if not damage)
-				shared_ptr<Type::Event> Died;
+			DECLARE_CLASS(Humanoid);
 
-				double Health;
-				double MaxHealth;
-				bool Invincible;
-				bool NameVisible;
-				bool HealthVisible;
-				double JumpPower;
-				double WalkSpeed;
-				shared_ptr<Type::Vector3> MoveDirection;
-				int State;// TODO:
-				shared_ptr<Type::Vector3> WalkTarget;
+			shared_ptr<Type::Event> MoveToFinished; // Params: bool success
+			shared_ptr<Type::Event> HealthChanged; // Params: double previousHealth, string metadata (nil if not damage)
+			shared_ptr<Type::Event> Died;
+
+			double Health;
+			double MaxHealth;
+			bool Invincible;
+			bool NameVisible;
+			bool HealthVisible;
+			double JumpPower;
+			double WalkSpeed;
+			shared_ptr<Type::Vector3> MoveDirection;
+			int State;// TODO:
+			shared_ptr<Type::Vector3> WalkTarget;
 		};
 	}
 }

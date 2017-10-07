@@ -31,8 +31,8 @@
 namespace OB{
 	TaskScheduler::TaskScheduler(OBEngine* eng){
 		this->eng = eng;
-		
-	    SortsTasks = true;
+
+		SortsTasks = true;
 
 		numWaiting = 0;
 	}
@@ -68,7 +68,7 @@ namespace OB{
 			 * this tick.
 			 */
 			std::vector<_ob_waiting_task> tmpPopped;
-			
+
 			bool stopProcTasks = false;
 
 			std::vector<_ob_waiting_task> runThisTick;
@@ -76,47 +76,47 @@ namespace OB{
 			ob_int64 curTime = currentTimeMillis();
 			while(!tasks.empty()){
 				_ob_waiting_task t = tasks.back();
-				
+
 				if(t.at < curTime){
 					runThisTick.push_back(t);
 					tasks.pop_back();
 				}else{
-				    break;
+					break;
 				}
 			}
 
 			numWaiting = runThisTick.size();
 
 			shared_ptr<Instance::RunService> rS = eng->getDataModel()->getRunService();
-			
+
 			while(!runThisTick.empty() && !stopProcTasks){
 				_ob_waiting_task t = runThisTick.back();
 				runThisTick.pop_back();
 				numWaiting--;
 
-			    if(t.getsPaused){
+				if(t.getsPaused){
 					if(!rS->IsRunning()){
 						tmpPopped.push_back(t);
 						break;
 					}
 				}
-				
+
 				int retCode = t.task_fnc(t.metad, t.start);
-				
+
 				switch(retCode){
-					case 1: {
-						tmpPopped.push_back(t);
-						break;
-					}
-					case 2: {
-						stopProcTasks = true;
-						break;
-					}
-					case 3: {
-						tmpPopped.push_back(t);
-						stopProcTasks = true;
-						break;
-					}
+				case 1: {
+					tmpPopped.push_back(t);
+					break;
+				}
+				case 2: {
+					stopProcTasks = true;
+					break;
+				}
+				case 3: {
+					tmpPopped.push_back(t);
+					stopProcTasks = true;
+					break;
+				}
 				}
 			}
 
@@ -143,22 +143,22 @@ namespace OB{
 	}
 
 	void TaskScheduler::removeDMBound(){
-	    std::vector<_ob_waiting_task> tmpPopped;
+		std::vector<_ob_waiting_task> tmpPopped;
 		while(!tasks.empty()){
 			_ob_waiting_task t = tasks.back();
-				
+
 			if(!t.dmBound){
-			    tmpPopped.push_back(t);
+				tmpPopped.push_back(t);
 			}
-		    tasks.pop_back();
+			tasks.pop_back();
 		}
 
-	    tasks = tmpPopped;
+		tasks = tmpPopped;
 	}
 
-    void TaskScheduler::enqueue(ob_task_fnc fnc, void* metad, ob_int64 at, bool getsPaused, bool dmBound){
+	void TaskScheduler::enqueue(ob_task_fnc fnc, void* metad, ob_int64 at, bool getsPaused, bool dmBound){
 		ob_int64 curTime = currentTimeMillis();
-		
+
 		_ob_waiting_task t;
 		t.start = curTime;
 		t.at = at;
@@ -166,7 +166,7 @@ namespace OB{
 		t.task_fnc = fnc;
 		t.getsPaused = getsPaused;
 		t.dmBound = dmBound;
-		
+
 		tasks.push_back(t);
 
 		if(SortsTasks){

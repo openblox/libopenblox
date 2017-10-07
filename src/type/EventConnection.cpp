@@ -33,18 +33,18 @@ namespace OB{
 
 		EventConnection::EventConnection(shared_ptr<Event> evt, std::function<void(std::vector<shared_ptr<VarWrapper>>)> fnc){
 			this->evt = evt;
-		    this->fnc = fnc;
+			this->fnc = fnc;
 			ud = NULL;
 		}
-		
+
 		EventConnection::EventConnection(shared_ptr<Event> evt, std::function<void(std::vector<shared_ptr<VarWrapper>>)> fnc, void* ud){
 			this->evt = evt;
 			this->ud = ud;
-		    this->fnc = fnc;
+			this->fnc = fnc;
 		}
 
 		EventConnection::~EventConnection(){
-		    if(ud){
+			if(ud){
 				free(ud);
 				ud = NULL;
 			}
@@ -58,8 +58,8 @@ namespace OB{
 		}
 
 		bool EventConnection::isConnected(){
-		    if(evt){
-			    return evt->isConnected(dynamic_pointer_cast<EventConnection>(std::enable_shared_from_this<Type>::shared_from_this()));
+			if(evt){
+				return evt->isConnected(dynamic_pointer_cast<EventConnection>(std::enable_shared_from_this<Type>::shared_from_this()));
 			}else{
 				return false;
 			}
@@ -80,17 +80,17 @@ namespace OB{
 			}
 
 			evtCon->Disconnect();
-		    return 0;
+			return 0;
 		}
 
 		int EventConnection::lua_isConnected(lua_State* L){
 			shared_ptr<EventConnection> evtCon = checkEventConnection(L, 1, true);
-			
+
 			if(evtCon){
 				lua_pushboolean(L, evtCon->isConnected());
 				return 1;
 			}
-			
+
 			return 0;
 		}
 
@@ -124,7 +124,7 @@ namespace OB{
 					return NULL;
 				}
 			}
-			
+
 			if(lua_isuserdata(L, index)){
 				void* udata = lua_touserdata(L, index);
 				int meta = lua_getmetatable(L, index);
@@ -137,7 +137,7 @@ namespace OB{
 					lua_pop(L, 1);
 				}
 			}
-			
+
 			if(errIfNot){
 				luaO_typeerror(L, index, "EventConnection");
 			}

@@ -31,18 +31,18 @@ namespace OB{
 		DEFINE_TYPE(UDim2){
 			registerLuaType(eng, LuaTypeName, TypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
 		}
-		
-	    UDim2::UDim2(){
-		    x = make_shared<UDim>();
+
+		UDim2::UDim2(){
+			x = make_shared<UDim>();
 			y = make_shared<UDim>();
 		}
 
-	    UDim2::UDim2(double xScale, double xOffset, double yScale, double yOffset){
-		    x = make_shared<UDim>(xScale, xOffset);
+		UDim2::UDim2(double xScale, double xOffset, double yScale, double yOffset){
+			x = make_shared<UDim>(xScale, xOffset);
 			y = make_shared<UDim>(yScale, yOffset);
 		}
 
-	    UDim2::UDim2(std::string str){
+		UDim2::UDim2(std::string str){
 			std::vector<std::string> fields = split(str);
 			if(fields.size() == 4){
 				std::string xScaleStr = trim(fields[0]);
@@ -56,33 +56,33 @@ namespace OB{
 				double yOffset = 0;
 
 				if(xScaleStr.length() > 0){
-				    xScale = atof(xScaleStr.c_str());
+					xScale = atof(xScaleStr.c_str());
 				}
-				
+
 				if(xOffsetStr.length() > 0){
 					xOffset = atof(xOffsetStr.c_str());
 				}
 
 				if(yScaleStr.length() > 0){
-				    yScale = atof(yScaleStr.c_str());
+					yScale = atof(yScaleStr.c_str());
 				}
-				
+
 				if(yOffsetStr.length() > 0){
 					yOffset = atof(yOffsetStr.c_str());
 				}
 			}else{
-			    x = make_shared<UDim>();
+				x = make_shared<UDim>();
 				y = make_shared<UDim>();
 			}
 		}
 
-	    UDim2::~UDim2(){}
+		UDim2::~UDim2(){}
 
-	    shared_ptr<UDim> UDim2::getX(){
+		shared_ptr<UDim> UDim2::getX(){
 			return x;
 		}
-		
-	    shared_ptr<UDim> UDim2::getY(){
+
+		shared_ptr<UDim> UDim2::getY(){
 			return y;
 		}
 
@@ -92,29 +92,29 @@ namespace OB{
 			}
 			shared_ptr<UDim> uX = u->getX();
 			shared_ptr<UDim> uY = u->getY();
-		    return make_shared<UDim2>(x->getScale() + uX->getScale(), x->getOffset() + uX->getOffset(), y->getScale() + uY->getScale(), y->getOffset() + uY->getOffset());
+			return make_shared<UDim2>(x->getScale() + uX->getScale(), x->getOffset() + uX->getOffset(), y->getScale() + uY->getScale(), y->getOffset() + uY->getOffset());
 		}
-		
+
 		shared_ptr<UDim2> UDim2::sub(shared_ptr<UDim2> u){
-		    if(!u){
+			if(!u){
 				return make_shared<UDim2>(x->getScale(), x->getOffset(), y->getScale(), y->getOffset());
 			}
 			shared_ptr<UDim> uX = u->getX();
 			shared_ptr<UDim> uY = u->getY();
-		    return make_shared<UDim2>(x->getScale() - uX->getScale(), x->getOffset() - uX->getOffset(), y->getScale() - uY->getScale(), y->getOffset() - uY->getOffset());
+			return make_shared<UDim2>(x->getScale() - uX->getScale(), x->getOffset() - uX->getOffset(), y->getScale() - uY->getScale(), y->getOffset() - uY->getOffset());
 		}
 
 		bool UDim2::equals(shared_ptr<Type> other){
-		    shared_ptr<UDim2> co = dynamic_pointer_cast<UDim2>(other);
+			shared_ptr<UDim2> co = dynamic_pointer_cast<UDim2>(other);
 			if(!co){
 				return false;
 			}
-			
+
 			return co->x->equals(x) && co->y->equals(y);
 		}
 
-	    std::string UDim2::toString(){
-		    return x->toString() + ", " + y->toString();
+		std::string UDim2::toString(){
+			return x->toString() + ", " + y->toString();
 		}
 
 		int UDim2::lua_getX(lua_State* L){
@@ -122,7 +122,7 @@ namespace OB{
 			if(!LuaUDim2){
 				return 0;
 			}
-			
+
 			return LuaUDim2->getX()->wrap_lua(L);
 		}
 
@@ -131,18 +131,18 @@ namespace OB{
 			if(!LuaUDim2){
 				return 0;
 			}
-			
+
 			return LuaUDim2->getY()->wrap_lua(L);
 		}
 
 		int UDim2::lua_eq(lua_State* L){
 			shared_ptr<UDim2> LuaUDim2 = checkUDim2(L, 1, false);
-			
+
 			if(LuaUDim2){
-			    shared_ptr<UDim2> OtherUDim2 = checkUDim2(L, 2, false);
+				shared_ptr<UDim2> OtherUDim2 = checkUDim2(L, 2, false);
 			   	lua_pushboolean(L, LuaUDim2->equals(OtherUDim2));
 			}
-			
+
 			lua_pushboolean(L, false);
 			return 1;
 		}
@@ -152,8 +152,8 @@ namespace OB{
 			if(!LuaUDim2){
 				return 0;
 			}
-			
-		    shared_ptr<UDim2> OtherUDim2 = checkUDim2(L, 2, true, false);
+
+			shared_ptr<UDim2> OtherUDim2 = checkUDim2(L, 2, true, false);
 			return LuaUDim2->add(OtherUDim2)->wrap_lua(L);
 		}
 
@@ -162,8 +162,8 @@ namespace OB{
 			if(!LuaUDim2){
 				return 0;
 			}
-			
-		    shared_ptr<UDim2> OtherUDim2 = checkUDim2(L, 2, true, false);
+
+			shared_ptr<UDim2> OtherUDim2 = checkUDim2(L, 2, true, false);
 			return LuaUDim2->sub(OtherUDim2)->wrap_lua(L);
 		}
 
@@ -198,7 +198,7 @@ namespace OB{
 		}
 
 		void UDim2::register_lua_property_getters(lua_State* L){
-		    luaL_Reg properties[] = {
+			luaL_Reg properties[] = {
 				{"X", lua_getX},
 				{"Y", lua_getY},
 				{"x", lua_getX},
@@ -208,13 +208,13 @@ namespace OB{
 			luaL_setfuncs(L, properties, 0);
 		}
 
-	    shared_ptr<UDim2> checkUDim2(lua_State* L, int index, bool errIfNot, bool allowNil){
+		shared_ptr<UDim2> checkUDim2(lua_State* L, int index, bool errIfNot, bool allowNil){
 			if(allowNil){
 				if(lua_isnoneornil(L, index)){
 					return NULL;
 				}
 			}
-			
+
 			if(lua_isuserdata(L, index)){
 				void* udata = lua_touserdata(L, index);
 				int meta = lua_getmetatable(L, index);

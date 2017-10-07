@@ -28,13 +28,13 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    Camera::Camera(OBEngine* eng) : Instance(eng){
+		Camera::Camera(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 
 			Archivable = false;
 		}
 
-	    Camera::~Camera(){}
+		Camera::~Camera(){}
 
 		bool Camera::SaveScreenshot(std::string file){
 			return getEngine()->saveScreenshot(file);
@@ -44,11 +44,11 @@ namespace OB{
 			return NULL;
 		}
 
-		#if HAVE_ENET
+#if HAVE_ENET
 		void Camera::replicateProperties(shared_ptr<NetworkReplicator> peer){
 			Instance::replicateProperties(peer);
 		}
-		#endif
+#endif
 
 		std::map<std::string, _PropertyInfo> Camera::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
@@ -70,11 +70,11 @@ namespace OB{
 				shared_ptr<Camera> instC = dynamic_pointer_cast<Camera>(inst);
 				if(instC){
 					std::string desired = std::string(luaL_checkstring(L, 2));
-				    lua_pushboolean(L, instC->SaveScreenshot(desired));
+					lua_pushboolean(L, instC->SaveScreenshot(desired));
 					return 1;
 				}
 			}
-			
+
 			return 0;
 		}
 
@@ -87,10 +87,10 @@ namespace OB{
 			};
 			luaL_setfuncs(L, methods, 0);
 		}
-		
-	    void Camera::register_lua_property_setters(lua_State* L){
+
+		void Camera::register_lua_property_setters(lua_State* L){
 			Instance::register_lua_property_setters(L);
-			
+
 			luaL_Reg properties[] = {
 				{NULL, NULL}
 			};
@@ -99,7 +99,7 @@ namespace OB{
 
 		void Camera::register_lua_property_getters(lua_State* L){
 			Instance::register_lua_property_getters(L);
-			
+
 			luaL_Reg properties[] = {
 				{NULL, NULL}
 			};

@@ -25,11 +25,11 @@
 namespace OB{
 	namespace Instance{
 		class GuiLabel: public GuiObject{
-			public:
-			    GuiLabel(OBEngine* eng);
-				virtual ~GuiLabel();
+		public:
+			GuiLabel(OBEngine* eng);
+			virtual ~GuiLabel();
 
-				DECLARE_CLASS(GuiLabel);
+			DECLARE_CLASS(GuiLabel);
 		};
 	}
 }

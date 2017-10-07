@@ -25,21 +25,21 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    GuiBase2d::GuiBase2d(OBEngine* eng) : GuiBase(eng){
+		GuiBase2d::GuiBase2d(OBEngine* eng) : GuiBase(eng){
 			Name = ClassName;
 		}
 
-	    GuiBase2d::~GuiBase2d(){}
+		GuiBase2d::~GuiBase2d(){}
 
 		std::vector<shared_ptr<GuiBase2d>> GuiBase2d::getRenderableChildren(){
-		    std::vector<shared_ptr<GuiBase2d>> renderableKids;
+			std::vector<shared_ptr<GuiBase2d>> renderableKids;
 
 			std::vector<shared_ptr<Instance>> kids = GetChildren();
-			
+
 			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
 				shared_ptr<Instance> kid = kids[i];
 				if(shared_ptr<GuiBase2d> kgb2 = dynamic_pointer_cast<GuiBase2d>(kid)){
-				    renderableKids.push_back(kgb2);
+					renderableKids.push_back(kgb2);
 				}
 			}
 
@@ -52,11 +52,11 @@ namespace OB{
 
 		bool GuiBase2d::handleClick(shared_ptr<Type::Vector2> p){
 			std::vector<shared_ptr<Instance>> kids = GetChildren();
-			
+
 			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
 				shared_ptr<Instance> kid = kids[i];
 				if(shared_ptr<GuiBase2d> kgb2 = dynamic_pointer_cast<GuiBase2d>(kid)){
-				    if(kgb2->handleClick(p)){
+					if(kgb2->handleClick(p)){
 						return true;
 					}
 				}
@@ -86,28 +86,28 @@ namespace OB{
 
 		int GuiBase2d::lua_getAbsolutePosition(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<GuiBase2d> instGB2 = dynamic_pointer_cast<GuiBase2d>(inst);
 				if(instGB2){
-				    return instGB2->getAbsolutePosition()->wrap_lua(L);
+					return instGB2->getAbsolutePosition()->wrap_lua(L);
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int GuiBase2d::lua_getAbsoluteSize(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<GuiBase2d> instGB2 = dynamic_pointer_cast<GuiBase2d>(inst);
 				if(instGB2){
-				    return instGB2->getAbsoluteSize()->wrap_lua(L);
+					return instGB2->getAbsoluteSize()->wrap_lua(L);
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
@@ -120,20 +120,20 @@ namespace OB{
 			return propMap;
 		}
 
-	    shared_ptr<Type::VarWrapper> GuiBase2d::getProperty(std::string prop){
+		shared_ptr<Type::VarWrapper> GuiBase2d::getProperty(std::string prop){
 			if(prop == "AbsolutePosition"){
 				return make_shared<Type::VarWrapper>(getAbsolutePosition());
 			}
 			if(prop == "AbsoluteSize"){
 				return make_shared<Type::VarWrapper>(getAbsoluteSize());
 			}
-			
+
 			return Instance::getProperty(prop);
 		}
 
 		void GuiBase2d::register_lua_property_setters(lua_State* L){
 			Instance::register_lua_property_setters(L);
-			
+
 			luaL_Reg properties[] = {
 				{"AbsolutePosition", Instance::lua_readOnlyProperty},
 				{"AbsoluteSize", Instance::lua_readOnlyProperty},
@@ -144,8 +144,8 @@ namespace OB{
 
 		void GuiBase2d::register_lua_property_getters(lua_State* L){
 			Instance::register_lua_property_getters(L);
-			
-		    luaL_Reg properties[] = {
+
+			luaL_Reg properties[] = {
 				{"AbsolutePosition", lua_getAbsolutePosition},
 				{"AbsoluteSize", lua_getAbsoluteSize},
 				{NULL, NULL}

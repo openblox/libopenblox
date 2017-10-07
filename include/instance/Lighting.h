@@ -33,73 +33,73 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class Lighting: public Instance{
-			public:
-			    Lighting(OBEngine* eng);
-				virtual ~Lighting();
+		public:
+			Lighting(OBEngine* eng);
+			virtual ~Lighting();
 
-				#if HAVE_PUGIXML
-				virtual std::string serializedID();
-				#endif
+#if HAVE_PUGIXML
+			virtual std::string serializedID();
+#endif
 
-				shared_ptr<Type::Color3> getSkyColor();
-				void setSkyColor(shared_ptr<Type::Color3> skyColor);
+			shared_ptr<Type::Color3> getSkyColor();
+			void setSkyColor(shared_ptr<Type::Color3> skyColor);
 
-				bool isSkyTransparent();
-				void setSkyTransparent(bool skyTransparent);
+			bool isSkyTransparent();
+			void setSkyTransparent(bool skyTransparent);
 
-				bool isFogEnabled();
-				void setFogEnabled(bool fogEnabled);
+			bool isFogEnabled();
+			void setFogEnabled(bool fogEnabled);
 
-				shared_ptr<Type::Color3> getFogColor();
-				void setFogColor(shared_ptr<Type::Color3> fogColor);
+			shared_ptr<Type::Color3> getFogColor();
+			void setFogColor(shared_ptr<Type::Color3> fogColor);
 
-				float getFogStart();
-				void setFogStart(float fogStart);
+			float getFogStart();
+			void setFogStart(float fogStart);
 
-			    float getFogEnd();
-				void setFogEnd(float fogEnd);
+			float getFogEnd();
+			void setFogEnd(float fogEnd);
 
-				#if HAVE_ENET
-				/**
-				 * Replicates properties of this Instance.
-				 * 
-				 * @param peer Peer
-				 * @author John M. Harris, Jr.
-				 */
-				virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
-				#endif
+#if HAVE_ENET
+			/**
+			 * Replicates properties of this Instance.
+			 *
+			 * @param peer Peer
+			 * @author John M. Harris, Jr.
+			 */
+			virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
+#endif
 
-				virtual std::map<std::string, _PropertyInfo> getProperties();
-				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
-				virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
+			virtual std::map<std::string, _PropertyInfo> getProperties();
+			virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
+			virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
 
-				DECLARE_LUA_METHOD(getSkyColor);
-				DECLARE_LUA_METHOD(setSkyColor);
-				DECLARE_LUA_METHOD(getSkyTransparent);
-				DECLARE_LUA_METHOD(setSkyTransparent);
-				DECLARE_LUA_METHOD(getFogEnabled);
-				DECLARE_LUA_METHOD(setFogEnabled);
-				DECLARE_LUA_METHOD(getFogColor);
-				DECLARE_LUA_METHOD(setFogColor);
-				DECLARE_LUA_METHOD(getFogStart);
-				DECLARE_LUA_METHOD(setFogStart);
-				DECLARE_LUA_METHOD(getFogEnd);
-				DECLARE_LUA_METHOD(setFogEnd);
+			DECLARE_LUA_METHOD(getSkyColor);
+			DECLARE_LUA_METHOD(setSkyColor);
+			DECLARE_LUA_METHOD(getSkyTransparent);
+			DECLARE_LUA_METHOD(setSkyTransparent);
+			DECLARE_LUA_METHOD(getFogEnabled);
+			DECLARE_LUA_METHOD(setFogEnabled);
+			DECLARE_LUA_METHOD(getFogColor);
+			DECLARE_LUA_METHOD(setFogColor);
+			DECLARE_LUA_METHOD(getFogStart);
+			DECLARE_LUA_METHOD(setFogStart);
+			DECLARE_LUA_METHOD(getFogEnd);
+			DECLARE_LUA_METHOD(setFogEnd);
 
-				static void register_lua_property_getters(lua_State* L);
-				static void register_lua_property_setters(lua_State* L);
+			static void register_lua_property_getters(lua_State* L);
+			static void register_lua_property_setters(lua_State* L);
 
-				DECLARE_CLASS(Lighting);
+			DECLARE_CLASS(Lighting);
 
-				void updateFog();
+			void updateFog();
 
-				shared_ptr<Type::Color3> SkyColor;
-				bool SkyTransparent;
-				
-				bool FogEnabled;
-				shared_ptr<Type::Color3> FogColor;
-			    float FogStart;
-			    float FogEnd;
+			shared_ptr<Type::Color3> SkyColor;
+			bool SkyTransparent;
+
+			bool FogEnabled;
+			shared_ptr<Type::Color3> FogColor;
+			float FogStart;
+			float FogEnd;
 		};
 	}
 }

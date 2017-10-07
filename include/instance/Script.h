@@ -25,25 +25,25 @@
 namespace OB{
 	namespace Instance{
 		class Script: public BaseScript{
-			public:
-			    Script(OBEngine* eng);
-				virtual ~Script();
+		public:
+			Script(OBEngine* eng);
+			virtual ~Script();
 
-				virtual std::string getSource();
+			virtual std::string getSource();
 
-				//internal
-				void setSource(std::string source);
+			// internal
+			void setSource(std::string source);
 
-				virtual void setDisabled(bool disabled);
+			virtual void setDisabled(bool disabled);
 
-				#if HAVE_PUGIXML
-				virtual void serialize(pugi::xml_node parentNode, shared_ptr<Instance> model);
-				virtual void deserializeProperties(pugi::xml_node thisNode);
-				#endif
+#if HAVE_PUGIXML
+			virtual void serialize(pugi::xml_node parentNode, shared_ptr<Instance> model);
+			virtual void deserializeProperties(pugi::xml_node thisNode);
+#endif
 
-				DECLARE_CLASS(Script);
-				
-				std::string Source;
+			DECLARE_CLASS(Script);
+
+			std::string Source;
 		};
 	}
 }

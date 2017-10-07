@@ -26,18 +26,18 @@ namespace OB{
 	namespace Instance{
 		/**
 		 * PlayerGui is a non-persistent container for UI elements to
-		 * be shown to the end user. Usually the contents of 
-		 * StarterGui are copied here when the Player object is 
+		 * be shown to the end user. Usually the contents of
+		 * StarterGui are copied here when the Player object is
 		 * initialized.
 		 *
 		 * @author John M. Harris, Jr.
 		 */
 		class PlayerGui: public BasePlayerGui{
-			public:
-			    PlayerGui(OBEngine* eng);
-				virtual ~PlayerGui();
+		public:
+			PlayerGui(OBEngine* eng);
+			virtual ~PlayerGui();
 
-				DECLARE_CLASS(PlayerGui);
+			DECLARE_CLASS(PlayerGui);
 		};
 	}
 }

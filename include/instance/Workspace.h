@@ -39,71 +39,71 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class Workspace: public Model{
-			public:
-			    Workspace(OBEngine* eng);
-				virtual ~Workspace();
+		public:
+			Workspace(OBEngine* eng);
+			virtual ~Workspace();
 
-				double getDistributedGameTime();
+			double getDistributedGameTime();
 
-				shared_ptr<Instance> getCurrentCamera();
-				void setCurrentCamera(shared_ptr<Instance> inst);
+			shared_ptr<Instance> getCurrentCamera();
+			void setCurrentCamera(shared_ptr<Instance> inst);
 
-			    shared_ptr<Type::Vector3> getGravity();
-				void setGravity(shared_ptr<Type::Vector3> gravity);
-				
-				double getFallenPartsDestroyHeight();
-				void setFallenPartsDestroyHeight(double fpdh);
+			shared_ptr<Type::Vector3> getGravity();
+			void setGravity(shared_ptr<Type::Vector3> gravity);
 
-				bool getDestroyFallenParts();
-				void setDestroyFallenParts(bool dfp);
+			double getFallenPartsDestroyHeight();
+			void setFallenPartsDestroyHeight(double fpdh);
 
-				#if HAVE_ENET
-				/**
-				 * Replicates properties of this Instance.
-				 * 
-				 * @param peer Peer
-				 * @author John M. Harris, Jr.
-				 */
-				virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
-				#endif
+			bool getDestroyFallenParts();
+			void setDestroyFallenParts(bool dfp);
 
-				#if HAVE_PUGIXML
-				virtual std::string serializedID();
-				#endif
+#if HAVE_ENET
+			/**
+			 * Replicates properties of this Instance.
+			 *
+			 * @param peer Peer
+			 * @author John M. Harris, Jr.
+			 */
+			virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
+#endif
 
-				virtual std::map<std::string, _PropertyInfo> getProperties();
-				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
-				virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
+#if HAVE_PUGIXML
+			virtual std::string serializedID();
+#endif
 
-				DECLARE_LUA_METHOD(getDistributedGameTime);
-				DECLARE_LUA_METHOD(getCurrentCamera);
-				DECLARE_LUA_METHOD(setCurrentCamera);
-				DECLARE_LUA_METHOD(getGravity);
-				DECLARE_LUA_METHOD(setGravity);
-				DECLARE_LUA_METHOD(getFallenPartsDestroyHeight);
-				DECLARE_LUA_METHOD(setFallenPartsDestroyHeight);
-				DECLARE_LUA_METHOD(getDestroyFallenParts);
-				DECLARE_LUA_METHOD(setDestroyFallenParts);
+			virtual std::map<std::string, _PropertyInfo> getProperties();
+			virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
+			virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
 
-				static void register_lua_property_getters(lua_State* L);
-				static void register_lua_property_setters(lua_State* L);
+			DECLARE_LUA_METHOD(getDistributedGameTime);
+			DECLARE_LUA_METHOD(getCurrentCamera);
+			DECLARE_LUA_METHOD(setCurrentCamera);
+			DECLARE_LUA_METHOD(getGravity);
+			DECLARE_LUA_METHOD(setGravity);
+			DECLARE_LUA_METHOD(getFallenPartsDestroyHeight);
+			DECLARE_LUA_METHOD(setFallenPartsDestroyHeight);
+			DECLARE_LUA_METHOD(getDestroyFallenParts);
+			DECLARE_LUA_METHOD(setDestroyFallenParts);
 
-				DECLARE_CLASS(Workspace);
+			static void register_lua_property_getters(lua_State* L);
+			static void register_lua_property_setters(lua_State* L);
 
-				void updateGravity();
+			DECLARE_CLASS(Workspace);
 
-				#if HAVE_BULLET
-				btBroadphaseInterface* broadphase;
-				btDefaultCollisionConfiguration* collisionConfiguration;
-				btCollisionDispatcher* dispatcher;
-				btSequentialImpulseConstraintSolver* solver;
-				btDiscreteDynamicsWorld* dynamicsWorld;
-				#endif
+			void updateGravity();
 
-				shared_ptr<Instance> CurrentCamera;
-			    shared_ptr<Type::Vector3> Gravity;
-				double FallenPartsDestroyHeight;
-				bool DestroyFallenParts;
+#if HAVE_BULLET
+			btBroadphaseInterface* broadphase;
+			btDefaultCollisionConfiguration* collisionConfiguration;
+			btCollisionDispatcher* dispatcher;
+			btSequentialImpulseConstraintSolver* solver;
+			btDiscreteDynamicsWorld* dynamicsWorld;
+#endif
+
+			shared_ptr<Instance> CurrentCamera;
+			shared_ptr<Type::Vector3> Gravity;
+			double FallenPartsDestroyHeight;
+			bool DestroyFallenParts;
 		};
 	}
 }

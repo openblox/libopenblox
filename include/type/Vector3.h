@@ -33,82 +33,82 @@
 #define OB_TYPE_VECTOR3
 
 namespace OB{
-	namespace Type{	
+	namespace Type{
 		class Vector3: public Type{
-			public:
-			    Vector3();
-			    Vector3(double x, double y, double z);
-				Vector3(std::string str);
-				virtual ~Vector3();
+		public:
+			Vector3();
+			Vector3(double x, double y, double z);
+			Vector3(std::string str);
+			virtual ~Vector3();
 
-				double getX();
-				double getY();
-				double getZ();
+			double getX();
+			double getY();
+			double getZ();
 
-				#if HAVE_IRRLICHT
-				
-				irr::core::vector3d<double> toIrrlichtVector3d();
-				irr::core::vector3d<float> toIrrlichtVector3df();
+#if HAVE_IRRLICHT
 
-				#endif
+			irr::core::vector3d<double> toIrrlichtVector3d();
+			irr::core::vector3d<float> toIrrlichtVector3df();
 
-				#if HAVE_BULLET
-				btVector3 toBulletVector3();
-				#endif
+#endif
 
-				virtual bool equals(shared_ptr<Type> other);
+#if HAVE_BULLET
+			btVector3 toBulletVector3();
+#endif
 
-				double getLength();
-				double getLengthSquared();
-				shared_ptr<Vector3> normalize();
+			virtual bool equals(shared_ptr<Type> other);
 
-			    shared_ptr<Vector3> add(double v);
-				shared_ptr<Vector3> add(shared_ptr<Vector3> v);
-				shared_ptr<Vector3> sub(double v);
-				shared_ptr<Vector3> sub(shared_ptr<Vector3> v);
-				shared_ptr<Vector3> mul(double v);
-				shared_ptr<Vector3> mul(shared_ptr<Vector3> v);
-				shared_ptr<Vector3> div(double v);
-				shared_ptr<Vector3> div(shared_ptr<Vector3> v);
-				shared_ptr<Vector3> neg();
+			double getLength();
+			double getLengthSquared();
+			shared_ptr<Vector3> normalize();
 
-				shared_ptr<Vector3> lerp(shared_ptr<Vector3> goal, double alpha);
-				double dot(shared_ptr<Vector3> v);
-				shared_ptr<Vector3> cross(shared_ptr<Vector3> v);
-				bool isClose(shared_ptr<Vector3> v, double epsilon = 1e-6);
+			shared_ptr<Vector3> add(double v);
+			shared_ptr<Vector3> add(shared_ptr<Vector3> v);
+			shared_ptr<Vector3> sub(double v);
+			shared_ptr<Vector3> sub(shared_ptr<Vector3> v);
+			shared_ptr<Vector3> mul(double v);
+			shared_ptr<Vector3> mul(shared_ptr<Vector3> v);
+			shared_ptr<Vector3> div(double v);
+			shared_ptr<Vector3> div(shared_ptr<Vector3> v);
+			shared_ptr<Vector3> neg();
 
-				virtual std::string toString();
+			shared_ptr<Vector3> lerp(shared_ptr<Vector3> goal, double alpha);
+			double dot(shared_ptr<Vector3> v);
+			shared_ptr<Vector3> cross(shared_ptr<Vector3> v);
+			bool isClose(shared_ptr<Vector3> v, double epsilon = 1e-6);
 
-				static int lua_getX(lua_State* L);
-				static int lua_getY(lua_State* L);
-				static int lua_getZ(lua_State* L);
+			virtual std::string toString();
 
-				static int lua_getLength(lua_State* L);
-				static int lua_getLengthSquared(lua_State* L);
-				static int lua_getUnit(lua_State* L);
+			static int lua_getX(lua_State* L);
+			static int lua_getY(lua_State* L);
+			static int lua_getZ(lua_State* L);
 
-				static int lua_lerp(lua_State* L);
-				static int lua_dot(lua_State* L);
-				static int lua_cross(lua_State* L);
-				static int lua_isClose(lua_State* L);
+			static int lua_getLength(lua_State* L);
+			static int lua_getLengthSquared(lua_State* L);
+			static int lua_getUnit(lua_State* L);
 
-				static int lua_eq(lua_State* L);
-				static int lua_unm(lua_State* L);
-				static int lua_add(lua_State* L);
-				static int lua_sub(lua_State* L);
-				static int lua_mul(lua_State* L);
-				static int lua_div(lua_State* L);
+			static int lua_lerp(lua_State* L);
+			static int lua_dot(lua_State* L);
+			static int lua_cross(lua_State* L);
+			static int lua_isClose(lua_State* L);
 
-				static void register_lua_metamethods(lua_State* L);
-				static void register_lua_methods(lua_State* L);
-				static void register_lua_property_setters(lua_State* L);
-				static void register_lua_property_getters(lua_State* L);
-				
-				DECLARE_TYPE();
+			static int lua_eq(lua_State* L);
+			static int lua_unm(lua_State* L);
+			static int lua_add(lua_State* L);
+			static int lua_sub(lua_State* L);
+			static int lua_mul(lua_State* L);
+			static int lua_div(lua_State* L);
 
-				double x;
-				double y;
-				double z;
+			static void register_lua_metamethods(lua_State* L);
+			static void register_lua_methods(lua_State* L);
+			static void register_lua_property_setters(lua_State* L);
+			static void register_lua_property_getters(lua_State* L);
+
+			DECLARE_TYPE();
+
+			double x;
+			double y;
+			double z;
 
 		};
 

@@ -29,6 +29,6 @@ namespace OB{
 			Name = ClassName;
 		}
 
-	    BasePlayerGui::~BasePlayerGui(){}
+		BasePlayerGui::~BasePlayerGui(){}
 	}
 }

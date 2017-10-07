@@ -40,76 +40,76 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class BasePart: public PVInstance{
-			public:
-			    BasePart(OBEngine* eng);
-				virtual ~BasePart();
+		public:
+			BasePart(OBEngine* eng);
+			virtual ~BasePart();
 
-			    void setAnchored(bool anchored);
-				bool getAnchored();
-				
-				void setColor(shared_ptr<Type::Color3> color);
-				shared_ptr<Type::Color3> getColor();
+			void setAnchored(bool anchored);
+			bool getAnchored();
 
-				void setCanCollide(bool cancollide);
-				bool getCanCollide();
+			void setColor(shared_ptr<Type::Color3> color);
+			shared_ptr<Type::Color3> getColor();
 
-				void setLocked(bool locked);
-				bool getLocked();
+			void setCanCollide(bool cancollide);
+			bool getCanCollide();
 
-				void setTransparency(double transparency);
-				double getTransparency();
+			void setLocked(bool locked);
+			bool getLocked();
 
-				void setPosition(shared_ptr<Type::Vector3> position);
-				shared_ptr<Type::Vector3> getPosition();
+			void setTransparency(double transparency);
+			double getTransparency();
 
-				void setRotation(shared_ptr<Type::Vector3> rotation);
-				shared_ptr<Type::Vector3> getRotation();
+			void setPosition(shared_ptr<Type::Vector3> position);
+			shared_ptr<Type::Vector3> getPosition();
 
-				virtual void updateColor();
-				virtual void updatePosition();
-				virtual void updateRotation();
+			void setRotation(shared_ptr<Type::Vector3> rotation);
+			shared_ptr<Type::Vector3> getRotation();
 
-				#if HAVE_ENET
-				/**
-				 * Replicates properties of this Instance.
-				 * 
-				 * @param peer Peer
-				 * @author John M. Harris, Jr.
-				 */
-				virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
-				#endif
+			virtual void updateColor();
+			virtual void updatePosition();
+			virtual void updateRotation();
 
-				virtual std::map<std::string, _PropertyInfo> getProperties();
-				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
-				virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
+#if HAVE_ENET
+			/**
+			 * Replicates properties of this Instance.
+			 *
+			 * @param peer Peer
+			 * @author John M. Harris, Jr.
+			 */
+			virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
+#endif
 
-				DECLARE_LUA_METHOD(setAnchored);
-				DECLARE_LUA_METHOD(getAnchored);
-				DECLARE_LUA_METHOD(setColor);
-				DECLARE_LUA_METHOD(getColor);
-				DECLARE_LUA_METHOD(setCanCollide);
-				DECLARE_LUA_METHOD(getCanCollide);
-				DECLARE_LUA_METHOD(setLocked);
-				DECLARE_LUA_METHOD(getLocked);
-				DECLARE_LUA_METHOD(setTransparency);
-				DECLARE_LUA_METHOD(getTransparency);
-				DECLARE_LUA_METHOD(setPosition);
-				DECLARE_LUA_METHOD(getPosition);
-				DECLARE_LUA_METHOD(setRotation);
-				DECLARE_LUA_METHOD(getRotation);
+			virtual std::map<std::string, _PropertyInfo> getProperties();
+			virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
+			virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
 
-				static void register_lua_property_getters(lua_State* L);
-				static void register_lua_property_setters(lua_State* L);
+			DECLARE_LUA_METHOD(setAnchored);
+			DECLARE_LUA_METHOD(getAnchored);
+			DECLARE_LUA_METHOD(setColor);
+			DECLARE_LUA_METHOD(getColor);
+			DECLARE_LUA_METHOD(setCanCollide);
+			DECLARE_LUA_METHOD(getCanCollide);
+			DECLARE_LUA_METHOD(setLocked);
+			DECLARE_LUA_METHOD(getLocked);
+			DECLARE_LUA_METHOD(setTransparency);
+			DECLARE_LUA_METHOD(getTransparency);
+			DECLARE_LUA_METHOD(setPosition);
+			DECLARE_LUA_METHOD(getPosition);
+			DECLARE_LUA_METHOD(setRotation);
+			DECLARE_LUA_METHOD(getRotation);
 
-				DECLARE_CLASS(BasePart);
+			static void register_lua_property_getters(lua_State* L);
+			static void register_lua_property_setters(lua_State* L);
 
-				bool Anchored;
-				shared_ptr<Type::Color3> Color;
-				bool CanCollide;
-				bool Locked;
-				double Transparency;
-				shared_ptr<Type::Vector3> Position;
-				shared_ptr<Type::Vector3> Rotation;
+			DECLARE_CLASS(BasePart);
+
+			bool Anchored;
+			shared_ptr<Type::Color3> Color;
+			bool CanCollide;
+			bool Locked;
+			double Transparency;
+			shared_ptr<Type::Vector3> Position;
+			shared_ptr<Type::Vector3> Rotation;
 		};
 	}
 }

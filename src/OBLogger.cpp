@@ -25,7 +25,7 @@
 #include <iostream>
 
 namespace OB{
-    OBLogger::OBLogger(OBEngine* eng){
+	OBLogger::OBLogger(OBEngine* eng){
 		this->eng = eng;
 	}
 
@@ -36,7 +36,7 @@ namespace OB{
 	}
 
 	void OBLogger::setLogLevel(OBLogLevel logLevel){
-	    _logLevel = logLevel;
+		_logLevel = logLevel;
 	}
 
 	void OBLogger::log(std::string text, OBLogLevel logLevel){
@@ -55,7 +55,7 @@ namespace OB{
 		std::string textMsg = text;
 
 		if(extra.length() > 0){
-		    textMsg = textMsg + " :" + extra;
+			textMsg = textMsg + " :" + extra;
 		}
 
 		if(logLevel == OLL_None){
@@ -65,41 +65,41 @@ namespace OB{
 		}
 
 		switch(logLevel){
-			case OLL_Debug: {
-				logLevelStr = "[DEBUG] ";
-				if(ls){
-					ls->postLog(textMsg, Enum::MessageType::MessageOutput);
-				}
-				break;
+		case OLL_Debug: {
+			logLevelStr = "[DEBUG] ";
+			if(ls){
+				ls->postLog(textMsg, Enum::MessageType::MessageOutput);
 			}
-			case OLL_Information: {
-				logLevelStr = "[INFO] ";
-				if(ls){
-					ls->postLog(textMsg, Enum::MessageType::MessageInfo);
-				}
-				break;
+			break;
+		}
+		case OLL_Information: {
+			logLevelStr = "[INFO] ";
+			if(ls){
+				ls->postLog(textMsg, Enum::MessageType::MessageInfo);
 			}
-			case OLL_Warning: {
-				logLevelStr = "[WARN] ";
-				if(ls){
-					ls->postLog(textMsg, Enum::MessageType::MessageWarning);
-				}
-				break;
+			break;
+		}
+		case OLL_Warning: {
+			logLevelStr = "[WARN] ";
+			if(ls){
+				ls->postLog(textMsg, Enum::MessageType::MessageWarning);
 			}
-			case OLL_Error: {
-				logLevelStr = "[ERROR ]";
-				if(ls){
-					ls->postLog(textMsg, Enum::MessageType::MessageError);
-				}
-				break;
+			break;
+		}
+		case OLL_Error: {
+			logLevelStr = "[ERROR ]";
+			if(ls){
+				ls->postLog(textMsg, Enum::MessageType::MessageError);
 			}
+			break;
+		}
 		}
 
 		if(logLevel >= _logLevel){
 			if(logLevel == OLL_Error){
 				std::cerr << logLevelStr << textMsg << std::endl;
 			}else{
-			    std::cout << logLevelStr << textMsg << std::endl;
+				std::cout << logLevelStr << textMsg << std::endl;
 			}
 		}
 	}

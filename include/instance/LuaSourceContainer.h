@@ -25,13 +25,13 @@
 namespace OB{
 	namespace Instance{
 		class LuaSourceContainer: public Instance{
-			public:
-			    LuaSourceContainer(OBEngine* eng);
-				virtual ~LuaSourceContainer();
+		public:
+			LuaSourceContainer(OBEngine* eng);
+			virtual ~LuaSourceContainer();
 
-				virtual std::string getSource();
-				
-				DECLARE_CLASS(LuaSourceContainer);
+			virtual std::string getSource();
+
+			DECLARE_CLASS(LuaSourceContainer);
 		};
 	}
 }

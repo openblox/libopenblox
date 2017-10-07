@@ -36,43 +36,43 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class Part: public BasePart{
-			public:
-			    Part(OBEngine* eng);
-				virtual ~Part();
+		public:
+			Part(OBEngine* eng);
+			virtual ~Part();
 
-				shared_ptr<Type::Vector3> getSize();
-				void setSize(shared_ptr<Type::Vector3> size);
+			shared_ptr<Type::Vector3> getSize();
+			void setSize(shared_ptr<Type::Vector3> size);
 
-				virtual void updateSize();
-				virtual void updateColor();
+			virtual void updateSize();
+			virtual void updateColor();
 
-				#if HAVE_ENET
-				/**
-				 * Replicates properties of this Instance.
-				 * 
-				 * @param peer Peer
-				 * @author John M. Harris, Jr.
-				 */
-				virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
-				#endif
+#if HAVE_ENET
+			/**
+			 * Replicates properties of this Instance.
+			 *
+			 * @param peer Peer
+			 * @author John M. Harris, Jr.
+			 */
+			virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
+#endif
 
-				#if HAVE_IRRLICHT
-				virtual void newIrrlichtNode();
-				#endif
+#if HAVE_IRRLICHT
+			virtual void newIrrlichtNode();
+#endif
 
-				virtual std::map<std::string, _PropertyInfo> getProperties();
-				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
-				virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
+			virtual std::map<std::string, _PropertyInfo> getProperties();
+			virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
+			virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
 
-				DECLARE_LUA_METHOD(setSize);
-				DECLARE_LUA_METHOD(getSize);
+			DECLARE_LUA_METHOD(setSize);
+			DECLARE_LUA_METHOD(getSize);
 
-				static void register_lua_property_getters(lua_State* L);
-				static void register_lua_property_setters(lua_State* L);
+			static void register_lua_property_getters(lua_State* L);
+			static void register_lua_property_setters(lua_State* L);
 
-				DECLARE_CLASS(Part);
+			DECLARE_CLASS(Part);
 
-				shared_ptr<Type::Vector3> Size;
+			shared_ptr<Type::Vector3> Size;
 		};
 	}
 }

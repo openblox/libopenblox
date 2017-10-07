@@ -26,7 +26,7 @@
 
 namespace OB{
 	namespace Lua{
-		#define SPACECHARS	" \f\n\r\t\v"
+#define SPACECHARS	" \f\n\r\t\v"
 
 		static const char* b_str2int(const char* s, int base, lua_Integer* pn){
 			lua_Unsigned n = 0;
@@ -171,20 +171,20 @@ namespace OB{
 			int ex = (int)luaL_optinteger(L, 2, 0);
 			int res = lua_gc(L, o, ex);
 			switch(o){
-				case LUA_GCCOUNT: {
-					int b = lua_gc(L, LUA_GCCOUNTB, 0);
-					lua_pushnumber(L, (lua_Number)res + ((lua_Number)b / 1024));
-					return 1;
-				}
-				case LUA_GCSTEP:
-				case LUA_GCISRUNNING: {
-					lua_pushboolean(L, res);
-					return 1;
-				}
-				default: {
-					lua_pushinteger(L, res);
-					return 1;
-				}
+			case LUA_GCCOUNT: {
+				int b = lua_gc(L, LUA_GCCOUNTB, 0);
+				lua_pushnumber(L, (lua_Number)res + ((lua_Number)b / 1024));
+				return 1;
+			}
+			case LUA_GCSTEP:
+			case LUA_GCISRUNNING: {
+				lua_pushboolean(L, res);
+				return 1;
+			}
+			default: {
+				lua_pushinteger(L, res);
+				return 1;
+			}
 			}
 		}
 
@@ -255,15 +255,15 @@ namespace OB{
 		*/
 		static int luaB_ipairs(lua_State* L){
 			lua_CFunction iter = (luaL_getmetafield(L, 1, "__index") != LUA_TNIL) ? ipairsaux : ipairsaux_raw;
-			#if defined(LUA_COMPAT_IPAIRS)
+#if defined(LUA_COMPAT_IPAIRS)
 			return pairsmeta(L, "__ipairs", 1, iter);
-			#else
+#else
 			luaL_checkany(L, 1);
 			lua_pushcfunction(L, iter); /* iteration function */
 			lua_pushvalue(L, 1); /* state */
 			lua_pushinteger(L, 0); /* initial value */
 			return 3;
-			#endif
+#endif
 		}
 
 		static int load_aux(lua_State* L, int status, int envidx){
@@ -302,7 +302,7 @@ namespace OB{
 		** string to avoid it being collected while parsed. 'load' has four
 		** optional arguments (chunk, source name, mode, and environment).
 		*/
-		#define RESERVEDSLOT	5
+#define RESERVEDSLOT	5
 
 		/*
 		** Reader for generic 'load' function: 'lua_load' uses the
@@ -438,7 +438,7 @@ namespace OB{
 			luaL_tolstring(L, 1, NULL);
 			return 1;
 		}
-		
+
 		static const luaL_Reg base_funcs[] = {
 			{"assert", luaB_assert},
 			{"collectgarbage", luaB_collectgarbage},

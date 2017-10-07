@@ -31,15 +31,15 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class StarterGui: public BasePlayerGui{
-			public:
-			    StarterGui(OBEngine* eng);
-				virtual ~StarterGui();
+		public:
+			StarterGui(OBEngine* eng);
+			virtual ~StarterGui();
 
-				#if HAVE_PUGIXML
-				virtual std::string serializedID();
-				#endif
+#if HAVE_PUGIXML
+			virtual std::string serializedID();
+#endif
 
-				DECLARE_CLASS(StarterGui);
+			DECLARE_CLASS(StarterGui);
 		};
 	}
 }

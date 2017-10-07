@@ -25,43 +25,43 @@
 namespace OB{
 	namespace Instance{
 		class BaseScript: public LuaSourceContainer{
-			public:
-			    BaseScript(OBEngine* eng);
-				virtual ~BaseScript();
+		public:
+			BaseScript(OBEngine* eng);
+			virtual ~BaseScript();
 
-				virtual bool canRun();
-				virtual void runScript();
+			virtual bool canRun();
+			virtual void runScript();
 
-				bool isDisabled();
-				
-				virtual void setDisabled(bool disabled);
+			bool isDisabled();
 
-				std::string getLinkedSource();
+			virtual void setDisabled(bool disabled);
 
-				void setLinkedSource(std::string linkedSource);
+			std::string getLinkedSource();
 
-				#if HAVE_ENET
-				virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
-				#endif
+			void setLinkedSource(std::string linkedSource);
 
-				virtual std::map<std::string, _PropertyInfo> getProperties();
-				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
-				virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
+#if HAVE_ENET
+			virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
+#endif
 
-				DECLARE_LUA_METHOD(getDisabled);
-				DECLARE_LUA_METHOD(setDisabled);
-				DECLARE_LUA_METHOD(getLinkedSource);
-				DECLARE_LUA_METHOD(setLinkedSource);
-				DECLARE_LUA_METHOD(GetSource);
+			virtual std::map<std::string, _PropertyInfo> getProperties();
+			virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
+			virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
 
-				static void register_lua_property_getters(lua_State* L);
-				static void register_lua_property_setters(lua_State* L);
-				static void register_lua_methods(lua_State* L);
-				
-				DECLARE_CLASS(BaseScript);
+			DECLARE_LUA_METHOD(getDisabled);
+			DECLARE_LUA_METHOD(setDisabled);
+			DECLARE_LUA_METHOD(getLinkedSource);
+			DECLARE_LUA_METHOD(setLinkedSource);
+			DECLARE_LUA_METHOD(GetSource);
 
-				bool Disabled;
-				std::string LinkedSource;
+			static void register_lua_property_getters(lua_State* L);
+			static void register_lua_property_setters(lua_State* L);
+			static void register_lua_methods(lua_State* L);
+
+			DECLARE_CLASS(BaseScript);
+
+			bool Disabled;
+			std::string LinkedSource;
 		};
 	}
 }

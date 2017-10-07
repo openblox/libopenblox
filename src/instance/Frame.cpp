@@ -31,18 +31,18 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    Frame::Frame(OBEngine* eng) : GuiObject(eng){
+		Frame::Frame(OBEngine* eng) : GuiObject(eng){
 			Name = ClassName;
 		}
 
-	    Frame::~Frame(){}
+		Frame::~Frame(){}
 
 		shared_ptr<Instance> Frame::cloneImpl(){
 			return NULL;
 		}
 
 		void Frame::render(){
-			#if HAVE_IRRLICHT
+#if HAVE_IRRLICHT
 			if(Visible){
 				if(irr::IrrlichtDevice* irrDev = getEngine()->getIrrlichtDevice()){
 					if(irr::video::IVideoDriver* irrDriv = irrDev->getVideoDriver()){
@@ -73,7 +73,7 @@ namespace OB{
 					}
 				}
 			}
-			#endif
+#endif
 		}
 	}
 }

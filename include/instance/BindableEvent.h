@@ -31,15 +31,15 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class BindableEvent: public Instance {
-			public:
-			    BindableEvent(OBEngine* eng);
-				virtual ~BindableEvent();
+		public:
+			BindableEvent(OBEngine* eng);
+			virtual ~BindableEvent();
 
-				static void register_lua_events(lua_State* L);
+			static void register_lua_events(lua_State* L);
 
-				DECLARE_CLASS(BindableEvent);
+			DECLARE_CLASS(BindableEvent);
 
-				shared_ptr<Type::Event> Event;
+			shared_ptr<Type::Event> Event;
 		};
 	}
 }

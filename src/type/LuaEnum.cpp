@@ -26,25 +26,25 @@
 namespace OB{
 	namespace Type{
 		std::map<std::string, shared_ptr<LuaEnum>>* LuaEnum::enums = NULL;
-		
+
 		DEFINE_TYPE(LuaEnum){
-		    typeList.push_back(LuaTypeName);
-			
+			typeList.push_back(LuaTypeName);
+
 			lua_State* L = eng->getGlobalLuaState();
 
 			luaL_newmetatable(L, LuaTypeName.c_str());
-		    register_lua_metamethods(L);
+			register_lua_metamethods(L);
 
 			lua_pushstring(L, "__metatable");
 			lua_pushstring(L, "This metatable is locked");
 			lua_rawset(L, -3);
 
-			//Item get
+			// Item get
 			lua_pushstring(L, "__index");
 			lua_pushcfunction(L, lua_index);
 			lua_rawset(L, -3);
 
-			//Item set
+			// Item set
 			lua_pushstring(L, "__newindex");
 			lua_pushcfunction(L, Instance::Instance::lua_readOnlyProperty);
 			lua_rawset(L, -3);
@@ -55,8 +55,8 @@ namespace OB{
 
 			lua_pop(L, 1);
 		}
-		
-	    LuaEnum::LuaEnum(std::string type, va_list args){
+
+		LuaEnum::LuaEnum(std::string type, va_list args){
 			this->type = type;
 
 			int i = 0;
@@ -71,7 +71,7 @@ namespace OB{
 			va_end(args);
 		}
 
-	    LuaEnum::~LuaEnum(){}
+		LuaEnum::~LuaEnum(){}
 
 		bool LuaEnum::equals(shared_ptr<Type> other){
 			shared_ptr<LuaEnum> co = dynamic_pointer_cast<LuaEnum>(other);
@@ -99,7 +99,7 @@ namespace OB{
 			return type;
 		}
 
-	    shared_ptr<LuaEnumItem> LuaEnum::getEnumItem(int value){
+		shared_ptr<LuaEnumItem> LuaEnum::getEnumItem(int value){
 			for(std::map<std::string, shared_ptr<LuaEnumItem>>::iterator it = enumValues.begin(); it != enumValues.end(); ++it){
 				if(it->second->getValue() == value){
 					return it->second;
@@ -108,16 +108,16 @@ namespace OB{
 			return NULL;
 		}
 
-	    std::string LuaEnum::toString(){
+		std::string LuaEnum::toString(){
 			return "Enum." + type;
 		}
 
 		int LuaEnum::lua_getEnumItems(lua_State* L){
-		    shared_ptr<LuaEnum> itm = checkLuaEnum(L, 1, false);
+			shared_ptr<LuaEnum> itm = checkLuaEnum(L, 1, false);
 			if(!itm){
 				return luaL_error(L, COLONERR, "GetEnumItems");
 			}
-			
+
 			lua_newtable(L);
 
 			int i = 1;
@@ -132,8 +132,8 @@ namespace OB{
 		}
 
 		int LuaEnum::lua_index(lua_State* L){
-		    shared_ptr<LuaEnum> con = checkLuaEnum(L, 1, false);
-			
+			shared_ptr<LuaEnum> con = checkLuaEnum(L, 1, false);
+
 			std::string propname = std::string(luaL_checkstring(L, 2));
 			if(propname == "GetEnumItems"){
 				lua_pushcfunction(L, lua_getEnumItems);
@@ -144,17 +144,17 @@ namespace OB{
 					return enm->wrap_lua(L);
 				}
 			}
-			
+
 			return 0;
 		}
 
-	    shared_ptr<LuaEnum> checkLuaEnum(lua_State* L, int index, bool errIfNot, bool allowNil){
+		shared_ptr<LuaEnum> checkLuaEnum(lua_State* L, int index, bool errIfNot, bool allowNil){
 			if(allowNil){
 				if(lua_isnoneornil(L, index)){
 					return NULL;
 				}
 			}
-			
+
 			if(lua_isuserdata(L, index)){
 				void* udata = lua_touserdata(L, index);
 				int meta = lua_getmetatable(L, index);

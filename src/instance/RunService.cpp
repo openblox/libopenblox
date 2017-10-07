@@ -28,7 +28,7 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    RunService::RunService(OBEngine* eng) : Instance(eng){
+		RunService::RunService(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 			netId = OB_NETID_NOT_REPLICATED;
 
@@ -38,10 +38,10 @@ namespace OB{
 			running = false;
 			isStudio = false;
 
-		    Stepped = make_shared<Type::Event>("Stepped");
+			Stepped = make_shared<Type::Event>("Stepped");
 		}
 
-	    RunService::~RunService(){}
+		RunService::~RunService(){}
 
 		shared_ptr<Instance> RunService::cloneImpl(){
 			return NULL;
@@ -77,40 +77,40 @@ namespace OB{
 				running = true;
 				if(!wasRunning){
 					wasRunning = true;
-					//TODO: wake scripts in DataModel
+					// TODO: wake scripts in DataModel
 				}
 			}
 		}
 
 		void RunService::Stop(){
 			running = false;
-		    wasRunning = false;
-		    getEngine()->getTaskScheduler()->removeDMBound();
-			//TODO: Disconnect events
+			wasRunning = false;
+			getEngine()->getTaskScheduler()->removeDMBound();
+			// TODO: Disconnect events
 		}
 
 		void RunService::setIsStudio(bool isStudio){
-		    this->isStudio = isStudio;
+			this->isStudio = isStudio;
 		}
 
 		void RunService::tick(){
 			Stepped->Fire(eng);
-			
+
 			tickChildren();
 		}
 
-		#if HAVE_PUGIXML
-	    std::string RunService::serializedID(){
+#if HAVE_PUGIXML
+		std::string RunService::serializedID(){
 			shared_ptr<OBSerializer> serializer = eng->getSerializer();
 			serializer->SetID(shared_from_this(), getClassName());
-			
+
 			return Instance::serializedID();
 		}
-		#endif
+#endif
 
 		void RunService::register_lua_events(lua_State* L){
 			Instance::register_lua_events(L);
-			
+
 			luaL_Reg events[] = {
 				{"Stepped", WRAP_EVT(RunService, Stepped)},
 				{NULL, NULL}

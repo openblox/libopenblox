@@ -31,18 +31,18 @@ namespace OB{
 		DEFINE_TYPE(UDim){
 			registerLuaType(eng, LuaTypeName, TypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
 		}
-		
-	    UDim::UDim(){
+
+		UDim::UDim(){
 			scale = 0;
 			offset = 0;
 		}
 
-	    UDim::UDim(double scale, double offset){
+		UDim::UDim(double scale, double offset){
 			this->scale = scale;
 			this->offset = offset;
 		}
 
-	    UDim::UDim(std::string str){
+		UDim::UDim(std::string str){
 			std::vector<std::string> fields = split(str);
 			if(fields.size() == 2){
 				std::string scaleStr = trim(fields[0]);
@@ -53,7 +53,7 @@ namespace OB{
 				}else{
 					scale = 0;
 				}
-				
+
 				if(offsetStr.length() > 0){
 					offset = atof(offsetStr.c_str());
 				}else{
@@ -65,27 +65,27 @@ namespace OB{
 			}
 		}
 
-	    UDim::~UDim(){}
+		UDim::~UDim(){}
 
 		double UDim::getScale(){
 			return scale;
 		}
-		
+
 		double UDim::getOffset(){
 			return offset;
 		}
 
 		bool UDim::equals(shared_ptr<Type> other){
-		    shared_ptr<UDim> co = dynamic_pointer_cast<UDim>(other);
+			shared_ptr<UDim> co = dynamic_pointer_cast<UDim>(other);
 			if(!co){
 				return false;
 			}
-			
+
 			return co->scale == scale && co->offset == offset;
 		}
 
-	    std::string UDim::toString(){
-		    return ((std::ostringstream&)(std::ostringstream() << std::dec << scale)).str() + ", " + ((std::ostringstream&)(std::ostringstream() << std::dec << offset)).str();
+		std::string UDim::toString(){
+			return ((std::ostringstream&)(std::ostringstream() << std::dec << scale)).str() + ", " + ((std::ostringstream&)(std::ostringstream() << std::dec << offset)).str();
 		}
 
 		int UDim::lua_getScale(lua_State* L){
@@ -93,29 +93,29 @@ namespace OB{
 			if(!LuaUDim){
 				return 0;
 			}
-			
+
 			lua_pushnumber(L, LuaUDim->scale);
 			return 1;
 		}
 
 		int UDim::lua_getOffset(lua_State* L){
-		    shared_ptr<UDim> LuaUDim = checkUDim(L, 1, false);
+			shared_ptr<UDim> LuaUDim = checkUDim(L, 1, false);
 			if(!LuaUDim){
 				return 0;
 			}
-			
+
 			lua_pushnumber(L, LuaUDim->offset);
 			return 1;
 		}
 
 		int UDim::lua_eq(lua_State* L){
 			shared_ptr<UDim> LuaUDim = checkUDim(L, 1, false);
-			
+
 			if(LuaUDim){
-			    shared_ptr<UDim> OtherUDim = checkUDim(L, 2, false);
+				shared_ptr<UDim> OtherUDim = checkUDim(L, 2, false);
 			   	lua_pushboolean(L, LuaUDim->equals(OtherUDim));
 			}
-			
+
 			lua_pushboolean(L, false);
 			return 1;
 		}
@@ -149,7 +149,7 @@ namespace OB{
 		}
 
 		void UDim::register_lua_property_getters(lua_State* L){
-		    luaL_Reg properties[] = {
+			luaL_Reg properties[] = {
 				{"Scale", lua_getScale},
 				{"Offset", lua_getOffset},
 				{"scale", lua_getScale},
@@ -159,13 +159,13 @@ namespace OB{
 			luaL_setfuncs(L, properties, 0);
 		}
 
-	    shared_ptr<UDim> checkUDim(lua_State* L, int index, bool errIfNot, bool allowNil){
+		shared_ptr<UDim> checkUDim(lua_State* L, int index, bool errIfNot, bool allowNil){
 			if(allowNil){
 				if(lua_isnoneornil(L, index)){
 					return NULL;
 				}
 			}
-			
+
 			if(lua_isuserdata(L, index)){
 				void* udata = lua_touserdata(L, index);
 				int meta = lua_getmetatable(L, index);

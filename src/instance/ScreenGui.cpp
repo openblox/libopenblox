@@ -28,14 +28,14 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    ScreenGui::ScreenGui(OBEngine* eng) : LayerCollector(eng){
+		ScreenGui::ScreenGui(OBEngine* eng) : LayerCollector(eng){
 			Name = ClassName;
 
 			Enabled = true;
 			DisplayOrder = 0;
 		}
 
-	    ScreenGui::~ScreenGui(){}
+		ScreenGui::~ScreenGui(){}
 
 		shared_ptr<Instance> ScreenGui::cloneImpl(){
 			return NULL;
@@ -71,7 +71,7 @@ namespace OB{
 
 		void ScreenGui::setEnabled(bool enabled){
 			if(Enabled != enabled){
-			    Enabled = enabled;
+				Enabled = enabled;
 
 				REPLICATE_PROPERTY_CHANGE(Enabled);
 				propertyChanged("Enabled");
@@ -81,24 +81,24 @@ namespace OB{
 		int ScreenGui::getDisplayOrder(){
 			return DisplayOrder;
 		}
-		
+
 		void ScreenGui::setDisplayOrder(int displayOrder){
 			if(DisplayOrder != displayOrder){
-			    DisplayOrder = displayOrder;
+				DisplayOrder = displayOrder;
 
 				REPLICATE_PROPERTY_CHANGE(DisplayOrder);
 				propertyChanged("DisplayOrder");
 			}
 		}
 
-		#if HAVE_ENET
+#if HAVE_ENET
 		void ScreenGui::replicateProperties(shared_ptr<NetworkReplicator> peer){
-		    GuiBase2d::replicateProperties(peer);
-			
-		    peer->sendSetPropertyPacket(netId, "Enabled", make_shared<Type::VarWrapper>(Enabled));
+			GuiBase2d::replicateProperties(peer);
+
+			peer->sendSetPropertyPacket(netId, "Enabled", make_shared<Type::VarWrapper>(Enabled));
 			peer->sendSetPropertyPacket(netId, "DisplayOrder", make_shared<Type::VarWrapper>(DisplayOrder));
 		}
-		#endif
+#endif
 
 		std::map<std::string, _PropertyInfo> ScreenGui::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = GuiBase2d::getProperties();
@@ -108,7 +108,7 @@ namespace OB{
 			return propMap;
 		}
 
-	    shared_ptr<Type::VarWrapper> ScreenGui::getProperty(std::string prop){
+		shared_ptr<Type::VarWrapper> ScreenGui::getProperty(std::string prop){
 			if(prop == "Enabled"){
 				return make_shared<Type::VarWrapper>(isEnabled());
 			}
@@ -120,12 +120,12 @@ namespace OB{
 		}
 
 		void ScreenGui::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
-		    if(prop == "Enabled"){
-			    setEnabled(val->asBool());
+			if(prop == "Enabled"){
+				setEnabled(val->asBool());
 				return;
 			}
 			if(prop == "DisplayOrder"){
-			    setDisplayOrder(val->asInt());
+				setDisplayOrder(val->asInt());
 				return;
 			}
 
@@ -134,7 +134,7 @@ namespace OB{
 
 		int ScreenGui::lua_getEnabled(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<ScreenGui> instSG = dynamic_pointer_cast<ScreenGui>(inst);
 				if(instSG){
@@ -142,14 +142,14 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int ScreenGui::lua_setEnabled(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<ScreenGui> instSG = dynamic_pointer_cast<ScreenGui>(inst);
 				if(instSG){
@@ -157,13 +157,13 @@ namespace OB{
 					instSG->setEnabled(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int ScreenGui::lua_getDisplayOrder(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<ScreenGui> instSG = dynamic_pointer_cast<ScreenGui>(inst);
 				if(instSG){
@@ -171,14 +171,14 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int ScreenGui::lua_setDisplayOrder(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<ScreenGui> instSG = dynamic_pointer_cast<ScreenGui>(inst);
 				if(instSG){
@@ -186,13 +186,13 @@ namespace OB{
 					instSG->setDisplayOrder(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		void ScreenGui::register_lua_property_setters(lua_State* L){
-		    GuiBase2d::register_lua_property_setters(L);
-			
+			GuiBase2d::register_lua_property_setters(L);
+
 			luaL_Reg properties[] = {
 				{"Enabled", lua_setEnabled},
 				{"DisplayOrder", lua_setDisplayOrder},
@@ -202,9 +202,9 @@ namespace OB{
 		}
 
 		void ScreenGui::register_lua_property_getters(lua_State* L){
-		    GuiBase2d::register_lua_property_getters(L);
-			
-		    luaL_Reg properties[] = {
+			GuiBase2d::register_lua_property_getters(L);
+
+			luaL_Reg properties[] = {
 				{"Enabled", lua_getEnabled},
 				{"DisplayOrder", lua_getDisplayOrder},
 				{NULL, NULL}

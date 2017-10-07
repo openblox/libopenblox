@@ -28,16 +28,16 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    BasePart::BasePart(OBEngine* eng) : PVInstance(eng){
+		BasePart::BasePart(OBEngine* eng) : PVInstance(eng){
 			Name = ClassName;
 
-		    Anchored = true;
-		    Color = make_shared<Type::Color3>(163/255, 162/255, 165/255);
-		    CanCollide = false;
-		    Locked = false;
-		    Transparency = 0;
+			Anchored = true;
+			Color = make_shared<Type::Color3>(163/255, 162/255, 165/255);
+			CanCollide = false;
+			Locked = false;
+			Transparency = 0;
 			Position = make_shared<Type::Vector3>(0, 0, 0);
-		    Rotation = make_shared<Type::Vector3>(0, 0, 0);
+			Rotation = make_shared<Type::Vector3>(0, 0, 0);
 		}
 
 		BasePart::~BasePart(){}
@@ -50,11 +50,11 @@ namespace OB{
 				propertyChanged("Anchored");
 			}
 		}
-		
+
 		bool BasePart::getAnchored(){
 			return Anchored;
 		}
-				
+
 		void BasePart::setColor(shared_ptr<Type::Color3> color){
 			if(!color){
 				shared_ptr<Type::Color3> col3 = make_shared<Type::Color3>();
@@ -75,7 +75,7 @@ namespace OB{
 				}
 			}
 		}
-		
+
 		shared_ptr<Type::Color3> BasePart::getColor(){
 			return Color;
 		}
@@ -88,7 +88,7 @@ namespace OB{
 				propertyChanged("CanCollide");
 			}
 		}
-		
+
 		bool BasePart::getCanCollide(){
 			return CanCollide;
 		}
@@ -101,7 +101,7 @@ namespace OB{
 				propertyChanged("Locked");
 			}
 		}
-		
+
 		bool BasePart::getLocked(){
 			return Locked;
 		}
@@ -114,7 +114,7 @@ namespace OB{
 				propertyChanged("Transparency");
 			}
 		}
-		
+
 		double BasePart::getTransparency(){
 			return Transparency;
 		}
@@ -139,7 +139,7 @@ namespace OB{
 				}
 			}
 		}
-		
+
 		shared_ptr<Type::Vector3> BasePart::getPosition(){
 			return Position;
 		}
@@ -164,7 +164,7 @@ namespace OB{
 				}
 			}
 		}
-		
+
 		shared_ptr<Type::Vector3> BasePart::getRotation(){
 			return Rotation;
 		}
@@ -172,25 +172,25 @@ namespace OB{
 		void BasePart::updateColor(){}
 
 		void BasePart::updatePosition(){
-			#if HAVE_IRRLICHT
+#if HAVE_IRRLICHT
 			if(irrNode){
 				irrNode->setPosition(getPosition()->toIrrlichtVector3df());
 			}
-			#endif
+#endif
 		}
 
 		void BasePart::updateRotation(){
-			#if HAVE_IRRLICHT
+#if HAVE_IRRLICHT
 			if(irrNode){
 				irrNode->setRotation(getRotation()->toIrrlichtVector3df());
 			}
-			#endif
+#endif
 		}
 
-		#if HAVE_ENET
+#if HAVE_ENET
 		void BasePart::replicateProperties(shared_ptr<NetworkReplicator> peer){
 			Instance::replicateProperties(peer);
-			
+
 			peer->sendSetPropertyPacket(netId, "Anchored", make_shared<Type::VarWrapper>(Anchored));
 			peer->sendSetPropertyPacket(netId, "Color", make_shared<Type::VarWrapper>(Color));
 			peer->sendSetPropertyPacket(netId, "CanCollide", make_shared<Type::VarWrapper>(CanCollide));
@@ -199,7 +199,7 @@ namespace OB{
 			peer->sendSetPropertyPacket(netId, "Position", make_shared<Type::VarWrapper>(Position));
 			peer->sendSetPropertyPacket(netId, "Rotation", make_shared<Type::VarWrapper>(Rotation));
 		}
-		#endif
+#endif
 
 		std::map<std::string, _PropertyInfo> BasePart::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
@@ -215,8 +215,8 @@ namespace OB{
 		}
 
 		void BasePart::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
-		    if(prop == "Anchored"){
-			    setAnchored(val->asBool());
+			if(prop == "Anchored"){
+				setAnchored(val->asBool());
 				return;
 			}
 			if(prop == "Color"){
@@ -232,7 +232,7 @@ namespace OB{
 				return;
 			}
 			if(prop == "Transparency"){
-			    setTransparency(val->asDouble());
+				setTransparency(val->asDouble());
 				return;
 			}
 			if(prop == "Position"){
@@ -244,41 +244,41 @@ namespace OB{
 				return;
 			}
 
-		    Instance::setProperty(prop, val);
+			Instance::setProperty(prop, val);
 		}
 
 		shared_ptr<Type::VarWrapper> BasePart::getProperty(std::string prop){
 			if(prop == "Name"){
 				return make_shared<Type::VarWrapper>(getName());
 			}
-		    if(prop == "Anchored"){
-			    return make_shared<Type::VarWrapper>(getAnchored());
+			if(prop == "Anchored"){
+				return make_shared<Type::VarWrapper>(getAnchored());
 			}
 			if(prop == "Color"){
-			    return make_shared<Type::VarWrapper>(getColor());
+				return make_shared<Type::VarWrapper>(getColor());
 			}
 			if(prop == "CanCollide"){
-			    return make_shared<Type::VarWrapper>(getCanCollide());
+				return make_shared<Type::VarWrapper>(getCanCollide());
 			}
 			if(prop == "Locked"){
-			    return make_shared<Type::VarWrapper>(getLocked());
+				return make_shared<Type::VarWrapper>(getLocked());
 			}
 			if(prop == "Transparency"){
-			    return make_shared<Type::VarWrapper>(getTransparency());
+				return make_shared<Type::VarWrapper>(getTransparency());
 			}
 			if(prop == "Position"){
-			    return make_shared<Type::VarWrapper>(getPosition());
+				return make_shared<Type::VarWrapper>(getPosition());
 			}
 			if(prop == "Rotation"){
-			    return make_shared<Type::VarWrapper>(getRotation());
+				return make_shared<Type::VarWrapper>(getRotation());
 			}
-			
+
 			return Instance::getProperty(prop);
 		}
 
 		int BasePart::lua_setAnchored(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<BasePart> instBP = dynamic_pointer_cast<BasePart>(inst);
 				if(instBP){
@@ -286,13 +286,13 @@ namespace OB{
 					instBP->setAnchored(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int BasePart::lua_getAnchored(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<BasePart> instBP = dynamic_pointer_cast<BasePart>(inst);
 				if(instBP){
@@ -300,32 +300,32 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int BasePart::lua_setColor(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<BasePart> instBP = dynamic_pointer_cast<BasePart>(inst);
 				if(instBP){
-				    shared_ptr<Type::Color3> col3 = Type::checkColor3(L, 2, true, true);
+					shared_ptr<Type::Color3> col3 = Type::checkColor3(L, 2, true, true);
 					instBP->setColor(col3);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int BasePart::lua_getColor(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<BasePart> instBP = dynamic_pointer_cast<BasePart>(inst);
 				if(instBP){
-				    shared_ptr<Type::Color3> col3 = instBP->getColor();
+					shared_ptr<Type::Color3> col3 = instBP->getColor();
 					if(col3){
 						return col3->wrap_lua(L);
 					}else{
@@ -334,14 +334,14 @@ namespace OB{
 					}
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int BasePart::lua_setCanCollide(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<BasePart> instBP = dynamic_pointer_cast<BasePart>(inst);
 				if(instBP){
@@ -349,13 +349,13 @@ namespace OB{
 					instBP->setCanCollide(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int BasePart::lua_getCanCollide(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<BasePart> instBP = dynamic_pointer_cast<BasePart>(inst);
 				if(instBP){
@@ -363,14 +363,14 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int BasePart::lua_setLocked(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<BasePart> instBP = dynamic_pointer_cast<BasePart>(inst);
 				if(instBP){
@@ -378,13 +378,13 @@ namespace OB{
 					instBP->setLocked(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int BasePart::lua_getLocked(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<BasePart> instBP = dynamic_pointer_cast<BasePart>(inst);
 				if(instBP){
@@ -392,28 +392,28 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int BasePart::lua_setTransparency(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<BasePart> instBP = dynamic_pointer_cast<BasePart>(inst);
 				if(instBP){
-				    double newV = luaL_checknumber(L, 2);
+					double newV = luaL_checknumber(L, 2);
 					instBP->setTransparency(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int BasePart::lua_getTransparency(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<BasePart> instBP = dynamic_pointer_cast<BasePart>(inst);
 				if(instBP){
@@ -421,32 +421,32 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int BasePart::lua_setPosition(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<BasePart> instBP = dynamic_pointer_cast<BasePart>(inst);
 				if(instBP){
-				    shared_ptr<Type::Vector3> vec3 = Type::checkVector3(L, 2, true, true);
+					shared_ptr<Type::Vector3> vec3 = Type::checkVector3(L, 2, true, true);
 					instBP->setPosition(vec3);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int BasePart::lua_getPosition(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<BasePart> instBP = dynamic_pointer_cast<BasePart>(inst);
 				if(instBP){
-				    shared_ptr<Type::Vector3> vec3 = instBP->getPosition();
+					shared_ptr<Type::Vector3> vec3 = instBP->getPosition();
 					if(vec3){
 						return vec3->wrap_lua(L);
 					}else{
@@ -455,32 +455,32 @@ namespace OB{
 					}
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int BasePart::lua_setRotation(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<BasePart> instBP = dynamic_pointer_cast<BasePart>(inst);
 				if(instBP){
-				    shared_ptr<Type::Vector3> vec3 = Type::checkVector3(L, 2, true, true);
+					shared_ptr<Type::Vector3> vec3 = Type::checkVector3(L, 2, true, true);
 					instBP->setRotation(vec3);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int BasePart::lua_getRotation(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<BasePart> instBP = dynamic_pointer_cast<BasePart>(inst);
 				if(instBP){
-				    shared_ptr<Type::Vector3> vec3 = instBP->getRotation();
+					shared_ptr<Type::Vector3> vec3 = instBP->getRotation();
 					if(vec3){
 						return vec3->wrap_lua(L);
 					}else{
@@ -489,14 +489,14 @@ namespace OB{
 					}
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		void BasePart::register_lua_property_setters(lua_State* L){
 			PVInstance::register_lua_property_setters(L);
-			
+
 			luaL_Reg properties[] = {
 				{"Anchored", lua_setAnchored},
 				{"Color", lua_setColor},
@@ -512,7 +512,7 @@ namespace OB{
 
 		void BasePart::register_lua_property_getters(lua_State* L){
 			PVInstance::register_lua_property_getters(L);
-			
+
 			luaL_Reg properties[] = {
 				{"Anchored", lua_getAnchored},
 				{"Color", lua_getColor},

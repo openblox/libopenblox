@@ -22,16 +22,16 @@
 #define OB_LUA_OBLUA
 
 extern "C" {
-	#include <lua.h>
-	#include <lauxlib.h>
-	#include <lualib.h>
+#include <lua.h>
+#include <lauxlib.h>
+#include <lualib.h>
 }
 
 #include <string>
 
 namespace OB{
 	class OBEngine;
-	
+
 	/*
 	 * Convenience function to handle type errors, used in check*
 	 * functions.
@@ -53,11 +53,11 @@ namespace OB{
 		}else{
 			typearg = luaL_typename(L, arg);
 		}
-		
+
 		const char* msg = lua_pushfstring(L, "%s expected, got %s", tname, typearg);
 		return luaL_argerror(L, arg, msg);
 	}
-	
+
 	namespace Lua{
 		struct OBLState{
 			lua_State* L;
@@ -66,7 +66,7 @@ namespace OB{
 			bool initUseOver;
 			OBLState* parent;
 			OBEngine* eng;
-				
+
 			bool getsPaused;
 			bool dmBound;
 		};
@@ -94,7 +94,7 @@ namespace OB{
 		 * altered OpenBlox standard library. OpenBlox provides an
 		 * altered base library, coroutine library and os library. The
 		 * other libraries loaded are as follows: table, string, math,
-		 * utf8 
+		 * utf8
 		 *
 		 * @param gL Global Lua state
 		 * @returns Lua state under the global Lua state

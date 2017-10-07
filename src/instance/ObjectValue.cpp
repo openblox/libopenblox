@@ -28,20 +28,20 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    ObjectValue::ObjectValue(OBEngine* eng) : Instance(eng){
+		ObjectValue::ObjectValue(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 
 			Value = NULL;
 		}
 
-	    ObjectValue::~ObjectValue(){}
+		ObjectValue::~ObjectValue(){}
 
-	    shared_ptr<Instance> ObjectValue::getValue(){
+		shared_ptr<Instance> ObjectValue::getValue(){
 			return Value;
 		}
 
 		void ObjectValue::setValue(shared_ptr<Instance> value){
-		    if(Value != value){
+			if(Value != value){
 				Value = value;
 
 				REPLICATE_PROPERTY_CHANGE(Value);
@@ -56,17 +56,17 @@ namespace OB{
 			ov->ParentLocked = ParentLocked;
 
 			ov->Value = Value;
-			
+
 			return ov;
 		}
 
-		#if HAVE_ENET
+#if HAVE_ENET
 		void ObjectValue::replicateProperties(shared_ptr<NetworkReplicator> peer){
 			Instance::replicateProperties(peer);
-			
+
 			peer->sendSetPropertyPacket(netId, "Value", make_shared<Type::VarWrapper>(Value));
 		}
-		#endif
+#endif
 
 		std::map<std::string, _PropertyInfo> ObjectValue::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
@@ -76,7 +76,7 @@ namespace OB{
 		}
 
 		void ObjectValue::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
-		    if(prop == "Value"){
+			if(prop == "Value"){
 				setValue(val->asInstance());
 				return;
 			}
@@ -88,47 +88,47 @@ namespace OB{
 			if(prop == "Value"){
 				return make_shared<Type::VarWrapper>(getValue());
 			}
-			
+
 			return Instance::getProperty(prop);
 		}
 
 		int ObjectValue::lua_setValue(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<ObjectValue> instIV = dynamic_pointer_cast<ObjectValue>(inst);
 				if(instIV){
-				    shared_ptr<Instance> newV = checkInstance(L, 2, false);
+					shared_ptr<Instance> newV = checkInstance(L, 2, false);
 					instIV->setValue(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int ObjectValue::lua_getValue(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<ObjectValue> instIV = dynamic_pointer_cast<ObjectValue>(inst);
 				if(instIV){
-				    shared_ptr<Instance> tV = instIV->getValue();
+					shared_ptr<Instance> tV = instIV->getValue();
 					if(tV){
-					    tV->wrap_lua(L);
+						tV->wrap_lua(L);
 					}else{
 						lua_pushnil(L);
 					}
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
-	    void ObjectValue::register_lua_property_setters(lua_State* L){
+		void ObjectValue::register_lua_property_setters(lua_State* L){
 			Instance::register_lua_property_setters(L);
-			
+
 			luaL_Reg properties[] = {
 				{"Value", lua_setValue},
 				{NULL, NULL}
@@ -138,7 +138,7 @@ namespace OB{
 
 		void ObjectValue::register_lua_property_getters(lua_State* L){
 			Instance::register_lua_property_getters(L);
-			
+
 			luaL_Reg properties[] = {
 				{"Value", lua_getValue},
 				{NULL, NULL}

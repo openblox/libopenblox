@@ -31,11 +31,11 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class Model: public PVInstance{
-			public:
-				Model(OBEngine* eng);
-				virtual ~Model();
+		public:
+			Model(OBEngine* eng);
+			virtual ~Model();
 
-				DECLARE_CLASS(Model);
+			DECLARE_CLASS(Model);
 		};
 	}
 }

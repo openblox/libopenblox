@@ -44,11 +44,11 @@
 
 namespace OB{
 	BitStream::BitStream() : BitStream(1){}
-	
+
 	BitStream::BitStream(int bytesToAlloc){
 		numberBitsUsed = 0;
 		readOffset = 0;
-		
+
 		if(bytesToAlloc > 0){
 			_data = (unsigned char*)malloc(bytesToAlloc);
 			numberBitsAlloc = bytesToAlloc << 3;
@@ -59,16 +59,16 @@ namespace OB{
 
 		_copyData = true;
 	}
-	
+
 	BitStream::BitStream(unsigned char* data, unsigned int lenBytes, bool _copyData){
-	    numberBitsUsed = lenBytes << 3;
+		numberBitsUsed = lenBytes << 3;
 		readOffset = 0;
 		this->_copyData = _copyData;
 		numberBitsAlloc = lenBytes << 3;
 
 		if(_copyData){
 			if(lenBytes > 0){
-			    _data = (unsigned char*)malloc(lenBytes);
+				_data = (unsigned char*)malloc(lenBytes);
 				if(data){
 					memcpy(_data, data, lenBytes);
 				}
@@ -99,17 +99,17 @@ namespace OB{
 		uint32_t newBitsAlloc = numBits + numberBitsUsed;
 
 		if(newBitsAlloc > 0 && ((numberBitsAlloc - 1) >> 3) < ((newBitsAlloc - 1) >> 3)){
-		    newBitsAlloc *= 2;
+			newBitsAlloc *= 2;
 			if(newBitsAlloc - (numBits + numberBitsUsed) > 1048576){
-			    newBitsAlloc = numBits + numberBitsUsed + 1048576;
+				newBitsAlloc = numBits + numberBitsUsed + 1048576;
 			}
 
 			uint32_t amountToAlloc = BITS_TO_BYTES(newBitsAlloc) + 1;
-		    _data = (unsigned char*)realloc(_data, (size_t)amountToAlloc);
+			_data = (unsigned char*)realloc(_data, (size_t)amountToAlloc);
 		}
 
 		if(newBitsAlloc > numberBitsAlloc){
-		    numberBitsAlloc = newBitsAlloc;
+			numberBitsAlloc = newBitsAlloc;
 		}
 	}
 
@@ -138,7 +138,7 @@ namespace OB{
 	void BitStream::ignoreBits(uint32_t numBits){
 		readOffset += numBits;
 	}
-	
+
 	void BitStream::ignoreBytes(unsigned int numBytes){
 		ignoreBits(BYTES_TO_BITS(numBytes));
 	}
@@ -161,7 +161,7 @@ namespace OB{
 
 		numberBitsUsed++;
 	}
-	
+
 	void BitStream::write1(){
 		_addBits(1);
 
@@ -175,7 +175,7 @@ namespace OB{
 
 		numberBitsUsed++;
 	}
-	
+
 	bool BitStream::readBit(){
 		bool result = (_data[readOffset >> 3] & (0x80 >> (readOffset & 7))) != 0;
 		readOffset++;
@@ -188,7 +188,7 @@ namespace OB{
 
 	unsigned char* BitStream::copyData(){
 		size_t dataLen = getNumBytesUsed();
-		
+
 		unsigned char* dataCopy = (unsigned char*)malloc(dataLen);
 		if(dataCopy){
 			memcpy(dataCopy, _data, dataLen);
@@ -202,15 +202,15 @@ namespace OB{
 		uint32_t numBitsUsedMod8 = numberBitsUsed & 7;
 
 		/*
-	    if(numBitsUsedMod8 == 0 && (numToWrite & 7) == 0){
-			printf("numBitsUsed: %i\n", numberBitsUsed);
-			printf("numBitsAlloc: %i\n", numberBitsAlloc);
-			printf("Setting at: %i\n", numberBitsUsed >> 3);
-			printf("ToWrite: %i\n", numToWrite >> 3);
-			memcpy(&_data[numberBitsUsed >> 3], inByteArray, numToWrite >> 3);
-			numberBitsUsed += numToWrite;
-			return;
-		}*/
+		  if(numBitsUsedMod8 == 0 && (numToWrite & 7) == 0){
+		  printf("numBitsUsed: %i\n", numberBitsUsed);
+		  printf("numBitsAlloc: %i\n", numberBitsAlloc);
+		  printf("Setting at: %i\n", numberBitsUsed >> 3);
+		  printf("ToWrite: %i\n", numToWrite >> 3);
+		  memcpy(&_data[numberBitsUsed >> 3], inByteArray, numToWrite >> 3);
+		  numberBitsUsed += numToWrite;
+		  return;
+		  }*/
 
 		unsigned char dataByte;
 		unsigned char* inPtr = inByteArray;
@@ -256,7 +256,7 @@ namespace OB{
 		}
 	}
 
-    bool BitStream::read(char* outByteArray, unsigned int numToRead){
+	bool BitStream::read(char* outByteArray, unsigned int numToRead){
 		if((readOffset & 7) == 0){
 			if(readOffset + (numToRead << 3) > numberBitsUsed){
 				return false;
@@ -277,7 +277,7 @@ namespace OB{
 	}
 
 	bool BitStream::readAlignedBytes(unsigned char* outByteArray, unsigned int numToRead){
-	    if(numToRead <= 0){
+		if(numToRead <= 0){
 			return false;
 		}
 
@@ -290,7 +290,7 @@ namespace OB{
 		memcpy(outByteArray, _data + (readOffset >> 3), (size_t)numToRead);
 
 		readOffset += numToRead << 3;
-		
+
 		return true;
 	}
 
@@ -350,7 +350,7 @@ namespace OB{
 			outByteArray[i] = inByteArray[len - i - 1];
 		}
 	}
-	
+
 	void BitStream::reverseBytesInPlace(unsigned char* inByteArray, unsigned int len){
 		unsigned char temp;
 		uint32_t i;
@@ -362,10 +362,10 @@ namespace OB{
 	}
 
 	void BitStream::writeCString(char* cstr){
-	    unsigned short len = strlen(cstr);
+		unsigned short len = strlen(cstr);
 
 		writeSizeT(len);
-	    writeAlignedBytes((unsigned char*)cstr, len);
+		writeAlignedBytes((unsigned char*)cstr, len);
 	}
 
 	void BitStream::writeString(std::string str){
@@ -373,12 +373,12 @@ namespace OB{
 	}
 
 	char* BitStream::readCString(){
-	    unsigned short len = readSizeT();
+		unsigned short len = readSizeT();
 
 		char* cstr = (char*)malloc(len + 1);
 		readAlignedBytes((unsigned char*)cstr, len);
 		cstr[len] = '\0';
-	    return cstr;
+		return cstr;
 	}
 
 	std::string BitStream::readString(){
@@ -394,92 +394,92 @@ namespace OB{
 	void BitStream::writeVar(shared_ptr<Type::VarWrapper> var){
 		size_t var_type = var->type;
 		if(var){
-		    switch(var_type){
-				case Type::TYPE_INT: {
-					writeSizeT(var_type);
-				    writeInt(static_cast<Type::IntWrapper*>(var->wrapped)->val);
-					break;
-				}
-				case Type::TYPE_DOUBLE: {
-					writeSizeT(var_type);
-				    writeDouble(static_cast<Type::DoubleWrapper*>(var->wrapped)->val);
-					break;
-				}
-				case Type::TYPE_FLOAT: {
-					writeSizeT(var_type);
-				    writeFloat(static_cast<Type::FloatWrapper*>(var->wrapped)->val);
-					break;
-				}
-				case Type::TYPE_LONG: {
-					writeSizeT(var_type);
-				    writeLong(static_cast<Type::LongWrapper*>(var->wrapped)->val);
-					break;
-				}
-				case Type::TYPE_UNSIGNED_LONG: {
-					writeSizeT(var_type);
-				    writeULong(static_cast<Type::UnsignedLongWrapper*>(var->wrapped)->val);
-					break;
-				}
-				case Type::TYPE_BOOL: {
-					writeSizeT(var_type);
-				    writeBool(static_cast<Type::BoolWrapper*>(var->wrapped)->val);
-					break;
-				}
-				case Type::TYPE_STRING: {
-					writeSizeT(var_type);
-				    writeString(static_cast<Type::StringWrapper*>(var->wrapped)->val);
-					break;
-				}
-				case Type::TYPE_INSTANCE: {
-					writeSizeT(var_type);
-					
-					shared_ptr<Instance::Instance> inst = *static_cast<shared_ptr<Instance::Instance>*>(var->wrapped);
-				    ob_uint64 netId = inst->GetNetworkID();
-					writeUInt64(netId);
-				    
-					break;
-				}
-				case Type::TYPE_TYPE: {
-					writeSizeT(var_type);
-					
-					shared_ptr<Type::Type> typ = *static_cast<shared_ptr<Type::Type>*>(var->wrapped);
-					if(typ){
-						std::string typName = typ->getClassName();
+			switch(var_type){
+			case Type::TYPE_INT: {
+				writeSizeT(var_type);
+				writeInt(static_cast<Type::IntWrapper*>(var->wrapped)->val);
+				break;
+			}
+			case Type::TYPE_DOUBLE: {
+				writeSizeT(var_type);
+				writeDouble(static_cast<Type::DoubleWrapper*>(var->wrapped)->val);
+				break;
+			}
+			case Type::TYPE_FLOAT: {
+				writeSizeT(var_type);
+				writeFloat(static_cast<Type::FloatWrapper*>(var->wrapped)->val);
+				break;
+			}
+			case Type::TYPE_LONG: {
+				writeSizeT(var_type);
+				writeLong(static_cast<Type::LongWrapper*>(var->wrapped)->val);
+				break;
+			}
+			case Type::TYPE_UNSIGNED_LONG: {
+				writeSizeT(var_type);
+				writeULong(static_cast<Type::UnsignedLongWrapper*>(var->wrapped)->val);
+				break;
+			}
+			case Type::TYPE_BOOL: {
+				writeSizeT(var_type);
+				writeBool(static_cast<Type::BoolWrapper*>(var->wrapped)->val);
+				break;
+			}
+			case Type::TYPE_STRING: {
+				writeSizeT(var_type);
+				writeString(static_cast<Type::StringWrapper*>(var->wrapped)->val);
+				break;
+			}
+			case Type::TYPE_INSTANCE: {
+				writeSizeT(var_type);
 
-						if(typName == "UDim2"){
-							writeSizeT(OB_NET_TYPE_UDIM2);
-							writeUDim2(dynamic_pointer_cast<Type::UDim2>(typ));
-						}else if(typName == "UDim"){
-							writeSizeT(OB_NET_TYPE_UDIM);
-							writeUDim(dynamic_pointer_cast<Type::UDim>(typ));
-						}else if(typName == "Color3"){
-							writeSizeT(OB_NET_TYPE_COLOR3);
-							writeColor3(dynamic_pointer_cast<Type::Color3>(typ));
-						}else if(typName == "Vector3"){
-							writeSizeT(OB_NET_TYPE_VECTOR3);
-							writeVector3(dynamic_pointer_cast<Type::Vector3>(typ));
-						}else if(typName == "Vector2"){
-							writeSizeT(OB_NET_TYPE_VECTOR2);
-							writeVector2(dynamic_pointer_cast<Type::Vector2>(typ));
-						}else if(typName == "LuaEnum"){
-							writeSizeT(OB_NET_TYPE_LUAENUM);
-							writeLuaEnum(dynamic_pointer_cast<Type::LuaEnum>(typ));
-						}else if(typName == "LuaEnumItem"){
-							writeSizeT(OB_NET_TYPE_LUAENUMITEM);
-							writeLuaEnumItem(dynamic_pointer_cast<Type::LuaEnumItem>(typ));
-						}
-					}else{
-					    writeSizeT(1);
+				shared_ptr<Instance::Instance> inst = *static_cast<shared_ptr<Instance::Instance>*>(var->wrapped);
+				ob_uint64 netId = inst->GetNetworkID();
+				writeUInt64(netId);
+
+				break;
+			}
+			case Type::TYPE_TYPE: {
+				writeSizeT(var_type);
+
+				shared_ptr<Type::Type> typ = *static_cast<shared_ptr<Type::Type>*>(var->wrapped);
+				if(typ){
+					std::string typName = typ->getClassName();
+
+					if(typName == "UDim2"){
+						writeSizeT(OB_NET_TYPE_UDIM2);
+						writeUDim2(dynamic_pointer_cast<Type::UDim2>(typ));
+					}else if(typName == "UDim"){
+						writeSizeT(OB_NET_TYPE_UDIM);
+						writeUDim(dynamic_pointer_cast<Type::UDim>(typ));
+					}else if(typName == "Color3"){
+						writeSizeT(OB_NET_TYPE_COLOR3);
+						writeColor3(dynamic_pointer_cast<Type::Color3>(typ));
+					}else if(typName == "Vector3"){
+						writeSizeT(OB_NET_TYPE_VECTOR3);
+						writeVector3(dynamic_pointer_cast<Type::Vector3>(typ));
+					}else if(typName == "Vector2"){
+						writeSizeT(OB_NET_TYPE_VECTOR2);
+						writeVector2(dynamic_pointer_cast<Type::Vector2>(typ));
+					}else if(typName == "LuaEnum"){
+						writeSizeT(OB_NET_TYPE_LUAENUM);
+						writeLuaEnum(dynamic_pointer_cast<Type::LuaEnum>(typ));
+					}else if(typName == "LuaEnumItem"){
+						writeSizeT(OB_NET_TYPE_LUAENUMITEM);
+						writeLuaEnumItem(dynamic_pointer_cast<Type::LuaEnumItem>(typ));
 					}
-					
-				    break;
+				}else{
+					writeSizeT(1);
 				}
-				case Type::TYPE_LUA_OBJECT:
-				case Type::TYPE_NULL:
-				case Type::TYPE_UNKNOWN: {
-					writeSizeT(Type::TYPE_NULL);
-					break;
-				}
+
+				break;
+			}
+			case Type::TYPE_LUA_OBJECT:
+			case Type::TYPE_NULL:
+			case Type::TYPE_UNKNOWN: {
+				writeSizeT(Type::TYPE_NULL);
+				break;
+			}
 			}
 		}else{
 			writeSizeT(Type::TYPE_NULL);
@@ -489,76 +489,76 @@ namespace OB{
 	shared_ptr<Type::VarWrapper> BitStream::readVar(OBEngine* eng){
 		size_t var_type = readSizeT();
 
-	    switch(var_type){
-			case Type::TYPE_INT: {
-			    return make_shared<Type::VarWrapper>(readInt());
-			}
-			case Type::TYPE_DOUBLE: {
-			    return make_shared<Type::VarWrapper>(readDouble());
-			}
-			case Type::TYPE_FLOAT: {
-			    return make_shared<Type::VarWrapper>(readFloat());
-			}
-			case Type::TYPE_LONG: {
-				return make_shared<Type::VarWrapper>(readLong());
-			}
-			case Type::TYPE_UNSIGNED_LONG: {
-			    return make_shared<Type::VarWrapper>(readULong());
-			}
-			case Type::TYPE_BOOL: {
-			    return make_shared<Type::VarWrapper>(readBool());
-			}
-			case Type::TYPE_STRING: {
-			    return make_shared<Type::VarWrapper>(readString());
-			}
-			case Type::TYPE_INSTANCE: {
-				ob_uint64 netId = readUInt64();
+		switch(var_type){
+		case Type::TYPE_INT: {
+			return make_shared<Type::VarWrapper>(readInt());
+		}
+		case Type::TYPE_DOUBLE: {
+			return make_shared<Type::VarWrapper>(readDouble());
+		}
+		case Type::TYPE_FLOAT: {
+			return make_shared<Type::VarWrapper>(readFloat());
+		}
+		case Type::TYPE_LONG: {
+			return make_shared<Type::VarWrapper>(readLong());
+		}
+		case Type::TYPE_UNSIGNED_LONG: {
+			return make_shared<Type::VarWrapper>(readULong());
+		}
+		case Type::TYPE_BOOL: {
+			return make_shared<Type::VarWrapper>(readBool());
+		}
+		case Type::TYPE_STRING: {
+			return make_shared<Type::VarWrapper>(readString());
+		}
+		case Type::TYPE_INSTANCE: {
+			ob_uint64 netId = readUInt64();
 
-				shared_ptr<Instance::DataModel> dm = eng->getDataModel();
-				if(dm){
-					weak_ptr<Instance::Instance> weakInst = dm->lookupInstance(netId);
-					if(!weakInst.expired()){
-						return make_shared<Type::VarWrapper>(weakInst.lock());
-					}
+			shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+			if(dm){
+				weak_ptr<Instance::Instance> weakInst = dm->lookupInstance(netId);
+				if(!weakInst.expired()){
+					return make_shared<Type::VarWrapper>(weakInst.lock());
 				}
-				
-			    return make_shared<Type::VarWrapper>(shared_ptr<Instance::Instance>(NULL));
 			}
-			case Type::TYPE_TYPE: {
-			    size_t typeType = readSizeT();
 
-				switch(typeType){
-					case OB_NET_TYPE_COLOR3: {
-						return make_shared<Type::VarWrapper>(readColor3());
-					}
-					case OB_NET_TYPE_VECTOR3: {
-						return make_shared<Type::VarWrapper>(readVector3());
-					}
-					case OB_NET_TYPE_VECTOR2: {
-						return make_shared<Type::VarWrapper>(readVector3());
-					}
-					case OB_NET_TYPE_LUAENUM: {
-						return make_shared<Type::VarWrapper>(readLuaEnum());
-					}
-					case OB_NET_TYPE_LUAENUMITEM: {
-						return make_shared<Type::VarWrapper>(readLuaEnumItem());
-					}
-				}
-				
-			    return make_shared<Type::VarWrapper>();
+			return make_shared<Type::VarWrapper>(shared_ptr<Instance::Instance>(NULL));
+		}
+		case Type::TYPE_TYPE: {
+			size_t typeType = readSizeT();
+
+			switch(typeType){
+			case OB_NET_TYPE_COLOR3: {
+				return make_shared<Type::VarWrapper>(readColor3());
 			}
-			case Type::TYPE_LUA_OBJECT:
-			case Type::TYPE_NULL:
-			case Type::TYPE_UNKNOWN: {
-			    return make_shared<Type::VarWrapper>();
+			case OB_NET_TYPE_VECTOR3: {
+				return make_shared<Type::VarWrapper>(readVector3());
 			}
+			case OB_NET_TYPE_VECTOR2: {
+				return make_shared<Type::VarWrapper>(readVector3());
+			}
+			case OB_NET_TYPE_LUAENUM: {
+				return make_shared<Type::VarWrapper>(readLuaEnum());
+			}
+			case OB_NET_TYPE_LUAENUMITEM: {
+				return make_shared<Type::VarWrapper>(readLuaEnumItem());
+			}
+			}
+
+			return make_shared<Type::VarWrapper>();
+		}
+		case Type::TYPE_LUA_OBJECT:
+		case Type::TYPE_NULL:
+		case Type::TYPE_UNKNOWN: {
+			return make_shared<Type::VarWrapper>();
+		}
 		}
 		return make_shared<Type::VarWrapper>();
 	}
 
 	void BitStream::writeUDim2(shared_ptr<Type::UDim2> var){
 		if(var){
-		    shared_ptr<Type::UDim> x = var->getX();
+			shared_ptr<Type::UDim> x = var->getX();
 			shared_ptr<Type::UDim> y = var->getY();
 			writeDouble(x->getScale());
 			writeDouble(x->getOffset());
@@ -571,7 +571,7 @@ namespace OB{
 			writeDouble(0);
 		}
 	}
-	
+
 	shared_ptr<Type::UDim2> BitStream::readUDim2(){
 		double xScale = readDouble();
 		double xOffset = readDouble();
@@ -590,7 +590,7 @@ namespace OB{
 			writeDouble(0);
 		}
 	}
-	
+
 	shared_ptr<Type::UDim> BitStream::readUDim(){
 		double scale = readDouble();
 		double offset = readDouble();
@@ -609,11 +609,11 @@ namespace OB{
 			writeInt(0);
 		}
 	}
-	
+
 	shared_ptr<Type::Color3> BitStream::readColor3(){
-	    int r = readInt();
-	    int g = readInt();
-	    int b = readInt();
+		int r = readInt();
+		int g = readInt();
+		int b = readInt();
 
 		return make_shared<Type::Color3>(r, g, b);
 	}
@@ -629,7 +629,7 @@ namespace OB{
 			writeDouble(0);
 		}
 	}
-	
+
 	shared_ptr<Type::Vector3> BitStream::readVector3(){
 		double x = readDouble();
 		double y = readDouble();
@@ -647,7 +647,7 @@ namespace OB{
 			writeDouble(0);
 		}
 	}
-	
+
 	shared_ptr<Type::Vector2> BitStream::readVector2(){
 		double x = readDouble();
 		double y = readDouble();
@@ -659,15 +659,15 @@ namespace OB{
 		if(var){
 			writeString(var->getType());
 		}else{
-			writeString(" ");//Prevents an error, and lets the other end detect this error
+			writeString(" ");// Prevents an error, and lets the other end detect this error
 		}
 	}
-	
+
 	shared_ptr<Type::LuaEnum> BitStream::readLuaEnum(){
 		if(!Type::LuaEnum::enums){
 			return NULL;
 		}
-		
+
 		std::string enumType = readString();
 		if(enumType.length() > 0 && enumType != " "){
 			return Type::LuaEnum::enums->at(enumType);
@@ -677,23 +677,23 @@ namespace OB{
 
 	void BitStream::writeLuaEnumItem(shared_ptr<Type::LuaEnumItem> var){
 		if(var){
-			writeString(var->getType()); 
+			writeString(var->getType());
 			writeString(var->getName());
 		}else{
-			writeString(" ");//Prevents an error, and lets the other end detect this error
+			writeString(" ");// Prevents an error, and lets the other end detect this error
 			writeString(" ");
 		}
 	}
-	
+
 	shared_ptr<Type::LuaEnumItem> BitStream::readLuaEnumItem(){
 		if(!Type::LuaEnum::enums){
 			return NULL;
 		}
-		
+
 		std::string enumType = readString();
 		std::string enumName = readString();
 		if(enumType.length() > 0 && enumType != " " && enumName.length() > 0 && enumName != " "){
-		    shared_ptr<Type::LuaEnum> lEn = Type::LuaEnum::enums->at(enumType);
+			shared_ptr<Type::LuaEnum> lEn = Type::LuaEnum::enums->at(enumType);
 			if(lEn){
 				return lEn->enumValues.at(enumName);
 			}
@@ -701,13 +701,13 @@ namespace OB{
 		return NULL;
 	}
 
-    size_t BitStream::readSizeT(){
+	size_t BitStream::readSizeT(){
 		size_t outVal = 0;
 
 		const size_t sot = sizeof(size_t);
-	    
+
 		if(!readAlignedBytes((unsigned char*)&outVal, sot)){
-		    outVal = 0;
+			outVal = 0;
 		}
 
 		return outVal;
@@ -717,81 +717,81 @@ namespace OB{
 		int outVal = 0;
 
 		const size_t sot = sizeof(int);
-	    
+
 		if(!readAlignedBytes((unsigned char*)&outVal, sot)){
-		    outVal = 0;
+			outVal = 0;
 		}
 
 		return outVal;
 	}
-	
+
 	double BitStream::readDouble(){
-	    double outVal = 0;
+		double outVal = 0;
 
 		const size_t sot = sizeof(double);
-	    
+
 		if(!readAlignedBytes((unsigned char*)&outVal, sot)){
-		    outVal = 0;
+			outVal = 0;
 		}
 
 		return outVal;
 	}
 
-    float BitStream::readFloat(){
-	    float outVal = 0;
+	float BitStream::readFloat(){
+		float outVal = 0;
 
 		const size_t sot = sizeof(float);
-	    
+
 		if(!readAlignedBytes((unsigned char*)&outVal, sot)){
-		    outVal = 0;
+			outVal = 0;
 		}
 
 		return outVal;
 	}
-	
+
 	long BitStream::readLong(){
-	    long outVal = 0;
+		long outVal = 0;
 
 		const size_t sot = sizeof(long);
-		
+
 		if(!readAlignedBytes((unsigned char*)&outVal, sot)){
-		    outVal = 0;
+			outVal = 0;
 		}
 
 		return outVal;
 	}
-	
+
 	unsigned long BitStream::readULong(){
 		unsigned long outVal = 0;
 
 		const size_t sot = sizeof(unsigned long);
-		
+
 		if(!readAlignedBytes((unsigned char*)&outVal, sot)){
-		    outVal = 0;
+			outVal = 0;
 		}
 
 		return outVal;
 	}
-	
+
 	ob_uint64 BitStream::readUInt64(){
-	    ob_uint64 outVal = 0;
+		ob_uint64 outVal = 0;
 
 		const size_t sot = sizeof(ob_uint64);
-		
+
 		if(!readAlignedBytes((unsigned char*)&outVal, sot)){
-		    outVal = 0;
+			outVal = 0;
 		}
 
 		return outVal;
 	}
-	
+
 	ob_int64 BitStream::readInt64(){
 		ob_int64 outVal = 0;
 
 		const size_t sot = sizeof(ob_int64);
-		
+
 		if(!readAlignedBytes((unsigned char*)&outVal, sot)){
-		    outVal = 0;
+			outVal = 0;
 		}
 
 		return outVal;
@@ -812,7 +812,7 @@ namespace OB{
 
 		writeAlignedBytes((unsigned char*)&val, sot);
 	}
-	
+
 	void BitStream::writeDouble(double val){
 		const size_t sot = sizeof(double);
 
@@ -824,25 +824,25 @@ namespace OB{
 
 		writeAlignedBytes((unsigned char*)&val, sot);
 	}
-	
+
 	void BitStream::writeLong(long val){
 		const size_t sot = sizeof(long);
 
 		writeAlignedBytes((unsigned char*)&val, sot);
 	}
-	
+
 	void BitStream::writeULong(unsigned long val){
 		const size_t sot = sizeof(unsigned long);
 
 		writeAlignedBytes((unsigned char*)&val, sot);
 	}
-	
+
 	void BitStream::writeUInt64(ob_uint64 val){
 		const size_t sot = sizeof(ob_uint64);
 
 		writeAlignedBytes((unsigned char*)&val, sot);
 	}
-	
+
 	void BitStream::writeInt64(ob_int64 val){
 		const size_t sot = sizeof(ob_int64);
 

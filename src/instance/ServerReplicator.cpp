@@ -29,19 +29,19 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    ServerReplicator::ServerReplicator(OBEngine* eng) : NetworkReplicator(eng){
+		ServerReplicator::ServerReplicator(OBEngine* eng) : NetworkReplicator(eng){
 			Name = ClassName;
 			netId = OB_NETID_NOT_REPLICATED;
 
 			Archivable = false;
 		}
 
-	    ServerReplicator::ServerReplicator(ENetPeer* peer, OBEngine* eng) : NetworkReplicator(peer, eng){
+		ServerReplicator::ServerReplicator(ENetPeer* peer, OBEngine* eng) : NetworkReplicator(peer, eng){
 			Name = ClassName;
 			netId = OB_NETID_NOT_REPLICATED;
 		}
 
-	    ServerReplicator::~ServerReplicator(){
+		ServerReplicator::~ServerReplicator(){
 			if(plr){
 				plr->Destroy();
 			}
@@ -72,8 +72,8 @@ namespace OB{
 		}
 
 		int ServerReplicator::lua_CreatePlayer(lua_State* L){
-		    shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
 			if(shared_ptr<ServerReplicator> sr = dynamic_pointer_cast<ServerReplicator>(inst)){
 				shared_ptr<Player> plr = sr->CreatePlayer();
 				if(plr){
@@ -83,13 +83,13 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			return luaL_error(L, COLONERR, "CreatePlayer");
 		}
 
 		int ServerReplicator::lua_GetPlayer(lua_State* L){
-		    shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
 			if(shared_ptr<ServerReplicator> sr = dynamic_pointer_cast<ServerReplicator>(inst)){
 				shared_ptr<Player> plr = sr->GetPlayer();
 				if(plr){
@@ -99,17 +99,17 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			return luaL_error(L, COLONERR, "GetPlayer");
 		}
 
 		void ServerReplicator::register_lua_methods(lua_State* L){
 			Instance::register_lua_methods(L);
-			
+
 			luaL_Reg methods[] = {
 				{"CreatePlayer", lua_CreatePlayer},
 				{"GetPlayer", lua_GetPlayer},
-			    {NULL, NULL}
+				{NULL, NULL}
 			};
 			luaL_setfuncs(L, methods, 0);
 		}

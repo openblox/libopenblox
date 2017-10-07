@@ -44,7 +44,7 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, DataModel::register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    DataModel::DataModel(OBEngine* eng) : ServiceProvider(eng){
+		DataModel::DataModel(OBEngine* eng) : ServiceProvider(eng){
 			Name = "Game";
 
 			RobloxCompatMode = false;
@@ -54,7 +54,7 @@ namespace OB{
 			netIdNextIdx = netIdStartIdx;
 		}
 
-	    DataModel::~DataModel(){}
+		DataModel::~DataModel(){}
 
 		bool DataModel::getRobloxCompatMode(){
 			return RobloxCompatMode;
@@ -73,7 +73,7 @@ namespace OB{
 			eng->setExitCode(statusCode);
 			eng->shutdown();
 		}
-		
+
 		void DataModel::initServices(){
 			shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
 
@@ -87,30 +87,30 @@ namespace OB{
 			coreGui = make_shared<CoreGui>(eng);
 			coreGui->setParent(sharedThis, false);
 			coreGui->ParentLocked = true;
-			
+
 			lighting = make_shared<Lighting>(eng);
 			lighting->setParent(sharedThis, false);
 			lighting->ParentLocked = true;
 
 			players = make_shared<Players>(eng);
-		    players->setParent(sharedThis, false);
+			players->setParent(sharedThis, false);
 			players->ParentLocked = true;
 
 			contentProvider = make_shared<ContentProvider>(eng);
-		    contentProvider->setParent(sharedThis, false);
-		    contentProvider->ParentLocked = true;
+			contentProvider->setParent(sharedThis, false);
+			contentProvider->ParentLocked = true;
 
 			logService = make_shared<LogService>(eng);
 			logService->setParent(sharedThis, false);
 			logService->ParentLocked = true;
 
-		    runService = make_shared<RunService>(eng);
-		    runService->setParent(sharedThis, false);
-		    runService->ParentLocked = true;
+			runService = make_shared<RunService>(eng);
+			runService->setParent(sharedThis, false);
+			runService->ParentLocked = true;
 
-		    replicatedFirst = make_shared<ReplicatedFirst>(eng);
-		    replicatedFirst->setParent(sharedThis, false);
-		    replicatedFirst->ParentLocked = true;
+			replicatedFirst = make_shared<ReplicatedFirst>(eng);
+			replicatedFirst->setParent(sharedThis, false);
+			replicatedFirst->ParentLocked = true;
 
 			userInputService = make_shared<UserInputService>(eng);
 			userInputService->setParent(sharedThis, false);
@@ -158,7 +158,7 @@ namespace OB{
 			if(foundService != NULL){
 				return foundService;
 			}
-		    shared_ptr<Instance> newGuy = ClassFactory::createService(className, true, eng);
+			shared_ptr<Instance> newGuy = ClassFactory::createService(className, true, eng);
 			if(newGuy){
 				newGuy->setParent(std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this(), false);
 				newGuy->ParentLocked = true;
@@ -167,37 +167,37 @@ namespace OB{
 		}
 
 		weak_ptr<Instance> DataModel::lookupInstance(ob_uint64 netId){
-		    if(netId >= OB_NETID_START){
+			if(netId >= OB_NETID_START){
 				auto findIt = instMap.find(netId);
 				if(findIt != instMap.end()){
 					return findIt->second;
 				}
 			}else{
 				switch(netId){
-					case OB_NETID_DATAMODEL: {
-						return std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
-					}
-					case OB_NETID_WORKSPACE: {
-						return workspace;
-					}
-					case OB_NETID_LIGHTING: {
-						return lighting;
-					}
-					case OB_NETID_REPLICATEDFIRST: {
-						return replicatedFirst;
-					}
-					case OB_NETID_REPLICATEDSTORAGE: {
-						return GetService("ReplicatedStorage");
-					}
-					case OB_NETID_STARTERGUI: {
-						return GetService("StarterGui");
-					}
-					case OB_NETID_COREGUI: {
-						return coreGui;
-					}
-					case OB_NETID_PLAYERS: {
-						return players;
-					}
+				case OB_NETID_DATAMODEL: {
+					return std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
+				}
+				case OB_NETID_WORKSPACE: {
+					return workspace;
+				}
+				case OB_NETID_LIGHTING: {
+					return lighting;
+				}
+				case OB_NETID_REPLICATEDFIRST: {
+					return replicatedFirst;
+				}
+				case OB_NETID_REPLICATEDSTORAGE: {
+					return GetService("ReplicatedStorage");
+				}
+				case OB_NETID_STARTERGUI: {
+					return GetService("StarterGui");
+				}
+				case OB_NETID_COREGUI: {
+					return coreGui;
+				}
+				case OB_NETID_PLAYERS: {
+					return players;
+				}
 				}
 			}
 
@@ -208,7 +208,7 @@ namespace OB{
 			if(inst){
 				ob_uint64 reqNetId = inst->GetNetworkID();
 				if(reqNetId >= OB_NETID_START){
-				    auto findIt = instMap.find(reqNetId);
+					auto findIt = instMap.find(reqNetId);
 					if(findIt != instMap.end()){
 						inst->setNetworkID(OB_NETID_UNASSIGNED);
 						return;
@@ -247,8 +247,8 @@ namespace OB{
 				}
 				goto nextIsUnassigned;
 			}
-			
-		    netIdNextIdx++;
+
+			netIdNextIdx++;
 
 			if(netIdNextIdx >= ULONG_MAX){
 				netIdNextIdx = OB_NETID_UNASSIGNED;
@@ -256,17 +256,17 @@ namespace OB{
 
 			return netIdNextIdx;
 
-		  nextIsUnassigned:
+		nextIsUnassigned:
 			std::cout << "Ran out of free network IDs." << std::endl;
 			return OB_NETID_UNASSIGNED;
 		}
 
-		#if HAVE_ENET
+#if HAVE_ENET
 		void DataModel::replicateChildren(shared_ptr<NetworkReplicator> peer){
 			replicatedFirst->replicate(peer);
-			
+
 			std::vector<shared_ptr<Instance>> kids = GetChildren();
-			
+
 			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
 				shared_ptr<Instance> kid = kids[i];
 				if(kid && kid != replicatedFirst){
@@ -277,23 +277,23 @@ namespace OB{
 
 		void DataModel::replicateProperties(shared_ptr<NetworkReplicator> peer){
 			Instance::replicateProperties(peer);
-		    
+
 			peer->sendSetPropertyPacket(netId, "RobloxCompatMode", make_shared<Type::VarWrapper>(RobloxCompatMode));
 		}
-		#endif
+#endif
 
-		#if HAVE_PUGIXML
-	    void DataModel::deserialize(pugi::xml_node thisNode){
+#if HAVE_PUGIXML
+		void DataModel::deserialize(pugi::xml_node thisNode){
 			Instance::deserialize(thisNode);
 		}
 
-	    std::string DataModel::serializedID(){
+		std::string DataModel::serializedID(){
 			shared_ptr<OBSerializer> serializer = eng->getSerializer();
 			serializer->SetID(shared_from_this(), "game");
-			
+
 			return Instance::serializedID();
 		}
-		#endif
+#endif
 
 		std::map<std::string, _PropertyInfo> DataModel::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
@@ -303,8 +303,8 @@ namespace OB{
 		}
 
 		void DataModel::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
-		    if(prop == "RobloxCompatMode"){
-			    setRobloxCompatMode(val->asDouble());
+			if(prop == "RobloxCompatMode"){
+				setRobloxCompatMode(val->asDouble());
 				return;
 			}
 
@@ -315,7 +315,7 @@ namespace OB{
 			if(prop == "RobloxCompatMode"){
 				return make_shared<Type::VarWrapper>(getRobloxCompatMode());
 			}
-			
+
 			return Instance::getProperty(prop);
 		}
 
@@ -325,13 +325,13 @@ namespace OB{
 		}
 
 		void DataModel::render(){
-		    workspace->render();
+			workspace->render();
 			coreGui->render();
 		}
 
 		int DataModel::lua_Shutdown(lua_State* L){
-		    shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
 			if(shared_ptr<DataModel> dm = dynamic_pointer_cast<DataModel>(inst)){
 				int statusCode = 0;
 				if(!lua_isnoneornil(L, 2)){
@@ -339,16 +339,16 @@ namespace OB{
 				}
 
 				dm->Shutdown(statusCode);
-				
+
 				return 0;
 			}
-			
+
 			return luaL_error(L, COLONERR, "Shutdown");
 		}
 
 		int DataModel::lua_setRobloxCompatMode(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<DataModel> instDM = dynamic_pointer_cast<DataModel>(inst);
 				if(instDM){
@@ -356,13 +356,13 @@ namespace OB{
 					instDM->setRobloxCompatMode(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int DataModel::lua_getRobloxCompatMode(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<DataModel> instDM = dynamic_pointer_cast<DataModel>(inst);
 				if(instDM){
@@ -370,14 +370,14 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		void DataModel::register_lua_property_setters(lua_State* L){
 			Instance::register_lua_property_setters(L);
-			
+
 			luaL_Reg properties[] = {
 				{"RobloxCompatMode", lua_setRobloxCompatMode},
 				{NULL, NULL}
@@ -387,7 +387,7 @@ namespace OB{
 
 		void DataModel::register_lua_property_getters(lua_State* L){
 			Instance::register_lua_property_getters(L);
-			
+
 			luaL_Reg properties[] = {
 				{"RobloxCompatMode", lua_getRobloxCompatMode},
 				{NULL, NULL}
@@ -396,11 +396,11 @@ namespace OB{
 		}
 
 		void DataModel::register_lua_methods(lua_State* L){
-		    ServiceProvider::register_lua_methods(L);
+			ServiceProvider::register_lua_methods(L);
 
 			luaL_Reg methods[] = {
 				{"Shutdown", lua_Shutdown},
-			    {NULL, NULL}
+				{NULL, NULL}
 			};
 			luaL_setfuncs(L, methods, 0);
 		}

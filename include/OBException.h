@@ -38,51 +38,51 @@ namespace OB{
 	 * @author John M. Harris, Jr.
 	 */
 	class OBException{
-		public:
-			/**
-			 * Creates an OBException with no message.
-			 *
-			 * @author John M. Harris, Jr.
-			 */
-			OBException();
+	public:
+		/**
+		 * Creates an OBException with no message.
+		 *
+		 * @author John M. Harris, Jr.
+		 */
+		OBException();
 
-			/**
-			 * Creates an OBException with the message defined by the parameter "what"
-			 *
-			 * @param string The message to be associated with this exception.
-			 * @author John M. Harris, Jr.
-			 */
-			OBException(std::string string);
+		/**
+		 * Creates an OBException with the message defined by the parameter "what"
+		 *
+		 * @param string The message to be associated with this exception.
+		 * @author John M. Harris, Jr.
+		 */
+		OBException(std::string string);
 
-			virtual ~OBException();
+		virtual ~OBException();
 
-			/**
-			 * Returns the message of this OBException.
-			 *
-			 * @returns The message of this OBException
-			 * @author John M. Harris, Jr.
-			 */
-			std::string getMessage();
+		/**
+		 * Returns the message of this OBException.
+		 *
+		 * @returns The message of this OBException
+		 * @author John M. Harris, Jr.
+		 */
+		std::string getMessage();
 
-			/**
-			 * Convenience function to throw this exception.
-			 *
-			 * @author John M. Harris, Jr.
-			 */
-			void raise();
+		/**
+		 * Convenience function to throw this exception.
+		 *
+		 * @author John M. Harris, Jr.
+		 */
+		void raise();
 
-			/**
-			 * Attempts to cast this to a string return the same
-			 * as getMessage.
-			 *
-			 * @author John M. Harris, Jr.
-			 */
-			operator std::string() const{
-				return what;
-			}
+		/**
+		 * Attempts to cast this to a string return the same
+		 * as getMessage.
+		 *
+		 * @author John M. Harris, Jr.
+		 */
+		operator std::string() const{
+			return what;
+		}
 
-		private:
-			std::string what;
+	private:
+		std::string what;
 	};
 }
 

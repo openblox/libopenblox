@@ -27,7 +27,7 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    UserInputService::UserInputService(OBEngine* eng) : Instance(eng){
+		UserInputService::UserInputService(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 			netId = OB_NETID_NOT_REPLICATED;
 
@@ -37,16 +37,16 @@ namespace OB{
 			GamepadDisconnected = make_shared<Type::Event>("GamepadDisconnected");
 		}
 
-	    UserInputService::~UserInputService(){}
+		UserInputService::~UserInputService(){}
 
-		#if HAVE_PUGIXML
-	    std::string UserInputService::serializedID(){
+#if HAVE_PUGIXML
+		std::string UserInputService::serializedID(){
 			shared_ptr<OBSerializer> serializer = eng->getSerializer();
 			serializer->SetID(shared_from_this(), getClassName());
-			
+
 			return Instance::serializedID();
 		}
-		#endif
+#endif
 
 		shared_ptr<Instance> UserInputService::cloneImpl(){
 			return NULL;
@@ -54,7 +54,7 @@ namespace OB{
 
 		void UserInputService::register_lua_events(lua_State* L){
 			Instance::register_lua_events(L);
-			
+
 			luaL_Reg events[] = {
 				{"GamepadConnected", WRAP_EVT(UserInputService, GamepadConnected)},
 				{"GamepadDisconnected", WRAP_EVT(UserInputService, GamepadDisconnected)},

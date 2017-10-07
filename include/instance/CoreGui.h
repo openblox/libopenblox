@@ -46,45 +46,45 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class CoreGui: public BasePlayerGui{
-			public:
-			    CoreGui(OBEngine* eng);
-				virtual ~CoreGui();
+		public:
+			CoreGui(OBEngine* eng);
+			virtual ~CoreGui();
 
-				bool isEnabled();
-				void setEnabled(bool enabled);
+			bool isEnabled();
+			void setEnabled(bool enabled);
 
-				virtual shared_ptr<Type::Vector2> getAbsolutePosition();
-				virtual shared_ptr<Type::Vector2> getAbsoluteSize();
+			virtual shared_ptr<Type::Vector2> getAbsolutePosition();
+			virtual shared_ptr<Type::Vector2> getAbsoluteSize();
 
-				virtual void render();
+			virtual void render();
 
-				#if HAVE_ENET
-				/**
-				 * Replicates properties of this Instance.
-				 * 
-				 * @param peer Peer
-				 * @author John M. Harris, Jr.
-				 */
-				virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
-				#endif
+#if HAVE_ENET
+			/**
+			 * Replicates properties of this Instance.
+			 *
+			 * @param peer Peer
+			 * @author John M. Harris, Jr.
+			 */
+			virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
+#endif
 
-				#if HAVE_PUGIXML
-				virtual std::string serializedID();
-				#endif
+#if HAVE_PUGIXML
+			virtual std::string serializedID();
+#endif
 
-				virtual std::map<std::string, _PropertyInfo> getProperties();
-				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
-				virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
-				
-				DECLARE_LUA_METHOD(getEnabled);
-				DECLARE_LUA_METHOD(setEnabled);
+			virtual std::map<std::string, _PropertyInfo> getProperties();
+			virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
+			virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
 
-				static void register_lua_property_getters(lua_State* L);
-				static void register_lua_property_setters(lua_State* L);
+			DECLARE_LUA_METHOD(getEnabled);
+			DECLARE_LUA_METHOD(setEnabled);
 
-				DECLARE_CLASS(CoreGui);
+			static void register_lua_property_getters(lua_State* L);
+			static void register_lua_property_setters(lua_State* L);
 
-				bool Enabled;
+			DECLARE_CLASS(CoreGui);
+
+			bool Enabled;
 		};
 	}
 }

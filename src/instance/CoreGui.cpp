@@ -32,14 +32,14 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    CoreGui::CoreGui(OBEngine* eng) : BasePlayerGui(eng){
+		CoreGui::CoreGui(OBEngine* eng) : BasePlayerGui(eng){
 			Name = ClassName;
 			netId = OB_NETID_COREGUI;
-			
+
 			Enabled = true;
 		}
 
-	    CoreGui::~CoreGui(){}
+		CoreGui::~CoreGui(){}
 
 		shared_ptr<Instance> CoreGui::cloneImpl(){
 			return NULL;
@@ -48,37 +48,37 @@ namespace OB{
 		bool CoreGui::isEnabled(){
 			return Enabled;
 		}
-		
+
 		void CoreGui::setEnabled(bool enabled){
 			if(Enabled != enabled){
 				Enabled = enabled;
 
-			    REPLICATE_PROPERTY_CHANGE(Enabled);
+				REPLICATE_PROPERTY_CHANGE(Enabled);
 				propertyChanged("Enabled");
 			}
 		}
 
-	    shared_ptr<Type::Vector2> CoreGui::getAbsolutePosition(){
-			#if HAVE_IRRLICHT
+		shared_ptr<Type::Vector2> CoreGui::getAbsolutePosition(){
+#if HAVE_IRRLICHT
 			if(irr::IrrlichtDevice* irrDev = getEngine()->getIrrlichtDevice()){
-			    if(irr::video::IVideoDriver* irrDriv = irrDev->getVideoDriver()){
+				if(irr::video::IVideoDriver* irrDriv = irrDev->getVideoDriver()){
 					irr::core::rect<irr::s32> vpR = irrDriv->getViewPort();
 					return make_shared<Type::Vector2>(vpR.UpperLeftCorner.X, vpR.UpperLeftCorner.Y);
 				}
 			}
-			#endif
+#endif
 			return make_shared<Type::Vector2>(0, 0);
 		}
-		
-	    shared_ptr<Type::Vector2> CoreGui::getAbsoluteSize(){
-			#if HAVE_IRRLICHT
+
+		shared_ptr<Type::Vector2> CoreGui::getAbsoluteSize(){
+#if HAVE_IRRLICHT
 			if(irr::IrrlichtDevice* irrDev = getEngine()->getIrrlichtDevice()){
-			    if(irr::video::IVideoDriver* irrDriv = irrDev->getVideoDriver()){
+				if(irr::video::IVideoDriver* irrDriv = irrDev->getVideoDriver()){
 					irr::core::rect<irr::s32> vpR = irrDriv->getViewPort();
 					return make_shared<Type::Vector2>(vpR.getWidth(), vpR.getHeight());
 				}
 			}
-			#endif
+#endif
 			return make_shared<Type::Vector2>(0, 0);
 		}
 
@@ -88,13 +88,13 @@ namespace OB{
 			}
 		}
 
-		#if HAVE_ENET
+#if HAVE_ENET
 		void CoreGui::replicateProperties(shared_ptr<NetworkReplicator> peer){
 			Instance::replicateProperties(peer);
-			
+
 			peer->sendSetPropertyPacket(netId, "Enabled", make_shared<Type::VarWrapper>(Enabled));
 		}
-		#endif
+#endif
 
 		std::map<std::string, _PropertyInfo> CoreGui::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = GuiBase2d::getProperties();
@@ -104,8 +104,8 @@ namespace OB{
 		}
 
 		void CoreGui::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
-		    if(prop == "Enabled"){
-			    setEnabled(val->asBool());
+			if(prop == "Enabled"){
+				setEnabled(val->asBool());
 				return;
 			}
 
@@ -116,36 +116,36 @@ namespace OB{
 			if(prop == "Enabled"){
 				return make_shared<Type::VarWrapper>(isEnabled());
 			}
-			
+
 			return GuiBase2d::getProperty(prop);
 		}
 
-		#if HAVE_PUGIXML
-	    std::string CoreGui::serializedID(){
+#if HAVE_PUGIXML
+		std::string CoreGui::serializedID(){
 			shared_ptr<OBSerializer> serializer = eng->getSerializer();
 			serializer->SetID(shared_from_this(), getClassName());
-			
+
 			return Instance::serializedID();
 		}
-		#endif
-		
+#endif
+
 		int CoreGui::lua_getEnabled(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<CoreGui> instCG = dynamic_pointer_cast<CoreGui>(inst);
 				if(instCG){
 					lua_pushboolean(L, instCG->isEnabled());
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int CoreGui::lua_setEnabled(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<CoreGui> instCG = dynamic_pointer_cast<CoreGui>(inst);
 				if(instCG){
@@ -153,13 +153,13 @@ namespace OB{
 					instCG->setEnabled(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		void CoreGui::register_lua_property_setters(lua_State* L){
-		    GuiBase2d::register_lua_property_setters(L);
-			
+			GuiBase2d::register_lua_property_setters(L);
+
 			luaL_Reg properties[] = {
 				{"Enabled", lua_setEnabled},
 				{NULL, NULL}
@@ -168,8 +168,8 @@ namespace OB{
 		}
 
 		void CoreGui::register_lua_property_getters(lua_State* L){
-		    GuiBase2d::register_lua_property_getters(L);
-			
+			GuiBase2d::register_lua_property_getters(L);
+
 			luaL_Reg properties[] = {
 				{"Enabled", lua_getEnabled},
 				{NULL, NULL}

@@ -29,22 +29,22 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    StarterGui::StarterGui(OBEngine* eng) : BasePlayerGui(eng){
+		StarterGui::StarterGui(OBEngine* eng) : BasePlayerGui(eng){
 			Name = ClassName;
 
 			netId = OB_NETID_STARTERGUI;
 		}
 
-	    StarterGui::~StarterGui(){}
+		StarterGui::~StarterGui(){}
 
-		#if HAVE_PUGIXML
-	    std::string StarterGui::serializedID(){
+#if HAVE_PUGIXML
+		std::string StarterGui::serializedID(){
 			shared_ptr<OBSerializer> serializer = eng->getSerializer();
 			serializer->SetID(shared_from_this(), getClassName());
-			
+
 			return Instance::serializedID();
 		}
-		#endif
+#endif
 
 		shared_ptr<Instance> StarterGui::cloneImpl(){
 			return NULL;

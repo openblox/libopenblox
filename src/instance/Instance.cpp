@@ -43,18 +43,18 @@ namespace OB{
 
 		Instance::Instance(OBEngine* eng){
 			this->eng = eng;
-			
+
 			Archivable = true;
 			Name = ClassName;
 			ParentLocked = false;
 
 			netId = OB_NETID_UNASSIGNED;
 
-			//TODO: Events
-		    Changed = make_shared<Type::Event>("Changed");
+			// TODO: Events
+			Changed = make_shared<Type::Event>("Changed");
 			AncestryChanged = make_shared<Type::Event>("AncestryChanged");
-		    ChildAdded = make_shared<Type::Event>("ChildAdded");
-		    ChildRemoved = make_shared<Type::Event>("ChildRemoved");
+			ChildAdded = make_shared<Type::Event>("ChildAdded");
+			ChildRemoved = make_shared<Type::Event>("ChildRemoved");
 			DescendantAdded = make_shared<Type::Event>("DescendantAdded");
 			DescendantRemoving = make_shared<Type::Event>("DescendantRemoving");
 		}
@@ -69,8 +69,8 @@ namespace OB{
 		}
 
 		void Instance::setName(std::string name){
-		    if(Name != name){
-			    Name = name;
+			if(Name != name){
+				Name = name;
 
 				REPLICATE_PROPERTY_CHANGE(Name);
 				propertyChanged("Name");
@@ -83,7 +83,7 @@ namespace OB{
 
 		void Instance::setArchivable(bool archivable){
 			if(Archivable != archivable){
-			    Archivable = archivable;
+				Archivable = archivable;
 
 				REPLICATE_PROPERTY_CHANGE(Archivable);
 				propertyChanged("Archivable");
@@ -100,7 +100,7 @@ namespace OB{
 
 		void Instance::ClearAllChildren(){
 			std::vector<shared_ptr<Instance>> kids = GetChildren();
-			
+
 			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
 				shared_ptr<Instance> kid = kids[i];
 				if(kid){
@@ -134,7 +134,7 @@ namespace OB{
 			Changed->disconnectAll();
 
 			std::vector<shared_ptr<Instance>> kids = GetChildren();
-			
+
 			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
 				shared_ptr<Instance> kid = kids[i];
 				if(kid){
@@ -271,7 +271,7 @@ namespace OB{
 			}
 		}
 
-		#if HAVE_ENET
+#if HAVE_ENET
 		void Instance::replicate(shared_ptr<NetworkReplicator> peer){
 			if(!peer){
 				return;
@@ -281,7 +281,7 @@ namespace OB{
 				return;
 			}
 
-		    BitStream bsOut;
+			BitStream bsOut;
 			bsOut.writeSizeT(OB_NET_PKT_CREATE_INSTANCE);
 			bsOut.writeUInt64(netId);
 			bsOut.writeString(getClassName());
@@ -311,7 +311,7 @@ namespace OB{
 
 		void Instance::replicateChildren(shared_ptr<NetworkReplicator> peer){
 			std::vector<shared_ptr<Instance>> kids = children;
-			
+
 			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
 				shared_ptr<Instance> kid = kids[i];
 				if(kid){
@@ -321,29 +321,29 @@ namespace OB{
 				}
 			}
 		}
-		#endif
+#endif
 
-		#if HAVE_PUGIXML
+#if HAVE_PUGIXML
 		void Instance::serializeThis(pugi::xml_node thisNode, shared_ptr<Instance> model_ptr){
 			thisNode.append_attribute("type").set_value(getClassName().c_str());
 			thisNode.append_attribute("id").set_value(serializedID().c_str());
-			
+
 			serializeProperties(thisNode, model_ptr);
 			serializeChildren(thisNode, model_ptr);
 		}
-		
-	    void Instance::serialize(pugi::xml_node parentNode, shared_ptr<Instance> model){
+
+		void Instance::serialize(pugi::xml_node parentNode, shared_ptr<Instance> model){
 			if(Archivable){
 				pugi::xml_node thisNode = parentNode.append_child(pugi::node_element);
 				thisNode.set_name("instance");
-				
+
 				serializeThis(thisNode, model);
 			}
 		}
 
 		void Instance::serializeChildren(pugi::xml_node parentNode, shared_ptr<Instance> model){
 			std::vector<shared_ptr<Instance>> kids = children;
-			
+
 			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
 				shared_ptr<Instance> kid = kids[i];
 				if(kid){
@@ -410,7 +410,7 @@ namespace OB{
 						shared_ptr<Instance> vval = getProperty(name)->asInstance();
 						if(model && !model->IsAncestorOf(vval)){
 							// We don't want a reference to something we don't know about.
-						    vval = NULL;
+							vval = NULL;
 						}
 						if(vval){
 							propNode.text().set(vval->serializedID().c_str());
@@ -427,7 +427,7 @@ namespace OB{
 				pugi::xml_attribute itype = cinst.attribute("type");
 				pugi::xml_attribute iid = cinst.attribute("id");
 
-			    if(!itype.empty() && !iid.empty()){
+				if(!itype.empty() && !iid.empty()){
 					std::string stype = itype.as_string();
 					std::string sid = iid.as_string();
 
@@ -435,15 +435,15 @@ namespace OB{
 					if(serializer){
 						shared_ptr<Instance> tInst = serializer->GetByID(sid);
 						if(!tInst){
-						    tInst = ClassFactory::createReplicate(stype, eng);
+							tInst = ClassFactory::createReplicate(stype, eng);
 						}
 
 						if(tInst){
 							serializer->SetID(tInst, sid);
-						
-						    tInst->setParent(shared_from_this(), true);
 
-						    tInst->deserializeCreate(cinst);
+							tInst->setParent(shared_from_this(), true);
+
+							tInst->deserializeCreate(cinst);
 						}
 					}
 				}
@@ -454,7 +454,7 @@ namespace OB{
 			deserializeCreate(thisNode);
 			deserializeProperties(thisNode);
 		}
-		
+
 		void Instance::deserializeProperties(pugi::xml_node thisNode){
 			std::map<std::string, _PropertyInfo> props = getProperties();
 			for(auto it = props.begin(); it != props.end(); ++it){
@@ -469,7 +469,7 @@ namespace OB{
 						pugi::xml_text propVal = propNode.text();
 
 						if(stype == "string"){
-						    setProperty(name, make_shared<Type::VarWrapper>(std::string(propVal.as_string())));
+							setProperty(name, make_shared<Type::VarWrapper>(std::string(propVal.as_string())));
 						}
 						if(stype == "int"){
 							setProperty(name, make_shared<Type::VarWrapper>(propVal.as_int()));
@@ -478,25 +478,25 @@ namespace OB{
 							setProperty(name, make_shared<Type::VarWrapper>(propVal.as_bool()));
 						}
 						if(stype == "double"){
-						    setProperty(name, make_shared<Type::VarWrapper>(propVal.as_double()));
+							setProperty(name, make_shared<Type::VarWrapper>(propVal.as_double()));
 						}
 						if(stype == "float"){
-						    setProperty(name, make_shared<Type::VarWrapper>(propVal.as_float()));
+							setProperty(name, make_shared<Type::VarWrapper>(propVal.as_float()));
 						}
 						if(stype == "Color3"){
-						    setProperty(name, make_shared<Type::VarWrapper>(make_shared<Type::Color3>(propVal.as_string())));
+							setProperty(name, make_shared<Type::VarWrapper>(make_shared<Type::Color3>(propVal.as_string())));
 						}
 						if(stype == "Vector2"){
-						    setProperty(name, make_shared<Type::VarWrapper>(make_shared<Type::Vector2>(propVal.as_string())));
+							setProperty(name, make_shared<Type::VarWrapper>(make_shared<Type::Vector2>(propVal.as_string())));
 						}
 						if(stype == "Vector3"){
-						    setProperty(name, make_shared<Type::VarWrapper>(make_shared<Type::Vector3>(propVal.as_string())));
+							setProperty(name, make_shared<Type::VarWrapper>(make_shared<Type::Vector3>(propVal.as_string())));
 						}
 						if(stype == "UDim"){
-						    setProperty(name, make_shared<Type::VarWrapper>(make_shared<Type::UDim>(propVal.as_string())));
+							setProperty(name, make_shared<Type::VarWrapper>(make_shared<Type::UDim>(propVal.as_string())));
 						}
 						if(stype == "UDim2"){
-						    setProperty(name, make_shared<Type::VarWrapper>(make_shared<Type::UDim2>(propVal.as_string())));
+							setProperty(name, make_shared<Type::VarWrapper>(make_shared<Type::UDim2>(propVal.as_string())));
 						}
 						if(stype == "Instance"){
 							shared_ptr<OBSerializer> serializer = eng->getSerializer();
@@ -510,21 +510,21 @@ namespace OB{
 			}
 
 			std::vector<shared_ptr<Instance>> kids = GetChildren();
-			
+
 			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
 				shared_ptr<Instance> kid = kids[i];
 				if(kid){
 					pugi::xml_node cinst = thisNode.find_child_by_attribute("instance", "id", kid->serializedID().c_str());
-				    kid->deserializeProperties(cinst);
+					kid->deserializeProperties(cinst);
 				}
 			}
 		}
 
 		std::string Instance::serializedID(){
-		    shared_ptr<OBSerializer> serializer = eng->getSerializer();
+			shared_ptr<OBSerializer> serializer = eng->getSerializer();
 			return serializer->GetID(shared_from_this());
 		}
-		#endif
+#endif
 
 		std::map<std::string, _PropertyInfo> Instance::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap;
@@ -536,8 +536,8 @@ namespace OB{
 		}
 
 		void Instance::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
-		    if(prop == "Name"){
-			    setName(val->asString());
+			if(prop == "Name"){
+				setName(val->asString());
 				return;
 			}
 			if(prop == "Archivable"){
@@ -556,17 +556,17 @@ namespace OB{
 			if(prop == "ClassName"){
 				return make_shared<Type::VarWrapper>(getClassName());
 			}
-			
+
 			return make_shared<Type::VarWrapper>();
 		}
-		
+
 		void Instance::tick(){
 			tickChildren();
 		}
 
-	    void Instance::preRender(){
+		void Instance::preRender(){
 			std::vector<shared_ptr<Instance>> kids = GetChildren();
-			
+
 			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
 				shared_ptr<Instance> kid = kids[i];
 				if(kid){
@@ -575,10 +575,10 @@ namespace OB{
 			}
 		}
 
-			    
-	    void Instance::render(){
+
+		void Instance::render(){
 			std::vector<shared_ptr<Instance>> kids = GetChildren();
-			
+
 			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
 				shared_ptr<Instance> kid = kids[i];
 				if(kid){
@@ -586,10 +586,10 @@ namespace OB{
 				}
 			}
 		}
-	
+
 		void Instance::tickChildren(){
 			std::vector<shared_ptr<Instance>> kids = GetChildren();
-			
+
 			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
 				shared_ptr<Instance> kid = kids[i];
 				if(kid){
@@ -608,46 +608,46 @@ namespace OB{
 			lua_pushstring(L, "This metatable is locked");
 			lua_rawset(L, -3);
 
-			//Name
+			// Name
 			lua_pushstring(L, "__name");
 			/*
-			For now, I think all Instance classes being called
-			'Instance' is for the best, in this context. I say this
-		    only because we typecheck against 'Instance' in Lua.
+			  For now, I think all Instance classes being called
+			  'Instance' is for the best, in this context. I say this
+			  only because we typecheck against 'Instance' in Lua.
 			*/
 			lua_pushstring(L, "Instance");
 			lua_rawset(L, -3);
 
-			//Methods
+			// Methods
 			lua_pushstring(L, "__methods");
 			lua_newtable(L);
 			register_methods(L);
 			lua_rawset(L, -3);
 
-			//Property getters
+			// Property getters
 			lua_pushstring(L, "__propertygetters");
 			lua_newtable(L);
 			register_getters(L);
 			lua_rawset(L, -3);
 
-			//Property setters
+			// Property setters
 			lua_pushstring(L, "__propertysetters");
 			lua_newtable(L);
 			register_setters(L);
 			lua_rawset(L, -3);
 
-			//Events
+			// Events
 			lua_pushstring(L, "__events");
 			lua_newtable(L);
 			register_events(L);
 			lua_rawset(L, -3);
 
-			//Item get
+			// Item get
 			lua_pushstring(L, "__index");
 			lua_pushcfunction(L, lua_index);
 			lua_rawset(L, -3);
 
-			//Item set
+			// Item set
 			lua_pushstring(L, "__newindex");
 			lua_pushcfunction(L, lua_newindex);
 			lua_rawset(L, -3);
@@ -656,7 +656,7 @@ namespace OB{
 		}
 
 		void Instance::propertyChanged(std::string property){
-		    std::vector<shared_ptr<Type::VarWrapper>> args = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(property)});
+			std::vector<shared_ptr<Type::VarWrapper>> args = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(property)});
 
 			Changed->Fire(eng, args);
 		}
@@ -667,7 +667,7 @@ namespace OB{
 
 		void Instance::setParent(shared_ptr<Instance> parent, bool useDMNotify){
 			if(Parent == parent){
-				//noop
+				// No-op
 				return;
 			}
 			if(ParentLocked){
@@ -688,7 +688,7 @@ namespace OB{
 			if(Parent){
 				Parent->addChild(shared_from_this());
 
-				#ifdef HAVE_ENET
+#ifdef HAVE_ENET
 				if(useDMNotify){
 					shared_ptr<DataModel> dm = eng->getDataModel();
 					if(dm){
@@ -722,9 +722,9 @@ namespace OB{
 						}
 					}
 				}
-				#else
+#else
 				(void)useDMNotify;
-				#endif
+#endif
 			}
 
 			fireAncestryChanged(std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(std::enable_shared_from_this<Instance>::shared_from_this()), make_shared<Type::VarWrapper>(Parent)}));
@@ -775,7 +775,7 @@ namespace OB{
 				children.erase(std::remove(children.begin(), children.end(), kid));
 
 
-			    std::vector<shared_ptr<Type::VarWrapper>> args = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(kid)});
+				std::vector<shared_ptr<Type::VarWrapper>> args = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(kid)});
 				ChildRemoved->Fire(eng, args);
 				fireDescendantRemoving(args);
 			}
@@ -793,10 +793,10 @@ namespace OB{
 
 		int Instance::wrap_lua(lua_State* L){
 			shared_ptr<Instance> shared_this = std::enable_shared_from_this<Instance>::shared_from_this();
-			
-		    shared_ptr<Instance>* udata = static_cast<shared_ptr<Instance>*>(lua_newuserdata(L, sizeof(shared_ptr<Instance>)));
+
+			shared_ptr<Instance>* udata = static_cast<shared_ptr<Instance>*>(lua_newuserdata(L, sizeof(shared_ptr<Instance>)));
 			new(udata) shared_ptr<Instance>(shared_this);
-			
+
 			luaL_getmetatable(L, getLuaClassName().c_str());
 			lua_setmetatable(L, -2);
 			return 1;
@@ -873,7 +873,7 @@ namespace OB{
 					return NULL;
 				}
 			}
-			
+
 			if(lua_isuserdata(L, index)){
 				std::vector<std::string> existing = OB::ClassFactory::getRegisteredClasses();
 				unsigned size = existing.size();
@@ -885,7 +885,7 @@ namespace OB{
 						luaL_getmetatable(L, name.c_str());
 						if(lua_rawequal(L, -1, -2)){
 							lua_pop(L, 2);
-						    return *static_cast<shared_ptr<Instance>*>(udata);
+							return *static_cast<shared_ptr<Instance>*>(udata);
 						}
 						lua_pop(L, 1);
 					}
@@ -903,11 +903,11 @@ namespace OB{
 			if(!inst){
 				return 0;
 			}
-			
+
 			const char* name = luaL_checkstring(L, 2);
-			lua_getmetatable(L, 1);//-3
-			lua_getfield(L, -1, "__propertysetters");//-2
-			lua_getfield(L, -1, name);//-1
+			lua_getmetatable(L, 1);// -3
+			lua_getfield(L, -1, "__propertysetters");// -2
+			lua_getfield(L, -1, name);// -1
 			if (lua_iscfunction(L, -1)){
 				lua_remove(L, -2);
 				lua_remove(L, -2);
@@ -922,7 +922,7 @@ namespace OB{
 
 				return luaL_error(L, "attempt to index '%s' (a nil value)", name);
 			}
-			
+
 			return 0;
 		}
 
@@ -931,12 +931,12 @@ namespace OB{
 			if(!inst){
 				return 0;
 			}
-			
+
 			const char* name = luaL_checkstring(L, 2);
 
-			lua_getmetatable(L, 1);//-3
-			lua_getfield(L, -1, "__propertygetters");//-2
-			lua_getfield(L, -1, name);//-1
+			lua_getmetatable(L, 1);// -3
+			lua_getfield(L, -1, "__propertygetters");// -2
+			lua_getfield(L, -1, name);// -1
 			if(lua_iscfunction(L, -1)){
 				lua_remove(L, -2);
 				lua_remove(L, -2);
@@ -946,9 +946,9 @@ namespace OB{
 				return 1;
 			}else{
 				lua_pop(L, 2);
-				//Check methods
-				lua_getfield(L, -1, "__methods");//-2
-				lua_getfield(L, -1, name);//-1
+				// Check methods
+				lua_getfield(L, -1, "__methods");// -2
+				lua_getfield(L, -1, name);// -1
 				if(lua_iscfunction(L, -1)){
 					lua_remove(L, -2);
 					lua_remove(L, -3);
@@ -956,9 +956,9 @@ namespace OB{
 					return 1;
 				}else{
 					lua_pop(L, 2);
-					//Check events
-					lua_getfield(L, -1, "__events");//-2
-					lua_getfield(L, -1, name);//-1
+					// Check events
+					lua_getfield(L, -1, "__events");// -2
+					lua_getfield(L, -1, name);// -1
 					if(lua_iscfunction(L, -1)){
 						lua_remove(L, -2);
 						lua_remove(L, -3);
@@ -978,7 +978,7 @@ namespace OB{
 					}
 				}
 			}
-				
+
 			return 0;
 		}
 
@@ -992,13 +992,13 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushboolean(L, false);
 			return 1;
 		}
-		
+
 		int Instance::lua_gc(lua_State* L){
-		    if(lua_isuserdata(L, 1)){
+			if(lua_isuserdata(L, 1)){
 				std::vector<std::string> existing = OB::ClassFactory::getRegisteredClasses();
 				unsigned size = existing.size();
 				void* udata = lua_touserdata(L, 1);
@@ -1009,24 +1009,24 @@ namespace OB{
 						luaL_getmetatable(L, name.c_str());
 						if(lua_rawequal(L, -1, -2)){
 							lua_pop(L, 2);
-							
+
 							(*static_cast<shared_ptr<Instance>*>(udata)).reset();
 						}
 						lua_pop(L, 1);
 					}
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int Instance::lua_toString(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				lua_pushstring(L, inst->toString().c_str());
 			}
-			
+
 			return 1;
 		}
 
@@ -1038,24 +1038,24 @@ namespace OB{
 				lua_pushstring(L, className.c_str());
 				return 1;
 			}
-			
+
 			return 0;
 		}
 
 		int Instance::lua_getUseCount(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				lua_pushinteger(L, inst.use_count() - 1);
 				return 1;
 			}
-			
+
 			return 0;
 		}
 
 		int Instance::lua_readOnlyProperty(lua_State* L){
-			//Welp. This is how ROBLOX does it.
-			//We do love compatibility.
+			// Welp. This is how ROBLOX does it.
+			// We do love compatibility.
 			luaL_error(L, "can't set value");
 			return 0;
 		}
@@ -1067,7 +1067,7 @@ namespace OB{
 				lua_pushstring(L, inst->getName().c_str());
 				return 1;
 			}
-			
+
 			return 0;
 		}
 
@@ -1078,18 +1078,18 @@ namespace OB{
 				std::string desired = std::string(luaL_checkstring(L, 2));
 				inst->setName(desired);
 			}
-			
+
 			return 0;
 		}
 
 		int Instance::lua_getParent(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
 
-			if(inst){			
+			if(inst){
 				if(inst->Parent){
 					return inst->Parent->wrap_lua(L);
 				}
-			
+
 				lua_pushnil(L);
 				return 1;
 			}
@@ -1102,14 +1102,14 @@ namespace OB{
 
 			if(inst){
 				shared_ptr<Instance> otherInst = checkInstance(L, 2, false);
-			
+
 				try{
 					inst->setParent(otherInst, true);
 				}catch(OBException& ex){
 					return luaL_error(L, ex.getMessage().c_str());
 				}
 			}
-			
+
 			return 0;
 		}
 
@@ -1120,7 +1120,7 @@ namespace OB{
 				lua_pushboolean(L, inst->getArchivable());
 				return 1;
 			}
-			
+
 			return 0;
 		}
 
@@ -1128,7 +1128,7 @@ namespace OB{
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
 
 			if(inst){
-				//Again, following ROBLOX's ways....
+				// Again, following ROBLOX's ways....
 				bool newVal = false;
 				if(lua_isboolean(L, 2)){
 					newVal = lua_toboolean(L, 2);
@@ -1137,24 +1137,24 @@ namespace OB{
 				}
 				inst->setArchivable(newVal);
 			}
-			
+
 			return 0;
 		}
 
 		int Instance::lua_ClearAllChildren(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				inst->ClearAllChildren();
 				return 0;
 			}
-			
+
 			return luaL_error(L, COLONERR, "ClearAllChildren");
 		}
 
 		int Instance::lua_Clone(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Instance> newGuy = inst->Clone();
 				if(newGuy){
@@ -1164,35 +1164,35 @@ namespace OB{
 				lua_pushnil(L);
 				return 1;
 			}
-			
+
 			return luaL_error(L, COLONERR, "Clone");
 		}
 
 		int Instance::lua_Destroy(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				inst->Destroy();
 				return 0;
 			}
-			
+
 			return luaL_error(L, COLONERR, "Destroy");
 		}
 
 		int Instance::lua_Remove(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				inst->Remove();
 				return 0;
 			}
-			
+
 			return luaL_error(L, COLONERR, "Remove");
 		}
 
 		int Instance::lua_FindFirstChild(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				const char* kidName = luaL_checkstring(L, 2);
 				bool recursive = false;
@@ -1210,13 +1210,13 @@ namespace OB{
 				lua_pushnil(L);
 				return 1;
 			}
-			
+
 			return luaL_error(L, COLONERR, "FindFirstChild");
 		}
 
 		int Instance::lua_GetChildren(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				lua_newtable(L);
 
@@ -1224,32 +1224,31 @@ namespace OB{
 					shared_ptr<Instance> kid = inst->children[i];
 					if(kid){
 						int lIndex = i + 1;
-						//lua_pushnumber(L, lIndex);
 						kid->wrap_lua(L);
 						lua_rawseti(L, -2, lIndex);
 					}
 				}
 				return 1;
 			}
-			
+
 			return luaL_error(L, COLONERR, "GetChildren");
 		}
 
 		int Instance::lua_GetFullName(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				std::string fullName = inst->GetFullName();
 				lua_pushstring(L, fullName.c_str());
 				return 1;
 			}
-			
+
 			return luaL_error(L, COLONERR, "GetFullName");
 		}
 
 		int Instance::lua_IsA(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				const char* checkName = luaL_checkstring(L, 2);
 				if(checkName){
@@ -1260,47 +1259,47 @@ namespace OB{
 				lua_pushboolean(L, false);
 				return 1;
 			}
-			
+
 			return luaL_error(L, COLONERR, "IsA");
 		}
 
 		int Instance::lua_IsAncestorOf(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Instance> otherInst = checkInstance(L, 2);
 
 				lua_pushboolean(L, inst->IsAncestorOf(otherInst));
 				return 1;
 			}
-			
+
 			return luaL_error(L, COLONERR, "IsAncestorOf");
 		}
 
 		int Instance::lua_IsDescendantOf(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Instance> otherInst = checkInstance(L, 2);
 				lua_pushboolean(L, inst->IsDescendantOf(otherInst));
 				return 1;
 			}
-			
+
 			return luaL_error(L, COLONERR, "IsDescendantOf");
 		}
 
 		int Instance::lua_GetNetworkID(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				lua_pushnumber(L, inst->GetNetworkID());
 				return 1;
 			}
-			
+
 			return luaL_error(L, COLONERR, "GetNetworkID");
 		}
 
-	    bool Instance::assetLoaded(std::string res){
+		bool Instance::assetLoaded(std::string res){
 			return true;
 		}
 	}

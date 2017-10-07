@@ -25,22 +25,22 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    ReplicatedFirst::ReplicatedFirst(OBEngine* eng) : Instance(eng){
+		ReplicatedFirst::ReplicatedFirst(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 
 			netId = OB_NETID_REPLICATEDFIRST;
 		}
 
-	    ReplicatedFirst::~ReplicatedFirst(){}
+		ReplicatedFirst::~ReplicatedFirst(){}
 
-		#if HAVE_PUGIXML
-	    std::string ReplicatedFirst::serializedID(){
+#if HAVE_PUGIXML
+		std::string ReplicatedFirst::serializedID(){
 			shared_ptr<OBSerializer> serializer = eng->getSerializer();
 			serializer->SetID(shared_from_this(), getClassName());
-			
+
 			return Instance::serializedID();
 		}
-		#endif
+#endif
 
 		shared_ptr<Instance> ReplicatedFirst::cloneImpl(){
 			return NULL;

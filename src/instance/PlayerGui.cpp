@@ -29,11 +29,11 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    PlayerGui::PlayerGui(OBEngine* eng) : BasePlayerGui(eng){
+		PlayerGui::PlayerGui(OBEngine* eng) : BasePlayerGui(eng){
 			Name = ClassName;
 		}
 
-	    PlayerGui::~PlayerGui(){}
+		PlayerGui::~PlayerGui(){}
 
 		shared_ptr<Instance> PlayerGui::cloneImpl(){
 			return NULL;

@@ -33,7 +33,7 @@ namespace OB{
 		class RunService;
 		class ReplicatedFirst;
 		class UserInputService;
-		
+
 		/**
 		 * DataModel is the root singleton of the OpenBlox engine.
 		 * The DataModel contains all of the core services of the engine,
@@ -42,190 +42,190 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class DataModel: public ServiceProvider{
-			public:
-			    DataModel(OBEngine* eng);
-				virtual ~DataModel();
+		public:
+			DataModel(OBEngine* eng);
+			virtual ~DataModel();
 
-				void Shutdown(int statusCode = 0);
-				
-				void initServices();
+			void Shutdown(int statusCode = 0);
 
-				/**
-				 * Returns whether or not Roblox Compatibility Mode is
-				 * enabled.
-				 *
-				 * @sa \ref roblox-compat "Roblox Compatibility Mode"
-				 * @sa setRobloxCompatMode
-				 * @returns bool, true if compat mode is on, otherwise false
-				 * @author John M. Harris, Jr.
-				 */
-				bool getRobloxCompatMode();
+			void initServices();
 
-				/**
-				 * Sets whether or not Roblox Compatibility Mode is
-				 * enabled.
-				 *
-				 * @sa \ref roblox-compat "Roblox Compatibility Mode"
-				 * @sa getRobloxCompatMode
-				 * @author John M. Harris, Jr.
-				 */
-				void setRobloxCompatMode(bool robloxCompatMode);
+			/**
+			 * Returns whether or not Roblox Compatibility Mode is
+			 * enabled.
+			 *
+			 * @sa \ref roblox-compat "Roblox Compatibility Mode"
+			 * @sa setRobloxCompatMode
+			 * @returns bool, true if compat mode is on, otherwise false
+			 * @author John M. Harris, Jr.
+			 */
+			bool getRobloxCompatMode();
 
-				/**
-				 * Returns the Workspace service.
-				 *
-				 * @returns Workspace
-				 * @author John M. Harris, Jr.
-				 */
-				shared_ptr<Workspace> getWorkspace();
+			/**
+			 * Sets whether or not Roblox Compatibility Mode is
+			 * enabled.
+			 *
+			 * @sa \ref roblox-compat "Roblox Compatibility Mode"
+			 * @sa getRobloxCompatMode
+			 * @author John M. Harris, Jr.
+			 */
+			void setRobloxCompatMode(bool robloxCompatMode);
 
-				/**
-				 * Returns the CoreGui service.
-				 *
-				 * @returns coreGui
-				 * @author John M. Harris, Jr.
-				 */
-				shared_ptr<CoreGui> getCoreGui();
-				
-				/**
-				 * Returns the Lighting service.
-				 *
-				 * @returns Lighting
-				 * @author John M. Harris, Jr.
-				 */
-				shared_ptr<Lighting> getLighting();
+			/**
+			 * Returns the Workspace service.
+			 *
+			 * @returns Workspace
+			 * @author John M. Harris, Jr.
+			 */
+			shared_ptr<Workspace> getWorkspace();
 
-				/**
-				 * Returns the Players service.
-				 *
-				 * @returns Players
-				 * @author John M. Harris, Jr.
-				 */
-				shared_ptr<Players> getPlayers();
+			/**
+			 * Returns the CoreGui service.
+			 *
+			 * @returns coreGui
+			 * @author John M. Harris, Jr.
+			 */
+			shared_ptr<CoreGui> getCoreGui();
 
-				/**
-				 * Returns the ContentProvider service.
-				 *
-				 * @returns ContentProvider
-				 * @author John M. Harris, Jr.
-				 */
-				shared_ptr<ContentProvider> getContentProvider();
+			/**
+			 * Returns the Lighting service.
+			 *
+			 * @returns Lighting
+			 * @author John M. Harris, Jr.
+			 */
+			shared_ptr<Lighting> getLighting();
 
-				/**
-				 * Returns the LogService service.
-				 *
-				 * @returns LogService
-				 * @author John M. Harris, Jr.
-				 */
-				shared_ptr<LogService> getLogService();
+			/**
+			 * Returns the Players service.
+			 *
+			 * @returns Players
+			 * @author John M. Harris, Jr.
+			 */
+			shared_ptr<Players> getPlayers();
 
-				/**
-				 * Returns the RunService service.
-				 *
-				 * @returns RunService
-				 * @author John M. Harris, Jr.
-				 */
-				shared_ptr<RunService> getRunService();
+			/**
+			 * Returns the ContentProvider service.
+			 *
+			 * @returns ContentProvider
+			 * @author John M. Harris, Jr.
+			 */
+			shared_ptr<ContentProvider> getContentProvider();
 
-				/**
-				 * Returns the UserInputService service.
-				 *
-				 * @returns UserInputService
-				 * @author John M. Harris, Jr.
-				 */
-				shared_ptr<UserInputService> getUserInputService();
+			/**
+			 * Returns the LogService service.
+			 *
+			 * @returns LogService
+			 * @author John M. Harris, Jr.
+			 */
+			shared_ptr<LogService> getLogService();
 
-				/**
-				 * Reimplementation of ServiceProvider's GetService,
-				 * this time calling ClassFactory's createService with
-				 * the isDataModel parameter being true.
-				 *
-				 * @param className Class name
-				 * @returns Instance* The service requested, or NULL if it cannot be created.
-				 * @author John M. Harris, Jr.
-				 */
-				virtual shared_ptr<Instance> GetService(std::string className);
+			/**
+			 * Returns the RunService service.
+			 *
+			 * @returns RunService
+			 * @author John M. Harris, Jr.
+			 */
+			shared_ptr<RunService> getRunService();
 
-				/**
-				 * Returns a weak reference to an Instance with a
-				 * given Network ID, or NULL.
-				 *
-				 * @param netId Network ID
-				 * @internal
-				 * @returns weak reference to Instance or NULL
-				 * @author John M. Harris, Jr.
-				 */
-			    weak_ptr<Instance> lookupInstance(ob_uint64 netId);
+			/**
+			 * Returns the UserInputService service.
+			 *
+			 * @returns UserInputService
+			 * @author John M. Harris, Jr.
+			 */
+			shared_ptr<UserInputService> getUserInputService();
 
-				void putInstance(shared_ptr<Instance> inst);
-				void dropInstance(ob_uint64 reqNetId);
+			/**
+			 * Reimplementation of ServiceProvider's GetService,
+			 * this time calling ClassFactory's createService with
+			 * the isDataModel parameter being true.
+			 *
+			 * @param className Class name
+			 * @returns Instance* The service requested, or NULL if it cannot be created.
+			 * @author John M. Harris, Jr.
+			 */
+			virtual shared_ptr<Instance> GetService(std::string className);
 
-				/**
-				 * Returns the next network ID.
-				 *
-				 * @returns Network ID
-				 * @internal
-				 * @author John M. Harris, Jr.
-				 */
-				ob_uint64 nextNetworkID();
+			/**
+			 * Returns a weak reference to an Instance with a
+			 * given Network ID, or NULL.
+			 *
+			 * @param netId Network ID
+			 * @internal
+			 * @returns weak reference to Instance or NULL
+			 * @author John M. Harris, Jr.
+			 */
+			weak_ptr<Instance> lookupInstance(ob_uint64 netId);
 
-				#if HAVE_ENET
-				/**
-				 * Replicates properties of this Instance.
-				 * 
-				 * @param peer Peer
-				 * @author John M. Harris, Jr.
-				 */
-				virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
+			void putInstance(shared_ptr<Instance> inst);
+			void dropInstance(ob_uint64 reqNetId);
 
-				/**
-				 * Replicates children of this Instance.
-				 * 
-				 * @param peer Peer
-				 * @author John M. Harris, Jr.
-				 */
-				virtual void replicateChildren(shared_ptr<NetworkReplicator> peer);
-				#endif
+			/**
+			 * Returns the next network ID.
+			 *
+			 * @returns Network ID
+			 * @internal
+			 * @author John M. Harris, Jr.
+			 */
+			ob_uint64 nextNetworkID();
 
-				#if HAVE_PUGIXML
-				virtual void deserialize(pugi::xml_node thisNode);
-				virtual std::string serializedID();
-				#endif
+#if HAVE_ENET
+			/**
+			 * Replicates properties of this Instance.
+			 *
+			 * @param peer Peer
+			 * @author John M. Harris, Jr.
+			 */
+			virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
 
-				virtual std::map<std::string, _PropertyInfo> getProperties();
-				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
-				virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
-				
-			    virtual void preRender();
-				virtual void render();
+			/**
+			 * Replicates children of this Instance.
+			 *
+			 * @param peer Peer
+			 * @author John M. Harris, Jr.
+			 */
+			virtual void replicateChildren(shared_ptr<NetworkReplicator> peer);
+#endif
 
-				DECLARE_LUA_METHOD(Shutdown);
+#if HAVE_PUGIXML
+			virtual void deserialize(pugi::xml_node thisNode);
+			virtual std::string serializedID();
+#endif
 
-				DECLARE_LUA_METHOD(getRobloxCompatMode);
-				DECLARE_LUA_METHOD(setRobloxCompatMode);
+			virtual std::map<std::string, _PropertyInfo> getProperties();
+			virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
+			virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
 
-				static void register_lua_property_getters(lua_State* L);
-				static void register_lua_property_setters(lua_State* L);
-				
-				DECLARE_CLASS(DataModel);
+			virtual void preRender();
+			virtual void render();
 
-				shared_ptr<Workspace> workspace;
-				shared_ptr<CoreGui> coreGui;
-				shared_ptr<Lighting> lighting;
-				shared_ptr<Players> players;
-				shared_ptr<ContentProvider> contentProvider;
-				shared_ptr<LogService> logService;
-				shared_ptr<RunService> runService;
-				shared_ptr<ReplicatedFirst> replicatedFirst;
-				shared_ptr<UserInputService> userInputService;
+			DECLARE_LUA_METHOD(Shutdown);
 
-				bool RobloxCompatMode;
-				ob_uint64 netIdStartIdx;
-				ob_uint64 netIdNextIdx;
-				std::map<ob_uint64, weak_ptr<Instance>> instMap;
-				std::vector<ob_uint64> freedNetIDs;
-				
-				static void register_lua_methods(lua_State* L);
+			DECLARE_LUA_METHOD(getRobloxCompatMode);
+			DECLARE_LUA_METHOD(setRobloxCompatMode);
+
+			static void register_lua_property_getters(lua_State* L);
+			static void register_lua_property_setters(lua_State* L);
+
+			DECLARE_CLASS(DataModel);
+
+			shared_ptr<Workspace> workspace;
+			shared_ptr<CoreGui> coreGui;
+			shared_ptr<Lighting> lighting;
+			shared_ptr<Players> players;
+			shared_ptr<ContentProvider> contentProvider;
+			shared_ptr<LogService> logService;
+			shared_ptr<RunService> runService;
+			shared_ptr<ReplicatedFirst> replicatedFirst;
+			shared_ptr<UserInputService> userInputService;
+
+			bool RobloxCompatMode;
+			ob_uint64 netIdStartIdx;
+			ob_uint64 netIdNextIdx;
+			std::map<ob_uint64, weak_ptr<Instance>> instMap;
+			std::vector<ob_uint64> freedNetIDs;
+
+			static void register_lua_methods(lua_State* L);
 		};
 	}
 }

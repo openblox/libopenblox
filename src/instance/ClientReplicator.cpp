@@ -28,17 +28,17 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    ClientReplicator::ClientReplicator(OBEngine* eng) : NetworkReplicator(eng){
+		ClientReplicator::ClientReplicator(OBEngine* eng) : NetworkReplicator(eng){
 			Name = ClassName;
 			netId = OB_NETID_NOT_REPLICATED;
 		}
 
-	    ClientReplicator::ClientReplicator(ENetPeer* peer, OBEngine* eng) : NetworkReplicator(peer, eng){
+		ClientReplicator::ClientReplicator(ENetPeer* peer, OBEngine* eng) : NetworkReplicator(peer, eng){
 			Name = ClassName;
-		    netId = OB_NETID_NOT_REPLICATED;
+			netId = OB_NETID_NOT_REPLICATED;
 		}
 
-	    ClientReplicator::~ClientReplicator(){
+		ClientReplicator::~ClientReplicator(){
 			if(plr){
 				plr->Destroy();
 			}

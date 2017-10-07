@@ -32,27 +32,27 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    Lighting::Lighting(OBEngine* eng) : Instance(eng){
+		Lighting::Lighting(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 			netId = OB_NETID_LIGHTING;
 
 			SkyTransparent = false;
-			
+
 			FogEnabled = false;
 			FogStart = 0;
 			FogEnd = 0;
 		}
 
-	    Lighting::~Lighting(){}
+		Lighting::~Lighting(){}
 
-		#if HAVE_PUGIXML
-	    std::string Lighting::serializedID(){
+#if HAVE_PUGIXML
+		std::string Lighting::serializedID(){
 			shared_ptr<OBSerializer> serializer = eng->getSerializer();
 			serializer->SetID(shared_from_this(), getClassName());
-			
+
 			return Instance::serializedID();
 		}
-		#endif
+#endif
 
 		shared_ptr<Instance> Lighting::cloneImpl(){
 			return NULL;
@@ -61,7 +61,7 @@ namespace OB{
 		shared_ptr<Type::Color3> Lighting::getSkyColor(){
 			return SkyColor;
 		}
-		
+
 		void Lighting::setSkyColor(shared_ptr<Type::Color3> skyColor){
 			if(skyColor == NULL){
 				shared_ptr<Type::Color3> col3 = make_shared<Type::Color3>();
@@ -95,7 +95,7 @@ namespace OB{
 		}
 
 		void Lighting::updateFog(){
-			#if HAVE_IRRLICHT
+#if HAVE_IRRLICHT
 		  	irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
 			if(irrDev == NULL){
 				return;
@@ -112,18 +112,18 @@ namespace OB{
 				}else{
 					irrFogCol = irr::video::SColor(255, 0, 0, 0);
 				}
-				
+
 				driver->setFog(irrFogCol, irr::video::EFT_FOG_LINEAR, FogStart, FogEnd, 0, true, false);
 			}else{
 				driver->setFog();
 			}
-			#endif
+#endif
 		}
 
 		bool Lighting::isFogEnabled(){
 			return FogEnabled;
 		}
-		
+
 		void Lighting::setFogEnabled(bool fogEnabled){
 			if(FogEnabled != fogEnabled){
 				FogEnabled = fogEnabled;
@@ -134,11 +134,11 @@ namespace OB{
 				updateFog();
 			}
 		}
-		
+
 		shared_ptr<Type::Color3> Lighting::getFogColor(){
 			return FogColor;
 		}
-		
+
 		void Lighting::setFogColor(shared_ptr<Type::Color3> fogColor){
 			if(fogColor == NULL){
 				shared_ptr<Type::Color3> col3 = make_shared<Type::Color3>();
@@ -156,13 +156,13 @@ namespace OB{
 
 					REPLICATE_PROPERTY_CHANGE(FogColor);
 					propertyChanged("FogColor");
-					
+
 					updateFog();
 				}
 			}
 		}
 
-	    float Lighting::getFogStart(){
+		float Lighting::getFogStart(){
 			return FogStart;
 		}
 
@@ -172,7 +172,7 @@ namespace OB{
 
 				REPLICATE_PROPERTY_CHANGE(FogStart);
 				propertyChanged("FogStart");
-				
+
 				updateFog();
 			}
 		}
@@ -187,15 +187,15 @@ namespace OB{
 
 				REPLICATE_PROPERTY_CHANGE(FogEnd);
 				propertyChanged("FogEnd");
-				
+
 				updateFog();
 			}
 		}
 
-		#if HAVE_ENET
+#if HAVE_ENET
 		void Lighting::replicateProperties(shared_ptr<NetworkReplicator> peer){
 			Instance::replicateProperties(peer);
-			
+
 			peer->sendSetPropertyPacket(netId, "SkyColor", make_shared<Type::VarWrapper>(SkyColor));
 			peer->sendSetPropertyPacket(netId, "SkyTransparent", make_shared<Type::VarWrapper>(SkyTransparent));
 			peer->sendSetPropertyPacket(netId, "FogEnabled", make_shared<Type::VarWrapper>(FogEnabled));
@@ -203,7 +203,7 @@ namespace OB{
 			peer->sendSetPropertyPacket(netId, "FogStart", make_shared<Type::VarWrapper>(FogStart));
 			peer->sendSetPropertyPacket(netId, "FogEnd", make_shared<Type::VarWrapper>(FogEnd));
 		}
-		#endif
+#endif
 
 		std::map<std::string, _PropertyInfo> Lighting::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
@@ -218,28 +218,28 @@ namespace OB{
 		}
 
 		void Lighting::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
-		    if(prop == "SkyTransparent"){
-			    setSkyTransparent(val->asBool());
+			if(prop == "SkyTransparent"){
+				setSkyTransparent(val->asBool());
 				return;
 			}
 			if(prop == "SkyColor"){
-			    setSkyColor(val->asColor3());
+				setSkyColor(val->asColor3());
 				return;
 			}
 			if(prop == "FogEnabled"){
-			    setFogEnabled(val->asBool());
+				setFogEnabled(val->asBool());
 				return;
 			}
 			if(prop == "FogColor"){
-			    setFogColor(val->asColor3());
+				setFogColor(val->asColor3());
 				return;
 			}
 			if(prop == "FogStart"){
-			    setFogStart(val->asFloat());
+				setFogStart(val->asFloat());
 				return;
 			}
 			if(prop == "FogEnd"){
-			    setFogEnd(val->asFloat());
+				setFogEnd(val->asFloat());
 				return;
 			}
 
@@ -265,17 +265,17 @@ namespace OB{
 			if(prop == "FogEnd"){
 				return make_shared<Type::VarWrapper>(getFogEnd());
 			}
-			
+
 			return Instance::getProperty(prop);
 		}
 
 		int Lighting::lua_getSkyColor(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
-				    shared_ptr<Type::Color3> col3 = instL->getSkyColor();
+					shared_ptr<Type::Color3> col3 = instL->getSkyColor();
 					if(col3){
 						return col3->wrap_lua(L);
 					}else{
@@ -284,28 +284,28 @@ namespace OB{
 					}
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int Lighting::lua_setSkyColor(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
-				    shared_ptr<Type::Color3> col3 = Type::checkColor3(L, 2, true, true);
-			    	instL->setSkyColor(col3);
+					shared_ptr<Type::Color3> col3 = Type::checkColor3(L, 2, true, true);
+					instL->setSkyColor(col3);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int Lighting::lua_getSkyTransparent(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
@@ -313,14 +313,14 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int Lighting::lua_setSkyTransparent(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
@@ -328,13 +328,13 @@ namespace OB{
 					instL->setSkyTransparent(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int Lighting::lua_getFogEnabled(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
@@ -342,14 +342,14 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int Lighting::lua_setFogEnabled(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
@@ -357,17 +357,17 @@ namespace OB{
 					instL->setFogEnabled(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int Lighting::lua_getFogColor(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
-				    shared_ptr<Type::Color3> col3 = instL->getFogColor();
+					shared_ptr<Type::Color3> col3 = instL->getFogColor();
 					if(col3){
 						return col3->wrap_lua(L);
 					}else{
@@ -376,28 +376,28 @@ namespace OB{
 					}
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int Lighting::lua_setFogColor(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
-				    shared_ptr<Type::Color3> col3 = Type::checkColor3(L, 2, true, true);
+					shared_ptr<Type::Color3> col3 = Type::checkColor3(L, 2, true, true);
 					instL->setFogColor(col3);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int Lighting::lua_getFogStart(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
@@ -405,14 +405,14 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int Lighting::lua_setFogStart(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
@@ -420,13 +420,13 @@ namespace OB{
 					instL->setFogStart(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int Lighting::lua_getFogEnd(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
@@ -434,14 +434,14 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int Lighting::lua_setFogEnd(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
 				if(instL){
@@ -449,13 +449,13 @@ namespace OB{
 					instL->setFogEnd(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		void Lighting::register_lua_property_setters(lua_State* L){
 			Instance::register_lua_property_setters(L);
-			
+
 			luaL_Reg properties[] = {
 				{"SkyColor", lua_setSkyColor},
 				{"SkyTransparent", lua_setSkyTransparent},
@@ -470,7 +470,7 @@ namespace OB{
 
 		void Lighting::register_lua_property_getters(lua_State* L){
 			Instance::register_lua_property_getters(L);
-			
+
 			luaL_Reg properties[] = {
 				{"SkyColor", lua_getSkyColor},
 				{"SkyTransparent", lua_getSkyTransparent},

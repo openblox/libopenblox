@@ -28,9 +28,9 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    Humanoid::Humanoid(OBEngine* eng) : Instance(eng){
+		Humanoid::Humanoid(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
-			
+
 			Health = 100;
 			MaxHealth = 100;
 			Invincible = false;
@@ -43,11 +43,11 @@ namespace OB{
 			WalkTarget = NULL;
 
 			MoveToFinished = make_shared<Type::Event>("MoveToFinished");
-		    HealthChanged = make_shared<Type::Event>("HealthChanged");
-		    Died = make_shared<Type::Event>("Died");
+			HealthChanged = make_shared<Type::Event>("HealthChanged");
+			Died = make_shared<Type::Event>("Died");
 		}
 
-	    Humanoid::~Humanoid(){}
+		Humanoid::~Humanoid(){}
 
 		shared_ptr<Instance> Humanoid::cloneImpl(){
 			shared_ptr<Humanoid> h = make_shared<Humanoid>(eng);
@@ -65,7 +65,7 @@ namespace OB{
 			h->MoveDirection = MoveDirection;
 			h->State = State;
 			h->WalkTarget = WalkTarget;
-			
+
 			return h;
 		}
 
@@ -73,7 +73,7 @@ namespace OB{
 			return Health;
 		}
 		void Humanoid::setHealth(double health){
-		    if(health != Health){
+			if(health != Health){
 				double oldHealth = Health;
 				Health = health;
 
@@ -92,10 +92,10 @@ namespace OB{
 		double Humanoid::getMaxHealth(){
 			return MaxHealth;
 		}
-		
+
 		void Humanoid::setMaxHealth(double maxHealth){
 			if(maxHealth != MaxHealth){
-			    MaxHealth = maxHealth;
+				MaxHealth = maxHealth;
 
 				if(Health > MaxHealth){
 					setHealth(MaxHealth);
@@ -109,10 +109,10 @@ namespace OB{
 		bool Humanoid::getInvincible(){
 			return Invincible;
 		}
-		
-	    void Humanoid::setInvincible(bool invincible){
+
+		void Humanoid::setInvincible(bool invincible){
 			if(invincible != Invincible){
-			    Invincible = invincible;
+				Invincible = invincible;
 
 				REPLICATE_PROPERTY_CHANGE(Invincible);
 				propertyChanged("Invincible");
@@ -122,23 +122,23 @@ namespace OB{
 		bool Humanoid::getNameVisible(){
 			return NameVisible;
 		}
-		
-	    void Humanoid::setNameVisible(bool nameVisible){
+
+		void Humanoid::setNameVisible(bool nameVisible){
 			if(nameVisible != NameVisible){
-			    NameVisible = nameVisible;
+				NameVisible = nameVisible;
 
 				REPLICATE_PROPERTY_CHANGE(NameVisible);
 				propertyChanged("NameVisible");
 			}
 		}
-				
+
 		bool Humanoid::getHealthVisible(){
 			return HealthVisible;
 		}
-		
-	    void Humanoid::setHealthVisible(bool healthVisible){
+
+		void Humanoid::setHealthVisible(bool healthVisible){
 			if(healthVisible != HealthVisible){
-			    HealthVisible = healthVisible;
+				HealthVisible = healthVisible;
 
 				REPLICATE_PROPERTY_CHANGE(HealthVisible);
 				propertyChanged("HealthVisible");
@@ -148,10 +148,10 @@ namespace OB{
 		double Humanoid::getJumpPower(){
 			return JumpPower;
 		}
-		
+
 		void Humanoid::setJumpPower(double jumpPower){
 			if(jumpPower != JumpPower){
-			    JumpPower = jumpPower;
+				JumpPower = jumpPower;
 
 				REPLICATE_PROPERTY_CHANGE(JumpPower);
 				propertyChanged("JumpPower");
@@ -161,10 +161,10 @@ namespace OB{
 		double Humanoid::getWalkSpeed(){
 			return WalkSpeed;
 		}
-		
+
 		void Humanoid::setWalkSpeed(double walkSpeed){
 			if(walkSpeed != WalkSpeed){
-			    WalkSpeed = walkSpeed;
+				WalkSpeed = walkSpeed;
 
 				REPLICATE_PROPERTY_CHANGE(WalkSpeed);
 				propertyChanged("WalkSpeed");
@@ -178,7 +178,7 @@ namespace OB{
 		int Humanoid::getState(){
 			return State;
 		}
-		
+
 		void Humanoid::setState(int state){
 			if(state != State){
 				State = state;
@@ -203,13 +203,13 @@ namespace OB{
 				HealthChanged->Fire(eng, args);
 
 				if(Health <= 0){
-				    Died->Fire(eng);
+					Died->Fire(eng);
 				}
 
 				REPLICATE_PROPERTY_CHANGE(Health);
 				propertyChanged("Health");
 			}
-			
+
 			return 0;
 		}
 		void Humanoid::Move(shared_ptr<Type::Vector3> direction){
@@ -217,10 +217,10 @@ namespace OB{
 		void Humanoid::MoveTo(shared_ptr<Type::Vector3> location){
 		}
 
-		#if HAVE_ENET
+#if HAVE_ENET
 		void Humanoid::replicateProperties(shared_ptr<NetworkReplicator> peer){
 			Instance::replicateProperties(peer);
-			
+
 			peer->sendSetPropertyPacket(netId, "Health", make_shared<Type::VarWrapper>(Health));
 			peer->sendSetPropertyPacket(netId, "MaxHealth", make_shared<Type::VarWrapper>(MaxHealth));
 			peer->sendSetPropertyPacket(netId, "Invincible", make_shared<Type::VarWrapper>(Invincible));
@@ -232,7 +232,7 @@ namespace OB{
 			peer->sendSetPropertyPacket(netId, "State", make_shared<Type::VarWrapper>(State));
 			peer->sendSetPropertyPacket(netId, "WalkTarget", make_shared<Type::VarWrapper>(WalkTarget));
 		}
-		#endif
+#endif
 
 		std::map<std::string, _PropertyInfo> Humanoid::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
@@ -251,7 +251,7 @@ namespace OB{
 		}
 
 		void Humanoid::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
-		    if(prop == "Health"){
+			if(prop == "Health"){
 				setHealth(val->asDouble());
 				return;
 			}
@@ -264,11 +264,11 @@ namespace OB{
 				return;
 			}
 			if(prop == "NameVisible"){
-			    setNameVisible(val->asBool());
+				setNameVisible(val->asBool());
 				return;
 			}
 			if(prop == "HealthVisible"){
-			    setHealthVisible(val->asBool());
+				setHealthVisible(val->asBool());
 				return;
 			}
 			if(prop == "JumpPower"){
@@ -286,7 +286,7 @@ namespace OB{
 			if(prop == "WalkTarget" || prop == "MoveDirection"){
 				// TODO: Detect whether from replication or
 				// other, allow replication to set read-only
-			    throw new OBException(prop + " is a read-only property.");
+				throw new OBException(prop + " is a read-only property.");
 				return;
 			}
 
@@ -324,71 +324,71 @@ namespace OB{
 			if(prop == "WalkTarget"){
 				return make_shared<Type::VarWrapper>(getWalkTarget());
 			}
-			
+
 			return Instance::getProperty(prop);
 		}
 
 		int Humanoid::lua_getHealth(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
 				if(instH){
-				    lua_pushnumber(L, instH->getHealth());
+					lua_pushnumber(L, instH->getHealth());
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int Humanoid::lua_setHealth(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
 				if(instH){
-				    double newV = luaL_checknumber(L, 2);
+					double newV = luaL_checknumber(L, 2);
 					instH->setHealth(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int Humanoid::lua_getMaxHealth(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
 				if(instH){
-				    lua_pushnumber(L, instH->getMaxHealth());
+					lua_pushnumber(L, instH->getMaxHealth());
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int Humanoid::lua_setMaxHealth(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
 				if(instH){
-				    double newV = luaL_checknumber(L, 2);
+					double newV = luaL_checknumber(L, 2);
 					instH->setMaxHealth(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int Humanoid::lua_getInvincible(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
 				if(instH){
@@ -396,14 +396,14 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int Humanoid::lua_setInvincible(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
 				if(instH){
@@ -411,13 +411,13 @@ namespace OB{
 					instH->setInvincible(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int Humanoid::lua_getNameVisible(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
 				if(instH){
@@ -425,14 +425,14 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int Humanoid::lua_setNameVisible(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
 				if(instH){
@@ -440,13 +440,13 @@ namespace OB{
 					instH->setNameVisible(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int Humanoid::lua_getHealthVisible(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
 				if(instH){
@@ -454,14 +454,14 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int Humanoid::lua_setHealthVisible(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
 				if(instH){
@@ -469,75 +469,75 @@ namespace OB{
 					instH->setHealthVisible(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int Humanoid::lua_getJumpPower(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
 				if(instH){
-				    lua_pushnumber(L, instH->getJumpPower());
+					lua_pushnumber(L, instH->getJumpPower());
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int Humanoid::lua_setJumpPower(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
 				if(instH){
-				    double newV = luaL_checknumber(L, 2);
+					double newV = luaL_checknumber(L, 2);
 					instH->setJumpPower(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int Humanoid::lua_getWalkSpeed(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
 				if(instH){
-				    lua_pushnumber(L, instH->getWalkSpeed());
+					lua_pushnumber(L, instH->getWalkSpeed());
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int Humanoid::lua_setWalkSpeed(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
 				if(instH){
-				    double newV = luaL_checknumber(L, 2);
+					double newV = luaL_checknumber(L, 2);
 					instH->setWalkSpeed(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int Humanoid::lua_getMoveDirection(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
 				if(instH){
-				    shared_ptr<Type::Vector3> vec3 = instH->getMoveDirection();
+					shared_ptr<Type::Vector3> vec3 = instH->getMoveDirection();
 					if(vec3){
 						return vec3->wrap_lua(L);
 					}else{
@@ -546,18 +546,18 @@ namespace OB{
 					}
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int Humanoid::lua_getWalkTarget(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
 				if(instH){
-				    shared_ptr<Type::Vector3> vec3 = instH->getWalkTarget();
+					shared_ptr<Type::Vector3> vec3 = instH->getWalkTarget();
 					if(vec3){
 						return vec3->wrap_lua(L);
 					}else{
@@ -566,21 +566,21 @@ namespace OB{
 					}
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int Humanoid::lua_TakeDamage(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
 				if(instH){
-				    double dmg = luaL_checknumber(L, 2);
+					double dmg = luaL_checknumber(L, 2);
 
 					std::string dmg_meta = "";
-					
+
 					if(!lua_isnoneornil(L, 3)){
 						dmg_meta = std::string(luaL_checkstring(L, 3));
 					}
@@ -589,43 +589,43 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			return luaL_error(L, COLONERR, "TakeDamage");
 		}
-		
+
 		int Humanoid::lua_Move(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
 				if(instH){
 					//TODO:
-				    return 0;
+					return 0;
 				}
 			}
-			
+
 			return luaL_error(L, COLONERR, "Move");
 		}
 
 		int Humanoid::lua_MoveTo(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Humanoid> instH = dynamic_pointer_cast<Humanoid>(inst);
 				if(instH){
 					//TODO:
-				    return 0;
+					return 0;
 				}
 			}
-			
+
 			return luaL_error(L, COLONERR, "MoveTo");
 		}
 
 		void Humanoid::register_lua_property_setters(lua_State* L){
 			Instance::register_lua_property_setters(L);
-			
+
 			luaL_Reg properties[] = {
-			    {"Health", lua_setHealth},
+				{"Health", lua_setHealth},
 				{"MaxHealth", lua_setMaxHealth},
 				{"Invincible", lua_setInvincible},
 				{"NameVisible", lua_setNameVisible},
@@ -641,7 +641,7 @@ namespace OB{
 
 		void Humanoid::register_lua_property_getters(lua_State* L){
 			Instance::register_lua_property_getters(L);
-			
+
 			luaL_Reg properties[] = {
 				{"Health", lua_setHealth},
 				{"MaxHealth", lua_getMaxHealth},
@@ -659,7 +659,7 @@ namespace OB{
 
 		void Humanoid::register_lua_methods(lua_State* L){
 			Instance::register_lua_methods(L);
-			
+
 			luaL_Reg methods[] = {
 				{"TakeDamage", lua_TakeDamage},
 				{"Move", lua_Move},

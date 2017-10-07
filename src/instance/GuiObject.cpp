@@ -33,27 +33,27 @@
 namespace OB{
 	namespace Instance{
 		struct _zIndexSort{
-				bool operator()(shared_ptr<GuiBase2d> x, shared_ptr<GuiBase2d> y){
-					int xzi = 0, yzi = 0;
-				    if(shared_ptr<GuiObject> xgo = dynamic_pointer_cast<GuiObject>(x)){
-						xzi = xgo->getZIndex();
-					}else if(shared_ptr<ScreenGui> xsg = dynamic_pointer_cast<ScreenGui>(x)){
-						xzi = xsg->getDisplayOrder();
-					}
-					if(shared_ptr<GuiObject> ygo = dynamic_pointer_cast<GuiObject>(y)){
-						yzi = ygo->getZIndex();
-					}else if(shared_ptr<ScreenGui> ysg = dynamic_pointer_cast<ScreenGui>(y)){
-						yzi = ysg->getDisplayOrder();
-					}
-					return xzi < yzi;
+			bool operator()(shared_ptr<GuiBase2d> x, shared_ptr<GuiBase2d> y){
+				int xzi = 0, yzi = 0;
+				if(shared_ptr<GuiObject> xgo = dynamic_pointer_cast<GuiObject>(x)){
+					xzi = xgo->getZIndex();
+				}else if(shared_ptr<ScreenGui> xsg = dynamic_pointer_cast<ScreenGui>(x)){
+					xzi = xsg->getDisplayOrder();
 				}
+				if(shared_ptr<GuiObject> ygo = dynamic_pointer_cast<GuiObject>(y)){
+					yzi = ygo->getZIndex();
+				}else if(shared_ptr<ScreenGui> ysg = dynamic_pointer_cast<ScreenGui>(y)){
+					yzi = ysg->getDisplayOrder();
+				}
+				return xzi < yzi;
+			}
 		};
-		
+
 		DEFINE_CLASS_ABS_WCLONE(GuiObject, GuiBase2d){
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    GuiObject::GuiObject(OBEngine* eng) : GuiBase2d(eng){
+		GuiObject::GuiObject(OBEngine* eng) : GuiBase2d(eng){
 			Name = ClassName;
 
 			Active = false;
@@ -68,29 +68,29 @@ namespace OB{
 			ZIndex = 1;
 		}
 
-	    GuiObject::~GuiObject(){}
+		GuiObject::~GuiObject(){}
 
 		std::vector<shared_ptr<GuiBase2d>> GuiObject::getRenderableChildren(){
-		    std::vector<shared_ptr<GuiBase2d>> renderableKids = GuiBase2d::getRenderableChildren();
+			std::vector<shared_ptr<GuiBase2d>> renderableKids = GuiBase2d::getRenderableChildren();
 
 			std::sort(renderableKids.begin(), renderableKids.end(), _zIndexSort());
 
 			return renderableKids;
 		}
 
-	    bool GuiObject::containsPoint(shared_ptr<Type::Vector2> p){
+		bool GuiObject::containsPoint(shared_ptr<Type::Vector2> p){
 			double pX = p->getX();
 			double pY = p->getY();
-			
+
 			shared_ptr<Type::Vector2> pos = getAbsolutePosition();
 			double posX = pos->getX();
 			double posY = pos->getY();
 			shared_ptr<Type::Vector2> siz = getAbsoluteSize()->add(pos);
-			
+
 			return pX >= posX && pX <= (posX + siz->getX()) && pY >= posY && pY <= (posY + siz->getY());
 		}
-		
-	    bool GuiObject::handleClick(shared_ptr<Type::Vector2> p){
+
+		bool GuiObject::handleClick(shared_ptr<Type::Vector2> p){
 			if(Visible && Active){
 				return containsPoint(p);
 			}
@@ -99,42 +99,42 @@ namespace OB{
 		}
 
 		shared_ptr<Type::Vector2> GuiObject::getAbsolutePosition(){
-		    shared_ptr<Type::Vector2> seed = make_shared<Type::Vector2>(0, 0);
+			shared_ptr<Type::Vector2> seed = make_shared<Type::Vector2>(0, 0);
 			shared_ptr<Type::UDim> pX = Position->getX();
 			shared_ptr<Type::UDim> pY = Position->getY();
-			
-			if(Parent){//Sanity check, really.
-			    if(shared_ptr<GuiBase2d> pgo = dynamic_pointer_cast<GuiBase2d>(Parent)){
+
+			if(Parent){// Sanity check, really.
+				if(shared_ptr<GuiBase2d> pgo = dynamic_pointer_cast<GuiBase2d>(Parent)){
 					shared_ptr<Type::Vector2> pap = pgo->getAbsolutePosition();
 					shared_ptr<Type::Vector2> pas = pgo->getAbsoluteSize();
 					seed->x = pap->getX() + pX->getOffset() + (pX->getScale() * pas->getX());
 					seed->y = pap->getY() + pY->getOffset() + (pY->getScale() * pas->getY());
 				}
 			}
-			
+
 			return seed;
 		}
 
 		shared_ptr<Type::Vector2> GuiObject::getAbsoluteSize(){
-		    shared_ptr<Type::Vector2> seed = make_shared<Type::Vector2>(0, 0);
+			shared_ptr<Type::Vector2> seed = make_shared<Type::Vector2>(0, 0);
 			shared_ptr<Type::UDim> sX = Size->getX();
 			shared_ptr<Type::UDim> sY = Size->getY();
-			
-			if(Parent){//Sanity check, really.
-			    if(shared_ptr<GuiBase2d> pgo = dynamic_pointer_cast<GuiBase2d>(Parent)){
+
+			if(Parent){// Sanity check, really.
+				if(shared_ptr<GuiBase2d> pgo = dynamic_pointer_cast<GuiBase2d>(Parent)){
 					shared_ptr<Type::Vector2> pas = pgo->getAbsoluteSize();
 					seed->x = sX->getOffset() + (pas->getX() * sX->getScale());
 					seed->y = sY->getOffset() + (pas->getY() * sY->getScale());
 				}
 			}
-			
+
 			return seed;
 		}
 
-	    struct _ob_rect GuiObject::getAbsoluteClippingArea(){
+		struct _ob_rect GuiObject::getAbsoluteClippingArea(){
 			struct _ob_rect clipArea;
-			
-			#if HAVE_IRRLICHT
+
+#if HAVE_IRRLICHT
 			shared_ptr<Type::Vector2> pos = getAbsolutePosition();
 			shared_ptr<Type::Vector2> siz = getAbsoluteSize()->add(pos);
 
@@ -172,19 +172,19 @@ namespace OB{
 					}
 				}
 			}
-			
+
 			return clipArea;
-			#else
+#else
 			clipArea.x1 = 0;
 			clipArea.y1 = 0;
 			clipArea.x2 = 0;
 			clipArea.y2 = 0;
 			return clipArea;
-			#endif
+#endif
 		}
 
 		void GuiObject::render(){
-			#if HAVE_IRRLICHT
+#if HAVE_IRRLICHT
 			struct _ob_rect clipArea = getAbsoluteClippingArea();
 			bool doesClip = ClipsDescendants;
 
@@ -198,9 +198,9 @@ namespace OB{
 						int y1 = clipArea.y1;
 						if(irr::IrrlichtDevice* irrDev = getEngine()->getIrrlichtDevice()){
 							if(irr::video::IVideoDriver* irrDriv = irrDev->getVideoDriver()){
-							    int vpH = irrDriv->getViewPort().getHeight();
+								int vpH = irrDriv->getViewPort().getHeight();
 								int y2 = clipArea.y2;
-							    glEnable(GL_SCISSOR_TEST);
+								glEnable(GL_SCISSOR_TEST);
 								glScissor(x1, vpH - y2, clipArea.x2 - x1, y2 - y1);
 							}
 						}
@@ -211,13 +211,13 @@ namespace OB{
 					}
 				}
 			}
-			#endif
+#endif
 		}
 
 		bool GuiObject::isActive(){
 			return Active;
 		}
-		
+
 		void GuiObject::setActive(bool active){
 			if(Active != active){
 				Active = active;
@@ -226,11 +226,11 @@ namespace OB{
 				propertyChanged("Active");
 			}
 		}
-		
+
 		shared_ptr<Type::Color3> GuiObject::getBackgroundColor3(){
 			return BackgroundColor3;
 		}
-		
+
 		void GuiObject::setBackgroundColor3(shared_ptr<Type::Color3> backgroundColor3){
 			if(!BackgroundColor3->equals(backgroundColor3)){
 				if(backgroundColor3){
@@ -243,11 +243,11 @@ namespace OB{
 				propertyChanged("BackgroundColor3");
 			}
 		}
-		
+
 		double GuiObject::getBackgroundTransparency(){
 			return BackgroundTransparency;
 		}
-		
+
 		void GuiObject::setBackgroundTransparency(double backgroundTransparency){
 			if(BackgroundTransparency != backgroundTransparency){
 				BackgroundTransparency = backgroundTransparency;
@@ -256,11 +256,11 @@ namespace OB{
 				propertyChanged("BackgroundTransparency");
 			}
 		}
-		
+
 		shared_ptr<Type::Color3> GuiObject::getBorderColor3(){
 			return BorderColor3;
 		}
-		
+
 		void GuiObject::setBorderColor3(shared_ptr<Type::Color3> borderColor3){
 			if(BorderColor3 != borderColor3){
 				if(borderColor3){
@@ -273,11 +273,11 @@ namespace OB{
 				propertyChanged("BorderColor3");
 			}
 		}
-		
+
 		int GuiObject::getBorderSizePixel(){
 			return BorderSizePixel;
 		}
-		
+
 		void GuiObject::setBorderSizePixel(int borderSizePixel){
 			if(BorderSizePixel != borderSizePixel){
 				BorderSizePixel = borderSizePixel;
@@ -286,11 +286,11 @@ namespace OB{
 				propertyChanged("BorderSizePixel");
 			}
 		}
-		
+
 		bool GuiObject::getClipsDescendants(){
 			return ClipsDescendants;
 		}
-		
+
 		void GuiObject::setClipsDescendants(bool clipsDescendants){
 			if(ClipsDescendants != clipsDescendants){
 				ClipsDescendants = clipsDescendants;
@@ -299,11 +299,11 @@ namespace OB{
 				propertyChanged("ClipsDescendants");
 			}
 		}
-		
+
 		shared_ptr<Type::UDim2> GuiObject::getPosition(){
 			return Position;
 		}
-		
+
 		void GuiObject::setPosition(shared_ptr<Type::UDim2> position){
 			if(!Position->equals(position)){
 				if(position){
@@ -316,11 +316,11 @@ namespace OB{
 				propertyChanged("Position");
 			}
 		}
-		
+
 		shared_ptr<Type::UDim2> GuiObject::getSize(){
 			return Size;
 		}
-		
+
 		void GuiObject::setSize(shared_ptr<Type::UDim2> size){
 			if(!Size->equals(size)){
 				if(size){
@@ -333,11 +333,11 @@ namespace OB{
 				propertyChanged("Size");
 			}
 		}
-		
+
 		bool GuiObject::isVisible(){
 			return Visible;
 		}
-		
+
 		void GuiObject::setVisible(bool visible){
 			if(Visible != visible){
 				Visible = visible;
@@ -346,11 +346,11 @@ namespace OB{
 				propertyChanged("Visible");
 			}
 		}
-		
+
 		int GuiObject::getZIndex(){
 			return ZIndex;
 		}
-		
+
 		void GuiObject::setZIndex(int zIndex){
 			if(ZIndex != zIndex){
 				ZIndex = zIndex;
@@ -360,10 +360,10 @@ namespace OB{
 			}
 		}
 
-		#if HAVE_ENET
+#if HAVE_ENET
 		void GuiObject::replicateProperties(shared_ptr<NetworkReplicator> peer){
 			Instance::replicateProperties(peer);
-			
+
 			peer->sendSetPropertyPacket(netId, "Active", make_shared<Type::VarWrapper>(Active));
 			peer->sendSetPropertyPacket(netId, "BackgroundColor3", make_shared<Type::VarWrapper>(BackgroundColor3));
 			peer->sendSetPropertyPacket(netId, "BackgroundTransparency", make_shared<Type::VarWrapper>(BackgroundTransparency));
@@ -375,7 +375,7 @@ namespace OB{
 			peer->sendSetPropertyPacket(netId, "Visible", make_shared<Type::VarWrapper>(Visible));
 			peer->sendSetPropertyPacket(netId, "ZIndex", make_shared<Type::VarWrapper>(ZIndex));
 		}
-		#endif
+#endif
 
 		std::map<std::string, _PropertyInfo> GuiObject::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = GuiBase2d::getProperties();
@@ -393,7 +393,7 @@ namespace OB{
 			return propMap;
 		}
 
-	    shared_ptr<Type::VarWrapper> GuiObject::getProperty(std::string prop){
+		shared_ptr<Type::VarWrapper> GuiObject::getProperty(std::string prop){
 			if(prop == "Active"){
 				return make_shared<Type::VarWrapper>(isActive());
 			}
@@ -424,49 +424,49 @@ namespace OB{
 			if(prop == "ZIndex"){
 				return make_shared<Type::VarWrapper>(getZIndex());
 			}
-			
+
 			return GuiBase2d::getProperty(prop);
 		}
 
 		void GuiObject::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
-		    if(prop == "Active"){
-			    setActive(val->asBool());
+			if(prop == "Active"){
+				setActive(val->asBool());
 				return;
 			}
 			if(prop == "BackgroundColor3"){
-			    setBackgroundColor3(val->asColor3());
+				setBackgroundColor3(val->asColor3());
 				return;
 			}
 			if(prop == "BackgroundTransparency"){
-			    setBackgroundTransparency(val->asDouble());
+				setBackgroundTransparency(val->asDouble());
 				return;
 			}
 			if(prop == "BorderColor3"){
-			    setBorderColor3(val->asColor3());
+				setBorderColor3(val->asColor3());
 				return;
 			}
 			if(prop == "BorderSizePixel"){
-			    setBorderSizePixel(val->asInt());
+				setBorderSizePixel(val->asInt());
 				return;
 			}
 			if(prop == "ClipsDescendants"){
-			    setClipsDescendants(val->asBool());
+				setClipsDescendants(val->asBool());
 				return;
 			}
 			if(prop == "Position"){
-			    setPosition(val->asUDim2());
+				setPosition(val->asUDim2());
 				return;
 			}
 			if(prop == "Size"){
-			    setSize(val->asUDim2());
+				setSize(val->asUDim2());
 				return;
 			}
 			if(prop == "Visible"){
-			    setVisible(val->asBool());
+				setVisible(val->asBool());
 				return;
 			}
 			if(prop == "ZIndex"){
-			    setZIndex(val->asInt());
+				setZIndex(val->asInt());
 				return;
 			}
 
@@ -485,7 +485,7 @@ namespace OB{
 
 		int GuiObject::lua_getActive(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<GuiObject> instGO = dynamic_pointer_cast<GuiObject>(inst);
 				if(instGO){
@@ -493,14 +493,14 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int GuiObject::lua_setActive(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<GuiObject> instGO = dynamic_pointer_cast<GuiObject>(inst);
 				if(instGO){
@@ -508,17 +508,17 @@ namespace OB{
 					instGO->setActive(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int GuiObject::lua_getBackgroundColor3(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<GuiObject> instGO = dynamic_pointer_cast<GuiObject>(inst);
 				if(instGO){
-				    shared_ptr<Type::Color3> col3 = instGO->getBackgroundColor3();
+					shared_ptr<Type::Color3> col3 = instGO->getBackgroundColor3();
 					if(col3){
 						return col3->wrap_lua(L);
 					}else{
@@ -527,28 +527,28 @@ namespace OB{
 					}
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int GuiObject::lua_setBackgroundColor3(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<GuiObject> instGO = dynamic_pointer_cast<GuiObject>(inst);
 				if(instGO){
-				    shared_ptr<Type::Color3> col3 = Type::checkColor3(L, 2, true, true);
+					shared_ptr<Type::Color3> col3 = Type::checkColor3(L, 2, true, true);
 					instGO->setBackgroundColor3(col3);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int GuiObject::lua_getBackgroundTransparency(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<GuiObject> instGO = dynamic_pointer_cast<GuiObject>(inst);
 				if(instGO){
@@ -556,14 +556,14 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int GuiObject::lua_setBackgroundTransparency(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<GuiObject> instGO = dynamic_pointer_cast<GuiObject>(inst);
 				if(instGO){
@@ -571,17 +571,17 @@ namespace OB{
 					instGO->setBackgroundTransparency(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int GuiObject::lua_getBorderColor3(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<GuiObject> instGO = dynamic_pointer_cast<GuiObject>(inst);
 				if(instGO){
-				    shared_ptr<Type::Color3> col3 = instGO->getBorderColor3();
+					shared_ptr<Type::Color3> col3 = instGO->getBorderColor3();
 					if(col3){
 						return col3->wrap_lua(L);
 					}else{
@@ -590,28 +590,28 @@ namespace OB{
 					}
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int GuiObject::lua_setBorderColor3(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<GuiObject> instGO = dynamic_pointer_cast<GuiObject>(inst);
 				if(instGO){
-				    shared_ptr<Type::Color3> col3 = Type::checkColor3(L, 2, true, true);
+					shared_ptr<Type::Color3> col3 = Type::checkColor3(L, 2, true, true);
 					instGO->setBorderColor3(col3);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int GuiObject::lua_getBorderSizePixel(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<GuiObject> instGO = dynamic_pointer_cast<GuiObject>(inst);
 				if(instGO){
@@ -619,14 +619,14 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int GuiObject::lua_setBorderSizePixel(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<GuiObject> instGO = dynamic_pointer_cast<GuiObject>(inst);
 				if(instGO){
@@ -634,13 +634,13 @@ namespace OB{
 					instGO->setBorderSizePixel(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int GuiObject::lua_getClipsDescendants(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<GuiObject> instGO = dynamic_pointer_cast<GuiObject>(inst);
 				if(instGO){
@@ -648,14 +648,14 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int GuiObject::lua_setClipsDescendants(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<GuiObject> instGO = dynamic_pointer_cast<GuiObject>(inst);
 				if(instGO){
@@ -663,17 +663,17 @@ namespace OB{
 					instGO->setClipsDescendants(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int GuiObject::lua_getPosition(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<GuiObject> instGO = dynamic_pointer_cast<GuiObject>(inst);
 				if(instGO){
-				    shared_ptr<Type::UDim2> udim2 = instGO->getPosition();
+					shared_ptr<Type::UDim2> udim2 = instGO->getPosition();
 					if(udim2){
 						return udim2->wrap_lua(L);
 					}else{
@@ -682,32 +682,32 @@ namespace OB{
 					}
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int GuiObject::lua_setPosition(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<GuiObject> instGO = dynamic_pointer_cast<GuiObject>(inst);
 				if(instGO){
-				    shared_ptr<Type::UDim2> udim2 = Type::checkUDim2(L, 2, true, true);
+					shared_ptr<Type::UDim2> udim2 = Type::checkUDim2(L, 2, true, true);
 					instGO->setPosition(udim2);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int GuiObject::lua_getSize(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<GuiObject> instGO = dynamic_pointer_cast<GuiObject>(inst);
 				if(instGO){
-				    shared_ptr<Type::UDim2> udim2 = instGO->getSize();
+					shared_ptr<Type::UDim2> udim2 = instGO->getSize();
 					if(udim2){
 						return udim2->wrap_lua(L);
 					}else{
@@ -716,28 +716,28 @@ namespace OB{
 					}
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int GuiObject::lua_setSize(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<GuiObject> instGO = dynamic_pointer_cast<GuiObject>(inst);
 				if(instGO){
-				    shared_ptr<Type::UDim2> udim2 = Type::checkUDim2(L, 2, true, true);
+					shared_ptr<Type::UDim2> udim2 = Type::checkUDim2(L, 2, true, true);
 					instGO->setSize(udim2);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int GuiObject::lua_getVisible(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<GuiObject> instGO = dynamic_pointer_cast<GuiObject>(inst);
 				if(instGO){
@@ -745,14 +745,14 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int GuiObject::lua_setVisible(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<GuiObject> instGO = dynamic_pointer_cast<GuiObject>(inst);
 				if(instGO){
@@ -760,13 +760,13 @@ namespace OB{
 					instGO->setVisible(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int GuiObject::lua_getZIndex(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<GuiObject> instGO = dynamic_pointer_cast<GuiObject>(inst);
 				if(instGO){
@@ -774,14 +774,14 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int GuiObject::lua_setZIndex(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<GuiObject> instGO = dynamic_pointer_cast<GuiObject>(inst);
 				if(instGO){
@@ -789,13 +789,13 @@ namespace OB{
 					instGO->setZIndex(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		void GuiObject::register_lua_property_setters(lua_State* L){
-		    GuiBase2d::register_lua_property_setters(L);
-			
+			GuiBase2d::register_lua_property_setters(L);
+
 			luaL_Reg properties[] = {
 				{"Active", lua_setActive},
 				{"BackgroundColor3", lua_setBackgroundColor3},
@@ -813,9 +813,9 @@ namespace OB{
 		}
 
 		void GuiObject::register_lua_property_getters(lua_State* L){
-		    GuiBase2d::register_lua_property_getters(L);
-			
-		    luaL_Reg properties[] = {
+			GuiBase2d::register_lua_property_getters(L);
+
+			luaL_Reg properties[] = {
 				{"Active", lua_getActive},
 				{"BackgroundColor3", lua_getBackgroundColor3},
 				{"BackgroundTransparency", lua_getBackgroundTransparency},

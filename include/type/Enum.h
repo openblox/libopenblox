@@ -25,36 +25,36 @@
 
 namespace OB{
 	namespace Enum{
-		#define LENUM(name, ...) \
-			extern shared_ptr<Type::LuaEnum> Lua##name; \
-			enum class name{__VA_ARGS__, __COUNT}
+#define LENUM(name, ...)					\
+		extern shared_ptr<Type::LuaEnum> Lua##name;	\
+		enum class name{__VA_ARGS__, __COUNT}
 
-		#define DENUM(name, ...) \
-			shared_ptr<Type::LuaEnum> Lua##name = Type::LuaEnum::createLuaEnum(#name, \
-				__VA_ARGS__, \
-				NULL \
-			); \
+#define DENUM(name, ...)						\
+		shared_ptr<Type::LuaEnum> Lua##name = Type::LuaEnum::createLuaEnum(#name, \
+										   __VA_ARGS__, \
+										   NULL \
+										   ); \
 
 		void registerLuaEnums(lua_State* L);
 
-		//Start Enum Definitions
+		// Start Enum Definitions
 
 		LENUM(MessageType,
-			  MessageOutput,
-			  MessageInfo,
-			  MessageWarning,
-			  MessageError);
+		      MessageOutput,
+		      MessageInfo,
+		      MessageWarning,
+		      MessageError);
 
 		LENUM(UserInputType,
-			  MouseButton,
-			  MouseWheel,
-			  MouseMovement,
-			  Touch,
-			  Keyboard,
-			  Focus,
-			  Gamepad,
-			  TextInput,
-			  Unknown);
+		      MouseButton,
+		      MouseWheel,
+		      MouseMovement,
+		      Touch,
+		      Keyboard,
+		      Focus,
+		      Gamepad,
+		      TextInput,
+		      Unknown);
 	}
 }
 

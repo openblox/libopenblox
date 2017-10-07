@@ -32,42 +32,42 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    Workspace::Workspace(OBEngine* eng) : Model(eng){
+		Workspace::Workspace(OBEngine* eng) : Model(eng){
 			Name = ClassName;
 			netId = OB_NETID_WORKSPACE;
-			
+
 			Gravity = make_shared<Type::Vector3>(0, -196.2, 0);
 			FallenPartsDestroyHeight = -1000;
 			DestroyFallenParts = true;
 
-			#if HAVE_BULLET
+#if HAVE_BULLET
 			broadphase = new btDbvtBroadphase();
 			collisionConfiguration = new btDefaultCollisionConfiguration();
-		    dispatcher = new btCollisionDispatcher(collisionConfiguration);
+			dispatcher = new btCollisionDispatcher(collisionConfiguration);
 			solver = new btSequentialImpulseConstraintSolver();
 			dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 			updateGravity();
-			#endif
+#endif
 
-			#if HAVE_IRRLICHT
+#if HAVE_IRRLICHT
 			irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
 			if(irrDev){
 				irr::scene::ISceneManager* sceneMgr = irrDev->getSceneManager();
 				if(sceneMgr){
-				    irrNode = sceneMgr->addEmptySceneNode();
+					irrNode = sceneMgr->addEmptySceneNode();
 				}
 			}
-			#endif
+#endif
 		}
 
-	    Workspace::~Workspace(){
-			#if HAVE_BULLET
+		Workspace::~Workspace(){
+#if HAVE_BULLET
 			delete dynamicsWorld;
 			delete solver;
 			delete dispatcher;
 			delete collisionConfiguration;
 			delete broadphase;
-			#endif
+#endif
 		}
 
 		shared_ptr<Instance> Workspace::cloneImpl(){
@@ -85,11 +85,11 @@ namespace OB{
 		shared_ptr<Instance> Workspace::getCurrentCamera(){
 			return CurrentCamera;
 		}
-		
+
 		void Workspace::setCurrentCamera(shared_ptr<Instance> inst){
-		    if(shared_ptr<Camera> cInst = dynamic_pointer_cast<Camera>(inst)){
+			if(shared_ptr<Camera> cInst = dynamic_pointer_cast<Camera>(inst)){
 				CurrentCamera = cInst;
-				
+
 				if(CurrentCamera){
 					CurrentCamera->setParent(std::enable_shared_from_this<Instance>::shared_from_this(), true);
 				}
@@ -99,12 +99,12 @@ namespace OB{
 		shared_ptr<Type::Vector3> Workspace::getGravity(){
 			return Gravity;
 		}
-		
+
 		void Workspace::setGravity(shared_ptr<Type::Vector3> gravity){
 			if(gravity == NULL){
 				shared_ptr<Type::Vector3> vec3 = make_shared<Type::Vector3>(0, 0, 0);
 				if(!vec3->equals(Gravity)){
-				    Gravity = vec3;
+					Gravity = vec3;
 
 					updateGravity();
 					REPLICATE_PROPERTY_CHANGE(Gravity);
@@ -112,7 +112,7 @@ namespace OB{
 				}
 			}else{
 				if(!gravity->equals(Gravity)){
-				    Gravity = gravity;
+					Gravity = gravity;
 
 					updateGravity();
 					REPLICATE_PROPERTY_CHANGE(Gravity);
@@ -124,7 +124,7 @@ namespace OB{
 		double Workspace::getFallenPartsDestroyHeight(){
 			return FallenPartsDestroyHeight;
 		}
-		
+
 		void Workspace::setFallenPartsDestroyHeight(double fpdh){
 			if(FallenPartsDestroyHeight != fpdh){
 				FallenPartsDestroyHeight = fpdh;
@@ -137,7 +137,7 @@ namespace OB{
 		bool Workspace::getDestroyFallenParts(){
 			return DestroyFallenParts;
 		}
-		
+
 		void Workspace::setDestroyFallenParts(bool dfp){
 			if(DestroyFallenParts != dfp){
 				DestroyFallenParts = dfp;
@@ -148,29 +148,29 @@ namespace OB{
 		}
 
 		void Workspace::updateGravity(){
-			#if HAVE_BULLET
+#if HAVE_BULLET
 			dynamicsWorld->setGravity(getGravity()->toBulletVector3());
-			#endif
+#endif
 		}
 
-		#if HAVE_ENET
+#if HAVE_ENET
 		void Workspace::replicateProperties(shared_ptr<NetworkReplicator> peer){
-		    Instance::replicateProperties(peer);
+			Instance::replicateProperties(peer);
 
 			peer->sendSetPropertyPacket(netId, "Gravity", make_shared<Type::VarWrapper>(Gravity));
 			peer->sendSetPropertyPacket(netId, "FallenPartsDestroyHeight", make_shared<Type::VarWrapper>(FallenPartsDestroyHeight));
 			peer->sendSetPropertyPacket(netId, "DestroyFallenParts", make_shared<Type::VarWrapper>(DestroyFallenParts));
 		}
-		#endif
+#endif
 
-		#if HAVE_PUGIXML
-	    std::string Workspace::serializedID(){
+#if HAVE_PUGIXML
+		std::string Workspace::serializedID(){
 			shared_ptr<OBSerializer> serializer = eng->getSerializer();
 			serializer->SetID(shared_from_this(), getClassName());
-			
+
 			return Instance::serializedID();
 		}
-		#endif
+#endif
 
 		std::map<std::string, _PropertyInfo> Workspace::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
@@ -187,8 +187,8 @@ namespace OB{
 				setCurrentCamera(val->asInstance());
 				return;
 			}
-		    if(prop == "Gravity"){
-			    setGravity(val->asVector3());
+			if(prop == "Gravity"){
+				setGravity(val->asVector3());
 				return;
 			}
 			if(prop == "FallenPartsDestroyHeight"){
@@ -196,7 +196,7 @@ namespace OB{
 				return;
 			}
 			if(prop == "DestroyFallenParts"){
-			    setDestroyFallenParts(val->asBool());
+				setDestroyFallenParts(val->asBool());
 				return;
 			}
 
@@ -216,17 +216,17 @@ namespace OB{
 			if(prop == "DestroyFallenParts"){
 				return make_shared<Type::VarWrapper>(getDestroyFallenParts());
 			}
-			
+
 			return Instance::getProperty(prop);
 		}
 
 		int Workspace::lua_getDistributedGameTime(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Workspace> instW = dynamic_pointer_cast<Workspace>(inst);
 				if(instW){
-				    lua_pushnumber(L, instW->getDistributedGameTime());
+					lua_pushnumber(L, instW->getDistributedGameTime());
 					return 1;
 				}
 			}
@@ -237,45 +237,45 @@ namespace OB{
 
 		int Workspace::lua_setCurrentCamera(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Workspace> instWS = dynamic_pointer_cast<Workspace>(inst);
 				if(instWS){
-				    shared_ptr<Instance> newV = checkInstance(L, 2, false);
+					shared_ptr<Instance> newV = checkInstance(L, 2, false);
 					instWS->setCurrentCamera(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int Workspace::lua_getCurrentCamera(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Workspace> instWS = dynamic_pointer_cast<Workspace>(inst);
 				if(instWS){
-				    shared_ptr<Instance> tV = instWS->getCurrentCamera();
+					shared_ptr<Instance> tV = instWS->getCurrentCamera();
 					if(tV){
-					    tV->wrap_lua(L);
+						tV->wrap_lua(L);
 					}else{
 						lua_pushnil(L);
 					}
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int Workspace::lua_getGravity(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Workspace> instW = dynamic_pointer_cast<Workspace>(inst);
 				if(instW){
-				    shared_ptr<Type::Vector3> vec3 = instW->getGravity();
+					shared_ptr<Type::Vector3> vec3 = instW->getGravity();
 					if(vec3){
 						return vec3->wrap_lua(L);
 					}else{
@@ -291,35 +291,35 @@ namespace OB{
 
 		int Workspace::lua_setGravity(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Workspace> instW = dynamic_pointer_cast<Workspace>(inst);
 				if(instW){
-				    shared_ptr<Type::Vector3> vec3 = Type::checkVector3(L, 2, true, true);
+					shared_ptr<Type::Vector3> vec3 = Type::checkVector3(L, 2, true, true);
 					instW->setGravity(vec3);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int Workspace::lua_setFallenPartsDestroyHeight(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Workspace> instW = dynamic_pointer_cast<Workspace>(inst);
 				if(instW){
-				    double newV = luaL_checknumber(L, 2);
+					double newV = luaL_checknumber(L, 2);
 					instW->setFallenPartsDestroyHeight(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int Workspace::lua_getFallenPartsDestroyHeight(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Workspace> instW = dynamic_pointer_cast<Workspace>(inst);
 				if(instW){
@@ -327,14 +327,14 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int Workspace::lua_setDestroyFallenParts(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Workspace> instW = dynamic_pointer_cast<Workspace>(inst);
 				if(instW){
@@ -342,13 +342,13 @@ namespace OB{
 					instW->setDestroyFallenParts(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int Workspace::lua_getDestroyFallenParts(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<Workspace> instW = dynamic_pointer_cast<Workspace>(inst);
 				if(instW){
@@ -356,14 +356,14 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		void Workspace::register_lua_property_setters(lua_State* L){
 			Instance::register_lua_property_setters(L);
-			
+
 			luaL_Reg properties[] = {
 				{"CurrentCamera", lua_setCurrentCamera},
 				{"DistributedGameTime", lua_readOnlyProperty},
@@ -377,10 +377,10 @@ namespace OB{
 
 		void Workspace::register_lua_property_getters(lua_State* L){
 			Instance::register_lua_property_getters(L);
-			
+
 			luaL_Reg properties[] = {
 				{"CurrentCamera", lua_getCurrentCamera},
-			    {"DistributedGameTime", lua_getDistributedGameTime},
+				{"DistributedGameTime", lua_getDistributedGameTime},
 				{"Gravity", lua_getGravity},
 				{"FallenPartsDestroyHeight", lua_setFallenPartsDestroyHeight},
 				{"DestroyFallenParts", lua_setDestroyFallenParts},

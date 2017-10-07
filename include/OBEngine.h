@@ -21,7 +21,7 @@
  * @file OBEngine.h
  * @author John M. Harris, Jr.
  * @date May 2016
- * 
+ *
  * This file defines the OBEngine singleton, which is the root of the
  * OpenBlox game engine.
  */
@@ -49,16 +49,16 @@
 #endif
 
 namespace OB{
-	#ifndef OB_TASKSCHEDULER
+#ifndef OB_TASKSCHEDULER
 	class TaskScheduler;
-	#endif
-	#ifndef OB_ASSETLOCATOR
+#endif
+#ifndef OB_ASSETLOCATOR
 	class AssetLocator;
-	#endif
+#endif
 
-	#if HAVE_IRRLICHT
+#if HAVE_IRRLICHT
 	typedef void (*post_render_func_t)(irr::video::IVideoDriver*);
-	#endif
+#endif
 
 	/**
 	 * This is the main class of the OpenBlox engine. This class is
@@ -69,327 +69,327 @@ namespace OB{
 	 * @date May 2016
 	 */
 	class OBEngine{
-		public:
-			OBEngine();
-			virtual ~OBEngine();
+	public:
+		OBEngine();
+		virtual ~OBEngine();
 
-			/**
-			 * Returns primary TaskScheduler.
-			 *
-			 * @returns Instance of TaskScheduler
-			 * @author John M. Harris, Jr.
-			 */
-			shared_ptr<TaskScheduler> getTaskScheduler();
+		/**
+		 * Returns primary TaskScheduler.
+		 *
+		 * @returns Instance of TaskScheduler
+		 * @author John M. Harris, Jr.
+		 */
+		shared_ptr<TaskScheduler> getTaskScheduler();
 
-			/**
-			 * Returns secondary TaskScheduler.
-			 *
-			 * @returns Instance of TaskScheduler
-			 * @author John M. Harris, Jr.
-			 */
-			shared_ptr<TaskScheduler> getSecondaryTaskScheduler();
+		/**
+		 * Returns secondary TaskScheduler.
+		 *
+		 * @returns Instance of TaskScheduler
+		 * @author John M. Harris, Jr.
+		 */
+		shared_ptr<TaskScheduler> getSecondaryTaskScheduler();
 
-			/**
-			 * Returns the serializer.
-			 *
-			 * @returns Instance of OBSerializer
-			 * @author John M. Harris, Jr.
-			 */
-			shared_ptr<OBSerializer> getSerializer();
+		/**
+		 * Returns the serializer.
+		 *
+		 * @returns Instance of OBSerializer
+		 * @author John M. Harris, Jr.
+		 */
+		shared_ptr<OBSerializer> getSerializer();
 
-			/**
-			 * Initializes the OpenBlox engine.
-			 *
-			 * You must have set all initialization parameters
-			 * before calling this, otherwise you will not be
-			 * able to change many of them.
-			 *
-			 * @author John M. Harris, Jr.
-			 */
-			void init();
+		/**
+		 * Initializes the OpenBlox engine.
+		 *
+		 * You must have set all initialization parameters
+		 * before calling this, otherwise you will not be
+		 * able to change many of them.
+		 *
+		 * @author John M. Harris, Jr.
+		 */
+		void init();
 
-			/**
-			 * Sets the exit code of the OpenBlox engine.
-			 *
-			 * @param exitCode Exit code
-			 *
-			 * @author John M. Harris, Jr.
-			 */
-			void setExitCode(int exitCode);
+		/**
+		 * Sets the exit code of the OpenBlox engine.
+		 *
+		 * @param exitCode Exit code
+		 *
+		 * @author John M. Harris, Jr.
+		 */
+		void setExitCode(int exitCode);
 
-			/**
-			 * Gets the exit code of the OpenBlox engine.
-			 *
-			 * @returns Exit code
-			 *
-			 * @author John M. Harris, Jr.
-			 */
-			int getExitCode();
+		/**
+		 * Gets the exit code of the OpenBlox engine.
+		 *
+		 * @returns Exit code
+		 *
+		 * @author John M. Harris, Jr.
+		 */
+		int getExitCode();
 
-			/**
-			 * Starts the shutdown process of the OpenBlox engine.
-			 *
-			 *
-			 * @author John M. Harris, Jr.
-			 */
-			void shutdown();
+		/**
+		 * Starts the shutdown process of the OpenBlox engine.
+		 *
+		 *
+		 * @author John M. Harris, Jr.
+		 */
+		void shutdown();
 
-			/** 
-			 * Returns true if OpenBlox is still running.
-			 *
-			 * @returns bool isRunning
-			 * @author John M. Harris, Jr.
-			 */
-			bool isRunning();
+		/**
+		 * Returns true if OpenBlox is still running.
+		 *
+		 * @returns bool isRunning
+		 * @author John M. Harris, Jr.
+		 */
+		bool isRunning();
 
-			/**
-			 * Runs the logic of the OpenBlox engine.
-			 *
-			 * This runs a single "tick" of the logic thread,
-			 * including running physics and the Lua task scheduler.
-			 *
-			 * When running with rendering enabled, this also processes
-			 * messages from the operating system and input.
-			 *
-			 * @author John M. Harris, Jr.
-			 */
-			void tick();
+		/**
+		 * Runs the logic of the OpenBlox engine.
+		 *
+		 * This runs a single "tick" of the logic thread,
+		 * including running physics and the Lua task scheduler.
+		 *
+		 * When running with rendering enabled, this also processes
+		 * messages from the operating system and input.
+		 *
+		 * @author John M. Harris, Jr.
+		 */
+		void tick();
 
-			/**
-			 * Renders one frame of the DataModel.
-			 * 
-			 * This is normally called after OBEngine::tick
-			 *
-			 * @author John M. Harris, Jr.
-			 */
-			void render();
+		/**
+		 * Renders one frame of the DataModel.
+		 *
+		 * This is normally called after OBEngine::tick
+		 *
+		 * @author John M. Harris, Jr.
+		 */
+		void render();
 
-			/**
-			 * Prepares the rendering pipeline for 2D rendering.
-			 *
-			 * @author John M. Harris, Jr.
-			 */
-			void prepare2DMode();
+		/**
+		 * Prepares the rendering pipeline for 2D rendering.
+		 *
+		 * @author John M. Harris, Jr.
+		 */
+		void prepare2DMode();
 
-			/**
-			 * Save an image of the last frame to a file.
-			 *
-			 * @param file File to write to
-			 * @author John M. Harris, Jr.
-			 */
-		    bool saveScreenshot(std::string file);
+		/**
+		 * Save an image of the last frame to a file.
+		 *
+		 * @param file File to write to
+		 * @author John M. Harris, Jr.
+		 */
+		bool saveScreenshot(std::string file);
 
-			/**
-			 * Returns the global Lua state, which all states
-			 * used by the engine are coroutines of.
-			 *
-			 * @returns Global Lua state
-			 * @author John M. Harris, Jr.
-			 */
-			lua_State* getGlobalLuaState();
+		/**
+		 * Returns the global Lua state, which all states
+		 * used by the engine are coroutines of.
+		 *
+		 * @returns Global Lua state
+		 * @author John M. Harris, Jr.
+		 */
+		lua_State* getGlobalLuaState();
 
-			/**
-			 * Returns the time the OpenBlox engine was started,
-			 * in milliseconds.
-			 *
-			 * @returns Start time started in milliseconds
-			 * @author John M. Harris, Jr.
-			 */
-			ob_int64 getStartTime();
+		/**
+		 * Returns the time the OpenBlox engine was started,
+		 * in milliseconds.
+		 *
+		 * @returns Start time started in milliseconds
+		 * @author John M. Harris, Jr.
+		 */
+		ob_int64 getStartTime();
 
-			/**
-			 * Returns true if OBEngine is meant to handle
-			 * rendering.
-			 *
-			 * @returns true if this instance of OBEngine supports rendering
-			 * @author John M. Harris, Jr.
-			 */
-			bool doesRendering();
+		/**
+		 * Returns true if OBEngine is meant to handle
+		 * rendering.
+		 *
+		 * @returns true if this instance of OBEngine supports rendering
+		 * @author John M. Harris, Jr.
+		 */
+		bool doesRendering();
 
-			/**
-			 * Sets whether or not OBEngine is meant to handle
-			 * rendering.
-			 *
-			 * @param renders true if this instance of OBEngine is supposed to support rendering, otherwise false
-			 * @author John M. Harris, Jr.
-			 */
-			void setRendering(bool renders);
+		/**
+		 * Sets whether or not OBEngine is meant to handle
+		 * rendering.
+		 *
+		 * @param renders true if this instance of OBEngine is supposed to support rendering, otherwise false
+		 * @author John M. Harris, Jr.
+		 */
+		void setRendering(bool renders);
 
-			/**
-			 * Gets the initial width of the render window.
-			 * Defaults to 640.
-			 * 
-			 * @returns Initial width of render window
-			 * @author John M. Harris, Jr.
-			 */
-			int getInitWidth();
+		/**
+		 * Gets the initial width of the render window.
+		 * Defaults to 640.
+		 *
+		 * @returns Initial width of render window
+		 * @author John M. Harris, Jr.
+		 */
+		int getInitWidth();
 
-			/**
-			 * Sets the initial width of the render window.
-			 *
-			 * @param w Initial width of render window
-			 * @author John M. Harris, Jr.
-			 */
-			void setInitWidth(int w);
+		/**
+		 * Sets the initial width of the render window.
+		 *
+		 * @param w Initial width of render window
+		 * @author John M. Harris, Jr.
+		 */
+		void setInitWidth(int w);
 
-			/**
-			 * Gets the initial height of the render window.
-			 * Defaults to 480.
-			 *
-			 * @returns Initial height of render window
-			 * @author John M. Harris, Jr.
-			 */
-			int getInitHeight();
+		/**
+		 * Gets the initial height of the render window.
+		 * Defaults to 480.
+		 *
+		 * @returns Initial height of render window
+		 * @author John M. Harris, Jr.
+		 */
+		int getInitHeight();
 
-			/**
-			 * Sets the initial height of the render window.
-			 *
-			 * @param h Initial height of render window
-			 * @author John M. Harris, Jr.
-			 */
-			void setInitHeight(int h);
+		/**
+		 * Sets the initial height of the render window.
+		 *
+		 * @param h Initial height of render window
+		 * @author John M. Harris, Jr.
+		 */
+		void setInitHeight(int h);
 
-			/**
-			 * Returns true if the OpenBlox engine will use
-			 * vertical synchronization, otherwise false.
-			 *
-			 * @returns true if OpenBlox is supposed to use vsync
-			 * @author John M. Harris, Jr.
-			 */
-			bool getUseVsync();
+		/**
+		 * Returns true if the OpenBlox engine will use
+		 * vertical synchronization, otherwise false.
+		 *
+		 * @returns true if OpenBlox is supposed to use vsync
+		 * @author John M. Harris, Jr.
+		 */
+		bool getUseVsync();
 
-			/**
-			 * Sets whether or not the OpenBlox engine will
-			 * use vertical synchronization.
-			 *
-			 * @param useVsync true if OpenBlox is supposed to use vsync, otherwise false
-			 * @author John M. Harris, Jr.
-			 */
-			void setUseVsync(bool useVsync);
+		/**
+		 * Sets whether or not the OpenBlox engine will
+		 * use vertical synchronization.
+		 *
+		 * @param useVsync true if OpenBlox is supposed to use vsync, otherwise false
+		 * @author John M. Harris, Jr.
+		 */
+		void setUseVsync(bool useVsync);
 
-			/**
-			 * Gets the current underlying window ID. With X
-			 * this is a Window handle (A.K.A. XID A.K.A.
-			 * unsigned long int), on Windows this is an
-			 * HWND, their equivalent of a window handle.
-			 * 
-			 * Defaults to NULL.
-			 *
-			 * @returns System-dependent window ID
-			 * @author John M. Harris, Jr.
-			 */
-			void* getWindowId();
+		/**
+		 * Gets the current underlying window ID. With X
+		 * this is a Window handle (A.K.A. XID A.K.A.
+		 * unsigned long int), on Windows this is an
+		 * HWND, their equivalent of a window handle.
+		 *
+		 * Defaults to NULL.
+		 *
+		 * @returns System-dependent window ID
+		 * @author John M. Harris, Jr.
+		 */
+		void* getWindowId();
 
-			/**
-			 * Sets the current underlying window ID. The
-			 * same types apply as used with OBEngine::getWindowId
-			 *
-			 * Setting this to NULL will mean that the
-			 * engine will create a window for itself.
-			 *
-			 * @param wId System-dependent window ID
-			 * @author John M. Harris, Jr.
-			 */
-			void setWindowId(void* wId);
+		/**
+		 * Sets the current underlying window ID. The
+		 * same types apply as used with OBEngine::getWindowId
+		 *
+		 * Setting this to NULL will mean that the
+		 * engine will create a window for itself.
+		 *
+		 * @param wId System-dependent window ID
+		 * @author John M. Harris, Jr.
+		 */
+		void setWindowId(void* wId);
 
-			/**
-			 * Used to inform the engine that a resize has occurred,
-			 * this is only necessary (and should only be used) when
-			 * OpenBlox is embedded in an external window.
-			 *
-			 * @param width Width
-			 * @param height Height
-			 * @author John M. Harris, Jr.
-			 */
-			void resized(int width, int height);
+		/**
+		 * Used to inform the engine that a resize has occurred,
+		 * this is only necessary (and should only be used) when
+		 * OpenBlox is embedded in an external window.
+		 *
+		 * @param width Width
+		 * @param height Height
+		 * @author John M. Harris, Jr.
+		 */
+		void resized(int width, int height);
 
-			#if HAVE_IRRLICHT
+#if HAVE_IRRLICHT
 
-			/**
-			 * Returns the currently active Irrlicht device, if any.
-			 *
-			 * @returns Irrlicht device
-			 * @author John M. Harris, Jr.
-			 */
-			irr::IrrlichtDevice* getIrrlichtDevice();
+		/**
+		 * Returns the currently active Irrlicht device, if any.
+		 *
+		 * @returns Irrlicht device
+		 * @author John M. Harris, Jr.
+		 */
+		irr::IrrlichtDevice* getIrrlichtDevice();
 
-			/**
-			 * Returns the post-render function.
-			 *
-			 * @author John M. Harris, Jr.
-			 */
-			post_render_func_t getPostRenderFunc();
+		/**
+		 * Returns the post-render function.
+		 *
+		 * @author John M. Harris, Jr.
+		 */
+		post_render_func_t getPostRenderFunc();
 
-			/**
-			 * Sets the post-render function.
-			 *
-			 * As the name would suggest, this function will run after
-			 * rendering is complete, but not before the buffer is
-			 * swapped.
-			 *
-			 * @author John M. Harris, Jr.
-			 */
-			void setPostRenderFunc(post_render_func_t prf);
+		/**
+		 * Sets the post-render function.
+		 *
+		 * As the name would suggest, this function will run after
+		 * rendering is complete, but not before the buffer is
+		 * swapped.
+		 *
+		 * @author John M. Harris, Jr.
+		 */
+		void setPostRenderFunc(post_render_func_t prf);
 
-			#endif
+#endif
 
-			/**
-			 * Returns the DataModel.
-			 *
-			 * @returns DataModel
-			 * @author John M. Harris, Jr.
-			 */
-			shared_ptr<Instance::DataModel> getDataModel();
+		/**
+		 * Returns the DataModel.
+		 *
+		 * @returns DataModel
+		 * @author John M. Harris, Jr.
+		 */
+		shared_ptr<Instance::DataModel> getDataModel();
 
-			/**
-			 * Returns the AssetLocator.
-			 *
-			 * @returns AssetLocator
-			 * @author John M. Harris, Jr.
-			 */
-			shared_ptr<AssetLocator> getAssetLocator();
+		/**
+		 * Returns the AssetLocator.
+		 *
+		 * @returns AssetLocator
+		 * @author John M. Harris, Jr.
+		 */
+		shared_ptr<AssetLocator> getAssetLocator();
 
-			/**
-			 * Returns the logger.
-			 *
-			 * @returns OBLogger
-			 * @author John M. Harris, Jr.
-			 */
-			shared_ptr<OBLogger> getLogger();
-			
-		private:
-			//State helpers
-			bool initialized;
-			ob_int64 startTime;
-			bool _isRunning;
-			int exitCode;
-			pthread_t secondaryTaskThread;
+		/**
+		 * Returns the logger.
+		 *
+		 * @returns OBLogger
+		 * @author John M. Harris, Jr.
+		 */
+		shared_ptr<OBLogger> getLogger();
 
-			//Init options
-			bool doRendering;
-			int startWidth;
-			int startHeight;
-			bool vsync;
-			void* windowId;
+	private:
+		//State helpers
+		bool initialized;
+		ob_int64 startTime;
+		bool _isRunning;
+		int exitCode;
+		pthread_t secondaryTaskThread;
 
-			lua_State* globalState;
+		//Init options
+		bool doRendering;
+		int startWidth;
+		int startHeight;
+		bool vsync;
+		void* windowId;
 
-			#if HAVE_IRRLICHT
+		lua_State* globalState;
 
-			post_render_func_t custPostRender;
-			
-			irr::IrrlichtDevice* irrDev;
-			irr::video::IVideoDriver* irrDriv;
-			irr::scene::ISceneManager* irrSceneMgr;
-			
-			#endif
+#if HAVE_IRRLICHT
 
-			shared_ptr<TaskScheduler> taskSched;
-			shared_ptr<TaskScheduler> secondaryTaskSched;
-			shared_ptr<AssetLocator> assetLocator;
-			shared_ptr<OBSerializer> serializer;
-			shared_ptr<OBLogger> logger;
-			shared_ptr<Instance::DataModel> dm;
+		post_render_func_t custPostRender;
+
+		irr::IrrlichtDevice* irrDev;
+		irr::video::IVideoDriver* irrDriv;
+		irr::scene::ISceneManager* irrSceneMgr;
+
+#endif
+
+		shared_ptr<TaskScheduler> taskSched;
+		shared_ptr<TaskScheduler> secondaryTaskSched;
+		shared_ptr<AssetLocator> assetLocator;
+		shared_ptr<OBSerializer> serializer;
+		shared_ptr<OBLogger> logger;
+		shared_ptr<Instance::DataModel> dm;
 	};
 }
 

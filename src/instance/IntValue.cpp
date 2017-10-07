@@ -28,20 +28,20 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    IntValue::IntValue(OBEngine* eng) : Instance(eng){
+		IntValue::IntValue(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 
 			Value = 0;
 		}
 
-	    IntValue::~IntValue(){}
+		IntValue::~IntValue(){}
 
-	    int IntValue::getValue(){
+		int IntValue::getValue(){
 			return Value;
 		}
 
 		void IntValue::setValue(int value){
-		    if(Value != value){
+			if(Value != value){
 				Value = value;
 
 				REPLICATE_PROPERTY_CHANGE(Value);
@@ -56,17 +56,17 @@ namespace OB{
 			iv->ParentLocked = ParentLocked;
 
 			iv->Value = Value;
-			
+
 			return iv;
 		}
 
-		#if HAVE_ENET
+#if HAVE_ENET
 		void IntValue::replicateProperties(shared_ptr<NetworkReplicator> peer){
 			Instance::replicateProperties(peer);
-			
+
 			peer->sendSetPropertyPacket(netId, "Value", make_shared<Type::VarWrapper>(Value));
 		}
-		#endif
+#endif
 
 		std::map<std::string, _PropertyInfo> IntValue::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
@@ -76,7 +76,7 @@ namespace OB{
 		}
 
 		void IntValue::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
-		    if(prop == "Value"){
+			if(prop == "Value"){
 				setValue(val->asInt());
 				return;
 			}
@@ -88,27 +88,27 @@ namespace OB{
 			if(prop == "Value"){
 				return make_shared<Type::VarWrapper>(getValue());
 			}
-			
+
 			return Instance::getProperty(prop);
 		}
 
 		int IntValue::lua_setValue(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<IntValue> instIV = dynamic_pointer_cast<IntValue>(inst);
 				if(instIV){
-				    int newV = luaL_checkinteger(L, 2);
+					int newV = luaL_checkinteger(L, 2);
 					instIV->setValue(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int IntValue::lua_getValue(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<IntValue> instIV = dynamic_pointer_cast<IntValue>(inst);
 				if(instIV){
@@ -116,14 +116,14 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
-	    void IntValue::register_lua_property_setters(lua_State* L){
+		void IntValue::register_lua_property_setters(lua_State* L){
 			Instance::register_lua_property_setters(L);
-			
+
 			luaL_Reg properties[] = {
 				{"Value", lua_setValue},
 				{NULL, NULL}
@@ -133,7 +133,7 @@ namespace OB{
 
 		void IntValue::register_lua_property_getters(lua_State* L){
 			Instance::register_lua_property_getters(L);
-			
+
 			luaL_Reg properties[] = {
 				{"Value", lua_getValue},
 				{NULL, NULL}

@@ -31,13 +31,13 @@ namespace OB{
 		DEFINE_TYPE(Vector2){
 			registerLuaType(eng, LuaTypeName, TypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
 		}
-		
-	    Vector2::Vector2(){
+
+		Vector2::Vector2(){
 			x = 0;
 			y = 0;
 		}
 
-	    Vector2::Vector2(double x, double y){
+		Vector2::Vector2(double x, double y){
 			this->x = x;
 			this->y = y;
 		}
@@ -53,7 +53,7 @@ namespace OB{
 				}else{
 					x = 0;
 				}
-				
+
 				if(yStr.length() > 0){
 					y = atof(yStr.c_str());
 				}else{
@@ -65,18 +65,18 @@ namespace OB{
 			}
 		}
 
-	    Vector2::~Vector2(){}
+		Vector2::~Vector2(){}
 
 		double Vector2::getX(){
 			return x;
 		}
-		
+
 		double Vector2::getY(){
 			return y;
 		}
 
-		#if HAVE_IRRLICHT
-		
+#if HAVE_IRRLICHT
+
 		irr::core::vector2d<double> Vector2::toIrrlichtVector2d(){
 			return irr::core::vector2d<double>(x, y);
 		}
@@ -84,79 +84,79 @@ namespace OB{
 		irr::core::vector2d<float> Vector2::toIrrlichtVector2df(){
 			return irr::core::vector2d<float>(x, y);
 		}
-		
-		#endif
+
+#endif
 
 		bool Vector2::equals(shared_ptr<Type> other){
-		    shared_ptr<Vector2> co = dynamic_pointer_cast<Vector2>(other);
+			shared_ptr<Vector2> co = dynamic_pointer_cast<Vector2>(other);
 			if(!co){
 				return false;
 			}
-			
+
 			return co->x == x && co->y == y;
 		}
 
 		double Vector2::getLength(){
 			return sqrt(getLengthSquared());
 		}
-		
+
 		double Vector2::getLengthSquared(){
 			return x*x + y*y;
 		}
 
-	    shared_ptr<Vector2> Vector2::normalize(){
-		    double len = getLength();
+		shared_ptr<Vector2> Vector2::normalize(){
+			double len = getLength();
 			if(len == 0){//Prevents NaN in sqrt
 				return make_shared<Vector2>(x, y);
 			}
-		    len = 1.0 / sqrt(len);
+			len = 1.0 / sqrt(len);
 
 			double X = (double)(x * len);
 			double Y = (double)(y * len);
-			
-		    return make_shared<Vector2>(X, Y);
+
+			return make_shared<Vector2>(X, Y);
 		}
 
 		shared_ptr<Vector2> Vector2::add(double v){
 			return make_shared<Vector2>(x + v, y + v);
 		}
-		
+
 		shared_ptr<Vector2> Vector2::add(shared_ptr<Vector2> v){
 			if(!v){
 				return make_shared<Vector2>(x, y);
 			}
 			return make_shared<Vector2>(x + v->x, y + v->y);
 		}
-		
+
 		shared_ptr<Vector2> Vector2::sub(double v){
 			return make_shared<Vector2>(x - v, y - v);
 		}
-		
+
 		shared_ptr<Vector2> Vector2::sub(shared_ptr<Vector2> v){
 			if(!v){
 				return make_shared<Vector2>(x, y);
 			}
 			return make_shared<Vector2>(x - v->x, y - v->y);
 		}
-		
+
 		shared_ptr<Vector2> Vector2::mul(double v){
 			return make_shared<Vector2>(x * v, y * v);
 		}
-		
+
 		shared_ptr<Vector2> Vector2::mul(shared_ptr<Vector2> v){
 			if(!v){
 				return make_shared<Vector2>(0, 0);
 			}
 			return make_shared<Vector2>(x * v->x, y * v->y);
 		}
-		
+
 		shared_ptr<Vector2> Vector2::div(double v){
 			if(v == 0){
 				return NULL;
 			}
 			return make_shared<Vector2>(x / v, y / v);
 		}
-		
+
 		shared_ptr<Vector2> Vector2::div(shared_ptr<Vector2> v){
 			if(!v){
 				return NULL;
@@ -166,7 +166,7 @@ namespace OB{
 			}
 			return make_shared<Vector2>(x / v->x, y / v->y);
 		}
-		
+
 		shared_ptr<Vector2> Vector2::neg(){
 			return make_shared<Vector2>(-x, -y);
 		}
@@ -176,19 +176,19 @@ namespace OB{
 				return NULL;
 			}
 
-		    return make_shared<Vector2>((x + alpha) * (goal->x - x),
-										(y + alpha) * (goal->y - y));
+			return make_shared<Vector2>((x + alpha) * (goal->x - x),
+						    (y + alpha) * (goal->y - y));
 		}
 
-	    double Vector2::dot(shared_ptr<Vector2> v){
+		double Vector2::dot(shared_ptr<Vector2> v){
 			if(v == NULL){
 				return 0;
 			}
-		    return x * v->x + y * v->y;
+			return x * v->x + y * v->y;
 		}
 
-	    std::string Vector2::toString(){
-		    return ((std::ostringstream&)(std::ostringstream() << std::dec << x)).str() + ", " + ((std::ostringstream&)(std::ostringstream() << std::dec << y)).str();
+		std::string Vector2::toString(){
+			return ((std::ostringstream&)(std::ostringstream() << std::dec << x)).str() + ", " + ((std::ostringstream&)(std::ostringstream() << std::dec << y)).str();
 		}
 
 		int Vector2::lua_getX(lua_State* L){
@@ -196,17 +196,17 @@ namespace OB{
 			if(!LuaVector2){
 				return 0;
 			}
-			
+
 			lua_pushnumber(L, LuaVector2->x);
 			return 1;
 		}
 
 		int Vector2::lua_getY(lua_State* L){
-		    shared_ptr<Vector2> LuaVector2 = checkVector2(L, 1, false);
+			shared_ptr<Vector2> LuaVector2 = checkVector2(L, 1, false);
 			if(!LuaVector2){
 				return 0;
 			}
-			
+
 			lua_pushnumber(L, LuaVector2->y);
 			return 1;
 		}
@@ -216,7 +216,7 @@ namespace OB{
 			if(!LuaVector2){
 				return 0;
 			}
-			
+
 			lua_pushnumber(L, LuaVector2->getLength());
 			return 1;
 		}
@@ -226,7 +226,7 @@ namespace OB{
 			if(!LuaVector2){
 				return 0;
 			}
-			
+
 			lua_pushnumber(L, LuaVector2->getLengthSquared());
 			return 1;
 		}
@@ -236,49 +236,49 @@ namespace OB{
 			if(!LuaVector2){
 				return 0;
 			}
-			
-		    shared_ptr<Vector2> normalized = LuaVector2->normalize();
+
+			shared_ptr<Vector2> normalized = LuaVector2->normalize();
 			if(normalized){
 				return normalized->wrap_lua(L);
 			}else{
 				lua_pushnil(L);
 			}
-			
+
 			return 1;
 		}
 
 		int Vector2::lua_lerp(lua_State* L){
 			shared_ptr<Vector2> LuaVector2 = checkVector2(L, 1, false);
 			if(!LuaVector2){
-			    return luaL_error(L, COLONERR, "Lerp");
+				return luaL_error(L, COLONERR, "Lerp");
 			}
-			
+
 			shared_ptr<Vector2> Vec2 = checkVector2(L, 2);
 			double alpha = luaL_checknumber(L, 3);
-			
+
 			return LuaVector2->lerp(Vec2, alpha)->wrap_lua(L);
 		}
 
 		int Vector2::lua_dot(lua_State* L){
 			shared_ptr<Vector2> LuaVector2 = checkVector2(L, 1, false);
 			if(!LuaVector2){
-			    return luaL_error(L, COLONERR, "Dot");
+				return luaL_error(L, COLONERR, "Dot");
 			}
-			
+
 			shared_ptr<Vector2> Vec2 = checkVector2(L, 2);
-			
+
 			lua_pushnumber(L, LuaVector2->dot(Vec2));
 			return 1;
 		}
 
 		int Vector2::lua_eq(lua_State* L){
 			shared_ptr<Vector2> LuaVector2 = checkVector2(L, 1, false);
-			
+
 			if(LuaVector2){
-			    shared_ptr<Vector2> OtherVector2 = checkVector2(L, 2, false);
+				shared_ptr<Vector2> OtherVector2 = checkVector2(L, 2, false);
 			   	lua_pushboolean(L, LuaVector2->equals(OtherVector2));
 			}
-			
+
 			lua_pushboolean(L, false);
 			return 1;
 		}
@@ -288,7 +288,7 @@ namespace OB{
 			if(!LuaVector2){
 				return 0;
 			}
-			
+
 			return LuaVector2->neg()->wrap_lua(L);
 		}
 
@@ -297,7 +297,7 @@ namespace OB{
 			if(!LuaVector2){
 				return 0;
 			}
-			
+
 			if(lua_isnumber(L, 2)){
 				double numAdd = lua_tonumber(L, 2);
 				return LuaVector2->add(numAdd)->wrap_lua(L);
@@ -305,7 +305,7 @@ namespace OB{
 				shared_ptr<Vector2> OtherVec2 = checkVector2(L, 2, false);
 				return LuaVector2->add(OtherVec2)->wrap_lua(L);
 			}
-			
+
 			return 0;
 		}
 
@@ -314,7 +314,7 @@ namespace OB{
 			if(!LuaVector2){
 				return 0;
 			}
-			
+
 			if(lua_isnumber(L, 2)){
 				double numSub = lua_tonumber(L, 2);
 				return LuaVector2->sub(numSub)->wrap_lua(L);
@@ -322,7 +322,7 @@ namespace OB{
 				shared_ptr<Vector2> OtherVec2 = checkVector2(L, 2, false);
 				return LuaVector2->sub(OtherVec2)->wrap_lua(L);
 			}
-			
+
 			return 0;
 		}
 
@@ -331,7 +331,7 @@ namespace OB{
 			if(!LuaVector2){
 				return 0;
 			}
-			
+
 			if(lua_isnumber(L, 2)){
 				double numMul = lua_tonumber(L, 2);
 				return LuaVector2->mul(numMul)->wrap_lua(L);
@@ -339,7 +339,7 @@ namespace OB{
 				shared_ptr<Vector2> OtherVec2 = checkVector2(L, 2, false);
 				return LuaVector2->mul(OtherVec2)->wrap_lua(L);
 			}
-			
+
 			return 0;
 		}
 
@@ -348,7 +348,7 @@ namespace OB{
 			if(!LuaVector2){
 				return 0;
 			}
-			
+
 			if(lua_isnumber(L, 2)){
 				double numDiv = lua_tonumber(L, 2);
 				return LuaVector2->div(numDiv)->wrap_lua(L);
@@ -356,7 +356,7 @@ namespace OB{
 				shared_ptr<Vector2> OtherVec2 = checkVector2(L, 2, false);
 				return LuaVector2->div(OtherVec2)->wrap_lua(L);
 			}
-			
+
 			return 0;
 		}
 
@@ -397,7 +397,7 @@ namespace OB{
 		}
 
 		void Vector2::register_lua_property_getters(lua_State* L){
-		    luaL_Reg properties[] = {
+			luaL_Reg properties[] = {
 				{"X", lua_getX},
 				{"Y", lua_getY},
 				{"length", lua_getLength},
@@ -408,13 +408,13 @@ namespace OB{
 			luaL_setfuncs(L, properties, 0);
 		}
 
-	    shared_ptr<Vector2> checkVector2(lua_State* L, int index, bool errIfNot, bool allowNil){
+		shared_ptr<Vector2> checkVector2(lua_State* L, int index, bool errIfNot, bool allowNil){
 			if(allowNil){
 				if(lua_isnoneornil(L, index)){
 					return NULL;
 				}
 			}
-			
+
 			if(lua_isuserdata(L, index)){
 				void* udata = lua_touserdata(L, index);
 				int meta = lua_getmetatable(L, index);

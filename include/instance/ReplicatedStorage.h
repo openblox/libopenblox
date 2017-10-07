@@ -31,15 +31,15 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class ReplicatedStorage: public Instance{
-			public:
-			    ReplicatedStorage(OBEngine* eng);
-				virtual ~ReplicatedStorage();
+		public:
+			ReplicatedStorage(OBEngine* eng);
+			virtual ~ReplicatedStorage();
 
-				#if HAVE_PUGIXML
-				virtual std::string serializedID();
-				#endif
+#if HAVE_PUGIXML
+			virtual std::string serializedID();
+#endif
 
-				DECLARE_CLASS(ReplicatedStorage);
+			DECLARE_CLASS(ReplicatedStorage);
 		};
 	}
 }

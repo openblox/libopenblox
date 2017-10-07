@@ -27,32 +27,32 @@
 namespace OB{
 	namespace Type{
 		class Event;
-		
+
 		class EventConnection: public Type{
-			public:
-			    EventConnection(shared_ptr<Event> evt, std::function<void(std::vector<shared_ptr<VarWrapper>>)>);
-				EventConnection(shared_ptr<Event> evt, std::function<void(std::vector<shared_ptr<VarWrapper>>)>, void* ud);
-				virtual ~EventConnection();
+		public:
+			EventConnection(shared_ptr<Event> evt, std::function<void(std::vector<shared_ptr<VarWrapper>>)>);
+			EventConnection(shared_ptr<Event> evt, std::function<void(std::vector<shared_ptr<VarWrapper>>)>, void* ud);
+			virtual ~EventConnection();
 
-				void Disconnect();
-				bool isConnected();
+			void Disconnect();
+			bool isConnected();
 
-				void fire(std::vector<shared_ptr<VarWrapper>> args);
+			void fire(std::vector<shared_ptr<VarWrapper>> args);
 
-				virtual std::string toString();
-				
-				DECLARE_TYPE();
+			virtual std::string toString();
 
-				static int lua_disconnect(lua_State* L);
-				static int lua_isConnected(lua_State* L);
+			DECLARE_TYPE();
 
-				static void register_lua_methods(lua_State* L);
-				static void register_lua_property_setters(lua_State* L);
-				static void register_lua_property_getters(lua_State* L);
-				
-			    shared_ptr<Event> evt;
-				std::function<void(std::vector<shared_ptr<VarWrapper>>)> fnc;
-			    void* ud;
+			static int lua_disconnect(lua_State* L);
+			static int lua_isConnected(lua_State* L);
+
+			static void register_lua_methods(lua_State* L);
+			static void register_lua_property_setters(lua_State* L);
+			static void register_lua_property_getters(lua_State* L);
+
+			shared_ptr<Event> evt;
+			std::function<void(std::vector<shared_ptr<VarWrapper>>)> fnc;
+			void* ud;
 		};
 
 		shared_ptr<EventConnection> checkEventConnection(lua_State* L, int n, bool errIfNot = true, bool allowNil = true);

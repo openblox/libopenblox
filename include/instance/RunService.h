@@ -31,38 +31,38 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class RunService: public Instance{
-			public:
-			    RunService(OBEngine* eng);
-				virtual ~RunService();
+		public:
+			RunService(OBEngine* eng);
+			virtual ~RunService();
 
-				bool IsRunMode();
-				bool IsRunning();
-				bool IsClient();
-				bool IsServer();
-				bool IsStudio();
+			bool IsRunMode();
+			bool IsRunning();
+			bool IsClient();
+			bool IsServer();
+			bool IsStudio();
 
-				void Pause();
-				void Run();
-				void Stop();
+			void Pause();
+			void Run();
+			void Stop();
 
-				void setIsStudio(bool isStudio);
+			void setIsStudio(bool isStudio);
 
-				virtual void tick();
+			virtual void tick();
 
-				#if HAVE_PUGIXML
-				virtual std::string serializedID();
-				#endif
+#if HAVE_PUGIXML
+			virtual std::string serializedID();
+#endif
 
-				static void register_lua_events(lua_State* L);
-				
-				DECLARE_CLASS(RunService);
+			static void register_lua_events(lua_State* L);
 
-				bool wasRunning;
-				bool running;
-				bool isStudio;
+			DECLARE_CLASS(RunService);
 
-				shared_ptr<Type::Event> Stepped;
-				
+			bool wasRunning;
+			bool running;
+			bool isStudio;
+
+			shared_ptr<Type::Event> Stepped;
+
 		};
 	}
 }

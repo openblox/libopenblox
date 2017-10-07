@@ -31,36 +31,36 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class ServiceProvider: public Instance{
-			public:
-			    ServiceProvider(OBEngine* eng);
-				virtual ~ServiceProvider();
+		public:
+			ServiceProvider(OBEngine* eng);
+			virtual ~ServiceProvider();
 
-				/**
-				 * Pretty much the same as FindFirstChildOfClass, but made 
-				 * specifically for services. Doesn't check recursively.
-				 *
-				 * @param className Class name to look for
-				 * @returns The service requested or NULL
-				 * @author John M. Harris, Jr.
-				 */
-				virtual shared_ptr<Instance> FindService(std::string className);
+			/**
+			 * Pretty much the same as FindFirstChildOfClass, but made
+			 * specifically for services. Doesn't check recursively.
+			 *
+			 * @param className Class name to look for
+			 * @returns The service requested or NULL
+			 * @author John M. Harris, Jr.
+			 */
+			virtual shared_ptr<Instance> FindService(std::string className);
 
-				/**
-				 * Calls FindService, and attempts to create the 
-				 * service if it is not found.
-				 *
-				 * @param className Class name to look for
-				 * @returns The service requested, or NULL if it cannot be created.
-				 * @author John M. Harris, Jr.
-				 */
-				virtual shared_ptr<Instance> GetService(std::string className);
+			/**
+			 * Calls FindService, and attempts to create the
+			 * service if it is not found.
+			 *
+			 * @param className Class name to look for
+			 * @returns The service requested, or NULL if it cannot be created.
+			 * @author John M. Harris, Jr.
+			 */
+			virtual shared_ptr<Instance> GetService(std::string className);
 
-				DECLARE_LUA_METHOD(FindService);
-				DECLARE_LUA_METHOD(GetService);
-				
-				DECLARE_CLASS(ServiceProvider);
-				
-				static void register_lua_methods(lua_State* L);
+			DECLARE_LUA_METHOD(FindService);
+			DECLARE_LUA_METHOD(GetService);
+
+			DECLARE_CLASS(ServiceProvider);
+
+			static void register_lua_methods(lua_State* L);
 		};
 	}
 }

@@ -24,7 +24,7 @@
 
 namespace OB{
 	class OBEngine;
-	
+
 	/**
 	 * All possible log levels. OLL_Debug means to log everything, OLL_None
 	 * means to log (just about) nothing. When used to print messages,
@@ -54,7 +54,7 @@ namespace OB{
 		OLL_Error,
 		/**
 		 * Messages with this log level will always be printed.
-		 * 
+		 *
 		 * When used as a filter, nothing other than messages with the
 		 * level 'OLL_None' will be logged.
 		 */
@@ -67,51 +67,51 @@ namespace OB{
 	 * @author John M. Harris, Jr.
 	 */
 	class OBLogger{
-		public:
-			OBLogger(OBEngine* eng);
-			~OBLogger();
-			
-			/**
-			 * Returns the current log level, corresponding
-			 * to one of the items in the OBLogLevel enumeration
-			 * class.
-			 *
-			 * @returns Current log level
-			 * @author John M. Harris, Jr.
-			 */
-		    OBLogLevel getLogLevel();
+	public:
+		OBLogger(OBEngine* eng);
+		~OBLogger();
 
-			/**
-			 * Sets a new log level. The default is OLL_Information.
-			 *
-			 * @param logLevel log level
-			 * @author John M. Harris, Jr.
-			 */
-		    void setLogLevel(OBLogLevel logLevel);
+		/**
+		 * Returns the current log level, corresponding
+		 * to one of the items in the OBLogLevel enumeration
+		 * class.
+		 *
+		 * @returns Current log level
+		 * @author John M. Harris, Jr.
+		 */
+		OBLogLevel getLogLevel();
 
-			/**
-			 * Prints a message to the log.
-			 *
-			 * @param message Text to be printed
-			 * @param logLevel Log level of this message. Defaults to OLL_Information.
-			 * @author John M. Harris, Jr.
-			 */
-			void log(std::string message, OBLogLevel logLevel = OLL_Information);
+		/**
+		 * Sets a new log level. The default is OLL_Information.
+		 *
+		 * @param logLevel log level
+		 * @author John M. Harris, Jr.
+		 */
+		void setLogLevel(OBLogLevel logLevel);
 
-			/**
-			 * Prints a message to the log, with additional information.
-			 *
-			 * @param message Text to be printed
-			 * @param extra Additional information, which will be printed after a " :".
-			 * @param logLevel Log level of this message. Defaults to OLL_Information.
-			 * @author John M. Harris, Jr.
-			 */
-		    void log(std::string message, std::string extra, OBLogLevel logLevel = OLL_Information);
+		/**
+		 * Prints a message to the log.
+		 *
+		 * @param message Text to be printed
+		 * @param logLevel Log level of this message. Defaults to OLL_Information.
+		 * @author John M. Harris, Jr.
+		 */
+		void log(std::string message, OBLogLevel logLevel = OLL_Information);
 
-		private:
-			OBLogLevel _logLevel;
-			
-			OBEngine* eng;
+		/**
+		 * Prints a message to the log, with additional information.
+		 *
+		 * @param message Text to be printed
+		 * @param extra Additional information, which will be printed after a " :".
+		 * @param logLevel Log level of this message. Defaults to OLL_Information.
+		 * @author John M. Harris, Jr.
+		 */
+		void log(std::string message, std::string extra, OBLogLevel logLevel = OLL_Information);
+
+	private:
+		OBLogLevel _logLevel;
+
+		OBEngine* eng;
 	};
 }
 

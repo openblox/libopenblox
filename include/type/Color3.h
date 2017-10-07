@@ -29,48 +29,48 @@
 #define OB_TYPE_COLOR3
 
 namespace OB{
-	namespace Type{	
+	namespace Type{
 		class Color3: public Type{
-			public:
-			    Color3();
-			    Color3(double r, double g, double b);
-				Color3(int r, int g, int b);
-				Color3(std::string str);
-				virtual ~Color3();
+		public:
+			Color3();
+			Color3(double r, double g, double b);
+			Color3(int r, int g, int b);
+			Color3(std::string str);
+			virtual ~Color3();
 
-				double getR();
-				double getG();
-				double getB();
+			double getR();
+			double getG();
+			double getB();
 
-			    int getRi();
-			    int getGi();
-				int getBi();
+			int getRi();
+			int getGi();
+			int getBi();
 
-				#if HAVE_IRRLICHT
-				
-				irr::video::SColor toIrrlichtSColor(unsigned int alpha = 255);
+#if HAVE_IRRLICHT
 
-				#endif
+			irr::video::SColor toIrrlichtSColor(unsigned int alpha = 255);
 
-				virtual bool equals(shared_ptr<Type> other);
+#endif
 
-				virtual std::string toString();
+			virtual bool equals(shared_ptr<Type> other);
 
-				static int lua_getR(lua_State* L);
-				static int lua_getG(lua_State* L);
-				static int lua_getB(lua_State* L);
+			virtual std::string toString();
 
-				static int lua_eq(lua_State* L);
+			static int lua_getR(lua_State* L);
+			static int lua_getG(lua_State* L);
+			static int lua_getB(lua_State* L);
 
-				static void register_lua_metamethods(lua_State* L);
-				static void register_lua_property_setters(lua_State* L);
-				static void register_lua_property_getters(lua_State* L);
-				
-				DECLARE_TYPE();
+			static int lua_eq(lua_State* L);
 
-				double r;
-				double g;
-				double b;
+			static void register_lua_metamethods(lua_State* L);
+			static void register_lua_property_setters(lua_State* L);
+			static void register_lua_property_getters(lua_State* L);
+
+			DECLARE_TYPE();
+
+			double r;
+			double g;
+			double b;
 
 		};
 

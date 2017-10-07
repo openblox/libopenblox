@@ -29,40 +29,40 @@
 #define OB_TYPE_EVENT
 
 namespace OB{
-	namespace Type{	
+	namespace Type{
 		class EventConnection;
-		
+
 		class Event: public Type{
-			public:
-				Event(std::string name, bool canFireFromLua = false, bool blockLogService = false);
-				virtual ~Event();
+		public:
+			Event(std::string name, bool canFireFromLua = false, bool blockLogService = false);
+			virtual ~Event();
 
-				shared_ptr<EventConnection> Connect(std::function<void(std::vector<shared_ptr<VarWrapper>>)> fnc);
-			    shared_ptr<EventConnection> Connect(void (*fnc)(std::vector<shared_ptr<VarWrapper>>, void*), void* ud);
+			shared_ptr<EventConnection> Connect(std::function<void(std::vector<shared_ptr<VarWrapper>>)> fnc);
+			shared_ptr<EventConnection> Connect(void (*fnc)(std::vector<shared_ptr<VarWrapper>>, void*), void* ud);
 
-				void disconnectAll();
-				void disconnect(shared_ptr<EventConnection> conn);
-			    bool isConnected(shared_ptr<EventConnection> conn);
-				bool doesBlockLogService();
+			void disconnectAll();
+			void disconnect(shared_ptr<EventConnection> conn);
+			bool isConnected(shared_ptr<EventConnection> conn);
+			bool doesBlockLogService();
 
-				void FireLater(std::vector<shared_ptr<VarWrapper>> argList);
-				void Fire(OBEngine* eng, std::vector<shared_ptr<VarWrapper>> argList);
-				void Fire(OBEngine* eng);
+			void FireLater(std::vector<shared_ptr<VarWrapper>> argList);
+			void Fire(OBEngine* eng, std::vector<shared_ptr<VarWrapper>> argList);
+			void Fire(OBEngine* eng);
 
-				virtual std::string toString();
-				
-				DECLARE_TYPE();
+			virtual std::string toString();
 
-				bool canFireFromLua;
-				bool blockLogService;
-				std::string name;
-				std::vector<shared_ptr<EventConnection>> conns;
+			DECLARE_TYPE();
 
-				static int lua_fire(lua_State* L);
-				static int lua_connect(lua_State* L);
-				static int lua_wait(lua_State* L);
+			bool canFireFromLua;
+			bool blockLogService;
+			std::string name;
+			std::vector<shared_ptr<EventConnection>> conns;
 
-				static void register_lua_methods(lua_State* L);
+			static int lua_fire(lua_State* L);
+			static int lua_connect(lua_State* L);
+			static int lua_wait(lua_State* L);
+
+			static void register_lua_methods(lua_State* L);
 		};
 
 		shared_ptr<Event> checkEvent(lua_State* L, int n, bool errIfNot = true, bool allowNil = true);

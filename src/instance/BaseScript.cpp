@@ -30,18 +30,18 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    BaseScript::BaseScript(OBEngine* eng) : LuaSourceContainer(eng){
+		BaseScript::BaseScript(OBEngine* eng) : LuaSourceContainer(eng){
 			Name = ClassName;
 
 			Disabled = false;
 			LinkedSource = "";
 		}
 
-	    BaseScript::~BaseScript(){}
+		BaseScript::~BaseScript(){}
 
 		bool BaseScript::canRun(){
 			if(!Disabled){
-				//TODO: Look at RobloxCompatMode and see if we need to check what service we're in
+				// TODO: Look at RobloxCompatMode and see if we need to check what service we're in
 				shared_ptr<DataModel> dm = getEngine()->getDataModel();
 				shared_ptr<RunService> rs = dm->getRunService();
 				return rs->IsRunning();
@@ -58,7 +58,7 @@ namespace OB{
 					if(!gL){
 						return;
 					}
-					
+
 					lua_State* L = Lua::initThread(gL);
 
 					int ts = wrap_lua(L);
@@ -91,7 +91,7 @@ namespace OB{
 		}
 
 		void BaseScript::setDisabled(bool disabled){
-		    if(Disabled != disabled){
+			if(Disabled != disabled){
 				Disabled = disabled;
 
 				REPLICATE_PROPERTY_CHANGE("Disabled");
@@ -99,27 +99,27 @@ namespace OB{
 			}
 		}
 
-	    std::string BaseScript::getLinkedSource(){
+		std::string BaseScript::getLinkedSource(){
 			return LinkedSource;
 		}
 
 		void BaseScript::setLinkedSource(std::string linkedSource){
-		    if(LinkedSource != linkedSource){
-			    LinkedSource = linkedSource;
+			if(LinkedSource != linkedSource){
+				LinkedSource = linkedSource;
 
 				REPLICATE_PROPERTY_CHANGE("LinkedSource");
 				propertyChanged("LinkedSource");
 			}
 		}
 
-		#if HAVE_ENET
+#if HAVE_ENET
 		void BaseScript::replicateProperties(shared_ptr<NetworkReplicator> peer){
 			Instance::replicateProperties(peer);
-			
+
 			peer->sendSetPropertyPacket(netId, "Disabled", make_shared<Type::VarWrapper>(Disabled));
 			peer->sendSetPropertyPacket(netId, "LinkedSource", make_shared<Type::VarWrapper>(LinkedSource));
 		}
-		#endif
+#endif
 
 		std::map<std::string, _PropertyInfo> BaseScript::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
@@ -130,12 +130,12 @@ namespace OB{
 		}
 
 		void BaseScript::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
-		    if(prop == "Disabled"){
+			if(prop == "Disabled"){
 				setDisabled(val->asBool());
 				return;
 			}
 			if(prop == "LinkedSource"){
-			    setLinkedSource(val->asString());
+				setLinkedSource(val->asString());
 				return;
 			}
 
@@ -149,13 +149,13 @@ namespace OB{
 			if(prop == "LinkedSource"){
 				return make_shared<Type::VarWrapper>(getLinkedSource());
 			}
-			
+
 			return Instance::getProperty(prop);
 		}
 
 		int BaseScript::lua_setDisabled(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<BaseScript> instBS = dynamic_pointer_cast<BaseScript>(inst);
 				if(instBS){
@@ -163,13 +163,13 @@ namespace OB{
 					instBS->setDisabled(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int BaseScript::lua_getDisabled(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<BaseScript> instBS = dynamic_pointer_cast<BaseScript>(inst);
 				if(instBS){
@@ -177,7 +177,7 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
@@ -192,7 +192,7 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			return 0;
 		}
 
@@ -206,7 +206,7 @@ namespace OB{
 					instBS->setLinkedSource(desired);
 				}
 			}
-			
+
 			return 0;
 		}
 
@@ -222,13 +222,13 @@ namespace OB{
 				}
 				return 1;
 			}
-			
+
 			return 0;
 		}
 
 		void BaseScript::register_lua_property_setters(lua_State* L){
 			Instance::register_lua_property_setters(L);
-			
+
 			luaL_Reg properties[] = {
 				{"Disabled", lua_setDisabled},
 				{"LinkedSource", lua_setLinkedSource},
@@ -239,7 +239,7 @@ namespace OB{
 
 		void BaseScript::register_lua_property_getters(lua_State* L){
 			Instance::register_lua_property_getters(L);
-			
+
 			luaL_Reg properties[] = {
 				{"Disabled", lua_getDisabled},
 				{"LinkedSource", lua_getLinkedSource},
@@ -250,7 +250,7 @@ namespace OB{
 
 		void BaseScript::register_lua_methods(lua_State* L){
 			Instance::register_lua_methods(L);
-			
+
 			luaL_Reg methods[] = {
 				{"GetSource", lua_GetSource},
 				{NULL, NULL}

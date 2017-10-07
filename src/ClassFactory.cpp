@@ -23,7 +23,7 @@
 
 #include "OBException.h"
 
-//Alllllll Instances
+// Alllllll OB base Instances included here
 #include "instance/Instance.h"
 #include "instance/LuaSourceContainer.h"
 #include "instance/BaseScript.h"
@@ -133,7 +133,7 @@ namespace OB{
 		return NULL;
 	}
 
-    shared_ptr<Instance::Instance> ClassFactory::createReplicate(std::string className, OBEngine* eng){
+	shared_ptr<Instance::Instance> ClassFactory::createReplicate(std::string className, OBEngine* eng){
 		ClassMetadata* classMd = metadataTable[className];
 		if(classMd){
 			return classMd->newInstance(eng);
@@ -155,12 +155,12 @@ namespace OB{
 		}
 	}
 
-    void ClassFactory::registerCoreClasses(){
+	void ClassFactory::registerCoreClasses(){
 		if(isInitialized){
 			return;
 		}
 		isInitialized = true;
-		
+
 		Instance::Instance::registerClass();
 		Instance::LuaSourceContainer::registerClass();
 		Instance::BaseScript::registerClass();
@@ -168,7 +168,7 @@ namespace OB{
 		Instance::Camera::registerClass();
 		Instance::PVInstance::registerClass();
 		Instance::Model::registerClass();
-	    Instance::BindableEvent::registerClass();
+		Instance::BindableEvent::registerClass();
 		Instance::ServiceProvider::registerClass();
 		Instance::Lighting::registerClass();
 		Instance::ContentProvider::registerClass();
@@ -207,13 +207,13 @@ namespace OB{
 		Instance::Players::registerClass();
 		Instance::Player::registerClass();
 
-		#if HAVE_ENET
+#if HAVE_ENET
 		Instance::NetworkReplicator::registerClass();
 		Instance::ClientReplicator::registerClass();
 		Instance::ServerReplicator::registerClass();
 		Instance::NetworkPeer::registerClass();
 		Instance::NetworkServer::registerClass();
 		Instance::NetworkClient::registerClass();
-		#endif
+#endif
 	}
 }

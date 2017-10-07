@@ -25,7 +25,7 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    ContentProvider::ContentProvider(OBEngine* eng) : Instance(eng){
+		ContentProvider::ContentProvider(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 			netId = OB_NETID_NOT_REPLICATED;
 
@@ -35,7 +35,7 @@ namespace OB{
 			AssetLoadFailed = make_shared<Type::Event>("AssetLoadFailed");
 		}
 
-	    ContentProvider::~ContentProvider(){}
+		ContentProvider::~ContentProvider(){}
 
 		shared_ptr<Instance> ContentProvider::cloneImpl(){
 			return NULL;
@@ -49,7 +49,7 @@ namespace OB{
 			return AssetLoadFailed;
 		}
 
-	    void ContentProvider::Preload(std::string url){
+		void ContentProvider::Preload(std::string url){
 			shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
 
 			assetLoc->loadAsset(url);
@@ -66,73 +66,73 @@ namespace OB{
 
 			shared_ptr<AssetResponse> resp = assetLoc->getAsset(url);
 			if(resp){
-			    char* dat = resp->getData();
+				char* dat = resp->getData();
 				int siz = resp->getSize();
 				if(dat && siz > 0){
 					return dat;
 				}
 			}
-			
-		    return NULL;
+
+			return NULL;
 		}
 
-		#if HAVE_PUGIXML
-	    std::string ContentProvider::serializedID(){
+#if HAVE_PUGIXML
+		std::string ContentProvider::serializedID(){
 			shared_ptr<OBSerializer> serializer = eng->getSerializer();
 			serializer->SetID(shared_from_this(), getClassName());
-			
+
 			return Instance::serializedID();
 		}
-		#endif
+#endif
 
 		int ContentProvider::lua_Preload(lua_State* L){
-		    shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
 			if(shared_ptr<ContentProvider> cp = dynamic_pointer_cast<ContentProvider>(inst)){
 				std::string urlStr = std::string(luaL_checkstring(L, 2));
-				
-			    cp->Preload(urlStr);
+
+				cp->Preload(urlStr);
 				return 0;
 			}
-			
+
 			return luaL_error(L, COLONERR, "Preload");
 		}
 
 		int ContentProvider::lua_Load(lua_State* L){
-		    shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
 			if(shared_ptr<ContentProvider> cp = dynamic_pointer_cast<ContentProvider>(inst)){
 				std::string urlStr = std::string(luaL_checkstring(L, 2));
-				
-			    cp->Load(urlStr);
+
+				cp->Load(urlStr);
 				return 0;
 			}
-			
+
 			return luaL_error(L, COLONERR, "Load");
 		}
 
 		int ContentProvider::lua_GetAsset(lua_State* L){
-		    shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
 			if(shared_ptr<ContentProvider> cp = dynamic_pointer_cast<ContentProvider>(inst)){
 				std::string urlStr = std::string(luaL_checkstring(L, 2));
-				
-			    char* strAsset = cp->GetAsset(urlStr);
+
+				char* strAsset = cp->GetAsset(urlStr);
 				if(strAsset == NULL){
 					lua_pushnil(L);
 					return 1;
 				}
-				
+
 				lua_pushstring(L, strAsset);
 				return 1;
 			}
-			
+
 			return luaL_error(L, COLONERR, "GetAsset");
 		}
 
 		int ContentProvider::lua_getRequestQueueSize(lua_State* L){
-		    shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
 			if(shared_ptr<ContentProvider> cp = dynamic_pointer_cast<ContentProvider>(inst)){
 				OBEngine* eng = Lua::getEngine(L);
 				shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
@@ -140,26 +140,26 @@ namespace OB{
 				lua_pushinteger(L, assetLoc->getRequestQueueSize());
 				return 1;
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		void ContentProvider::register_lua_methods(lua_State* L){
-		    Instance::register_lua_methods(L);
+			Instance::register_lua_methods(L);
 
 			luaL_Reg methods[] = {
 				{"Preload", lua_Preload},
 				{"Load", lua_Load},
 				{"GetAsset", lua_GetAsset},
-			    {NULL, NULL}
+				{NULL, NULL}
 			};
 			luaL_setfuncs(L, methods, 0);
 		}
-		
+
 		void ContentProvider::register_lua_property_setters(lua_State* L){
 			Instance::register_lua_property_setters(L);
-			
+
 			luaL_Reg properties[] = {
 				{"RequestQueueSize", Instance::lua_readOnlyProperty},
 				{NULL, NULL}
@@ -169,7 +169,7 @@ namespace OB{
 
 		void ContentProvider::register_lua_property_getters(lua_State* L){
 			Instance::register_lua_property_getters(L);
-			
+
 			luaL_Reg properties[] = {
 				{"RequestQueueSize", lua_getRequestQueueSize},
 				{NULL, NULL}
@@ -179,7 +179,7 @@ namespace OB{
 
 		void ContentProvider::register_lua_events(lua_State* L){
 			Instance::register_lua_events(L);
-			
+
 			luaL_Reg events[] = {
 				{"AssetLoaded", WRAP_EVT(ContentProvider, AssetLoaded)},
 				{"AssetLoadFailed", WRAP_EVT(ContentProvider, AssetLoadFailed)},

@@ -21,7 +21,7 @@
  * @file utility.h
  * @author John M. Harris, Jr.
  * @date May 2016
- * 
+ *
  * This file defines utility functions used internally by the OpenBlox
  * engine.
  */
@@ -46,7 +46,7 @@
 namespace OB{
 	/**
 	 * Returns the current time in milliseconds.
-	 * 
+	 *
 	 * @returns Current time in millis
 	 * @author John M. Harris, Jr.
 	 */
@@ -59,12 +59,12 @@ namespace OB{
 	 */
 	bool ob_str_startsWith(std::string str, std::string prefix);
 
-    enum empties_t{
+	enum empties_t{
 		empties_ok,
 		no_empties
 	};
 
-    static inline std::vector<std::string> split(std::string str){
+	static inline std::vector<std::string> split(std::string str){
 		std::vector<std::string> results;
 		std::stringstream ss(str);
 		while(ss.good()){
@@ -89,18 +89,18 @@ namespace OB{
 		return ltrim(rtrim(s));
 	}
 
-	#ifdef _WIN32
-	#define PATH_MAX 260
-	
+#ifdef _WIN32
+#define PATH_MAX 260
+
 	char* realpath(const char* path, char resolved_path[PATH_MAX]);
 	char* get_current_dir_name();
-	
+
 	void usleep(ob_int64 usec);
 
-	#ifdef _MSC_VER
+#ifdef _MSC_VER
 	int gettimeofday(struct timeval* tp, void* tzp);
-	#endif
-	#endif
+#endif
+#endif
 }
 
 #endif // OB_UTILITY

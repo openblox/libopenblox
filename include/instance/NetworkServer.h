@@ -31,33 +31,33 @@
 namespace OB{
 	namespace Instance{
 		class NetworkServer: public NetworkPeer{
-			public:
-			    NetworkServer(OBEngine* eng);
-				virtual ~NetworkServer();
+		public:
+			NetworkServer(OBEngine* eng);
+			virtual ~NetworkServer();
 
-			    virtual void tick();
+			virtual void tick();
 
-				int getPort();
+			int getPort();
 
-				void Start(int port = 0);
-				void Stop(int blockDuration = 1000);
+			void Start(int port = 0);
+			void Stop(int blockDuration = 1000);
 
-				void broadcast(enet_uint8 channel, BitStream &bs);
+			void broadcast(enet_uint8 channel, BitStream &bs);
 
-				#if HAVE_PUGIXML
-				virtual std::string serializedID();
-				#endif
+#if HAVE_PUGIXML
+			virtual std::string serializedID();
+#endif
 
-				DECLARE_LUA_METHOD(Start);
-				DECLARE_LUA_METHOD(Stop);
+			DECLARE_LUA_METHOD(Start);
+			DECLARE_LUA_METHOD(Stop);
 
-				void processEvent(ENetEvent evt);
+			void processEvent(ENetEvent evt);
 
-				static void register_lua_methods(lua_State* L);
+			static void register_lua_methods(lua_State* L);
 
-				DECLARE_CLASS(NetworkServer);
+			DECLARE_CLASS(NetworkServer);
 
-				int Port;
+			int Port;
 		};
 	}
 }

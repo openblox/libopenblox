@@ -27,14 +27,14 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    TaskScheduler::TaskScheduler(OBEngine* eng) : Instance(eng){
+		TaskScheduler::TaskScheduler(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 			netId = OB_NETID_NOT_REPLICATED;
 
 			Archivable = false;
 		}
 
-	    TaskScheduler::~TaskScheduler(){}
+		TaskScheduler::~TaskScheduler(){}
 
 		shared_ptr<Instance> TaskScheduler::cloneImpl(){
 			return NULL;
@@ -56,14 +56,14 @@ namespace OB{
 			return -1;
 		}
 
-		#if HAVE_PUGIXML
-	    std::string TaskScheduler::serializedID(){
+#if HAVE_PUGIXML
+		std::string TaskScheduler::serializedID(){
 			shared_ptr<OBSerializer> serializer = eng->getSerializer();
 			serializer->SetID(shared_from_this(), getClassName());
-			
+
 			return Instance::serializedID();
 		}
-		#endif
+#endif
 
 		std::map<std::string, _PropertyInfo> TaskScheduler::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
@@ -80,13 +80,13 @@ namespace OB{
 			if(prop == "NumWaitingJobs"){
 				return make_shared<Type::VarWrapper>(getNumWaitingJobs());
 			}
-			
+
 			return Instance::getProperty(prop);
 		}
 
 		int TaskScheduler::lua_getNumSleepingJobs(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<TaskScheduler> instTS = dynamic_pointer_cast<TaskScheduler>(inst);
 				if(instTS){
@@ -94,14 +94,14 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int TaskScheduler::lua_getNumWaitingJobs(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<TaskScheduler> instTS = dynamic_pointer_cast<TaskScheduler>(inst);
 				if(instTS){
@@ -109,16 +109,16 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
-	    void TaskScheduler::register_lua_property_setters(lua_State* L){
+		void TaskScheduler::register_lua_property_setters(lua_State* L){
 			Instance::register_lua_property_setters(L);
-			
+
 			luaL_Reg properties[] = {
-			    {"NumSleepingJobs", lua_readOnlyProperty},
+				{"NumSleepingJobs", lua_readOnlyProperty},
 				{"NumWaitingJobs", lua_readOnlyProperty},
 				{NULL, NULL}
 			};
@@ -127,7 +127,7 @@ namespace OB{
 
 		void TaskScheduler::register_lua_property_getters(lua_State* L){
 			Instance::register_lua_property_getters(L);
-			
+
 			luaL_Reg properties[] = {
 				{"NumSleepingJobs", lua_getNumSleepingJobs},
 				{"NumWaitingJobs", lua_getNumWaitingJobs},

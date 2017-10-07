@@ -28,13 +28,13 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    MeshPart::MeshPart(OBEngine* eng) : BasePart(eng){
+		MeshPart::MeshPart(OBEngine* eng) : BasePart(eng){
 			Name = ClassName;
 
-		    Mesh = "";
+			Mesh = "";
 		}
 
-	    MeshPart::~MeshPart(){}
+		MeshPart::~MeshPart(){}
 
 		shared_ptr<Instance> MeshPart::cloneImpl(){
 			shared_ptr<MeshPart> mp = make_shared<MeshPart>(eng);
@@ -47,7 +47,7 @@ namespace OB{
 			mp->CanCollide = CanCollide;
 			mp->Locked = Locked;
 			mp->Transparency = Transparency;
-			
+
 			mp->Mesh = Mesh;
 			mp->updateMesh();
 			shared_ptr<Instance> parInst = Parent;
@@ -59,7 +59,7 @@ namespace OB{
 					}
 				}
 			}
-			
+
 			return mp;
 		}
 
@@ -93,13 +93,13 @@ namespace OB{
 				propertyChanged("Mesh");
 			}
 		}
-		
-	    std::string MeshPart::getMesh(){
+
+		std::string MeshPart::getMesh(){
 			return Mesh;
 		}
 
 		void MeshPart::updateMesh(){
-			#if HAVE_IRRLICHT
+#if HAVE_IRRLICHT
 			shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
 			if(assetLoc){
 				shared_ptr<AssetResponse> resp = assetLoc->getAsset(Mesh);
@@ -132,13 +132,13 @@ namespace OB{
 					}
 				}
 			}
-			#endif
+#endif
 		}
 
 		void MeshPart::updateColor(){
-			#if HAVE_IRRLICHT
+#if HAVE_IRRLICHT
 			if(irrNode){
-			    irr::scene::IMeshSceneNode* mnode = (irr::scene::IMeshSceneNode*)irrNode;
+				irr::scene::IMeshSceneNode* mnode = (irr::scene::IMeshSceneNode*)irrNode;
 				irr::scene::IMesh* tMesh = mnode->getMesh();
 
 				shared_ptr<Type::Color3> col3 = getColor();
@@ -150,7 +150,7 @@ namespace OB{
 				thisMat.AmbientColor.set(0, 0, 0, 0);
 				thisMat.ColorMaterial = irr::video::ECM_NONE;
 			}
-			#endif
+#endif
 		}
 
 		bool MeshPart::assetLoaded(std::string res){
@@ -167,23 +167,23 @@ namespace OB{
 				}
 				return true;
 			}
-			
+
 			return false;
 		}
 
-		#if HAVE_ENET
+#if HAVE_ENET
 		void MeshPart::replicateProperties(shared_ptr<NetworkReplicator> peer){
-		    BasePart::replicateProperties(peer);
-			
+			BasePart::replicateProperties(peer);
+
 			peer->sendSetPropertyPacket(netId, "Mesh", make_shared<Type::VarWrapper>(Mesh));
 		}
-		#endif
+#endif
 
-		#if HAVE_IRRLICHT
+#if HAVE_IRRLICHT
 		void MeshPart::newIrrlichtNode(){
 			updateMesh();
 		}
-		#endif
+#endif
 
 		std::map<std::string, _PropertyInfo> MeshPart::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = BasePart::getProperties();
@@ -193,25 +193,25 @@ namespace OB{
 		}
 
 		void MeshPart::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
-		    if(prop == "Mesh"){
-			    setMesh(val->asString());
+			if(prop == "Mesh"){
+				setMesh(val->asString());
 				return;
 			}
 
-		    BasePart::setProperty(prop, val);
+			BasePart::setProperty(prop, val);
 		}
 
 		shared_ptr<Type::VarWrapper> MeshPart::getProperty(std::string prop){
 			if(prop == "Mesh"){
 				return make_shared<Type::VarWrapper>(getMesh());
 			}
-			
+
 			return BasePart::getProperty(prop);
 		}
 
 		int MeshPart::lua_setMesh(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<MeshPart> instMP = dynamic_pointer_cast<MeshPart>(inst);
 				if(instMP){
@@ -219,13 +219,13 @@ namespace OB{
 					instMP->setMesh(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int MeshPart::lua_getMesh(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<MeshPart> instMP = dynamic_pointer_cast<MeshPart>(inst);
 				if(instMP){
@@ -233,14 +233,14 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		void MeshPart::register_lua_property_setters(lua_State* L){
-		    BasePart::register_lua_property_setters(L);
-			
+			BasePart::register_lua_property_setters(L);
+
 			luaL_Reg properties[] = {
 				{"Mesh", lua_setMesh},
 				{NULL, NULL}
@@ -250,7 +250,7 @@ namespace OB{
 
 		void MeshPart::register_lua_property_getters(lua_State* L){
 			BasePart::register_lua_property_getters(L);
-			
+
 			luaL_Reg properties[] = {
 				{"Mesh", lua_getMesh},
 				{NULL, NULL}

@@ -25,23 +25,23 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    Script::Script(OBEngine* eng) : BaseScript(eng){
+		Script::Script(OBEngine* eng) : BaseScript(eng){
 			Name = ClassName;
 
 			Source = "";
 		}
 
-	    Script::~Script(){}
+		Script::~Script(){}
 
 		shared_ptr<Instance> Script::cloneImpl(){
-		    shared_ptr<Script> nScript = make_shared<Script>(getEngine());
+			shared_ptr<Script> nScript = make_shared<Script>(getEngine());
 			nScript->Archivable = Archivable;
 			nScript->Name = Name;
 			nScript->ParentLocked = ParentLocked;
 
 			nScript->Disabled = Disabled;
 			nScript->LinkedSource = LinkedSource;
-			
+
 			nScript->Source = Source;
 			return nScript;
 		}
@@ -80,21 +80,21 @@ namespace OB{
 				pugi::xml_node srcNode = thisNode.append_child(pugi::node_element);
 				srcNode.set_name("source");
 				srcNode.append_child(pugi::node_cdata).set_value(Source.c_str());
-				
+
 				serializeThis(thisNode, model);
 			}
 		}
 
 		void Script::deserializeProperties(pugi::xml_node thisNode){
-			//This isn't a property, but it was either in deserializeCreate or deserializeProperties
-		    pugi::xml_node csrc =thisNode.child("source");
+			// This isn't a property, but it was either in deserializeCreate or deserializeProperties
+			pugi::xml_node csrc = thisNode.child("source");
 			if(csrc.type() == pugi::node_element && !csrc.empty()){
 				pugi::xml_node srcCode = csrc.first_child();
 				if(srcCode.type() == pugi::node_cdata){
 					Source = std::string(srcCode.value());
 				}
 			}
-			
+
 			Instance::deserializeProperties(thisNode);
 		}
 	}

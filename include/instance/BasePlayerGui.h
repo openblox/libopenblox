@@ -25,11 +25,11 @@
 namespace OB{
 	namespace Instance{
 		class BasePlayerGui: public GuiBase2d{
-			public:
-			    BasePlayerGui(OBEngine* eng);
-				virtual ~BasePlayerGui();
+		public:
+			BasePlayerGui(OBEngine* eng);
+			virtual ~BasePlayerGui();
 
-				DECLARE_CLASS(BasePlayerGui);
+			DECLARE_CLASS(BasePlayerGui);
 		};
 	}
 }

@@ -27,31 +27,31 @@
 namespace OB{
 	namespace Type{
 		class LuaEnumItem;
-		
+
 		class LuaEnum: public Type{
-			public:
-			    LuaEnum(std::string type, va_list args);
-				virtual ~LuaEnum();
+		public:
+			LuaEnum(std::string type, va_list args);
+			virtual ~LuaEnum();
 
-				virtual bool equals(shared_ptr<Type> other);
+			virtual bool equals(shared_ptr<Type> other);
 
-				static shared_ptr<LuaEnum> createLuaEnum(std::string type, ...);
+			static shared_ptr<LuaEnum> createLuaEnum(std::string type, ...);
 
-				virtual std::string toString();
+			virtual std::string toString();
 
-				std::string getType();
-			    shared_ptr<LuaEnumItem> getEnumItem(int value);
+			std::string getType();
+			shared_ptr<LuaEnumItem> getEnumItem(int value);
 
-				std::map<std::string, shared_ptr<LuaEnumItem>> enumValues;
+			std::map<std::string, shared_ptr<LuaEnumItem>> enumValues;
 
-				static std::map<std::string, shared_ptr<LuaEnum>>* enums;
-				
-				DECLARE_TYPE();
+			static std::map<std::string, shared_ptr<LuaEnum>>* enums;
 
-				static int lua_getEnumItems(lua_State* L);
-				static int lua_index(lua_State* L);
+			DECLARE_TYPE();
 
-				std::string type;
+			static int lua_getEnumItems(lua_State* L);
+			static int lua_index(lua_State* L);
+
+			std::string type;
 		};
 
 		shared_ptr<LuaEnum> checkLuaEnum(lua_State* L, int n, bool errIfNot = true, bool allowNil = true);

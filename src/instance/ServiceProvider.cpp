@@ -25,7 +25,7 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    ServiceProvider::ServiceProvider(OBEngine* eng) : Instance(eng){
+		ServiceProvider::ServiceProvider(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 		}
 
@@ -48,7 +48,7 @@ namespace OB{
 			if(foundService != NULL){
 				return foundService;
 			}
-		    shared_ptr<Instance> newGuy = ClassFactory::createService(className, false, eng);
+			shared_ptr<Instance> newGuy = ClassFactory::createService(className, false, eng);
 			if(newGuy){
 				newGuy->setParent(std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this(), false);
 				newGuy->ParentLocked = true;
@@ -58,7 +58,7 @@ namespace OB{
 
 		int ServiceProvider::lua_FindService(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(shared_ptr<ServiceProvider> sp = dynamic_pointer_cast<ServiceProvider>(inst)){
 				std::string serviceName = std::string(luaL_checkstring(L, 2));
 				shared_ptr<Instance> foundGuy = sp->FindService(serviceName);
@@ -68,13 +68,13 @@ namespace OB{
 				lua_pushnil(L);
 				return 1;
 			}
-			
+
 			return luaL_error(L, COLONERR, "FindService");
 		}
 
 		int ServiceProvider::lua_GetService(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(shared_ptr<ServiceProvider> sp = dynamic_pointer_cast<ServiceProvider>(inst)){
 				std::string serviceName = std::string(luaL_checkstring(L, 2));
 				shared_ptr<Instance> foundGuy = sp->GetService(serviceName);
@@ -84,7 +84,7 @@ namespace OB{
 				lua_pushnil(L);
 				return 1;
 			}
-			
+
 			return luaL_error(L, COLONERR, "GetService");
 		}
 

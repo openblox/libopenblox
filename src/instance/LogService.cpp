@@ -27,33 +27,33 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    LogService::LogService(OBEngine* eng) : Instance(eng){
+		LogService::LogService(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 			netId = OB_NETID_NOT_REPLICATED;
 
 			Archivable = false;
 
-			//These pointers are initialized to keep postLog going as quickly as possible. No lookup should be done there.
+			// These pointers are initialized to keep postLog going as quickly as possible. No lookup should be done there.
 			MessageOutput = Enum::LuaMessageType->getEnumItem((int)Enum::MessageType::MessageOutput);
 			MessageInfo = Enum::LuaMessageType->getEnumItem((int)Enum::MessageType::MessageInfo);
 			MessageWarning = Enum::LuaMessageType->getEnumItem((int)Enum::MessageType::MessageWarning);
 			MessageError = Enum::LuaMessageType->getEnumItem((int)Enum::MessageType::MessageError);
-			
-		    MessageOut = make_shared<Type::Event>("MessageOut");
+
+			MessageOut = make_shared<Type::Event>("MessageOut");
 
 			blocked = false;
 		}
 
-	    LogService::~LogService(){}
+		LogService::~LogService(){}
 
-		#if HAVE_PUGIXML
-	    std::string LogService::serializedID(){
+#if HAVE_PUGIXML
+		std::string LogService::serializedID(){
 			shared_ptr<OBSerializer> serializer = eng->getSerializer();
 			serializer->SetID(shared_from_this(), getClassName());
-			
+
 			return Instance::serializedID();
 		}
-		#endif
+#endif
 
 		shared_ptr<Instance> LogService::cloneImpl(){
 			return NULL;
@@ -63,30 +63,30 @@ namespace OB{
 			if(blocked){
 				return;
 			}
-			
+
 			ob_int64 timestamp = currentTimeMillis();
 
-		    shared_ptr<Type::LuaEnumItem> val;
+			shared_ptr<Type::LuaEnumItem> val;
 			switch(messageType){
-				case Enum::MessageType::MessageOutput: {
-					val = MessageOutput;
-					break;
-				}
-				case Enum::MessageType::MessageInfo: {
-					val = MessageInfo;
-					break;
-				}
-				case Enum::MessageType::MessageWarning: {
-					val = MessageWarning;
-					break;
-				}
-				case Enum::MessageType::MessageError: {
-					val = MessageError;
-					break;
-				}
-				default: {
-					return;
-				}
+			case Enum::MessageType::MessageOutput: {
+				val = MessageOutput;
+				break;
+			}
+			case Enum::MessageType::MessageInfo: {
+				val = MessageInfo;
+				break;
+			}
+			case Enum::MessageType::MessageWarning: {
+				val = MessageWarning;
+				break;
+			}
+			case Enum::MessageType::MessageError: {
+				val = MessageError;
+				break;
+			}
+			default: {
+				return;
+			}
 			}
 
 			if(!val){
@@ -111,7 +111,7 @@ namespace OB{
 
 		void LogService::register_lua_events(lua_State* L){
 			Instance::register_lua_events(L);
-			
+
 			luaL_Reg events[] = {
 				{"MessageOut", WRAP_EVT(LogService, MessageOut)},
 				{NULL, NULL}

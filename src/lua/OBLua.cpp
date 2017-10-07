@@ -46,8 +46,8 @@
 
 namespace OB{
 	namespace Lua{
-	    OBLState* globalOBLState = NULL;
-		
+		OBLState* globalOBLState = NULL;
+
 		void* l_alloc(void* ud, void* ptr, size_t osize, size_t nsize){
 			(void)ud;
 			(void)osize;
@@ -59,14 +59,14 @@ namespace OB{
 				return realloc(ptr, nsize);
 			}
 		}
-		
-		//Stores information about Lua states used by OpenBlox, for example the 'script' value.
+
+		// Stores information about Lua states used by OpenBlox, for example the 'script' value.
 		static std::map<lua_State*, struct OBLState*> lStates;
-		
+
 		lua_State* initGlobal(OBEngine* eng){
-			//Don't put anything on the global state, its one purpose
-			//is to be the parent of coroutines.
-		    lua_State* L = lua_newstate(l_alloc, NULL);
+			// Don't put anything on the global state, its one purpose
+			// is to be the parent of coroutines.
+			lua_State* L = lua_newstate(l_alloc, NULL);
 
 			struct OBLState* LState = new struct OBLState;
 			LState->L = L;
@@ -79,12 +79,12 @@ namespace OB{
 			LState->dmBound = false;
 
 			lStates[L] = LState;
-			
+
 			return L;
 		}
 
 		OBEngine* getEngine(lua_State* L){
-		    struct OBLState* LState = lStates[L];
+			struct OBLState* LState = lStates[L];
 			if(LState){
 				return LState->eng;
 			}
@@ -106,7 +106,7 @@ namespace OB{
 
 			lStates[L] = LState;
 
-			//Load altered standard lib
+			// Load altered standard lib
 			luaL_requiref(L, "_G", luaopen_obbase, 1);//OB version of Lua's base lib
 			luaL_requiref(L, LUA_COLIBNAME, luaopen_coroutine, 1);
 			luaL_requiref(L, LUA_TABLIBNAME, luaopen_table, 1);
@@ -193,7 +193,7 @@ namespace OB{
 			Enum::registerLuaEnums(L);
 
 			OBEngine* eng = getEngine(L);
-		    shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+			shared_ptr<Instance::DataModel> dm = eng->getDataModel();
 			int gm = dm->wrap_lua(L);
 			lua_pushvalue(L, -gm);
 			lua_setglobal(L, "game");
@@ -202,16 +202,16 @@ namespace OB{
 			lua_setglobal(L, "Game");
 
 			lua_pop(L, 1);
-			
+
 			return L;
 		}
 
 		lua_State* initCoroutine(lua_State* pL){
-			//Unlike "initThread", we don't load in our altered standard library.
-			//We want this coroutine to use the environment of the parent state.
+			// Unlike "initThread", we don't load in our altered standard library.
+			// We want this coroutine to use the environment of the parent state.
 
 			lua_State* L = lua_newthread(pL);
-			
+
 			struct OBLState* LState = new struct OBLState;
 			LState->L = L;
 			LState->ref = luaL_ref(pL, LUA_REGISTRYINDEX);
@@ -226,28 +226,28 @@ namespace OB{
 				if(oL){
 					oL->numChildStates = oL->numChildStates + 1;
 				}
-				
+
 				LState->parent = oL;
 				LState->getsPaused = oL->getsPaused;
 				LState->dmBound = oL->dmBound;
 			}
 
 			lStates[L] = LState;
-			
+
 			return L;
 		}
 
 		void close_state(lua_State* L){
 			if(lStates.count(L)){
-		    	struct OBLState* oL = lStates[L];
+				struct OBLState* oL = lStates[L];
 				if(oL->numChildStates > 0){
 					oL->initUseOver = true;
-					//We aren't gonna kill it while it has kids!
+					// We aren't gonna kill it while it has kids!
 					return;
 				}
 
 				OBEngine* eng = getEngine(L);
-			    lua_State* gL = eng->getGlobalLuaState();
+				lua_State* gL = eng->getGlobalLuaState();
 
 				if(oL->ref != -1){
 					luaL_unref(gL, LUA_REGISTRYINDEX, oL->ref);
@@ -268,54 +268,54 @@ namespace OB{
 				delete oL;
 				//lua_close(L);
 			}/*else{
-				lua_close(L);
-				}*/
+			   lua_close(L);
+			   }*/
 		}
 
 		bool getsPaused(lua_State* L){
 			if(lStates.count(L)){
 				struct OBLState* LState = lStates[L];
 				return LState->getsPaused;
-		    }
+			}
 			return false;
 		}
 
-	    void setGetsPaused(lua_State* L, bool getsPaused){
+		void setGetsPaused(lua_State* L, bool getsPaused){
 			if(lStates.count(L)){
 				struct OBLState* LState = lStates[L];
-			    LState->getsPaused = getsPaused;
-		    }
+				LState->getsPaused = getsPaused;
+			}
 		}
 
 		bool isDMBound(lua_State* L){
 			if(lStates.count(L)){
 				struct OBLState* LState = lStates[L];
 				return LState->dmBound;
-		    }
+			}
 			return false;
 		}
 
-	    void setDMBound(lua_State* L, bool dmBound){
+		void setDMBound(lua_State* L, bool dmBound){
 			if(lStates.count(L)){
 				struct OBLState* LState = lStates[L];
-			    LState->dmBound = dmBound;
-		    }
+				LState->dmBound = dmBound;
+			}
 		}
-		
+
 		std::string handle_errors(lua_State* L){
 			std::string lerr = std::string(lua_tostring(L, -1));
-			
+
 			OBEngine* eng = getEngine(L);
 			shared_ptr<OBLogger> logger = eng->getLogger();
 			logger->log(lerr, OLL_Error);
-			
-			lua_pop(L, 1);//Pop the error off the stack like it never happened.
-			
+
+			lua_pop(L, 1);// Pop the error off the stack like it never happened.
+
 			return lerr;
 		}
 
-		//Lua functions and misc
-		
+		// Lua functions and misc
+
 		int lua_print(lua_State* L){
 			std::string output = "";
 
@@ -331,7 +331,7 @@ namespace OB{
 
 				s = lua_tostring(L, -1);
 				lua_pop(L, 1);
-				
+
 				if(s == NULL){
 					return luaL_error(L, LUA_QL("tostring") " must return a string to " LUA_QL("print"));
 				}
@@ -342,10 +342,10 @@ namespace OB{
 				output = output + std::string(s);
 			}
 
-		    OBEngine* eng = getEngine(L);
+			OBEngine* eng = getEngine(L);
 			shared_ptr<OBLogger> logger = eng->getLogger();
 			logger->log(output, OLL_None);
-			
+
 			return 0;
 		}
 
@@ -364,7 +364,7 @@ namespace OB{
 
 				s = lua_tostring(L, -1);
 				lua_pop(L, 1);
-				
+
 				if(s == NULL){
 					return luaL_error(L, LUA_QL("tostring") " must return a string to " LUA_QL("warn"));
 				}
@@ -375,14 +375,14 @@ namespace OB{
 				output = output + std::string(s);
 			}
 
-		    OBEngine* eng = getEngine(L);
+			OBEngine* eng = getEngine(L);
 			shared_ptr<OBLogger> logger = eng->getLogger();
 			logger->log(output, OLL_Warning);
-			
+
 			return 0;
 		}
 
-		//Wakes up a Lua coroutine after a wait
+		// Wakes up a Lua coroutine after a wait
 		int _ob_lua_wake_wait(void* metad, ob_int64 start){
 			ob_int64 curTime = currentTimeMillis();
 
@@ -397,27 +397,27 @@ namespace OB{
 				std::cerr << "A Lua error occurred:" << std::endl;
 				std::cerr << lerr << std::endl;
 
-			    close_state(L);
+				close_state(L);
 
 				return 0;
 			}
 
 			if(ret == LUA_OK){
-			    close_state(L);
+				close_state(L);
 			}
-			
+
 			return 0;
 		}
 
 		int lua_wait(lua_State* L){
-		    double waitTime = 1/60;
+			double waitTime = 1/60;
 			if(!lua_isnoneornil(L, 1)){
 				waitTime = luaL_checknumber(L, 1);
 			}
 
 			struct OBLState* LState = lStates[L];
-		    OBEngine* eng = LState->eng;
-		    shared_ptr<TaskScheduler> tasks = eng->getTaskScheduler();
+			OBEngine* eng = LState->eng;
+			shared_ptr<TaskScheduler> tasks = eng->getTaskScheduler();
 
 			ob_int64 curTime = currentTimeMillis();
 			ob_int64 at = curTime + (int)(waitTime * 1000);
@@ -427,7 +427,7 @@ namespace OB{
 			return lua_yield(L, 0);
 		}
 
-		//Wakes up a Lua coroutine after a delay
+		// Wakes up a Lua coroutine after a delay
 		int _ob_lua_wake_delay(void* metad, ob_int64 start){
 			ob_int64 curTime = currentTimeMillis();
 
@@ -439,15 +439,15 @@ namespace OB{
 				std::cerr << "A Lua error occurred:" << std::endl;
 				std::cerr << lerr << std::endl;
 
-			    close_state(L);
+				close_state(L);
 
 				return 0;
 			}
 
 			if(ret == LUA_OK){
-			    close_state(L);
+				close_state(L);
 			}
-			
+
 			return 0;
 		}
 
@@ -457,13 +457,13 @@ namespace OB{
 			}
 
 			lua_State* cL = initCoroutine(L);
-			
+
 			lua_pushvalue(L, idx);
 			lua_xmove(L, cL, 1);
 
 			struct OBLState* LState = lStates[L];
-		    OBEngine* eng = LState->eng;
-		    shared_ptr<TaskScheduler> tasks = eng->getTaskScheduler();
+			OBEngine* eng = LState->eng;
+			shared_ptr<TaskScheduler> tasks = eng->getTaskScheduler();
 
 			ob_int64 curTime = currentTimeMillis();
 			ob_int64 at = curTime + (int)(secs * 1000);
@@ -476,7 +476,7 @@ namespace OB{
 		int lua_delay(lua_State* L){
 			if(lua_isnumber(L, 2)){
 				double secs = lua_tonumber(L, 2);
-			    return _ob_lua_processDelay(L, secs, 1);
+				return _ob_lua_processDelay(L, secs, 1);
 			}else{
 				double secs = luaL_checknumber(L, 1);
 				return _ob_lua_processDelay(L, secs, 2);
@@ -484,14 +484,14 @@ namespace OB{
 		}
 
 		int lua_spawn(lua_State* L){
-		    return _ob_lua_processDelay(L, 0, 1);
+			return _ob_lua_processDelay(L, 0, 1);
 		}
 
 		int lua_newInstance(lua_State* L){
 			std::string className = std::string(luaL_checkstring(L, 1));
 			shared_ptr<Instance::Instance> par = Instance::Instance::checkInstance(L, 2);
-			
-		    shared_ptr<Instance::Instance> newGuy = ClassFactory::create(className, getEngine(L));
+
+			shared_ptr<Instance::Instance> newGuy = ClassFactory::create(className, getEngine(L));
 			if(newGuy != NULL){
 				if(par != NULL){
 					try{
@@ -500,10 +500,10 @@ namespace OB{
 						return luaL_error(L, ex.what());
 					}
 				}
-				
-			    return newGuy->wrap_lua(L);
+
+				return newGuy->wrap_lua(L);
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
@@ -519,7 +519,7 @@ namespace OB{
 				b = luaL_checknumber(L, 3);
 			}
 
-		    shared_ptr<Type::Color3> newGuy = make_shared<Type::Color3>(r, g, b);
+			shared_ptr<Type::Color3> newGuy = make_shared<Type::Color3>(r, g, b);
 			return newGuy->wrap_lua(L);
 		}
 
@@ -534,7 +534,7 @@ namespace OB{
 				z = luaL_checknumber(L, 3);
 			}
 
-		    shared_ptr<Type::Vector3> newGuy = make_shared<Type::Vector3>(x, y, z);
+			shared_ptr<Type::Vector3> newGuy = make_shared<Type::Vector3>(x, y, z);
 			return newGuy->wrap_lua(L);
 		}
 
@@ -547,7 +547,7 @@ namespace OB{
 				y = luaL_checknumber(L, 2);
 			}
 
-		    shared_ptr<Type::Vector2> newGuy = make_shared<Type::Vector2>(x, y);
+			shared_ptr<Type::Vector2> newGuy = make_shared<Type::Vector2>(x, y);
 			return newGuy->wrap_lua(L);
 		}
 
@@ -587,9 +587,9 @@ namespace OB{
 				double r21 = luaL_checknumber(L, 11);
 				double r22 = luaL_checknumber(L, 12);
 				return make_shared<Type::CFrame>(x, y, z,
-										   r00, r01, r02,
-										   r10, r11, r12,
-										   r20, r21, r22)->wrap_lua(L);
+								 r00, r01, r02,
+								 r10, r11, r12,
+								 r20, r21, r22)->wrap_lua(L);
 			}
 			return 0;
 		}
@@ -603,7 +603,7 @@ namespace OB{
 				offset = luaL_checknumber(L, 2);
 			}
 
-		    shared_ptr<Type::UDim> newGuy = make_shared<Type::UDim>(scale, offset);
+			shared_ptr<Type::UDim> newGuy = make_shared<Type::UDim>(scale, offset);
 			return newGuy->wrap_lua(L);
 		}
 
@@ -620,7 +620,7 @@ namespace OB{
 				yOffset = luaL_checknumber(L, 4);
 			}
 
-		    shared_ptr<Type::UDim2> newGuy = make_shared<Type::UDim2>(xScale, xOffset, yScale, yOffset);
+			shared_ptr<Type::UDim2> newGuy = make_shared<Type::UDim2>(xScale, xOffset, yScale, yOffset);
 			return newGuy->wrap_lua(L);
 		}
 

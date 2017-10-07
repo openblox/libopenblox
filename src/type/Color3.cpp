@@ -29,8 +29,8 @@ namespace OB{
 		DEFINE_TYPE(Color3){
 			registerLuaType(eng, LuaTypeName, TypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
 		}
-		
-	    Color3::Color3(){
+
+		Color3::Color3(){
 			r = 0;
 			g = 0;
 			b = 0;
@@ -47,7 +47,7 @@ namespace OB{
 			double gg = ((double)g) / 255;
 			double bb = ((double)b) / 255;
 
-		    if(rr > 1){ rr = 1; }
+			if(rr > 1){ rr = 1; }
 			if(gg > 1){ gg = 1; }
 			if(bb > 1){ bb = 1; }
 			if(rr < 0){ rr = 0; }
@@ -59,8 +59,8 @@ namespace OB{
 			this->b = bb;
 		}
 
-	    Color3::Color3(std::string str){
-		    std::vector<std::string> fields = split(str);
+		Color3::Color3(std::string str){
+			std::vector<std::string> fields = split(str);
 			if(fields.size() == 3){
 				std::string rStr = trim(fields[0]);
 				std::string gStr = trim(fields[1]);
@@ -71,13 +71,13 @@ namespace OB{
 				}else{
 					r = 0;
 				}
-				
+
 				if(gStr.length() > 0){
 					g = atof(gStr.c_str());
 				}else{
 					g = 0;
 				}
-				
+
 				if(bStr.length() > 0){
 					b = atof(bStr.c_str());
 				}else{
@@ -95,55 +95,55 @@ namespace OB{
 		double Color3::getR(){
 			return r;
 		}
-		
+
 		double Color3::getG(){
 			return g;
 		}
-		
+
 		double Color3::getB(){
 			return b;
 		}
 
-	    int Color3::getRi(){
+		int Color3::getRi(){
 			int rr = r * 255;
 			if(rr > 255){ rr = 255; }
 			if(rr < 0){ rr = 0; }
 			return rr;
 		}
-		
-	    int Color3::getGi(){
-		    int gg = g * 255;
+
+		int Color3::getGi(){
+			int gg = g * 255;
 			if(gg > 255){ gg = 255; }
 			if(gg < 0){ gg = 0; }
 			return gg;
 		}
-		
-	    int Color3::getBi(){
+
+		int Color3::getBi(){
 			int bb = b * 255;
 			if(bb > 255){ bb = 255; }
 			if(bb < 0){ bb = 0; }
 			return bb;
 		}
 
-		#if HAVE_IRRLICHT
-		
+#if HAVE_IRRLICHT
+
 		irr::video::SColor Color3::toIrrlichtSColor(unsigned int alpha){
 			return irr::video::SColor(alpha, getRi(), getGi(), getBi());
 		}
-		
-		#endif
+
+#endif
 
 		bool Color3::equals(shared_ptr<Type> other){
 			shared_ptr<Color3> co = dynamic_pointer_cast<Color3>(other);
 			if(!co){
 				return false;
 			}
-			
+
 			return co->r == r && co->g == g && co->b == b;
 		}
 
-	    std::string Color3::toString(){
-		    return std::to_string(r) + ", " + std::to_string(g) + ", " + std::to_string(b);
+		std::string Color3::toString(){
+			return std::to_string(r) + ", " + std::to_string(g) + ", " + std::to_string(b);
 		}
 
 		int Color3::lua_getR(lua_State* L){
@@ -151,7 +151,7 @@ namespace OB{
 			if(!LuaColor3){
 				return 0;
 			}
-			
+
 			lua_pushnumber(L, LuaColor3->r);
 			return 1;
 		}
@@ -161,7 +161,7 @@ namespace OB{
 			if(!LuaColor3){
 				return 0;
 			}
-			
+
 			lua_pushnumber(L, LuaColor3->g);
 			return 1;
 		}
@@ -171,7 +171,7 @@ namespace OB{
 			if(!LuaColor3){
 				return 0;
 			}
-			
+
 			lua_pushnumber(L, LuaColor3->b);
 			return 1;
 		}
@@ -185,7 +185,7 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushboolean(L, false);
 			return 1;
 		}
@@ -211,7 +211,7 @@ namespace OB{
 		}
 
 		void Color3::register_lua_property_getters(lua_State* L){
-		    luaL_Reg properties[] = {
+			luaL_Reg properties[] = {
 				{"R", lua_getR},
 				{"G", lua_getG},
 				{"B", lua_getB},
@@ -220,13 +220,13 @@ namespace OB{
 			luaL_setfuncs(L, properties, 0);
 		}
 
-	    shared_ptr<Color3> checkColor3(lua_State* L, int index, bool errIfNot, bool allowNil){
+		shared_ptr<Color3> checkColor3(lua_State* L, int index, bool errIfNot, bool allowNil){
 			if(allowNil){
 				if(lua_isnoneornil(L, index)){
 					return NULL;
 				}
 			}
-			
+
 			if(lua_isuserdata(L, index)){
 				void* udata = lua_touserdata(L, index);
 				int meta = lua_getmetatable(L, index);
@@ -239,7 +239,7 @@ namespace OB{
 					lua_pop(L, 1);
 				}
 			}
-			
+
 			if(errIfNot){
 				luaO_typeerror(L, index, "Color3");
 			}

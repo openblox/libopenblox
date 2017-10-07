@@ -47,10 +47,10 @@
 #endif
 
 namespace OB{
-    OBEngine::OBEngine(){
-	    #if HAVE_PUGIXML
+	OBEngine::OBEngine(){
+#if HAVE_PUGIXML
 		serializer = make_shared<OBSerializer>(this);
-		#endif
+#endif
 
 		logger = make_shared<OBLogger>(this);
 
@@ -72,24 +72,24 @@ namespace OB{
 
 		custPostRender = NULL;
 
-		#if HAVE_IRRLICHT
-		
+#if HAVE_IRRLICHT
+
 		irrDev = NULL;
 		irrDriv = NULL;
 		irrSceneMgr = NULL;
-		
-		#endif
 
-		#if HAVE_ENET
+#endif
+
+#if HAVE_ENET
 		enet_initialize();
-		#endif
+#endif
 	}
 
 	OBEngine::~OBEngine(){
-		//Assumptions like this are bad, oh well.
-		#if HAVE_ENET
+		// Assumptions like this are bad, oh well.
+#if HAVE_ENET
 		enet_deinitialize();
-		#endif
+#endif
 	}
 
 	shared_ptr<TaskScheduler> OBEngine::getTaskScheduler(){
@@ -100,7 +100,7 @@ namespace OB{
 		return secondaryTaskSched;
 	}
 
-    shared_ptr<OBSerializer> OBEngine::getSerializer(){
+	shared_ptr<OBSerializer> OBEngine::getSerializer(){
 		return serializer;
 	}
 
@@ -113,8 +113,8 @@ namespace OB{
 
 			usleep(10000);
 		}
-		
-	    pthread_exit(NULL);
+
+		pthread_exit(NULL);
 		return NULL;
 	}
 
@@ -126,11 +126,11 @@ namespace OB{
 		_isRunning = true;
 
 		std::string verString = std::string(PACKAGE_STRING) + " initializing";
-		
-	    logger->log(verString);
 
-	    #if HAVE_IRRLICHT
-		
+		logger->log(verString);
+
+#if HAVE_IRRLICHT
+
 		if(doRendering){
 			irr::SIrrlichtCreationParameters p;
 			p.DriverType = irr::video::EDT_OPENGL;
@@ -157,15 +157,15 @@ namespace OB{
 
 			std::string irrVer = renderTag + std::string("Irrlicht: ") + std::string(irrDev->getVersion());
 
-		    logger->log(irrVer);
-			
+			logger->log(irrVer);
+
 			std::wstring wsName(irrDriv->getName());
 			std::string renderVersion = renderTag + std::string("Version: ") + std::string(wsName.begin(), wsName.end());
 
-		    logger->log(renderVersion);
+			logger->log(renderVersion);
 
 			std::string renderVendor = renderTag + std::string("Vendor: ") + std::string(irrDriv->getVendorInfo().c_str());
-			
+
 			logger->log(renderVendor);
 
 			unsigned int shaderLangVersion = irrDriv->getDriverAttributes().getAttributeAsInt("ShaderLanguageVersion");
@@ -175,29 +175,29 @@ namespace OB{
 			snprintf(buf, 32, "%u.%u", shaderLangVerMaj, shaderLangVersion - shaderLangVerMaj * 100);
 
 			std::string renderShadingLangVer = renderTag + std::string("Shading Language Version: ") + std::string(buf);
-			
-		    logger->log(renderShadingLangVer);
+
+			logger->log(renderShadingLangVer);
 
 			irrSceneMgr->addLightSceneNode();
 			irrSceneMgr->addCameraSceneNode(0, irr::core::vector3df(0,30,-40), irr::core::vector3df(0,5,0));
 		}
-		#endif
-		
+#endif
+
 		taskSched = make_shared<TaskScheduler>(this);
-		
+
 		secondaryTaskSched = make_shared<TaskScheduler>(this);
 		secondaryTaskSched->SetSortsTasks(false);
-		
+
 		assetLocator = make_shared<AssetLocator>(this);
-		
+
 		globalState = OB::Lua::initGlobal(this);
-		
+
 		dm = make_shared<Instance::DataModel>(this);
 		dm->initServices();
 
-		//Initialize Lua types
+		// Initialize Lua types
 		Type::Type::_ob_init(this);
-		
+
 		ClassFactory::initClasses(this);
 
 		pthread_create(&secondaryTaskThread, NULL, _ob_eng_secondaryTaskThread, this);
@@ -206,15 +206,15 @@ namespace OB{
 	}
 
 	void OBEngine::setExitCode(int exitCode){
-	    this->exitCode = exitCode;
+		this->exitCode = exitCode;
 	}
 
 	int OBEngine::getExitCode(){
-	    return exitCode;
+		return exitCode;
 	}
 
 	void OBEngine::shutdown(){
-	    _isRunning = false;
+		_isRunning = false;
 	}
 
 	bool OBEngine::isRunning(){
@@ -222,41 +222,41 @@ namespace OB{
 	}
 
 	void OBEngine::tick(){
-		#if HAVE_IRRLICHT
-		
+#if HAVE_IRRLICHT
+
 		if(doRendering){
 			if(!irrDev->run()){
 				_isRunning = false;
 
 				void* _stat;
-				
+
 				pthread_join(secondaryTaskThread, &_stat);
-				
-				return;//Early return, we're not running anymore!
+
+				return;// Early return, we're not running anymore!
 			}
 		}
-		
-		#endif
-		
-	    taskSched->tick();
+
+#endif
+
+		taskSched->tick();
 		dm->tick();
 
 		if(!doRendering){
-			//If we aren't rendering, there's no wait and we end up in a busy loop doing nothing.
+			// If we aren't rendering, there's no wait and we end up in a busy loop doing nothing.
 			usleep(10000);
 		}
 	}
 
 	void OBEngine::render(){
-		#if HAVE_IRRLICHT
-		
+#if HAVE_IRRLICHT
+
 		if(doRendering){
 			if(!dm){
-				//Prevents segfault when render() is called before init()
+				// Prevents segfault when render() is called before init()
 				return;
 			}
 			shared_ptr<Instance::Lighting> light = dm->getLighting();
-			
+
 			shared_ptr<Type::Color3> skyCol = light->getSkyColor();
 			irr::video::SColor irrSkyCol;
 			if(light->isSkyTransparent()){
@@ -269,10 +269,10 @@ namespace OB{
 				}
 			}
 
-		    irrDriv->beginScene(true, true, irrSkyCol);
+			irrDriv->beginScene(true, true, irrSkyCol);
 
 			dm->preRender();
-			
+
 			irrSceneMgr->drawAll();
 
 			dm->render();
@@ -280,16 +280,16 @@ namespace OB{
 			if(custPostRender != NULL){
 				custPostRender(irrDriv);
 			}
-			
+
 			irrDriv->endScene();
 		}
-		
-		#endif
+
+#endif
 	}
 
-    bool OBEngine::saveScreenshot(std::string file){
+	bool OBEngine::saveScreenshot(std::string file){
 		if(doRendering){
-		    if(irrDriv){
+			if(irrDriv){
 				irr::video::IImage* img = irrDriv->createScreenShot();
 				if(img){
 					return irrDriv->writeImageToFile(img,  irr::io::path(file.c_str()));
@@ -300,11 +300,11 @@ namespace OB{
 	}
 
 	void OBEngine::prepare2DMode(){
-		#if HAVE_IRRLICHT
+#if HAVE_IRRLICHT
 		if(doRendering && irrDriv){
 			irrDriv->drawPixel(0, 0, irr::video::SColor(0, 255, 255, 255));
 		}
-		#endif
+#endif
 	}
 
 	lua_State* OBEngine::getGlobalLuaState(){
@@ -371,15 +371,15 @@ namespace OB{
 	}
 
 	void OBEngine::resized(int width, int height){
-		#if HAVE_IRRLICHT
+#if HAVE_IRRLICHT
 		if(irrDriv){
-		    irrDriv->OnResize(irr::core::dimension2d<irr::u32>(width, height));
+			irrDriv->OnResize(irr::core::dimension2d<irr::u32>(width, height));
 		}
-		#endif
+#endif
 	}
 
-	#if HAVE_IRRLICHT
-	
+#if HAVE_IRRLICHT
+
 	irr::IrrlichtDevice* OBEngine::getIrrlichtDevice(){
 		return irrDev;
 	}
@@ -388,11 +388,11 @@ namespace OB{
 		return custPostRender;
 	}
 
-    void OBEngine::setPostRenderFunc(post_render_func_t prf){
+	void OBEngine::setPostRenderFunc(post_render_func_t prf){
 		custPostRender = prf;
 	}
 
-	#endif
+#endif
 
 	shared_ptr<Instance::DataModel> OBEngine::getDataModel(){
 		return dm;

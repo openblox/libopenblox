@@ -28,7 +28,7 @@ namespace OB{
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-	    DoubleConstrainedValue::DoubleConstrainedValue(OBEngine* eng) : Instance(eng){
+		DoubleConstrainedValue::DoubleConstrainedValue(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 
 			MaxValue = 0;
@@ -36,14 +36,14 @@ namespace OB{
 			Value = 0;
 		}
 
-	    DoubleConstrainedValue::~DoubleConstrainedValue(){}
+		DoubleConstrainedValue::~DoubleConstrainedValue(){}
 
-	    double DoubleConstrainedValue::getValue(){
+		double DoubleConstrainedValue::getValue(){
 			return Value;
 		}
 
 		void DoubleConstrainedValue::setValue(double value){
-		    if(Value != value){
+			if(Value != value){
 				Value = value;
 
 				REPLICATE_PROPERTY_CHANGE(Value);
@@ -51,12 +51,12 @@ namespace OB{
 			}
 		}
 
-	    double DoubleConstrainedValue::getMaxValue(){
+		double DoubleConstrainedValue::getMaxValue(){
 			return MaxValue;
 		}
 
 		void DoubleConstrainedValue::setMaxValue(double maxValue){
-		    if(MaxValue != maxValue){
+			if(MaxValue != maxValue){
 				MaxValue = maxValue;
 
 				REPLICATE_PROPERTY_CHANGE(MaxValue);
@@ -64,12 +64,12 @@ namespace OB{
 			}
 		}
 
-	    double DoubleConstrainedValue::getMinValue(){
+		double DoubleConstrainedValue::getMinValue(){
 			return MinValue;
 		}
 
 		void DoubleConstrainedValue::setMinValue(double minValue){
-		    if(MinValue != minValue){
+			if(MinValue != minValue){
 				MinValue = minValue;
 
 				REPLICATE_PROPERTY_CHANGE(MinValue);
@@ -86,19 +86,19 @@ namespace OB{
 			dcv->MinValue = MinValue;
 			dcv->MaxValue = MaxValue;
 			dcv->Value = Value;
-			
+
 			return dcv;
 		}
 
-		#if HAVE_ENET
+#if HAVE_ENET
 		void DoubleConstrainedValue::replicateProperties(shared_ptr<NetworkReplicator> peer){
 			Instance::replicateProperties(peer);
-			
+
 			peer->sendSetPropertyPacket(netId, "Value", make_shared<Type::VarWrapper>(Value));
 			peer->sendSetPropertyPacket(netId, "MinValue", make_shared<Type::VarWrapper>(Value));
 			peer->sendSetPropertyPacket(netId, "MaxValue", make_shared<Type::VarWrapper>(Value));
 		}
-		#endif
+#endif
 
 		std::map<std::string, _PropertyInfo> DoubleConstrainedValue::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
@@ -110,7 +110,7 @@ namespace OB{
 		}
 
 		void DoubleConstrainedValue::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
-		    if(prop == "Value"){
+			if(prop == "Value"){
 				setValue(val->asDouble());
 				return;
 			}
@@ -136,27 +136,27 @@ namespace OB{
 			if(prop == "MaxValue"){
 				return make_shared<Type::VarWrapper>(getMaxValue());
 			}
-			
+
 			return Instance::getProperty(prop);
 		}
 
 		int DoubleConstrainedValue::lua_setMinValue(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<DoubleConstrainedValue> instDCV = dynamic_pointer_cast<DoubleConstrainedValue>(inst);
 				if(instDCV){
-				    double newV = luaL_checknumber(L, 2);
+					double newV = luaL_checknumber(L, 2);
 					instDCV->setMinValue(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int DoubleConstrainedValue::lua_getMinValue(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<DoubleConstrainedValue> instDCV = dynamic_pointer_cast<DoubleConstrainedValue>(inst);
 				if(instDCV){
@@ -164,28 +164,28 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int DoubleConstrainedValue::lua_setMaxValue(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<DoubleConstrainedValue> instDCV = dynamic_pointer_cast<DoubleConstrainedValue>(inst);
 				if(instDCV){
-				    double newV = luaL_checknumber(L, 2);
+					double newV = luaL_checknumber(L, 2);
 					instDCV->setMaxValue(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int DoubleConstrainedValue::lua_getMaxValue(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<DoubleConstrainedValue> instDCV = dynamic_pointer_cast<DoubleConstrainedValue>(inst);
 				if(instDCV){
@@ -193,28 +193,28 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
 		int DoubleConstrainedValue::lua_setValue(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<DoubleConstrainedValue> instDCV = dynamic_pointer_cast<DoubleConstrainedValue>(inst);
 				if(instDCV){
-				    double newV = luaL_checknumber(L, 2);
+					double newV = luaL_checknumber(L, 2);
 					instDCV->setValue(newV);
 				}
 			}
-			
+
 			return 0;
 		}
 
 		int DoubleConstrainedValue::lua_getValue(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
-			
+
 			if(inst){
 				shared_ptr<DoubleConstrainedValue> instDCV = dynamic_pointer_cast<DoubleConstrainedValue>(inst);
 				if(instDCV){
@@ -222,14 +222,14 @@ namespace OB{
 					return 1;
 				}
 			}
-			
+
 			lua_pushnil(L);
 			return 1;
 		}
 
-	    void DoubleConstrainedValue::register_lua_property_setters(lua_State* L){
+		void DoubleConstrainedValue::register_lua_property_setters(lua_State* L){
 			Instance::register_lua_property_setters(L);
-			
+
 			luaL_Reg properties[] = {
 				{"MinValue", lua_setMinValue},
 				{"MaxValue", lua_setMaxValue},
@@ -241,7 +241,7 @@ namespace OB{
 
 		void DoubleConstrainedValue::register_lua_property_getters(lua_State* L){
 			Instance::register_lua_property_getters(L);
-			
+
 			luaL_Reg properties[] = {
 				{"MinValue", lua_getMinValue},
 				{"MaxValue", lua_getMaxValue},

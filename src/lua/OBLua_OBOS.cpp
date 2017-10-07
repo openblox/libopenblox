@@ -31,15 +31,15 @@
 
 #if !defined(LUA_STRFTIMEOPTIONS)	/* { */
 /*
- ** list of valid conversion specifiers for the 'strftime' function
- */
+** list of valid conversion specifiers for the 'strftime' function
+*/
 
 #if defined(LUA_USE_C89)
 #define LUA_STRFTIMEOPTIONS	{ "aAbBcdHIjmMpSUwWxXyYz%", "" }
 #else  /* C99 specification */
-#define LUA_STRFTIMEOPTIONS \
-	{ "aAbBcCdDeFgGhHIjmMnprRStTuUVwWxXyYzZ%", "", \
-	  "E", "cCxXyY",  \
+#define LUA_STRFTIMEOPTIONS				\
+	{ "aAbBcCdDeFgGhHIjmMnprRStTuUVwWxXyYzZ%", "",	\
+	  "E", "cCxXyY",				\
 	  "O", "deHImMSuUVwWy" }
 #endif
 
@@ -47,8 +47,8 @@
 
 #if !defined(l_time_t)		/* { */
 /*
- ** type to represent time_t in Lua
- */
+** type to represent time_t in Lua
+*/
 #define l_timet			lua_Integer
 #define l_pushtime(L,t)		lua_pushinteger(L,(lua_Integer)(t))
 #define l_checktime(L,a)	((time_t)luaL_checkinteger(L,a))
@@ -57,9 +57,9 @@
 
 #if !defined(lua_tmpnam)	/* { */
 /*
- ** By default, Lua uses tmpnam except when POSIX is available, where it
- ** uses mkstemp.
- */
+** By default, Lua uses tmpnam except when POSIX is available, where it
+** uses mkstemp.
+*/
 
 #if defined(LUA_USE_POSIX)	/* { */
 
@@ -71,11 +71,11 @@
 #define LUA_TMPNAMTEMPLATE	"/tmp/lua_XXXXXX"
 #endif
 
-#define lua_tmpnam(b,e) { \
-        strcpy(b, LUA_TMPNAMTEMPLATE); \
-        e = mkstemp(b); \
-        if (e != -1) close(e); \
-        e = (e == -1); }
+#define lua_tmpnam(b,e) {			\
+		strcpy(b, LUA_TMPNAMTEMPLATE);	\
+		e = mkstemp(b);			\
+		if (e != -1) close(e);		\
+		e = (e == -1); }
 
 #else				/* }{ */
 
@@ -89,9 +89,9 @@
 
 #if !defined(l_gmtime)		/* { */
 /*
- ** By default, Lua uses gmtime/localtime, except when POSIX is available,
- ** where it uses gmtime_r/localtime_r
- */
+** By default, Lua uses gmtime/localtime, except when POSIX is available,
+** where it uses gmtime_r/localtime_r
+*/
 
 #if defined(LUA_USE_POSIX)	/* { */
 
@@ -171,7 +171,7 @@ namespace OB{
 						buff[2] = '\0'; /* end buffer */
 						return conv + 1;
 					}else if(*(conv + 1) != '\0'&&
-							 strchr(options[i + 1], *(conv + 1)) != NULL){
+						 strchr(options[i + 1], *(conv + 1)) != NULL){
 						buff[2] = *(conv + 1); /* valid two-char conversion specifier */
 						buff[3] = '\0'; /* end buffer */
 						return conv + 2;
@@ -179,7 +179,7 @@ namespace OB{
 				}
 			}
 			luaL_argerror(L, 1,
-						  lua_pushfstring(L, "invalid conversion specifier '%%%s'", conv));
+				      lua_pushfstring(L, "invalid conversion specifier '%%%s'", conv));
 			return conv; /* to avoid warnings */
 		}
 

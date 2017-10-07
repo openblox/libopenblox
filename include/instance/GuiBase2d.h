@@ -26,66 +26,66 @@
 
 namespace OB{
 	namespace Instance{
-	    /**
+		/**
 		 * GuiBase2d is an abstract class that all 2D GUI objects inherit from.
 		 *
 		 * @author John M. Harris, Jr.
 		 */
 		class GuiBase2d: public GuiBase{
-			public:
-			    GuiBase2d(OBEngine* eng);
-				virtual ~GuiBase2d();
+		public:
+			GuiBase2d(OBEngine* eng);
+			virtual ~GuiBase2d();
 
-				/**
-				 * Returns all GuiBase2d children in order of ZIndex.
-				 *
-				 * @author John M. Harris, Jr.
-				 */
-				virtual std::vector<shared_ptr<GuiBase2d>> getRenderableChildren();
+			/**
+			 * Returns all GuiBase2d children in order of ZIndex.
+			 *
+			 * @author John M. Harris, Jr.
+			 */
+			virtual std::vector<shared_ptr<GuiBase2d>> getRenderableChildren();
 
-				/**
-				 * Returns true if this GuiBase2d contains a point.
-				 *
-				 * @param p Point
-				 * @author John M. Harris, Jr.
-				 */
-				virtual bool containsPoint(shared_ptr<Type::Vector2> p);
+			/**
+			 * Returns true if this GuiBase2d contains a point.
+			 *
+			 * @param p Point
+			 * @author John M. Harris, Jr.
+			 */
+			virtual bool containsPoint(shared_ptr<Type::Vector2> p);
 
-				/**
-				 * If this returns true, processing for this click
-				 * event stops here.
-				 *
-				 * @param p Point of click
-				 * @author John M. Harris, Jr.
-				 */
-				virtual bool handleClick(shared_ptr<Type::Vector2> p);
+			/**
+			 * If this returns true, processing for this click
+			 * event stops here.
+			 *
+			 * @param p Point of click
+			 * @author John M. Harris, Jr.
+			 */
+			virtual bool handleClick(shared_ptr<Type::Vector2> p);
 
-				virtual void render();
+			virtual void render();
 
-				/**
-				 * Returns the absolute position of this GuiBase2d.
-				 *
-				 * @author John M. Harris, Jr.
-				 */
-				virtual shared_ptr<Type::Vector2> getAbsolutePosition();
+			/**
+			 * Returns the absolute position of this GuiBase2d.
+			 *
+			 * @author John M. Harris, Jr.
+			 */
+			virtual shared_ptr<Type::Vector2> getAbsolutePosition();
 
-				/**
-				 * Returns the absolute size of this GuiBase2d.
-				 *
-				 * @author John M. Harris, Jr.
-				 */
-				virtual shared_ptr<Type::Vector2> getAbsoluteSize();
+			/**
+			 * Returns the absolute size of this GuiBase2d.
+			 *
+			 * @author John M. Harris, Jr.
+			 */
+			virtual shared_ptr<Type::Vector2> getAbsoluteSize();
 
-				virtual std::map<std::string, _PropertyInfo> getProperties();
-				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
+			virtual std::map<std::string, _PropertyInfo> getProperties();
+			virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
 
-				DECLARE_LUA_METHOD(getAbsolutePosition);
-				DECLARE_LUA_METHOD(getAbsoluteSize);
+			DECLARE_LUA_METHOD(getAbsolutePosition);
+			DECLARE_LUA_METHOD(getAbsoluteSize);
 
-				static void register_lua_property_getters(lua_State* L);
-				static void register_lua_property_setters(lua_State* L);
+			static void register_lua_property_getters(lua_State* L);
+			static void register_lua_property_setters(lua_State* L);
 
-			    DECLARE_CLASS(GuiBase2d);
+			DECLARE_CLASS(GuiBase2d);
 		};
 	}
 }
