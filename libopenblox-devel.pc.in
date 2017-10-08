@@ -1,0 +1,6 @@
+Name: @PACKAGE_NAME@
+Description: The OpenBlox game engine
+Version: @PACKAGE_VERSION@
+Libs: -L@OPENBLOX_PWD@/src -lopenblox @LIRRLICHT_CFLAGS@
+Cflags: -I@OPENBLOX_PWD@/include
+Requires: @AX_PACKAGE_REQUIRES@

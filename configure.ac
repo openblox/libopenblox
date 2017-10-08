@@ -17,6 +17,9 @@ AM_INIT_AUTOMAKE([1.10 foreign subdir-objects])
 
 syslua="lua"
 
+OPENBLOX_PWD=$(pwd)
+AC_SUBST(OPENBLOX_PWD)
+
 #Options
 AC_ARG_WITH(irrlicht, AS_HELP_STRING([--without-irrlicht], [Compile without Irrlicht support.]))
 AC_ARG_WITH(pugixml, AS_HELP_STRING([--wihout-pugixml], [Compile without pugixml.]))
@@ -75,6 +78,7 @@ LT_INIT([win32-dll])
 AC_CONFIG_FILES(Makefile
                 src/Makefile
                 include/Makefile
+		libopenblox-devel.pc
                 libopenblox.pc)
 
 pkgconfig_DATA=libopenblox.pc
