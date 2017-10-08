@@ -10,11 +10,11 @@
  *
  * OpenBlox is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the Lesser GNU General Public License
- * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
+ * along with OpenBlox. If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "type/LuaEnum.h"
@@ -25,36 +25,36 @@
 
 namespace OB{
 	namespace Enum{
-#define LENUM(name, ...)					\
-		extern shared_ptr<Type::LuaEnum> Lua##name;	\
+#define LENUM(name, ...) \
+		extern shared_ptr<Type::LuaEnum> Lua##name; \
 		enum class name{__VA_ARGS__, __COUNT}
 
-#define DENUM(name, ...)						\
+#define DENUM(name, ...) \
 		shared_ptr<Type::LuaEnum> Lua##name = Type::LuaEnum::createLuaEnum(#name, \
-										   __VA_ARGS__, \
-										   NULL \
-										   ); \
+																		__VA_ARGS__, \
+																		NULL \
+																		); \
 
 		void registerLuaEnums(lua_State* L);
 
 		// Start Enum Definitions
 
 		LENUM(MessageType,
-		      MessageOutput,
-		      MessageInfo,
-		      MessageWarning,
-		      MessageError);
+			  MessageOutput,
+			  MessageInfo,
+			  MessageWarning,
+			  MessageError);
 
 		LENUM(UserInputType,
-		      MouseButton,
-		      MouseWheel,
-		      MouseMovement,
-		      Touch,
-		      Keyboard,
-		      Focus,
-		      Gamepad,
-		      TextInput,
-		      Unknown);
+			  MouseButton,
+			  MouseWheel,
+			  MouseMovement,
+			  Touch,
+			  Keyboard,
+			  Focus,
+			  Gamepad,
+			  TextInput,
+			  Unknown);
 	}
 }
 

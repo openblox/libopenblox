@@ -10,11 +10,11 @@
  *
  * OpenBlox is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the Lesser GNU General Public License
- * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
+ * along with OpenBlox. If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "instance/BindableEvent.h"
@@ -28,23 +28,23 @@ namespace OB{
 		BindableEvent::BindableEvent(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 
-		    Event = make_shared<Type::Event>("Event");
+			Event = make_shared<Type::Event>("Event");
 		}
 
-	    BindableEvent::~BindableEvent(){}
+		BindableEvent::~BindableEvent(){}
 
 		shared_ptr<Instance> BindableEvent::cloneImpl(){
 			shared_ptr<BindableEvent> be = make_shared<BindableEvent>(eng);
 			be->Archivable = Archivable;
 			be->Name = Name;
 			be->ParentLocked = ParentLocked;
-			
+
 			return be;
 		}
 
 		void BindableEvent::register_lua_events(lua_State* L){
 			Instance::register_lua_events(L);
-			
+
 			luaL_Reg events[] = {
 				{"Event", WRAP_EVT(BindableEvent, Event)},
 				{NULL, NULL}

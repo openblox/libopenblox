@@ -10,11 +10,11 @@
  *
  * OpenBlox is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the Lesser GNU General Public License
- * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
+ * along with OpenBlox. If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include <string>
@@ -54,7 +54,7 @@
 					shared_ptr<OB::Instance::Instance> __repl_nsInst = __repl_dm->FindService("NetworkServer"); \
 					if(shared_ptr<OB::Instance::NetworkServer> __repl_ns = dynamic_pointer_cast<OB::Instance::NetworkServer>(__repl_nsInst)){ \
 						BitStream __repl_bs; \
-				   		__repl_bs.writeSizeT(OB_NET_PKT_SET_PROPERTY); \
+						__repl_bs.writeSizeT(OB_NET_PKT_SET_PROPERTY); \
 						__repl_bs.writeUInt64(netId); \
 						__repl_bs.writeString(#__repl_prop); \
 						__repl_bs.writeVar(make_shared<Type::VarWrapper>(__repl_prop)); \
@@ -160,7 +160,7 @@ protected: \
 
 #define DEFINE_CLASS_ABS_WCLONE(Class_Name, ParentClass) \
 	class Class_Name##_ClassMetadata: public OB::ClassMetadata{ \
-	public:	\
+	public: \
 	Class_Name##_ClassMetadata(){ \
 		OB::ClassFactory::addClass(#Class_Name, this); \
 	} \
@@ -196,7 +196,7 @@ protected: \
 
 #define WRAP_EVTI(Event_Name) \
 	[](lua_State* L)->int{ \
-		shared_ptr<Instance> inst = checkInstance(L, 1, false);	\
+		shared_ptr<Instance> inst = checkInstance(L, 1, false); \
 		if(inst){ \
 			return inst->Event_Name->wrap_lua(L); \
 		} \
@@ -205,7 +205,7 @@ protected: \
 
 #define WRAP_EVT(Clazz, Event_Name) \
 	[](lua_State* L)->int{ \
-		shared_ptr<Instance> inst = checkInstance(L, 1, false);	\
+		shared_ptr<Instance> inst = checkInstance(L, 1, false); \
 		if(inst){ \
 			if(shared_ptr<Clazz> wi = dynamic_pointer_cast<Clazz>(inst)){ \
 				return wi->Event_Name->wrap_lua(L); \

@@ -10,11 +10,11 @@
  *
  * OpenBlox is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the Lesser GNU General Public License
- * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
+ * along with OpenBlox. If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include <string>
@@ -42,7 +42,7 @@ protected: \
  static std::string LuaTypeName
 
 #define DEFINE_TYPE(Type_Name) \
-   	std::string Type_Name::TypeName = #Type_Name; \
+	std::string Type_Name::TypeName = #Type_Name; \
 	std::string Type_Name::LuaTypeName = "luaL_Type_" #Type_Name; \
 	std::string Type_Name::getClassName(){ \
 		return TypeName; \

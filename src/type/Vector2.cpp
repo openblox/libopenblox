@@ -10,11 +10,11 @@
  *
  * OpenBlox is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the Lesser GNU General Public License
- * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
+ * along with OpenBlox. If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "type/Vector2.h"
@@ -176,8 +176,7 @@ namespace OB{
 				return NULL;
 			}
 
-			return make_shared<Vector2>((x + alpha) * (goal->x - x),
-						    (y + alpha) * (goal->y - y));
+			return make_shared<Vector2>((x + alpha) * (goal->x - x), (y + alpha) * (goal->y - y));
 		}
 
 		double Vector2::dot(shared_ptr<Vector2> v){
@@ -276,7 +275,7 @@ namespace OB{
 
 			if(LuaVector2){
 				shared_ptr<Vector2> OtherVector2 = checkVector2(L, 2, false);
-			   	lua_pushboolean(L, LuaVector2->equals(OtherVector2));
+				lua_pushboolean(L, LuaVector2->equals(OtherVector2));
 			}
 
 			lua_pushboolean(L, false);

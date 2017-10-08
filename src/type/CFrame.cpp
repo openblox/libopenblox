@@ -10,11 +10,11 @@
  *
  * OpenBlox is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the Lesser GNU General Public License
- * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
+ * along with OpenBlox. If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "type/CFrame.h"
@@ -59,7 +59,7 @@ namespace OB{
 		}
 
 		CFrame::CFrame(double x, double y, double z,
-			       double qX, double qY, double qZ, double qW){
+					   double qX, double qY, double qZ, double qW){
 			setIdentity();
 
 			m[3][0] = x;
@@ -71,9 +71,9 @@ namespace OB{
 		}
 
 		CFrame::CFrame(double x, double y, double z,
-			       double R00, double R01, double R02,
-			       double R10, double R11, double R12,
-			       double R20, double R21, double R22){
+					   double R00, double R01, double R02,
+					   double R10, double R11, double R12,
+					   double R20, double R21, double R22){
 			m[0][0] = R00;
 			m[0][1] = R01;
 			m[0][2] = R02;

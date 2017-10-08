@@ -10,11 +10,11 @@
  *
  * OpenBlox is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the Lesser GNU General Public License
- * along with OpenBlox.	 If not, see <https://www.gnu.org/licenses/>.
+ * along with OpenBlox. If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "type/Vector3.h"
@@ -198,8 +198,8 @@ namespace OB{
 			}
 
 			return make_shared<Vector3>((x + alpha) * (goal->x - x),
-						    (y + alpha) * (goal->y - y),
-						    (z + alpha) * (goal->z - z));
+										(y + alpha) * (goal->y - y),
+										(z + alpha) * (goal->z - z));
 		}
 
 		double Vector3::dot(shared_ptr<Vector3> v){
@@ -214,8 +214,8 @@ namespace OB{
 				return NULL;
 			}
 			return make_shared<Vector3>(y * v->z - z * v->y,
-						    z * v->x - x * v->z,
-						    x * v->y - y * v->x);
+										z * v->x - x * v->z,
+										x * v->y - y * v->x);
 		}
 
 		bool Vector3::isClose(shared_ptr<Vector3> v, double epsilon){
@@ -348,7 +348,7 @@ namespace OB{
 
 			if(LuaVector3){
 				shared_ptr<Vector3> OtherVector3 = checkVector3(L, 2, false);
-			   	lua_pushboolean(L, LuaVector3->equals(OtherVector3));
+				lua_pushboolean(L, LuaVector3->equals(OtherVector3));
 			}
 
 			lua_pushboolean(L, false);
