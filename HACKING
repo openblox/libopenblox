@@ -1,7 +1,7 @@
 This document describes the process of contributing to OpenBlox as a
 developer. This file should be considered a more in-depth version of
 the "Contributing" page of the OpenBlox wiki, located at
-https://wiki.openblox.org/wiki/Contributing.
+https://openblox.org/contributing.
 
 
 INTRODUCTION
@@ -15,7 +15,7 @@ directory:
 
 	git config --global user.name 'Your Name'
 	git config --global user.email 'your.name@example.com'
-	git clone https://git.openblox.org/libopenblox.git
+	git clone https://git.openblox.org/openblox/libopenblox.git
 
 OpenBlox uses GNU Autotools to prepare this library to be built. In
 particular, libopenblox uses libtool in addition to autoconf and
@@ -48,13 +48,6 @@ commit, HEAD~2 for the one before that and so on. This packages the
 patch's commit messages and changes. To send a patch without
 additional remarks, you can use a command like
 `git send-email --to=devel@lists.openblox.org 0001-DESCRIPTION.patch`.
-
-It is important that any nontrivial changes (you can consider as
-trivial anything that changes less than twenty lines), you need to add
-a signed-off-by line to the commit message with the `--signoff` option
-of the `git commit` command. This indicates that you certify the
-Developer's Certificate of Origin
-(https://wiki.openblox.org/wiki/Developer%27s_Certificate_of_Origin).
 
 
 COMMITTING CHANGES BY OTHERS
