@@ -1,0 +1,20 @@
+image: debian
+
+before_script:
+  - apt-get update
+  - apt-get install -y build-essential autoconf-archive libirrlicht-dev libpugixml-dev liblua5.3-dev libcurl4-openssl-dev libbullet-dev libenet-dev doxygen
+
+compile:
+  script:
+    - ./autoconf.sh
+    - ./configure
+    - make
+  
+pages:
+  script:
+    - doxygen Doxyfile
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
