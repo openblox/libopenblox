@@ -1,16 +1,18 @@
 image: debian
 
-before_script:
-  - apt-get update
-  - apt-get install -y build-essential autoconf-archive libirrlicht-dev libpugixml-dev liblua5.3-dev libcurl4-openssl-dev libbullet-dev libenet-dev doxygen
-
 build:
+  before_script:
+    - apt-get update
+    - apt-get install -y build-essential autoconf-archive libirrlicht-dev libpugixml-dev liblua5.3-dev libcurl4-openssl-dev libbullet-dev libenet-dev
   script:
     - ./autoconf.sh
     - ./configure
     - make
   
 pages:
+  before_script:
+    - apt-get update
+    - apt-get install -y doxygen
   script:
     - doxygen Doxyfile
   artifacts:
