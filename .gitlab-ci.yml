@@ -6,7 +6,7 @@ build:
     - apt-get install -y build-essential autoconf-archive libirrlicht-dev libpugixml-dev liblua5.3-dev libcurl4-openssl-dev libbullet-dev libenet-dev
   script:
     - ./autoconf.sh
-    - ./configure
+    - ./configure --with-lua=lua5.3
     - make
   
 pages:
