@@ -1,20 +1,15 @@
-image: debian
+image: johnmh/ob-env
 
 build:
-  before_script:
-    - apt-get update
-    - apt-get install -y build-essential autoconf-archive libirrlicht-dev libpugixml-dev liblua5.3-dev libcurl4-openssl-dev libbullet-dev libenet-dev mesa-common-dev
   script:
     - ./autoconf.sh
-    - ./configure --with-lua=lua5.3
+    - ./configure
     - make
   
 pages:
-  before_script:
-    - apt-get update
-    - apt-get install -y doxygen
   script:
     - doxygen Doxyfile
+    - mv docs/html public
   artifacts:
     paths:
       - public
