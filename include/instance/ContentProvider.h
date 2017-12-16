@@ -25,8 +25,9 @@
 namespace OB{
 	namespace Instance{
 		/**
-		 * Lighting provides access to lighting related options as well as
-		 * ambient colors and similar properties.
+		 * The ContentProvider class provides scripts access to
+		 * internal information about assets loaded and grants the
+		 * ability to load assets from scripts.
 		 *
 		 * @author John M. Harris, Jr.
 		 */
