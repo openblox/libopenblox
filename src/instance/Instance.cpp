@@ -50,7 +50,6 @@ namespace OB{
 
 			netId = OB_NETID_UNASSIGNED;
 
-			// TODO: Events
 			Changed = make_shared<Type::Event>("Changed");
 			AncestryChanged = make_shared<Type::Event>("AncestryChanged");
 			ChildAdded = make_shared<Type::Event>("ChildAdded");

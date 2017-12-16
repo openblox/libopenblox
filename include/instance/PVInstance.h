@@ -31,8 +31,8 @@
 namespace OB{
 	namespace Instance{
 		/**
-		 * PVInstance is the base class of all renderable objects in
-		 * OpenBlox.
+		 * PVInstance is the base class of all renderable physics
+		 * objects in OpenBlox.
 		 *
 		 * @author John M. Harris, Jr.
 		 */

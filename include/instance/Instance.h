@@ -398,6 +398,7 @@ namespace OB{
 			 * to assign network IDs on client-only objects, which
 			 * is why I leave them as OB_NETID_UNASSIGNED.
 			 *
+			 * @internal
 			 * @author John M. Harris, Jr.
 			 */
 			void generateNetworkID();
