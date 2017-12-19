@@ -1,6 +1,6 @@
 This document describes the process of contributing to OpenBlox as a
 developer. This file should be considered a more in-depth version of
-the "Contributing" page of the OpenBlox wiki, located at
+the "Contributing" page of the OpenBlox website, located at
 https://openblox.org/contributing.
 
 
@@ -93,12 +93,13 @@ other branches before being possibly merged into master.
 
 BUG TRACKER
 
-The OpenBlox project uses a Bugzilla installation at
-https://bugs.openblox.org/ to track bugs and enhancement ideas.
+This project uses an issue tracker at
+<https://git.openblox.org/openblox/libopenblox/issues> to track bugs
+and enhancement ideas.
 
 DOCUMENT YOUR CHANGES
 
 When you make a change to OpenBlox sources, you should update the
-relevant wiki pages. When documenting Instance classes, we often refer
+relevant documentation. When documenting Instance classes, we often refer
 to lines of code. These references need to be updated when their
 source document changes.
