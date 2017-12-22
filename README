@@ -6,8 +6,8 @@ game engine.
 The file INSTALL in this directory tells you how to build and install
 this daemon on various systems.
 
-The file HACKING contains information on contributing to OpenBlox
-projects as a developer.
+The file HACKING contains information on contributing to this project
+as a developer.
 
 You may encounter bugs in this software. If you do, please report them.
 Bug reports are very valuable to the OpenBlox project, since they allow
