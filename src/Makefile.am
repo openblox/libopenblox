@@ -63,6 +63,7 @@ instance/Folder.cpp \
 instance/BasePart.cpp \
 instance/MeshPart.cpp \
 instance/Part.cpp \
+instance/BaseValue.cpp \
 instance/BoolValue.cpp \
 instance/DoubleConstrainedValue.cpp \
 instance/Color3Value.cpp \

@@ -24,11 +24,11 @@
 
 namespace OB{
 	namespace Instance{
-		DEFINE_CLASS(DoubleConstrainedValue, true, false, Instance){
+		DEFINE_CLASS(DoubleConstrainedValue, true, false, BaseValue){
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-		DoubleConstrainedValue::DoubleConstrainedValue(OBEngine* eng) : Instance(eng){
+		DoubleConstrainedValue::DoubleConstrainedValue(OBEngine* eng) : BaseValue(eng){
 			Name = ClassName;
 
 			MaxValue = 0;

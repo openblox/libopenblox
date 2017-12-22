@@ -17,7 +17,7 @@
  * along with OpenBlox. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "instance/Instance.h"
+#include "instance/BaseValue.h"
 
 #include "type/Color3.h"
 
@@ -31,7 +31,7 @@ namespace OB{
 		 *
 		 * @author John M. Harris, Jr.
 		 */
-		class Color3Value: public Instance{
+		class Color3Value: public BaseValue{
 			public:
 				Color3Value(OBEngine* eng);
 				virtual ~Color3Value();

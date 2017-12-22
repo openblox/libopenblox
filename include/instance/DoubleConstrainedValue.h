@@ -17,7 +17,7 @@
  * along with OpenBlox. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "instance/Instance.h"
+#include "instance/BaseValue.h"
 
 #ifndef OB_INST_DOUBLECONSTRAINEDVALUE
 #define OB_INST_DOUBLECONSTRAINEDVALUE
@@ -31,7 +31,7 @@ namespace OB{
 		 *
 		 * @author John M. Harris, Jr.
 		 */
-		class DoubleConstrainedValue: public Instance{
+		class DoubleConstrainedValue: public BaseValue{
 			public:
 				DoubleConstrainedValue(OBEngine* eng);
 				virtual ~DoubleConstrainedValue();

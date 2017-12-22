@@ -26,11 +26,11 @@
 
 namespace OB{
 	namespace Instance{
-		DEFINE_CLASS(IntConstrainedValue, true, false, Instance){
+		DEFINE_CLASS(IntConstrainedValue, true, false, BaseValue){
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-		IntConstrainedValue::IntConstrainedValue(OBEngine* eng) : Instance(eng){
+		IntConstrainedValue::IntConstrainedValue(OBEngine* eng) : BaseValue(eng){
 			Name = ClassName;
 
 			MaxValue = 0;

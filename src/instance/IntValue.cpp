@@ -24,11 +24,11 @@
 
 namespace OB{
 	namespace Instance{
-		DEFINE_CLASS(IntValue, true, false, Instance){
+		DEFINE_CLASS(IntValue, true, false, BaseValue){
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-		IntValue::IntValue(OBEngine* eng) : Instance(eng){
+		IntValue::IntValue(OBEngine* eng) : BaseValue(eng){
 			Name = ClassName;
 
 			Value = 0;

@@ -17,7 +17,7 @@
  * along with OpenBlox. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "instance/Instance.h"
+#include "instance/BaseValue.h"
 
 #ifndef OB_INST_OBJECTVALUE
 #define OB_INST_OBJECTVALUE
@@ -29,7 +29,7 @@ namespace OB{
 		 *
 		 * @author John M. Harris, Jr.
 		 */
-		class ObjectValue: public Instance{
+		class ObjectValue: public BaseValue{
 			public:
 				ObjectValue(OBEngine* eng);
 				virtual ~ObjectValue();

@@ -24,11 +24,11 @@
 
 namespace OB{
 	namespace Instance{
-		DEFINE_CLASS(Color3Value, true, false, Instance){
+		DEFINE_CLASS(Color3Value, true, false, BaseValue){
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-		Color3Value::Color3Value(OBEngine* eng) : Instance(eng){
+		Color3Value::Color3Value(OBEngine* eng) : BaseValue(eng){
 			Name = ClassName;
 
 			Value = make_shared<Type::Color3>(0, 0, 0);

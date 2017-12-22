@@ -17,7 +17,7 @@
  * along with OpenBlox. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "instance/Instance.h"
+#include "instance/BaseValue.h"
 
 #ifndef OB_INST_INTCONSTRAINEDVALUE
 #define OB_INST_INTCONSTRAINEDVALUE
@@ -31,7 +31,7 @@ namespace OB{
 		 *
 		 * @author John M. Harris, Jr.
 		 */
-		class IntConstrainedValue: public Instance{
+		class IntConstrainedValue: public BaseValue{
 			public:
 				IntConstrainedValue(OBEngine* eng);
 				virtual ~IntConstrainedValue();
