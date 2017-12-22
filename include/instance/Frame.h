@@ -25,13 +25,13 @@
 namespace OB{
 	namespace Instance{
 		class Frame: public GuiObject{
-		public:
-			Frame(OBEngine* eng);
-			virtual ~Frame();
+			public:
+				Frame(OBEngine* eng);
+				virtual ~Frame();
 
-			virtual void render();
+				virtual void render();
 
-			DECLARE_CLASS(Frame);
+				DECLARE_CLASS(Frame);
 		};
 	}
 }

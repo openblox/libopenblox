@@ -31,11 +31,11 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class Folder: public Instance{
-		public:
-			Folder(OBEngine* eng);
-			virtual ~Folder();
+			public:
+				Folder(OBEngine* eng);
+				virtual ~Folder();
 
-			DECLARE_CLASS(Folder);
+				DECLARE_CLASS(Folder);
 		};
 	}
 }

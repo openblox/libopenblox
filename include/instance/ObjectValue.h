@@ -30,36 +30,36 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class ObjectValue: public Instance{
-		public:
-			ObjectValue(OBEngine* eng);
-			virtual ~ObjectValue();
+			public:
+				ObjectValue(OBEngine* eng);
+				virtual ~ObjectValue();
 
-			shared_ptr<Instance> getValue();
-			void setValue(shared_ptr<Instance> value);
+				shared_ptr<Instance> getValue();
+				void setValue(shared_ptr<Instance> value);
 
 #if HAVE_ENET
-			/**
-			 * Replicates properties of this Instance.
-			 *
-			 * @param peer Peer
-			 * @author John M. Harris, Jr.
-			 */
-			virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
+				/**
+				 * Replicates properties of this Instance.
+				 *
+				 * @param peer Peer
+				 * @author John M. Harris, Jr.
+				 */
+				virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
 #endif
 
-			virtual std::map<std::string, _PropertyInfo> getProperties();
-			virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
-			virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
+				virtual std::map<std::string, _PropertyInfo> getProperties();
+				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
+				virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
 
-			DECLARE_LUA_METHOD(setValue);
-			DECLARE_LUA_METHOD(getValue);
+				DECLARE_LUA_METHOD(setValue);
+				DECLARE_LUA_METHOD(getValue);
 
-			static void register_lua_property_getters(lua_State* L);
-			static void register_lua_property_setters(lua_State* L);
+				static void register_lua_property_getters(lua_State* L);
+				static void register_lua_property_setters(lua_State* L);
 
-			DECLARE_CLASS(ObjectValue);
+				DECLARE_CLASS(ObjectValue);
 
-			shared_ptr<Instance> Value;
+				shared_ptr<Instance> Value;
 		};
 	}
 }

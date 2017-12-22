@@ -31,27 +31,27 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class TaskScheduler: public Instance{
-		public:
-			TaskScheduler(OBEngine* eng);
-			virtual ~TaskScheduler();
+			public:
+				TaskScheduler(OBEngine* eng);
+				virtual ~TaskScheduler();
 
-			int getNumSleepingJobs();
-			int getNumWaitingJobs();
+				int getNumSleepingJobs();
+				int getNumWaitingJobs();
 
 #if HAVE_PUGIXML
-			virtual std::string serializedID();
+				virtual std::string serializedID();
 #endif
 
-			virtual std::map<std::string, _PropertyInfo> getProperties();
-			virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
+				virtual std::map<std::string, _PropertyInfo> getProperties();
+				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
 
-			DECLARE_LUA_METHOD(getNumSleepingJobs);
-			DECLARE_LUA_METHOD(getNumWaitingJobs);
+				DECLARE_LUA_METHOD(getNumSleepingJobs);
+				DECLARE_LUA_METHOD(getNumWaitingJobs);
 
-			static void register_lua_property_getters(lua_State* L);
-			static void register_lua_property_setters(lua_State* L);
+				static void register_lua_property_getters(lua_State* L);
+				static void register_lua_property_setters(lua_State* L);
 
-			DECLARE_CLASS(TaskScheduler);
+				DECLARE_CLASS(TaskScheduler);
 		};
 	}
 }

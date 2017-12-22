@@ -33,32 +33,32 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class LogService: public Instance{
-		public:
-			LogService(OBEngine* eng);
-			virtual ~LogService();
+			public:
+				LogService(OBEngine* eng);
+				virtual ~LogService();
 
 #if HAVE_PUGIXML
-			virtual std::string serializedID();
+				virtual std::string serializedID();
 #endif
 
-			void postLog(std::string message, Enum::MessageType messageType);
+				void postLog(std::string message, Enum::MessageType messageType);
 
-			void block();
-			void unblock();
+				void block();
+				void unblock();
 
-			shared_ptr<Type::Event> getMessageOut();
+				shared_ptr<Type::Event> getMessageOut();
 
-			static void register_lua_events(lua_State* L);
+				static void register_lua_events(lua_State* L);
 
-			DECLARE_CLASS(LogService);
+				DECLARE_CLASS(LogService);
 
-			bool blocked;
-			shared_ptr<Type::Event> MessageOut;
+				bool blocked;
+				shared_ptr<Type::Event> MessageOut;
 
-			shared_ptr<Type::LuaEnumItem> MessageOutput;
-			shared_ptr<Type::LuaEnumItem> MessageInfo;
-			shared_ptr<Type::LuaEnumItem> MessageWarning;
-			shared_ptr<Type::LuaEnumItem> MessageError;
+				shared_ptr<Type::LuaEnumItem> MessageOutput;
+				shared_ptr<Type::LuaEnumItem> MessageInfo;
+				shared_ptr<Type::LuaEnumItem> MessageWarning;
+				shared_ptr<Type::LuaEnumItem> MessageError;
 		};
 	}
 }

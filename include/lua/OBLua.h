@@ -43,7 +43,7 @@ namespace OB{
 	 * @author John M. Harris, Jr.
 	 */
 	inline int luaO_typeerror(lua_State* L, int arg, const char* tname){
-		const char* typearg; //Name of type of the given argument
+		const char* typearg; // Name of type of the given argument
 
 		if(luaL_getmetafield(L, arg, "__name") == LUA_TSTRING){
 			typearg = lua_tostring(L, -1); //Use given type name

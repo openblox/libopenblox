@@ -25,43 +25,43 @@
 namespace OB{
 	namespace Instance{
 		class BaseScript: public LuaSourceContainer{
-		public:
-			BaseScript(OBEngine* eng);
-			virtual ~BaseScript();
+			public:
+				BaseScript(OBEngine* eng);
+				virtual ~BaseScript();
 
-			virtual bool canRun();
-			virtual void runScript();
+				virtual bool canRun();
+				virtual void runScript();
 
-			bool isDisabled();
+				bool isDisabled();
 
-			virtual void setDisabled(bool disabled);
+				virtual void setDisabled(bool disabled);
 
-			std::string getLinkedSource();
+				std::string getLinkedSource();
 
-			void setLinkedSource(std::string linkedSource);
+				void setLinkedSource(std::string linkedSource);
 
 #if HAVE_ENET
-			virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
+				virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
 #endif
 
-			virtual std::map<std::string, _PropertyInfo> getProperties();
-			virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
-			virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
+				virtual std::map<std::string, _PropertyInfo> getProperties();
+				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
+				virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
 
-			DECLARE_LUA_METHOD(getDisabled);
-			DECLARE_LUA_METHOD(setDisabled);
-			DECLARE_LUA_METHOD(getLinkedSource);
-			DECLARE_LUA_METHOD(setLinkedSource);
-			DECLARE_LUA_METHOD(GetSource);
+				DECLARE_LUA_METHOD(getDisabled);
+				DECLARE_LUA_METHOD(setDisabled);
+				DECLARE_LUA_METHOD(getLinkedSource);
+				DECLARE_LUA_METHOD(setLinkedSource);
+				DECLARE_LUA_METHOD(GetSource);
 
-			static void register_lua_property_getters(lua_State* L);
-			static void register_lua_property_setters(lua_State* L);
-			static void register_lua_methods(lua_State* L);
+				static void register_lua_property_getters(lua_State* L);
+				static void register_lua_property_setters(lua_State* L);
+				static void register_lua_methods(lua_State* L);
 
-			DECLARE_CLASS(BaseScript);
+				DECLARE_CLASS(BaseScript);
 
-			bool Disabled;
-			std::string LinkedSource;
+				bool Disabled;
+				std::string LinkedSource;
 		};
 	}
 }

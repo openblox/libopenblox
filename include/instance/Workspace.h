@@ -39,71 +39,71 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class Workspace: public Model{
-		public:
-			Workspace(OBEngine* eng);
-			virtual ~Workspace();
+			public:
+				Workspace(OBEngine* eng);
+				virtual ~Workspace();
 
-			double getDistributedGameTime();
+				double getDistributedGameTime();
 
-			shared_ptr<Instance> getCurrentCamera();
-			void setCurrentCamera(shared_ptr<Instance> inst);
+				shared_ptr<Instance> getCurrentCamera();
+				void setCurrentCamera(shared_ptr<Instance> inst);
 
-			shared_ptr<Type::Vector3> getGravity();
-			void setGravity(shared_ptr<Type::Vector3> gravity);
+				shared_ptr<Type::Vector3> getGravity();
+				void setGravity(shared_ptr<Type::Vector3> gravity);
 
-			double getFallenPartsDestroyHeight();
-			void setFallenPartsDestroyHeight(double fpdh);
+				double getFallenPartsDestroyHeight();
+				void setFallenPartsDestroyHeight(double fpdh);
 
-			bool getDestroyFallenParts();
-			void setDestroyFallenParts(bool dfp);
+				bool getDestroyFallenParts();
+				void setDestroyFallenParts(bool dfp);
 
 #if HAVE_ENET
-			/**
-			 * Replicates properties of this Instance.
-			 *
-			 * @param peer Peer
-			 * @author John M. Harris, Jr.
-			 */
-			virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
+				/**
+				 * Replicates properties of this Instance.
+				 *
+				 * @param peer Peer
+				 * @author John M. Harris, Jr.
+				 */
+				virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
 #endif
 
 #if HAVE_PUGIXML
-			virtual std::string serializedID();
+				virtual std::string serializedID();
 #endif
 
-			virtual std::map<std::string, _PropertyInfo> getProperties();
-			virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
-			virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
+				virtual std::map<std::string, _PropertyInfo> getProperties();
+				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
+				virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
 
-			DECLARE_LUA_METHOD(getDistributedGameTime);
-			DECLARE_LUA_METHOD(getCurrentCamera);
-			DECLARE_LUA_METHOD(setCurrentCamera);
-			DECLARE_LUA_METHOD(getGravity);
-			DECLARE_LUA_METHOD(setGravity);
-			DECLARE_LUA_METHOD(getFallenPartsDestroyHeight);
-			DECLARE_LUA_METHOD(setFallenPartsDestroyHeight);
-			DECLARE_LUA_METHOD(getDestroyFallenParts);
-			DECLARE_LUA_METHOD(setDestroyFallenParts);
+				DECLARE_LUA_METHOD(getDistributedGameTime);
+				DECLARE_LUA_METHOD(getCurrentCamera);
+				DECLARE_LUA_METHOD(setCurrentCamera);
+				DECLARE_LUA_METHOD(getGravity);
+				DECLARE_LUA_METHOD(setGravity);
+				DECLARE_LUA_METHOD(getFallenPartsDestroyHeight);
+				DECLARE_LUA_METHOD(setFallenPartsDestroyHeight);
+				DECLARE_LUA_METHOD(getDestroyFallenParts);
+				DECLARE_LUA_METHOD(setDestroyFallenParts);
 
-			static void register_lua_property_getters(lua_State* L);
-			static void register_lua_property_setters(lua_State* L);
+				static void register_lua_property_getters(lua_State* L);
+				static void register_lua_property_setters(lua_State* L);
 
-			DECLARE_CLASS(Workspace);
+				DECLARE_CLASS(Workspace);
 
-			void updateGravity();
+				void updateGravity();
 
 #if HAVE_BULLET
-			btBroadphaseInterface* broadphase;
-			btDefaultCollisionConfiguration* collisionConfiguration;
-			btCollisionDispatcher* dispatcher;
-			btSequentialImpulseConstraintSolver* solver;
-			btDiscreteDynamicsWorld* dynamicsWorld;
+				btBroadphaseInterface* broadphase;
+				btDefaultCollisionConfiguration* collisionConfiguration;
+				btCollisionDispatcher* dispatcher;
+				btSequentialImpulseConstraintSolver* solver;
+				btDiscreteDynamicsWorld* dynamicsWorld;
 #endif
 
-			shared_ptr<Instance> CurrentCamera;
-			shared_ptr<Type::Vector3> Gravity;
-			double FallenPartsDestroyHeight;
-			bool DestroyFallenParts;
+				shared_ptr<Instance> CurrentCamera;
+				shared_ptr<Type::Vector3> Gravity;
+				double FallenPartsDestroyHeight;
+				bool DestroyFallenParts;
 		};
 	}
 }

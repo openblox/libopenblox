@@ -31,39 +31,39 @@
 namespace OB{
 	namespace Instance{
 		class NetworkClient: public NetworkPeer{
-		public:
-			NetworkClient(OBEngine* eng);
-			virtual ~NetworkClient();
+			public:
+				NetworkClient(OBEngine* eng);
+				virtual ~NetworkClient();
 
-			virtual void tick();
+				virtual void tick();
 
-			int getPort();
+				int getPort();
 
-			void Connect(std::string server, int serverPort, int clientPort = 0);
-			void Disconnect(int blockDuration = 1000);
+				void Connect(std::string server, int serverPort, int clientPort = 0);
+				void Disconnect(int blockDuration = 1000);
 
 #if HAVE_PUGIXML
-			virtual std::string serializedID();
+				virtual std::string serializedID();
 #endif
 
-			DECLARE_LUA_METHOD(Connect);
-			DECLARE_LUA_METHOD(Disconnect);
+				DECLARE_LUA_METHOD(Connect);
+				DECLARE_LUA_METHOD(Disconnect);
 
-			void processPacket(ENetEvent evt, BitStream &bs);
-			void processEvent(ENetEvent evt);
+				void processPacket(ENetEvent evt, BitStream &bs);
+				void processEvent(ENetEvent evt);
 
-			static void register_lua_methods(lua_State* L);
+				static void register_lua_methods(lua_State* L);
 
-			class HeldInstance{
-			public:
-				shared_ptr<Instance> inst;
-				ob_int64 holdEnd;
-			};
-			std::queue<HeldInstance> heldInstances;
+				class HeldInstance{
+					public:
+						shared_ptr<Instance> inst;
+						ob_int64 holdEnd;
+				};
+				std::queue<HeldInstance> heldInstances;
 
-			DECLARE_CLASS(NetworkClient);
+				DECLARE_CLASS(NetworkClient);
 
-			ENetPeer* server_peer;
+				ENetPeer* server_peer;
 		};
 	}
 }

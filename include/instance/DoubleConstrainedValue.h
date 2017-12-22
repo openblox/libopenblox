@@ -32,48 +32,48 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class DoubleConstrainedValue: public Instance{
-		public:
-			DoubleConstrainedValue(OBEngine* eng);
-			virtual ~DoubleConstrainedValue();
+			public:
+				DoubleConstrainedValue(OBEngine* eng);
+				virtual ~DoubleConstrainedValue();
 
-			double getValue();
-			void setValue(double value);
+				double getValue();
+				void setValue(double value);
 
-			double getMinValue();
-			void setMinValue(double minValue);
+				double getMinValue();
+				void setMinValue(double minValue);
 
-			double getMaxValue();
-			void setMaxValue(double maxValue);
+				double getMaxValue();
+				void setMaxValue(double maxValue);
 
 #if HAVE_ENET
-			/**
-			 * Replicates properties of this Instance.
-			 *
-			 * @param peer Peer
-			 * @author John M. Harris, Jr.
-			 */
-			virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
+				/**
+				 * Replicates properties of this Instance.
+				 *
+				 * @param peer Peer
+				 * @author John M. Harris, Jr.
+				 */
+				virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
 #endif
 
-			virtual std::map<std::string, _PropertyInfo> getProperties();
-			virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
-			virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
+				virtual std::map<std::string, _PropertyInfo> getProperties();
+				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
+				virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
 
-			DECLARE_LUA_METHOD(setValue);
-			DECLARE_LUA_METHOD(getValue);
-			DECLARE_LUA_METHOD(setMinValue);
-			DECLARE_LUA_METHOD(getMinValue);
-			DECLARE_LUA_METHOD(setMaxValue);
-			DECLARE_LUA_METHOD(getMaxValue);
+				DECLARE_LUA_METHOD(setValue);
+				DECLARE_LUA_METHOD(getValue);
+				DECLARE_LUA_METHOD(setMinValue);
+				DECLARE_LUA_METHOD(getMinValue);
+				DECLARE_LUA_METHOD(setMaxValue);
+				DECLARE_LUA_METHOD(getMaxValue);
 
-			static void register_lua_property_getters(lua_State* L);
-			static void register_lua_property_setters(lua_State* L);
+				static void register_lua_property_getters(lua_State* L);
+				static void register_lua_property_setters(lua_State* L);
 
-			DECLARE_CLASS(DoubleConstrainedValue);
+				DECLARE_CLASS(DoubleConstrainedValue);
 
-			double MaxValue;
-			double MinValue;
-			double Value;
+				double MaxValue;
+				double MinValue;
+				double Value;
 		};
 	}
 }

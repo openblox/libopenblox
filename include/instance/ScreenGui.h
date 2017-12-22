@@ -25,40 +25,40 @@
 namespace OB{
 	namespace Instance{
 		class ScreenGui: public LayerCollector{
-		public:
-			ScreenGui(OBEngine* eng);
-			virtual ~ScreenGui();
+			public:
+				ScreenGui(OBEngine* eng);
+				virtual ~ScreenGui();
 
-			virtual shared_ptr<Type::Vector2> getAbsolutePosition();
-			virtual shared_ptr<Type::Vector2> getAbsoluteSize();
+				virtual shared_ptr<Type::Vector2> getAbsolutePosition();
+				virtual shared_ptr<Type::Vector2> getAbsoluteSize();
 
-			virtual bool isEnabled();
-			virtual void setEnabled(bool enabled);
-			virtual int getDisplayOrder();
-			virtual void setDisplayOrder(int displayOrder);
+				virtual bool isEnabled();
+				virtual void setEnabled(bool enabled);
+				virtual int getDisplayOrder();
+				virtual void setDisplayOrder(int displayOrder);
 
-			virtual void render();
+				virtual void render();
 
 #if HAVE_ENET
-			virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
+				virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
 #endif
 
-			virtual std::map<std::string, _PropertyInfo> getProperties();
-			virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
-			virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
+				virtual std::map<std::string, _PropertyInfo> getProperties();
+				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
+				virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
 
-			DECLARE_LUA_METHOD(getEnabled);
-			DECLARE_LUA_METHOD(setEnabled);
-			DECLARE_LUA_METHOD(getDisplayOrder);
-			DECLARE_LUA_METHOD(setDisplayOrder);
+				DECLARE_LUA_METHOD(getEnabled);
+				DECLARE_LUA_METHOD(setEnabled);
+				DECLARE_LUA_METHOD(getDisplayOrder);
+				DECLARE_LUA_METHOD(setDisplayOrder);
 
-			static void register_lua_property_getters(lua_State* L);
-			static void register_lua_property_setters(lua_State* L);
+				static void register_lua_property_getters(lua_State* L);
+				static void register_lua_property_setters(lua_State* L);
 
-			DECLARE_CLASS(ScreenGui);
+				DECLARE_CLASS(ScreenGui);
 
-			bool Enabled;
-			int DisplayOrder;
+				bool Enabled;
+				int DisplayOrder;
 		};
 	}
 }

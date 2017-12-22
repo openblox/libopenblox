@@ -25,27 +25,27 @@
 namespace OB{
 	namespace Type{
 		class LuaEnumItem: public Type{
-		public:
-			LuaEnumItem(std::string type, std::string name, int value);
-			virtual ~LuaEnumItem();
+			public:
+				LuaEnumItem(std::string type, std::string name, int value);
+				virtual ~LuaEnumItem();
 
-			virtual bool equals(shared_ptr<Type> other);
+				virtual bool equals(shared_ptr<Type> other);
 
-			virtual std::string toString();
+				virtual std::string toString();
 
-			std::string getType();
-			std::string getName();
-			int getValue();
+				std::string getType();
+				std::string getName();
+				int getValue();
 
-			template<class T> T toEnum();
+				template<class T> T toEnum();
 
-			DECLARE_TYPE();
+				DECLARE_TYPE();
 
-			static int lua_index(lua_State* L);
+				static int lua_index(lua_State* L);
 
-			std::string type;
-			std::string name;
-			int value;
+				std::string type;
+				std::string name;
+				int value;
 		};
 
 		class LuaEnum;

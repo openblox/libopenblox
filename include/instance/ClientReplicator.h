@@ -28,16 +28,16 @@ namespace OB{
 		class Player;
 
 		class ClientReplicator: public NetworkReplicator{
-		public:
-			ClientReplicator(OBEngine* eng);
-			ClientReplicator(ENetPeer* peer, OBEngine* eng);
-			virtual ~ClientReplicator();
+			public:
+				ClientReplicator(OBEngine* eng);
+				ClientReplicator(ENetPeer* peer, OBEngine* eng);
+				virtual ~ClientReplicator();
 
-			shared_ptr<Player> GetPlayer();
+				shared_ptr<Player> GetPlayer();
 
-			DECLARE_CLASS(ClientReplicator);
+				DECLARE_CLASS(ClientReplicator);
 
-			shared_ptr<Player> plr;
+				shared_ptr<Player> plr;
 		};
 	}
 }

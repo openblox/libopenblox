@@ -29,13 +29,13 @@
 namespace OB{
 	namespace Instance{
 		class NetworkPeer: public Instance{
-		public:
-			NetworkPeer(OBEngine* eng);
-			virtual ~NetworkPeer();
+			public:
+				NetworkPeer(OBEngine* eng);
+				virtual ~NetworkPeer();
 
-			DECLARE_CLASS(NetworkPeer);
+				DECLARE_CLASS(NetworkPeer);
 
-			ENetHost* enet_host;
+				ENetHost* enet_host;
 		};
 	}
 }

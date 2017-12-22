@@ -25,11 +25,11 @@
 namespace OB{
 	namespace Instance{
 		class LayerCollector: public GuiBase2d{
-		public:
-			LayerCollector(OBEngine* eng);
-			virtual ~LayerCollector();
+			public:
+				LayerCollector(OBEngine* eng);
+				virtual ~LayerCollector();
 
-			DECLARE_CLASS(LayerCollector);
+				DECLARE_CLASS(LayerCollector);
 		};
 	}
 }

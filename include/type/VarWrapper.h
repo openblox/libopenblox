@@ -80,51 +80,51 @@ namespace OB{
 		OB_PRIMATIVE_WRAPPER(String, std::string);
 
 		class LuaReferencedWrapper{
-		public:
-			LuaReferencedWrapper(lua_State* L, int ref);
-			~LuaReferencedWrapper();
+			public:
+				LuaReferencedWrapper(lua_State* L, int ref);
+				~LuaReferencedWrapper();
 
-			lua_State* L;
-			int ref;
+				lua_State* L;
+				int ref;
 		};
 
 		class VarWrapper{
-		public:
-			VarWrapper();
-			VarWrapper(void* anything, VarType vtype);
-			VarWrapper(int var);
-			VarWrapper(double var);
-			VarWrapper(float var);
-			VarWrapper(long var);
-			VarWrapper(unsigned long var);
-			VarWrapper(bool var);
-			VarWrapper(std::string var);
-			VarWrapper(shared_ptr<Instance::Instance> var);
-			VarWrapper(shared_ptr<Type> var);
-			VarWrapper(lua_State* L, int ref);
-			~VarWrapper();
+			public:
+				VarWrapper();
+				VarWrapper(void* anything, VarType vtype);
+				VarWrapper(int var);
+				VarWrapper(double var);
+				VarWrapper(float var);
+				VarWrapper(long var);
+				VarWrapper(unsigned long var);
+				VarWrapper(bool var);
+				VarWrapper(std::string var);
+				VarWrapper(shared_ptr<Instance::Instance> var);
+				VarWrapper(shared_ptr<Type> var);
+				VarWrapper(lua_State* L, int ref);
+				~VarWrapper();
 
-			int asInt();
-			double asDouble();
-			float asFloat();
-			long asLong();
-			unsigned long asULong();
-			bool asBool();
-			std::string asString();
-			shared_ptr<Instance::Instance> asInstance();
-			shared_ptr<Type> asType();
-			shared_ptr<Vector3> asVector3();
-			shared_ptr<Vector2> asVector2();
-			shared_ptr<Color3> asColor3();
-			shared_ptr<UDim> asUDim();
-			shared_ptr<UDim2> asUDim2();
+				int asInt();
+				double asDouble();
+				float asFloat();
+				long asLong();
+				unsigned long asULong();
+				bool asBool();
+				std::string asString();
+				shared_ptr<Instance::Instance> asInstance();
+				shared_ptr<Type> asType();
+				shared_ptr<Vector3> asVector3();
+				shared_ptr<Vector2> asVector2();
+				shared_ptr<Color3> asColor3();
+				shared_ptr<UDim> asUDim();
+				shared_ptr<UDim2> asUDim2();
 
-			bool valueEquals(shared_ptr<VarWrapper> other);
+				bool valueEquals(shared_ptr<VarWrapper> other);
 
-			void wrap_lua(lua_State* L);
+				void wrap_lua(lua_State* L);
 
-			void* wrapped;
-			VarType type;
+				void* wrapped;
+				VarType type;
 		};
 	}
 }

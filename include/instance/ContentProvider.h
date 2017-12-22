@@ -32,35 +32,35 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class ContentProvider: public Instance{
-		public:
-			ContentProvider(OBEngine* eng);
-			virtual ~ContentProvider();
+			public:
+				ContentProvider(OBEngine* eng);
+				virtual ~ContentProvider();
 
-			shared_ptr<Type::Event> GetAssetLoaded();
-			shared_ptr<Type::Event> GetAssetLoadFailed();
+				shared_ptr<Type::Event> GetAssetLoaded();
+				shared_ptr<Type::Event> GetAssetLoadFailed();
 
-			void Preload(std::string url);
-			void Load(std::string url);
-			char* GetAsset(std::string url);
+				void Preload(std::string url);
+				void Load(std::string url);
+				char* GetAsset(std::string url);
 
 #if HAVE_PUGIXML
-			virtual std::string serializedID();
+				virtual std::string serializedID();
 #endif
 
-			DECLARE_LUA_METHOD(Preload);
-			DECLARE_LUA_METHOD(Load);
-			DECLARE_LUA_METHOD(GetAsset);
-			DECLARE_LUA_METHOD(getRequestQueueSize);
+				DECLARE_LUA_METHOD(Preload);
+				DECLARE_LUA_METHOD(Load);
+				DECLARE_LUA_METHOD(GetAsset);
+				DECLARE_LUA_METHOD(getRequestQueueSize);
 
-			static void register_lua_methods(lua_State* L);
-			static void register_lua_property_getters(lua_State* L);
-			static void register_lua_property_setters(lua_State* L);
-			static void register_lua_events(lua_State* L);
+				static void register_lua_methods(lua_State* L);
+				static void register_lua_property_getters(lua_State* L);
+				static void register_lua_property_setters(lua_State* L);
+				static void register_lua_events(lua_State* L);
 
-			DECLARE_CLASS(ContentProvider);
+				DECLARE_CLASS(ContentProvider);
 
-			shared_ptr<Type::Event> AssetLoaded;
-			shared_ptr<Type::Event> AssetLoadFailed;
+				shared_ptr<Type::Event> AssetLoaded;
+				shared_ptr<Type::Event> AssetLoadFailed;
 		};
 	}
 }

@@ -68,130 +68,130 @@ namespace OB{
 			public std::enable_shared_from_this<Type>
 			// @endcond
 		{
-		public:
-			Type();
-			virtual ~Type();
+			public:
+				Type();
+				virtual ~Type();
 
-			virtual bool equals(shared_ptr<Type> other);
+				virtual bool equals(shared_ptr<Type> other);
 
-			/**
-			 * Convenience method to register this class as a
-			 * Type class.
-			 *
-			 * @author John M. Harris, Jr.
-			 */
-			static void registerLuaType(OBEngine* eng, std::string typeName, std::string className, luaRegisterFunc register_metamethods, luaRegisterFunc register_methods, luaRegisterFunc register_getters, luaRegisterFunc register_setters);
+				/**
+				 * Convenience method to register this class as a
+				 * Type class.
+				 *
+				 * @author John M. Harris, Jr.
+				 */
+				static void registerLuaType(OBEngine* eng, std::string typeName, std::string className, luaRegisterFunc register_metamethods, luaRegisterFunc register_methods, luaRegisterFunc register_getters, luaRegisterFunc register_setters);
 
-			/**
-			 * Returns the stringified version of this Type.
-			 *
-			 * @returns Stringified version of type
-			 *
-			 * @author John M. Harris, Jr.
-			 */
-			virtual std::string toString();
+				/**
+				 * Returns the stringified version of this Type.
+				 *
+				 * @returns Stringified version of type
+				 *
+				 * @author John M. Harris, Jr.
+				 */
+				virtual std::string toString();
 
-			/**
-			 * Handles attempts to set properties of this Type.
-			 *
-			 * @param L Lua State
-			 *
-			 * @returns 0 or error (Does not return if an
-			 * error occurs)
-			 *
-			 * @author DigiTechs
-			 * @author John M. Harris, Jr.
-			 */
-			static int lua_index(lua_State* L);
+				/**
+				 * Handles attempts to set properties of this Type.
+				 *
+				 * @param L Lua State
+				 *
+				 * @returns 0 or error (Does not return if an
+				 * error occurs)
+				 *
+				 * @author DigiTechs
+				 * @author John M. Harris, Jr.
+				 */
+				static int lua_index(lua_State* L);
 
-			/**
-			 * Handles attempts to get properties, methods or
-			 * events of this Type.
-			 *
-			 * @param L Lua State
-			 *
-			 * @returns 1 if there is a corresponding value,
-			 * otherwise errors. (No return)
-			 *
-			 * @author DigiTechs
-			 * @author John M. Harris, Jr.
-			 */
-			static int lua_newindex(lua_State* L);
+				/**
+				 * Handles attempts to get properties, methods or
+				 * events of this Type.
+				 *
+				 * @param L Lua State
+				 *
+				 * @returns 1 if there is a corresponding value,
+				 * otherwise errors. (No return)
+				 *
+				 * @author DigiTechs
+				 * @author John M. Harris, Jr.
+				 */
+				static int lua_newindex(lua_State* L);
 
-			/**
-			 * Handles equality tests from Lua.
-			 *
-			 * @param L Lua State
-			 *
-			 * @returns 1, a bool value on the lua stack.
-			 * (This value is true if the two Instances are
-			 * the same)
-			 *
-			 * @author John M. Harris, Jr.
-			 */
-			static int lua_eq(lua_State* L);
+				/**
+				 * Handles equality tests from Lua.
+				 *
+				 * @param L Lua State
+				 *
+				 * @returns 1, a bool value on the lua stack.
+				 * (This value is true if the two Instances are
+				 * the same)
+				 *
+				 * @author John M. Harris, Jr.
+				 */
+				static int lua_eq(lua_State* L);
 
-			static int lua_gc(lua_State* L);
+				static int lua_gc(lua_State* L);
 
-			/**
-			 * Handles tostring calls on this Type from Lua.
-			 *
-			 * @param L Lua State
-			 *
-			 * @returns 1, a string value on the lua stack. (The
-			 * result of Type::toString)
-			 *
-			 * @author John M. Harris, Jr.
-			 */
-			static int lua_toString(lua_State* L);
+				/**
+				 * Handles tostring calls on this Type from Lua.
+				 *
+				 * @param L Lua State
+				 *
+				 * @returns 1, a string value on the lua stack. (The
+				 * result of Type::toString)
+				 *
+				 * @author John M. Harris, Jr.
+				 */
+				static int lua_toString(lua_State* L);
 
-			int wrap_lua(lua_State* L);
+				int wrap_lua(lua_State* L);
 
-			/**
-			 * Lua Metamethods for the Type class.
-			 *
-			 * @param L Lua State
-			 *
-			 * @author John M. Harris, Jr.
-			 * @author DigiTechs
-			 */
-			static void register_lua_metamethods(lua_State* L);
+				/**
+				 * Lua Metamethods for the Type class.
+				 *
+				 * @param L Lua State
+				 *
+				 * @author John M. Harris, Jr.
+				 * @author DigiTechs
+				 */
+				static void register_lua_metamethods(lua_State* L);
 
-			/**
-			 * Lua methods for the Type class.
-			 *
-			 * @param L Lua State
-			 *
-			 * @author John M. Harris, Jr.
-			 * @author DigiTechs
-			 */
-			static void register_lua_methods(lua_State* L);
+				/**
+				 * Lua methods for the Type class.
+				 *
+				 * @param L Lua State
+				 *
+				 * @author John M. Harris, Jr.
+				 * @author DigiTechs
+				 */
+				static void register_lua_methods(lua_State* L);
 
-			/**
-			 * Lua property setters for the Type class.
-			 *
-			 * @param L Lua State
-			 *
-			 * @author John M. Harris, Jr.
-			 * @author DigiTechs
-			 */
-			static void register_lua_property_setters(lua_State* L);
+				/**
+				 * Lua property setters for the Type class.
+				 *
+				 * @param L Lua State
+				 *
+				 * @author John M. Harris, Jr.
+				 * @author DigiTechs
+				 */
+				static void register_lua_property_setters(lua_State* L);
 
-			/**
-			 * Lua property getters for the Type class.
-			 *
-			 * @param L Lua State
-			 *
-			 * @author John M. Harris, Jr.
-			 * @author DigiTechs
-			 */
-			static void register_lua_property_getters(lua_State* L);
+				/**
+				 * Lua property getters for the Type class.
+				 *
+				 * @param L Lua State
+				 *
+				 * @author John M. Harris, Jr.
+				 * @author DigiTechs
+				 */
+				static void register_lua_property_getters(lua_State* L);
 
-			static shared_ptr<Type> checkType(lua_State* L, int index, bool errIfNot = true, bool allowNil = true);
+				static shared_ptr<Type> checkType(lua_State* L, int index, bool errIfNot = true, bool allowNil = true);
 
-			DECLARE_TYPE();
+				DECLARE_TYPE();
 
-			static std::vector<std::string> typeList;
+				static std::vector<std::string> typeList;
 		};
 	}
 }

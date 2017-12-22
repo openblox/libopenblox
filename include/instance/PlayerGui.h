@@ -33,11 +33,11 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class PlayerGui: public BasePlayerGui{
-		public:
-			PlayerGui(OBEngine* eng);
-			virtual ~PlayerGui();
+			public:
+				PlayerGui(OBEngine* eng);
+				virtual ~PlayerGui();
 
-			DECLARE_CLASS(PlayerGui);
+				DECLARE_CLASS(PlayerGui);
 		};
 	}
 }

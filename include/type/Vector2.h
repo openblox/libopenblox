@@ -31,71 +31,69 @@
 namespace OB{
 	namespace Type{
 		class Vector2: public Type{
-		public:
-			Vector2();
-			Vector2(double x, double y);
-			Vector2(std::string str);
-			virtual ~Vector2();
+			public:
+				Vector2();
+				Vector2(double x, double y);
+				Vector2(std::string str);
+				virtual ~Vector2();
 
-			double getX();
-			double getY();
+				double getX();
+				double getY();
 
 #if HAVE_IRRLICHT
-
-			irr::core::vector2d<double> toIrrlichtVector2d();
-			irr::core::vector2d<float> toIrrlichtVector2df();
-
+				irr::core::vector2d<double> toIrrlichtVector2d();
+				irr::core::vector2d<float> toIrrlichtVector2df();
 #endif
 
-			virtual bool equals(shared_ptr<Type> other);
+				virtual bool equals(shared_ptr<Type> other);
 
-			double getLength();
-			double getLengthSquared();
-			shared_ptr<Vector2> normalize();
+				double getLength();
+				double getLengthSquared();
+				shared_ptr<Vector2> normalize();
 
-			shared_ptr<Vector2> add(double v);
-			shared_ptr<Vector2> add(shared_ptr<Vector2> v);
-			shared_ptr<Vector2> sub(double v);
-			shared_ptr<Vector2> sub(shared_ptr<Vector2> v);
-			shared_ptr<Vector2> mul(double v);
-			shared_ptr<Vector2> mul(shared_ptr<Vector2> v);
-			shared_ptr<Vector2> div(double v);
-			shared_ptr<Vector2> div(shared_ptr<Vector2> v);
-			shared_ptr<Vector2> neg();
+				shared_ptr<Vector2> add(double v);
+				shared_ptr<Vector2> add(shared_ptr<Vector2> v);
+				shared_ptr<Vector2> sub(double v);
+				shared_ptr<Vector2> sub(shared_ptr<Vector2> v);
+				shared_ptr<Vector2> mul(double v);
+				shared_ptr<Vector2> mul(shared_ptr<Vector2> v);
+				shared_ptr<Vector2> div(double v);
+				shared_ptr<Vector2> div(shared_ptr<Vector2> v);
+				shared_ptr<Vector2> neg();
 
-			shared_ptr<Vector2> lerp(shared_ptr<Vector2> goal, double alpha);
-			double dot(shared_ptr<Vector2> v);
-			shared_ptr<Vector2> cross(shared_ptr<Vector2> v);
-			bool isClose(shared_ptr<Vector2> v, double epsilon = 1e-6);
+				shared_ptr<Vector2> lerp(shared_ptr<Vector2> goal, double alpha);
+				double dot(shared_ptr<Vector2> v);
+				shared_ptr<Vector2> cross(shared_ptr<Vector2> v);
+				bool isClose(shared_ptr<Vector2> v, double epsilon = 1e-6);
 
-			virtual std::string toString();
+				virtual std::string toString();
 
-			static int lua_getX(lua_State* L);
-			static int lua_getY(lua_State* L);
+				static int lua_getX(lua_State* L);
+				static int lua_getY(lua_State* L);
 
-			static int lua_getLength(lua_State* L);
-			static int lua_getLengthSquared(lua_State* L);
-			static int lua_getUnit(lua_State* L);
+				static int lua_getLength(lua_State* L);
+				static int lua_getLengthSquared(lua_State* L);
+				static int lua_getUnit(lua_State* L);
 
-			static int lua_lerp(lua_State* L);
-			static int lua_dot(lua_State* L);
+				static int lua_lerp(lua_State* L);
+				static int lua_dot(lua_State* L);
 
-			static int lua_eq(lua_State* L);
-			static int lua_unm(lua_State* L);
-			static int lua_add(lua_State* L);
-			static int lua_sub(lua_State* L);
-			static int lua_mul(lua_State* L);
-			static int lua_div(lua_State* L);
+				static int lua_eq(lua_State* L);
+				static int lua_unm(lua_State* L);
+				static int lua_add(lua_State* L);
+				static int lua_sub(lua_State* L);
+				static int lua_mul(lua_State* L);
+				static int lua_div(lua_State* L);
 
-			static void register_lua_metamethods(lua_State* L);
-			static void register_lua_methods(lua_State* L);
-			static void register_lua_property_setters(lua_State* L);
-			static void register_lua_property_getters(lua_State* L);
+				static void register_lua_metamethods(lua_State* L);
+				static void register_lua_methods(lua_State* L);
+				static void register_lua_property_setters(lua_State* L);
+				static void register_lua_property_getters(lua_State* L);
 
-			double x;
-			double y;
+				double x;
+				double y;
 
-			DECLARE_TYPE();
+				DECLARE_TYPE();
 
 		};
 

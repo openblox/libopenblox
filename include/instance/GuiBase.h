@@ -30,11 +30,11 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class GuiBase: public Instance{
-		public:
-			GuiBase(OBEngine* eng);
-			virtual ~GuiBase();
+			public:
+				GuiBase(OBEngine* eng);
+				virtual ~GuiBase();
 
-			DECLARE_CLASS(GuiBase);
+				DECLARE_CLASS(GuiBase);
 		};
 	}
 }

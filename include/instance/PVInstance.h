@@ -37,25 +37,25 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class PVInstance: public Instance{
-		public:
-			PVInstance(OBEngine* eng);
-			virtual ~PVInstance();
+			public:
+				PVInstance(OBEngine* eng);
+				virtual ~PVInstance();
 
 #if HAVE_IRRLICHT
-			virtual irr::scene::ISceneNode* getIrrNode();
-			virtual void newIrrlichtNode();
-			virtual void removeIrrlichtNode();
+				virtual irr::scene::ISceneNode* getIrrNode();
+				virtual void newIrrlichtNode();
+				virtual void removeIrrlichtNode();
 
-			virtual void removeChild(shared_ptr<Instance> kid);
-			virtual void addChild(shared_ptr<Instance> kid);
+				virtual void removeChild(shared_ptr<Instance> kid);
+				virtual void addChild(shared_ptr<Instance> kid);
 
 #endif
 
-			DECLARE_CLASS(PVInstance);
+				DECLARE_CLASS(PVInstance);
 
 #if HAVE_IRRLICHT
 
-			irr::scene::ISceneNode* irrNode;
+				irr::scene::ISceneNode* irrNode;
 
 #endif
 		};

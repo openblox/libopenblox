@@ -37,46 +37,46 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class MeshPart: public BasePart{
-		public:
-			MeshPart(OBEngine* eng);
-			virtual ~MeshPart();
+			public:
+				MeshPart(OBEngine* eng);
+				virtual ~MeshPart();
 
-			void setMesh(std::string mesh);
-			std::string getMesh();
+				void setMesh(std::string mesh);
+				std::string getMesh();
 
-			void updateMesh();
+				void updateMesh();
 
-			virtual void updateColor();
+				virtual void updateColor();
 
-			virtual bool assetLoaded(std::string res);
+				virtual bool assetLoaded(std::string res);
 
 #if HAVE_ENET
-			/**
-			 * Replicates properties of this Instance.
-			 *
-			 * @param peer Peer
-			 * @author John M. Harris, Jr.
-			 */
-			virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
+				/**
+				 * Replicates properties of this Instance.
+				 *
+				 * @param peer Peer
+				 * @author John M. Harris, Jr.
+				 */
+				virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
 #endif
 
 #if HAVE_IRRLICHT
-			virtual void newIrrlichtNode();
+				virtual void newIrrlichtNode();
 #endif
 
-			virtual std::map<std::string, _PropertyInfo> getProperties();
-			virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
-			virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
+				virtual std::map<std::string, _PropertyInfo> getProperties();
+				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
+				virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
 
-			DECLARE_LUA_METHOD(setMesh);
-			DECLARE_LUA_METHOD(getMesh);
+				DECLARE_LUA_METHOD(setMesh);
+				DECLARE_LUA_METHOD(getMesh);
 
-			static void register_lua_property_getters(lua_State* L);
-			static void register_lua_property_setters(lua_State* L);
+				static void register_lua_property_getters(lua_State* L);
+				static void register_lua_property_setters(lua_State* L);
 
-			DECLARE_CLASS(MeshPart);
+				DECLARE_CLASS(MeshPart);
 
-			std::string Mesh;
+				std::string Mesh;
 		};
 	}
 }

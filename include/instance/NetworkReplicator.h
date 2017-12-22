@@ -31,38 +31,38 @@
 namespace OB{
 	namespace Instance{
 		class NetworkReplicator: public Instance{
-		public:
-			NetworkReplicator(OBEngine* eng);
-			NetworkReplicator(ENetPeer* peer, OBEngine* eng);
-			virtual ~NetworkReplicator();
+			public:
+				NetworkReplicator(OBEngine* eng);
+				NetworkReplicator(ENetPeer* peer, OBEngine* eng);
+				virtual ~NetworkReplicator();
 
-			void _initReplicator();
-			void _dropPeer();
+				void _initReplicator();
+				void _dropPeer();
 
-			int getHighestRoundTripTimeVariance();
-			int getLastReceiveTime();
-			int getLastRoundTripTime();
-			int getLastRoundTripTimeVariance();
-			int getLastSendTime();
-			int getLowestRoundTripTime();
-			int getMTU();
-			int getPacketLoss();
-			int getPacketLossVariance();
-			int getPacketsLost();
-			int getPacketsSent();
-			int getRoundTripTime();
-			int getRoundTripTimeVariance();
+				int getHighestRoundTripTimeVariance();
+				int getLastReceiveTime();
+				int getLastRoundTripTime();
+				int getLastRoundTripTimeVariance();
+				int getLastSendTime();
+				int getLowestRoundTripTime();
+				int getMTU();
+				int getPacketLoss();
+				int getPacketLossVariance();
+				int getPacketsLost();
+				int getPacketsSent();
+				int getRoundTripTime();
+				int getRoundTripTimeVariance();
 
-			void Disconnect();
-			void Ping();
-			void Reset();
-			void Send(enet_uint8 channel, BitStream &bs);
+				void Disconnect();
+				void Ping();
+				void Reset();
+				void Send(enet_uint8 channel, BitStream &bs);
 
-			void sendSetPropertyPacket(ob_uint64 netId, std::string prop, shared_ptr<Type::VarWrapper> val);
+				void sendSetPropertyPacket(ob_uint64 netId, std::string prop, shared_ptr<Type::VarWrapper> val);
 
-			DECLARE_CLASS(NetworkReplicator);
+				DECLARE_CLASS(NetworkReplicator);
 
-			ENetPeer* enet_peer;
+				ENetPeer* enet_peer;
 		};
 	}
 }

@@ -25,61 +25,61 @@
 namespace OB{
 	namespace Instance{
 		class ImageLabel: public GuiLabel{
-		public:
-			ImageLabel(OBEngine* eng);
-			virtual ~ImageLabel();
+			public:
+				ImageLabel(OBEngine* eng);
+				virtual ~ImageLabel();
 
-			void updateImage();
+				void updateImage();
 
-			void setImage(std::string image);
-			std::string getImage();
+				void setImage(std::string image);
+				std::string getImage();
 
-			void setImageColor3(shared_ptr<Type::Color3> imageColor3);
-			shared_ptr<Type::Color3> getImageColor3();
+				void setImageColor3(shared_ptr<Type::Color3> imageColor3);
+				shared_ptr<Type::Color3> getImageColor3();
 
-			void setImageTransparency(double imageTransparency);
-			double getImageTransparency();
+				void setImageTransparency(double imageTransparency);
+				double getImageTransparency();
 
-			bool isLoaded();
+				bool isLoaded();
 
-			virtual bool assetLoaded(std::string res);
+				virtual bool assetLoaded(std::string res);
 
-			virtual void render();
+				virtual void render();
 
 #if HAVE_ENET
-			/**
-			 * Replicates properties of this Instance.
-			 *
-			 * @param peer Peer
-			 * @author John M. Harris, Jr.
-			 */
-			virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
+				/**
+				 * Replicates properties of this Instance.
+				 *
+				 * @param peer Peer
+				 * @author John M. Harris, Jr.
+				 */
+				virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
 #endif
 
-			virtual std::map<std::string, _PropertyInfo> getProperties();
-			virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
-			virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
+				virtual std::map<std::string, _PropertyInfo> getProperties();
+				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
+				virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
 
-			DECLARE_LUA_METHOD(setImage);
-			DECLARE_LUA_METHOD(getImage);
-			DECLARE_LUA_METHOD(setImageColor3);
-			DECLARE_LUA_METHOD(getImageColor3);
-			DECLARE_LUA_METHOD(setImageTransparency);
-			DECLARE_LUA_METHOD(getImageTransparency);
-			DECLARE_LUA_METHOD(getLoaded);
+				DECLARE_LUA_METHOD(setImage);
+				DECLARE_LUA_METHOD(getImage);
+				DECLARE_LUA_METHOD(setImageColor3);
+				DECLARE_LUA_METHOD(getImageColor3);
+				DECLARE_LUA_METHOD(setImageTransparency);
+				DECLARE_LUA_METHOD(getImageTransparency);
+				DECLARE_LUA_METHOD(getLoaded);
 
-			static void register_lua_property_getters(lua_State* L);
-			static void register_lua_property_setters(lua_State* L);
+				static void register_lua_property_getters(lua_State* L);
+				static void register_lua_property_setters(lua_State* L);
 
-			DECLARE_CLASS(ImageLabel);
+				DECLARE_CLASS(ImageLabel);
 
 #if HAVE_IRRLICHT
-			irr::video::ITexture* img;
+				irr::video::ITexture* img;
 #endif
 
-			std::string Image;
-			shared_ptr<Type::Color3> ImageColor3;
-			double ImageTransparency;
+				std::string Image;
+				shared_ptr<Type::Color3> ImageColor3;
+				double ImageTransparency;
 
 		};
 	}

@@ -32,22 +32,22 @@ namespace OB{
 		 * @author John M. Harris, Jr.
 		 */
 		class UserInputService: public Instance{
-		public:
-			UserInputService(OBEngine* eng);
-			virtual ~UserInputService();
+			public:
+				UserInputService(OBEngine* eng);
+				virtual ~UserInputService();
 
 #if HAVE_PUGIXML
-			virtual std::string serializedID();
+				virtual std::string serializedID();
 #endif
 
-			shared_ptr<Type::Event> getGamepadConnected();
+				shared_ptr<Type::Event> getGamepadConnected();
 
-			static void register_lua_events(lua_State* L);
+				static void register_lua_events(lua_State* L);
 
-			DECLARE_CLASS(UserInputService);
+				DECLARE_CLASS(UserInputService);
 
-			shared_ptr<Type::Event> GamepadConnected;
-			shared_ptr<Type::Event> GamepadDisconnected;
+				shared_ptr<Type::Event> GamepadConnected;
+				shared_ptr<Type::Event> GamepadDisconnected;
 		};
 	}
 }

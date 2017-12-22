@@ -38,29 +38,29 @@ namespace OB{
 	}
 
 	class OBSerializer{
-	public:
-		OBSerializer(OBEngine* eng);
+		public:
+			OBSerializer(OBEngine* eng);
 
 #if HAVE_PUGIXML
-		shared_ptr<Instance::Instance> LoadModelFromMemory(char* buf, size_t size);
-		shared_ptr<Instance::Instance> LoadModel(std::string resURI);
-		bool LoadFromMemory(char* buf, size_t size);
-		bool Load(std::string resURI);
-		bool SaveModel(shared_ptr<Instance::Instance> model, std::string file);
-		std::string SaveModelInMemory(shared_ptr<Instance::Instance> model);
-		bool Save(std::string file);
-		std::string SaveInMemory();
+			shared_ptr<Instance::Instance> LoadModelFromMemory(char* buf, size_t size);
+			shared_ptr<Instance::Instance> LoadModel(std::string resURI);
+			bool LoadFromMemory(char* buf, size_t size);
+			bool Load(std::string resURI);
+			bool SaveModel(shared_ptr<Instance::Instance> model, std::string file);
+			std::string SaveModelInMemory(shared_ptr<Instance::Instance> model);
+			bool Save(std::string file);
+			std::string SaveInMemory();
 #endif
 
-		std::string GetID(shared_ptr<Instance::Instance> inst);
-		shared_ptr<Instance::Instance> GetByID(std::string id);
-		void SetID(shared_ptr<Instance::Instance> inst, std::string newId);
+			std::string GetID(shared_ptr<Instance::Instance> inst);
+			shared_ptr<Instance::Instance> GetByID(std::string id);
+			void SetID(shared_ptr<Instance::Instance> inst, std::string newId);
 
-	private:
-		OBEngine* eng;
+		private:
+			OBEngine* eng;
 
-		std::map<shared_ptr<Instance::Instance>, std::string> instanceMap;
-		int dynamic_instance_count;
+			std::map<shared_ptr<Instance::Instance>, std::string> instanceMap;
+			int dynamic_instance_count;
 	};
 }
 

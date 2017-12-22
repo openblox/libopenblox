@@ -27,33 +27,33 @@
 namespace OB{
 	namespace Type{
 		class UDim: public Type{
-		public:
-			UDim();
-			UDim(double scale, double offset);
-			UDim(std::string str);
-			virtual ~UDim();
+			public:
+				UDim();
+				UDim(double scale, double offset);
+				UDim(std::string str);
+				virtual ~UDim();
 
-			double getScale();
-			double getOffset();
+				double getScale();
+				double getOffset();
 
-			virtual bool equals(shared_ptr<Type> other);
+				virtual bool equals(shared_ptr<Type> other);
 
-			virtual std::string toString();
+				virtual std::string toString();
 
-			static int lua_getScale(lua_State* L);
-			static int lua_getOffset(lua_State* L);
+				static int lua_getScale(lua_State* L);
+				static int lua_getOffset(lua_State* L);
 
-			static int lua_eq(lua_State* L);
+				static int lua_eq(lua_State* L);
 
-			static void register_lua_metamethods(lua_State* L);
-			static void register_lua_methods(lua_State* L);
-			static void register_lua_property_setters(lua_State* L);
-			static void register_lua_property_getters(lua_State* L);
+				static void register_lua_metamethods(lua_State* L);
+				static void register_lua_methods(lua_State* L);
+				static void register_lua_property_setters(lua_State* L);
+				static void register_lua_property_getters(lua_State* L);
 
-			DECLARE_TYPE();
+				DECLARE_TYPE();
 
-			double scale;
-			double offset;
+				double scale;
+				double offset;
 
 		};
 
