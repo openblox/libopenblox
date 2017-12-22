@@ -691,7 +691,7 @@ namespace OB{
 				 * Returns true if the assets required by this
 				 * Instance have been loaded, which signals
 				 * that this can be removed from the list of
-				 * assets waiting for assets.
+				 * Instances waiting for assets.
 				 *
 				 * If false, it stays in the list.
 				 *
