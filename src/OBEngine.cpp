@@ -190,6 +190,9 @@ namespace OB{
 
 		assetLocator = make_shared<AssetLocator>(this);
 
+		pluginManager = make_shared<PluginManager>(this);
+		// TODO: Add default plugins (i.e. Lua, JS)
+
 		globalState = OB::Lua::initGlobal(this);
 
 		dm = make_shared<Instance::DataModel>(this);
@@ -400,6 +403,10 @@ namespace OB{
 
 	shared_ptr<AssetLocator> OBEngine::getAssetLocator(){
 		return assetLocator;
+	}
+
+	shared_ptr<PluginManager> OBEngine::getPluginManager(){
+		return pluginManager;
 	}
 
 	shared_ptr<OBLogger> OBEngine::getLogger(){

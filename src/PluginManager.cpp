@@ -17,42 +17,27 @@
  * along with OpenBlox. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "instance/NetworkReplicator.h"
-
-#if HAVE_ENET
-
-#ifndef OB_INST_SERVERREPLICATOR
-#define OB_INST_SERVERREPLICATOR
+#include "PluginManager.h"
 
 namespace OB{
-	namespace Instance{
-		class Player;
+	PluginManager::PluginManager(OBEngine* eng){
+		this->eng = eng;
+	}
 
-		class ServerReplicator: public NetworkReplicator{
-			public:
-				ServerReplicator(OBEngine* eng);
-				ServerReplicator(ENetPeer* peer, OBEngine* eng);
-				virtual ~ServerReplicator();
+	PluginManager::~PluginManager(){}
 
-				shared_ptr<Player> CreatePlayer();
-				shared_ptr<Player> GetPlayer();
+	std::map<std::string, shared_ptr<Plugin>> PluginManager::getPlugins(){
+		return plugins;
+	}
 
-				DECLARE_LUA_METHOD(CreatePlayer);
-				DECLARE_LUA_METHOD(GetPlayer);
+	bool PluginManager::loadPlugin(std::string name, shared_ptr<Plugin> plugins){
+		// TODO: Implement
+		return false;
+	}
 
-				static void register_lua_methods(lua_State* L);
+	void PluginManager::unloadPlugin(std::string name){}
 
-				DECLARE_CLASS(ServerReplicator);
-
-				shared_ptr<Player> plr;
-		};
+	void PluginManager::tick(){
+		// TODO: Call tick of plugins with a tick hook
 	}
 }
-
-#endif // OB_INST_SERVERREPLICATOR
-
-#endif // HAVE_ENET
-
-// Local Variables:
-// mode: c++
-// End:

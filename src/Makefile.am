@@ -15,6 +15,7 @@ OBLogger.cpp \
 ClassFactory.cpp \
 TaskScheduler.cpp \
 AssetLocator.cpp \
+PluginManager.cpp \
 OBEngine.cpp \
 lua/OBLua.cpp \
 lua/OBLua_OBBase.cpp \

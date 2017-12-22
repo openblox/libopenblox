@@ -37,6 +37,7 @@
 #include "OBLogger.h"
 #include "AssetLocator.h"
 #include "OBSerializer.h"
+#include "PluginManager.h"
 
 #include <lua/OBLua.h>
 
@@ -54,6 +55,9 @@ namespace OB{
 #endif
 #ifndef OB_ASSETLOCATOR
 	class AssetLocator;
+#endif
+#ifndef OB_PLUGINMANAGER
+	class PluginManager;
 #endif
 
 #if HAVE_IRRLICHT
@@ -348,6 +352,15 @@ namespace OB{
 			shared_ptr<AssetLocator> getAssetLocator();
 
 			/**
+			 * Returns the PluginManager associated with this OBEngine
+			 * instance.
+			 *
+			 * @returns PluginManager
+			 * @author John M. Harris, Jr.
+			 */
+			shared_ptr<PluginManager> getPluginManager();
+
+			/**
 			 * Returns the logger.
 			 *
 			 * @returns OBLogger
@@ -385,6 +398,7 @@ namespace OB{
 			shared_ptr<TaskScheduler> taskSched;
 			shared_ptr<TaskScheduler> secondaryTaskSched;
 			shared_ptr<AssetLocator> assetLocator;
+			shared_ptr<PluginManager> pluginManager;
 			shared_ptr<OBSerializer> serializer;
 			shared_ptr<OBLogger> logger;
 			shared_ptr<Instance::DataModel> dm;

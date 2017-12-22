@@ -17,41 +17,37 @@
  * along with OpenBlox. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "instance/NetworkReplicator.h"
-
-#if HAVE_ENET
-
-#ifndef OB_INST_SERVERREPLICATOR
-#define OB_INST_SERVERREPLICATOR
+#ifndef OB_PLUGIN
+#define OB_PLUGIN
 
 namespace OB{
-	namespace Instance{
-		class Player;
+    class OBEngine;
 
-		class ServerReplicator: public NetworkReplicator{
-			public:
-				ServerReplicator(OBEngine* eng);
-				ServerReplicator(ENetPeer* peer, OBEngine* eng);
-				virtual ~ServerReplicator();
+	/**
+	 * All OpenBlox plugins inherit from this class.
+	 *
+	 * @author John M. Harris, Jr.
+	 */
+    class Plugin{
+		public:
+			/**
+			 * Called by the PluginManager when this plugin is loaded.
+			 *
+			 * @author John M. Harris, Jr.
+			 */
+			virtual void plugin_init(OBEngine* eng) = 0;
 
-				shared_ptr<Player> CreatePlayer();
-				shared_ptr<Player> GetPlayer();
-
-				DECLARE_LUA_METHOD(CreatePlayer);
-				DECLARE_LUA_METHOD(GetPlayer);
-
-				static void register_lua_methods(lua_State* L);
-
-				DECLARE_CLASS(ServerReplicator);
-
-				shared_ptr<Player> plr;
-		};
-	}
+			/**
+			 * Called by the PluginManager before unloading this
+			 * plugin.
+			 *
+			 * @author John M. Harris, Jr.
+			 */
+			virtual void plugin_deinit() = 0;
+    };
 }
 
-#endif // OB_INST_SERVERREPLICATOR
-
-#endif // HAVE_ENET
+#endif // OB_PLUGIN
 
 // Local Variables:
 // mode: c++
