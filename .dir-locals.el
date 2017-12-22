@@ -2,4 +2,5 @@
               (c-basic-offset . 4)
               (tab-width . 4)
               (eval . (progn
-                        (c-set-offset 'case-label '+))))))
+                        (c-set-offset 'case-label '+)
+			(c-set-offset 'inclass '++))))))
