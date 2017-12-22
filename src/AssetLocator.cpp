@@ -39,438 +39,438 @@
 #endif
 
 namespace OB{
-	AssetResponse::AssetResponse(size_t size, char* data, std::string resURI, OBEngine* eng){
-		this->size = size;
-		this->data = data;
-		this->resURI = resURI;
-		this->eng = eng;
-	}
+    AssetResponse::AssetResponse(size_t size, char* data, std::string resURI, OBEngine* eng){
+        this->size = size;
+        this->data = data;
+        this->resURI = resURI;
+        this->eng = eng;
+    }
 
-	AssetResponse::~AssetResponse(){
-		if(size > 0 && data){
-			free(data);
-		}
-	}
+    AssetResponse::~AssetResponse(){
+        if(size > 0 && data){
+            free(data);
+        }
+    }
 
-	size_t AssetResponse::getSize(){
-		return size;
-	}
+    size_t AssetResponse::getSize(){
+        return size;
+    }
 
-	char* AssetResponse::getData(){
-		return data;
-	}
+    char* AssetResponse::getData(){
+        return data;
+    }
 
-	std::string AssetResponse::getResURI(){
-		return resURI;
-	}
+    std::string AssetResponse::getResURI(){
+        return resURI;
+    }
 
 #if HAVE_IRRLICHT
-	irr::io::IReadFile* AssetResponse::toIReadFile(){
-		irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
-		if(irrDev){
-			irr::scene::ISceneManager* smgr = irrDev->getSceneManager();
-			if(smgr){
-				irr::io::IFileSystem* ifs = smgr->getFileSystem();
-				if(ifs){
-					return ifs->createMemoryReadFile((void*)data, size, resURI.c_str(), false);
-				}
-			}
-		}
-		return NULL;
-	}
+    irr::io::IReadFile* AssetResponse::toIReadFile(){
+        irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
+        if(irrDev){
+            irr::scene::ISceneManager* smgr = irrDev->getSceneManager();
+            if(smgr){
+                irr::io::IFileSystem* ifs = smgr->getFileSystem();
+                if(ifs){
+                    return ifs->createMemoryReadFile((void*)data, size, resURI.c_str(), false);
+                }
+            }
+        }
+        return NULL;
+    }
 #endif
 
-	AssetLocator::AssetLocator(OBEngine* eng){
-		this->eng = eng;
+    AssetLocator::AssetLocator(OBEngine* eng){
+        this->eng = eng;
 
-		requestQueueSize = 0;
+        requestQueueSize = 0;
 
-		loadingResponse = make_shared<AssetResponse>(0, (char*)NULL, "loading://null", eng);
+        loadingResponse = make_shared<AssetResponse>(0, (char*)NULL, "loading://null", eng);
 
-		pthread_mutex_init(&mmutex, NULL);
-	}
+        pthread_mutex_init(&mmutex, NULL);
+    }
 
-	AssetLocator::~AssetLocator(){
-		pthread_mutex_destroy(&mmutex);
-	}
+    AssetLocator::~AssetLocator(){
+        pthread_mutex_destroy(&mmutex);
+    }
 
-	struct _ob_curl_body{
-	public:
-		char* data;
-		size_t size;
-	};
+    struct _ob_curl_body{
+        public:
+            char* data;
+            size_t size;
+    };
 
-	size_t _ob_assetlocator_write_data(void* ptr, size_t size, size_t nmemb, struct _ob_curl_body* data){
-		size_t index = data->size;
-		size_t n = (size * nmemb);
-		char* tmp;
+    size_t _ob_assetlocator_write_data(void* ptr, size_t size, size_t nmemb, struct _ob_curl_body* data){
+        size_t index = data->size;
+        size_t n = (size * nmemb);
+        char* tmp;
 
-		data->size += n;
+        data->size += n;
 
-		tmp = (char*)realloc(data->data, data->size);
+        tmp = (char*)realloc(data->data, data->size);
 
-		if(tmp){
-			data->data = tmp;
-		}else{
-			if(data->data){
-				free(data->data);
-				data->data = NULL;
-			}
-			std::cout << "[AssetLocator] Failed to allocate memory." << std::endl;
-			return 0;
-		}
+        if(tmp){
+            data->data = tmp;
+        }else{
+            if(data->data){
+                free(data->data);
+                data->data = NULL;
+            }
+            std::cout << "[AssetLocator] Failed to allocate memory." << std::endl;
+            return 0;
+        }
 
-		memcpy((data->data + index), ptr, n);
+        memcpy((data->data + index), ptr, n);
 
-		return n;
-	}
+        return n;
+    }
 
-	void AssetLocator::loadAssetSync(std::string url, bool decCount, bool allowFile){
-		pthread_mutex_lock(&mmutex);
+    void AssetLocator::loadAssetSync(std::string url, bool decCount, bool allowFile){
+        pthread_mutex_lock(&mmutex);
 
-		if(url.empty()){
-			if(decCount){
-				requestQueueSize--;
-			}
-			pthread_mutex_unlock(&mmutex);
-			return;
-		}
+        if(url.empty()){
+            if(decCount){
+                requestQueueSize--;
+            }
+            pthread_mutex_unlock(&mmutex);
+            return;
+        }
 
-		if(!allowFile && ob_str_startsWith(url, "file://")){
-			if(decCount){
-				requestQueueSize--;
-			}
-			pthread_mutex_unlock(&mmutex);
-			return;
-		}
+        if(!allowFile && ob_str_startsWith(url, "file://")){
+            if(decCount){
+                requestQueueSize--;
+            }
+            pthread_mutex_unlock(&mmutex);
+            return;
+        }
 
-		struct _ob_curl_body* body = new struct _ob_curl_body;
-		body->size = 0;
-		body->data = NULL;
+        struct _ob_curl_body* body = new struct _ob_curl_body;
+        body->size = 0;
+        body->data = NULL;
 
-		if(ob_str_startsWith(url, "res://")){
-			std::string furl = url.substr(6);
+        if(ob_str_startsWith(url, "res://")){
+            std::string furl = url.substr(6);
 
-			char* ccanonPath = realpath(furl.c_str(), NULL);
-			if(!ccanonPath){
-				ccanonPath = realpath(("res/" + furl).c_str(), NULL);
-			}
+            char* ccanonPath = realpath(furl.c_str(), NULL);
+            if(!ccanonPath){
+                ccanonPath = realpath(("res/" + furl).c_str(), NULL);
+            }
 
-			if(ccanonPath){
-				std::string canonPath = ccanonPath;
+            if(ccanonPath){
+                std::string canonPath = ccanonPath;
 
-				char* realRes = realpath("res/", NULL);
-				char* thisDir = get_current_dir_name();
-				if(realRes){
-					if(!ob_str_startsWith(canonPath, std::string(realRes)) || !ob_str_startsWith(canonPath, std::string(thisDir))){
-						shared_ptr<Instance::DataModel> dm = eng->getDataModel();
-						shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
-						shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
+                char* realRes = realpath("res/", NULL);
+                char* thisDir = get_current_dir_name();
+                if(realRes){
+                    if(!ob_str_startsWith(canonPath, std::string(realRes)) || !ob_str_startsWith(canonPath, std::string(thisDir))){
+                        shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+                        shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
+                        shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
 
-						std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
-						fireArgs.push_back(make_shared<Type::VarWrapper>(url));
-						fireArgs.push_back(make_shared<Type::VarWrapper>("File not under resource directory."));
+                        std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
+                        fireArgs.push_back(make_shared<Type::VarWrapper>(url));
+                        fireArgs.push_back(make_shared<Type::VarWrapper>("File not under resource directory."));
 
-						AssetLoadFailed->Fire(eng, fireArgs);
+                        AssetLoadFailed->Fire(eng, fireArgs);
 
-						if(decCount){
-							requestQueueSize--;
-						}
+                        if(decCount){
+                            requestQueueSize--;
+                        }
 
-						delete body;
+                        delete body;
 
-						pthread_mutex_unlock(&mmutex);
-						free(thisDir);
-						return;
-					}
-				}else{
-					if(!ob_str_startsWith(canonPath, std::string(thisDir))){
-						shared_ptr<Instance::DataModel> dm = eng->getDataModel();
-						shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
-						shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
+                        pthread_mutex_unlock(&mmutex);
+                        free(thisDir);
+                        return;
+                    }
+                }else{
+                    if(!ob_str_startsWith(canonPath, std::string(thisDir))){
+                        shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+                        shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
+                        shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
 
-						std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
-						fireArgs.push_back(make_shared<Type::VarWrapper>(url));
-						fireArgs.push_back(make_shared<Type::VarWrapper>("File not under resource directory."));
+                        std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
+                        fireArgs.push_back(make_shared<Type::VarWrapper>(url));
+                        fireArgs.push_back(make_shared<Type::VarWrapper>("File not under resource directory."));
 
-						AssetLoadFailed->Fire(eng, fireArgs);
+                        AssetLoadFailed->Fire(eng, fireArgs);
 
-						if(decCount){
-							requestQueueSize--;
-						}
+                        if(decCount){
+                            requestQueueSize--;
+                        }
 
-						delete body;
+                        delete body;
 
-						pthread_mutex_unlock(&mmutex);
-						free(thisDir);
-						return;
-					}
-				}
-				free(thisDir);
+                        pthread_mutex_unlock(&mmutex);
+                        free(thisDir);
+                        return;
+                    }
+                }
+                free(thisDir);
 
-				std::ifstream file(canonPath, std::ios::binary | std::ios::ate);
-				size_t fileLen = file.tellg();
-				file.seekg(0, std::ios::beg);
+                std::ifstream file(canonPath, std::ios::binary | std::ios::ate);
+                size_t fileLen = file.tellg();
+                file.seekg(0, std::ios::beg);
 
-				char* bodyDat = (char*)malloc(fileLen);
-				if(file.read(bodyDat, fileLen)){
-					bodyDat[fileLen] = '\0';
+                char* bodyDat = (char*)malloc(fileLen);
+                if(file.read(bodyDat, fileLen)){
+                    bodyDat[fileLen] = '\0';
 
-					body->data = bodyDat;
-					body->size = fileLen;
-				}else{
-					shared_ptr<Instance::DataModel> dm = eng->getDataModel();
-					shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
-					shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
+                    body->data = bodyDat;
+                    body->size = fileLen;
+                }else{
+                    shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+                    shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
+                    shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
 
-					std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
-					fireArgs.push_back(make_shared<Type::VarWrapper>(url));
-					fireArgs.push_back(make_shared<Type::VarWrapper>("Failed to read file."));
+                    std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
+                    fireArgs.push_back(make_shared<Type::VarWrapper>(url));
+                    fireArgs.push_back(make_shared<Type::VarWrapper>("Failed to read file."));
 
-					AssetLoadFailed->Fire(eng, fireArgs);
+                    AssetLoadFailed->Fire(eng, fireArgs);
 
-					if(decCount){
-						requestQueueSize--;
-					}
+                    if(decCount){
+                        requestQueueSize--;
+                    }
 
-					delete body;
+                    delete body;
 
-					pthread_mutex_unlock(&mmutex);
-					free(bodyDat);
-					return;
-				}
-			}else{
-				shared_ptr<Instance::DataModel> dm = eng->getDataModel();
-				shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
-				shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
+                    pthread_mutex_unlock(&mmutex);
+                    free(bodyDat);
+                    return;
+                }
+            }else{
+                shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+                shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
+                shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
 
-				std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
-				fireArgs.push_back(make_shared<Type::VarWrapper>(url));
-				fireArgs.push_back(make_shared<Type::VarWrapper>("File not found."));
+                std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
+                fireArgs.push_back(make_shared<Type::VarWrapper>(url));
+                fireArgs.push_back(make_shared<Type::VarWrapper>("File not found."));
 
-				AssetLoadFailed->Fire(eng, fireArgs);
+                AssetLoadFailed->Fire(eng, fireArgs);
 
-				if(decCount){
-					requestQueueSize--;
-				}
+                if(decCount){
+                    requestQueueSize--;
+                }
 
-				delete body;
+                delete body;
 
-				pthread_mutex_unlock(&mmutex);
-				return;
-			}
-		}else{
+                pthread_mutex_unlock(&mmutex);
+                return;
+            }
+        }else{
 
 #if HAVE_CURL
 
-			CURL* curl;
-			CURLcode res;
+            CURL* curl;
+            CURLcode res;
 
-			curl = curl_easy_init();
-			if(curl){
-				curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-				curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1);
-				curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
-				//curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
-				curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, _ob_assetlocator_write_data);
-				curl_easy_setopt(curl, CURLOPT_WRITEDATA, body);
+            curl = curl_easy_init();
+            if(curl){
+                curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+                curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1);
+                curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
+                //curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
+                curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, _ob_assetlocator_write_data);
+                curl_easy_setopt(curl, CURLOPT_WRITEDATA, body);
 
-				res = curl_easy_perform(curl);
-				if(res != CURLE_OK){
-					std::cout << "[AssetLocator] cURL Error: " << curl_easy_strerror(res) << std::endl;
+                res = curl_easy_perform(curl);
+                if(res != CURLE_OK){
+                    std::cout << "[AssetLocator] cURL Error: " << curl_easy_strerror(res) << std::endl;
 
-					shared_ptr<Instance::DataModel> dm = eng->getDataModel();
-					shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
-					shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
+                    shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+                    shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
+                    shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
 
-					std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
-					fireArgs.push_back(make_shared<Type::VarWrapper>(url));
-					fireArgs.push_back(make_shared<Type::VarWrapper>(std::string(curl_easy_strerror(res))));
+                    std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
+                    fireArgs.push_back(make_shared<Type::VarWrapper>(url));
+                    fireArgs.push_back(make_shared<Type::VarWrapper>(std::string(curl_easy_strerror(res))));
 
-					AssetLoadFailed->Fire(eng, fireArgs);
+                    AssetLoadFailed->Fire(eng, fireArgs);
 
-					curl_easy_cleanup(curl);
+                    curl_easy_cleanup(curl);
 
-					if(decCount){
-						requestQueueSize--;
-					}
+                    if(decCount){
+                        requestQueueSize--;
+                    }
 
-					delete body;
+                    delete body;
 
-					pthread_mutex_unlock(&mmutex);
+                    pthread_mutex_unlock(&mmutex);
 
-					return;
-				}
+                    return;
+                }
 
-				curl_easy_cleanup(curl);
-			}else{
-				std::cout << "[AssetLocator] Failed to initialize cURL" << std::endl;
+                curl_easy_cleanup(curl);
+            }else{
+                std::cout << "[AssetLocator] Failed to initialize cURL" << std::endl;
 
-				shared_ptr<Instance::DataModel> dm = eng->getDataModel();
-				shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
-				shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
+                shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+                shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
+                shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
 
-				std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
-				fireArgs.push_back(make_shared<Type::VarWrapper>(url));
-				fireArgs.push_back(make_shared<Type::VarWrapper>("Failed to initialize cURL."));
+                std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
+                fireArgs.push_back(make_shared<Type::VarWrapper>(url));
+                fireArgs.push_back(make_shared<Type::VarWrapper>("Failed to initialize cURL."));
 
-				AssetLoadFailed->Fire(eng, fireArgs);
+                AssetLoadFailed->Fire(eng, fireArgs);
 
-				if(decCount){
-					requestQueueSize--;
-				}
+                if(decCount){
+                    requestQueueSize--;
+                }
 
-				delete body;
+                delete body;
 
-				pthread_mutex_unlock(&mmutex);
-				return;
-			}
+                pthread_mutex_unlock(&mmutex);
+                return;
+            }
 #endif
-		}
+        }
 
-		if(body->data != NULL){
-			shared_ptr<Instance::DataModel> dm = eng->getDataModel();
-			shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
-			shared_ptr<Type::Event> AssetLoaded = cp->GetAssetLoaded();
+        if(body->data != NULL){
+            shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+            shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
+            shared_ptr<Type::Event> AssetLoaded = cp->GetAssetLoaded();
 
-			std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
-			fireArgs.push_back(make_shared<Type::VarWrapper>(url));
+            std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
+            fireArgs.push_back(make_shared<Type::VarWrapper>(url));
 
-			putAsset(url, body->size, body->data);
+            putAsset(url, body->size, body->data);
 
-			AssetLoaded->Fire(eng, fireArgs);
+            AssetLoaded->Fire(eng, fireArgs);
 
-			std::vector<weak_ptr<Instance::Instance>>::iterator i = instancesWaiting.begin();
-			while(i != instancesWaiting.end()){
-				if(i->expired()){
-					i = instancesWaiting.erase(i);
-					continue;
-				}
+            std::vector<weak_ptr<Instance::Instance>>::iterator i = instancesWaiting.begin();
+            while(i != instancesWaiting.end()){
+                if(i->expired()){
+                    i = instancesWaiting.erase(i);
+                    continue;
+                }
 
-				shared_ptr<Instance::Instance> inst = i->lock();
-				if(inst){
-					bool didLoad = inst->assetLoaded(url);
-					if(didLoad){
-						i = instancesWaiting.erase(i);
-						continue;
-					}
-				}
+                shared_ptr<Instance::Instance> inst = i->lock();
+                if(inst){
+                    bool didLoad = inst->assetLoaded(url);
+                    if(didLoad){
+                        i = instancesWaiting.erase(i);
+                        continue;
+                    }
+                }
 
-				i++;
-			}
-		}else{
-			std::cout << "[AssetLocator] No data" << std::endl;
+                i++;
+            }
+        }else{
+            std::cout << "[AssetLocator] No data" << std::endl;
 
-			shared_ptr<Instance::DataModel> dm = eng->getDataModel();
-			shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
-			shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
+            shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+            shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
+            shared_ptr<Type::Event> AssetLoadFailed = cp->GetAssetLoadFailed();
 
-			std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
-			fireArgs.push_back(make_shared<Type::VarWrapper>(url));
-			fireArgs.push_back(make_shared<Type::VarWrapper>("No data."));
+            std::vector<shared_ptr<Type::VarWrapper>> fireArgs;
+            fireArgs.push_back(make_shared<Type::VarWrapper>(url));
+            fireArgs.push_back(make_shared<Type::VarWrapper>("No data."));
 
-			AssetLoadFailed->Fire(eng, fireArgs);
-		}
+            AssetLoadFailed->Fire(eng, fireArgs);
+        }
 
-		if(decCount){
-			requestQueueSize--;
-		}
+        if(decCount){
+            requestQueueSize--;
+        }
 
-		delete body;
+        delete body;
 
-		pthread_mutex_unlock(&mmutex);
-	}
+        pthread_mutex_unlock(&mmutex);
+    }
 
-	struct _ob_assetLocatorMetad{
-		char* url;
-		OBEngine* eng;
-	};
+    struct _ob_assetLocatorMetad{
+        char* url;
+        OBEngine* eng;
+    };
 
-	int AssetLocator::loadAssetAsyncTask(void* metad, ob_int64 startTime){
-		if(metad == NULL){
-			return 0;
-		}
+    int AssetLocator::loadAssetAsyncTask(void* metad, ob_int64 startTime){
+        if(metad == NULL){
+            return 0;
+        }
 
-		struct _ob_assetLocatorMetad* locmetad = (struct _ob_assetLocatorMetad*)metad;
+        struct _ob_assetLocatorMetad* locmetad = (struct _ob_assetLocatorMetad*)metad;
 
-		OBEngine* eng = locmetad->eng;
-		shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
+        OBEngine* eng = locmetad->eng;
+        shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
 
-		assetLoc->loadAssetSync(locmetad->url, true);
+        assetLoc->loadAssetSync(locmetad->url, true);
 
-		free(locmetad->url);
-		free(metad);
+        free(locmetad->url);
+        free(metad);
 
-		return 0;
-	}
+        return 0;
+    }
 
-	void AssetLocator::loadAsset(std::string url){
-		if(url.empty()){
-			return;
-		}
+    void AssetLocator::loadAsset(std::string url){
+        if(url.empty()){
+            return;
+        }
 
-		if(ob_str_startsWith(url, "file://")){
-			return;
-		}
+        if(ob_str_startsWith(url, "file://")){
+            return;
+        }
 
-		shared_ptr<TaskScheduler> taskS = eng->getSecondaryTaskScheduler();
+        shared_ptr<TaskScheduler> taskS = eng->getSecondaryTaskScheduler();
 
-		struct _ob_assetLocatorMetad* metad = new struct _ob_assetLocatorMetad;
-		metad->url = strdup(url.c_str());
-		metad->eng = eng;
+        struct _ob_assetLocatorMetad* metad = new struct _ob_assetLocatorMetad;
+        metad->url = strdup(url.c_str());
+        metad->eng = eng;
 
-		pthread_mutex_lock(&mmutex);
+        pthread_mutex_lock(&mmutex);
 
-		requestQueueSize++;
+        requestQueueSize++;
 
-		pthread_mutex_unlock(&mmutex);
+        pthread_mutex_unlock(&mmutex);
 
-		contentCache.emplace(url, loadingResponse);
+        contentCache.emplace(url, loadingResponse);
 
-		taskS->enqueue(loadAssetAsyncTask, metad, 0, false, false);
-	}
+        taskS->enqueue(loadAssetAsyncTask, metad, 0, false, false);
+    }
 
-	shared_ptr<AssetResponse> AssetLocator::getAsset(std::string url, bool loadIfNotPresent){
-		if(url.empty()){
-			return NULL;
-		}
+    shared_ptr<AssetResponse> AssetLocator::getAsset(std::string url, bool loadIfNotPresent){
+        if(url.empty()){
+            return NULL;
+        }
 
-		if(hasAsset(url)){
-			shared_ptr<AssetResponse> resp = contentCache.at(url);
-			if(resp != loadingResponse){
-				return resp;
-			}
-		}else{
-			if(loadIfNotPresent){
-				loadAsset(url);
-				return getAsset(url, false);
-			}
-		}
+        if(hasAsset(url)){
+            shared_ptr<AssetResponse> resp = contentCache.at(url);
+            if(resp != loadingResponse){
+                return resp;
+            }
+        }else{
+            if(loadIfNotPresent){
+                loadAsset(url);
+                return getAsset(url, false);
+            }
+        }
 
-		return NULL;
-	}
+        return NULL;
+    }
 
-	bool AssetLocator::hasAsset(std::string url){
-		return contentCache.count(url) != 0;
-	}
+    bool AssetLocator::hasAsset(std::string url){
+        return contentCache.count(url) != 0;
+    }
 
-	void AssetLocator::putAsset(std::string url, size_t size, char* data){
-		std::map<std::string, shared_ptr<AssetResponse>>::iterator i = contentCache.find(url);
+    void AssetLocator::putAsset(std::string url, size_t size, char* data){
+        std::map<std::string, shared_ptr<AssetResponse>>::iterator i = contentCache.find(url);
 
-		if(i != contentCache.end()){
-			contentCache.erase(i);
-		}
+        if(i != contentCache.end()){
+            contentCache.erase(i);
+        }
 
-		contentCache.emplace(url, make_shared<AssetResponse>(size, data, url, eng));
-	}
+        contentCache.emplace(url, make_shared<AssetResponse>(size, data, url, eng));
+    }
 
-	void AssetLocator::addWaitingInstance(shared_ptr<Instance::Instance> inst){
-		if(inst){
-			instancesWaiting.push_back(inst);
-		}
-	}
+    void AssetLocator::addWaitingInstance(shared_ptr<Instance::Instance> inst){
+        if(inst){
+            instancesWaiting.push_back(inst);
+        }
+    }
 
-	int AssetLocator::getRequestQueueSize(){
-		return requestQueueSize;
-	}
+    int AssetLocator::getRequestQueueSize(){
+        return requestQueueSize;
+    }
 }
