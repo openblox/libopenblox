@@ -10,6 +10,7 @@ build:
     - ./configure --prefix=$(readlink -f artifacts)
     - make
     - make install
+    - cp libopenblox.pc artifacts
   
 pages:
   script:
