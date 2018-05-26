@@ -1,10 +1,15 @@
 image: registry.splentity.com/openblox/ci-build-environment/ob:latest
 
 build:
+  artifacts:
+    paths:
+      - artifacts
   script:
     - ./autoconf.sh
     - ./configure
     - make
+    - mkdir artifacts
+    - make install DESTDIR=artifacts
   
 pages:
   script:
