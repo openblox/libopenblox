@@ -6,10 +6,10 @@ build:
       - artifacts
   script:
     - ./autoconf.sh
-    - ./configure
-    - make
     - mkdir artifacts
-    - make install DESTDIR=$(readlink -f artifacts)
+    - ./configure --prefix=$(readlink -f artifacts)
+    - make
+    - make install
   
 pages:
   script:
