@@ -79,7 +79,6 @@ type/EventConnection.h \
 type/Event.h \
 type/LuaEnum.h \
 type/LuaEnumItem.h \
-type/Type.h \
 type/UDim2.h \
 type/UDim.h \
 type/VarWrapper.h \
