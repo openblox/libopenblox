@@ -9,7 +9,7 @@ build:
     - ./configure
     - make
     - mkdir artifacts
-    - make install DESTDIR=artifacts
+    - make install DESTDIR=$(readlink -f artifacts)
   
 pages:
   script:
