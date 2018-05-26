@@ -1,4 +1,4 @@
-image: johnmh/ob-env
+image: registry.splentity.com/openblox/ci-build-environment/ob:latest
 
 build:
   script:
