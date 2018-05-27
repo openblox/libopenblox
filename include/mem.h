@@ -22,10 +22,12 @@
 
 #include <memory>
 
-#define make_shared std::make_shared
-#define shared_ptr std::shared_ptr
-#define weak_ptr std::weak_ptr
-#define dynamic_pointer_cast std::dynamic_pointer_cast
+namespace OB{
+	using std::make_shared;
+	using std::shared_ptr;
+	using std::weak_ptr;
+	using std::dynamic_pointer_cast;
+}
 
 #endif
 
