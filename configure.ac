@@ -81,6 +81,4 @@ AC_CONFIG_FILES(Makefile
 		libopenblox-devel.pc
                 libopenblox.pc)
 
-pkgconfig_DATA=libopenblox.pc
-
 AC_OUTPUT
