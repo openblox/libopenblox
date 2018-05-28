@@ -22,4 +22,5 @@ changes to the behavior of the OpenBlox engine.
 - Some basic graphical elements such as a player list and chat window are added to \ref OB::Instance::CoreGui "CoreGui".
 	- This is not the case if such objects were previously created within this game instance. The first time RobloxCompatMode is set to true is the only time these objects are added to CoreGui.
 - A \ref OB::Instance::PlayerGui "PlayerGui" instance is created for each Player currently connected, and for all newly created Players while RCM is on.
+- JavaScript support is disabled, even if it has been compiled in.
 */

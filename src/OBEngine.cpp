@@ -29,6 +29,8 @@
 
 #include "lua/OBLua.h"
 
+#include "js/OBJS.h"
+
 #include <string>
 
 #include "instance/Lighting.h"
@@ -191,9 +193,12 @@ namespace OB{
 		assetLocator = make_shared<AssetLocator>(this);
 
 		pluginManager = make_shared<PluginManager>(this);
-		// TODO: Add default plugins (i.e. Lua, JS)
 
 		globalState = OB::Lua::initGlobal(this);
+
+		#ifdef HAVE_V8
+		OB::JS::init();
+		#endif
 
 		dm = make_shared<Instance::DataModel>(this);
 		dm->initServices();
