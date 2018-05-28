@@ -20,9 +20,12 @@
 #ifndef OB_JS_OBJS
 #define OB_JS_OBJS
 
+#include "oblibconfig.h"
+
 #if HAVE_V8
 
 #include <v8.h>
+#include <libplatform/libplatform.h>
 
 namespace OB{
     namespace JS{

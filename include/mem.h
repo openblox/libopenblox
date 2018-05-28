@@ -27,6 +27,7 @@ namespace OB{
 	using std::shared_ptr;
 	using std::weak_ptr;
 	using std::dynamic_pointer_cast;
+	using std::unique_ptr;
 }
 
 #endif

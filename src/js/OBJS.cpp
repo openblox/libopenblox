@@ -19,15 +19,11 @@
 
 #include "js/OBJS.h"
 
-#include "oblibconfig.h"
-
-#ifdef HAVE_V8
+#if HAVE_V8
 
 namespace OB{
 	namespace JS{
 		void init(){
-			v8::v8::InitializeICU();
-
 			std::unique_ptr<v8::Platform> platform = v8::platform::NewDefaultPlatform();
 			v8::V8::InitializePlatform(platform.get());
 			v8::V8::Initialize();

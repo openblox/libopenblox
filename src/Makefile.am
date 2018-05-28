@@ -20,6 +20,7 @@ OBEngine.cpp \
 lua/OBLua.cpp \
 lua/OBLua_OBBase.cpp \
 lua/OBLua_OBOS.cpp \
+js/OBJS.cpp \
 type/Type.cpp \
 type/LuaEnum.cpp \
 type/LuaEnumItem.cpp \

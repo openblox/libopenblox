@@ -33,9 +33,7 @@ namespace OB{
 	 * this type, and any type to be used as metadata. That type is
 	 * cast to a void*, which will be passed as the first parameter of
 	 * this function on invocation. The second parameter, startTime,
-	 * is the time, in milliseconds, that the task was queued. This is
-	 * used mainly by certain Lua functions, such as `wait` and
-	 * `delay`.
+	 * is the time, in milliseconds, that the task was queued.
 	 *
 	 * The return code of this function is very important, as each
 	 * return code signals a different handling in the TaskScheduler.
@@ -80,7 +78,7 @@ namespace OB{
 
 	/**
 	 * This class is used to schedule tasks to be run on the task
-	 * thread, mostly tasks involving Lua states.
+	 * thread.
 	 *
 	 * When GetSortsTasks is false, the TaskScheduler will act as a
 	 * FIFO queue.
