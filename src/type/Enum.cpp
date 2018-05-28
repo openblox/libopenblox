@@ -38,6 +38,10 @@ namespace OB{
 			  "TextInput",
 			  "Unknown");
 
+		DENUM(ScriptLanguage,
+			  "Lua",
+			  "JavaScript");
+
 		void registerLuaEnums(lua_State* L){
 			lua_newtable(L);
 

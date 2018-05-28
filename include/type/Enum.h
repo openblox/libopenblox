@@ -55,6 +55,10 @@ namespace OB{
 			  Gamepad,
 			  TextInput,
 			  Unknown);
+
+		LENUM(ScriptLanguage,
+			  Lua,
+			  JavaScript);
 	}
 }
 

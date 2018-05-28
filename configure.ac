@@ -48,15 +48,17 @@ AS_IF([test "x$have_irrlicht" = "xyes"],
       [[LIRRLICHT_LIBS="-lIrrlicht"] AC_DEFINE_UNQUOTED(HAVE_IRRLICHT, 1, [Define to 1 if you have the `Irrlicht' library (-lIrrlicht).])],
       [LIRRLICHT_LIBS=""])
 
+AC_SUBST(LIRRLICHT_LIBS)
+
 AS_IF([test "x$with_v8" = "xyes"],
       [AC_CHECK_LIB(v8, _init, [have_v8=yes], AC_MSG_ERROR([_init was not found in libv8 (v8 not installed?)]))],
       [have_v8=no])
 
 AS_IF([test "x$have_v8" = "xyes"],
-            [[LV8_LIBS="-lv8"] AC_DEFINE_UNQUOTED(HAVE_V8, 1, [Define to 1 if you have the `v8' library (-lv8).])],
+            [[LV8_LIBS="-lv8_libbase -lv8_libplatform -lv8"] AC_DEFINE_UNQUOTED(HAVE_V8, 1, [Define to 1 if you have the `v8' library (-lv8).])],
             [LV8_LIBS=""])
 
-AC_SUBST(LIRRLICHT_LIBS)
+AC_SUBST(LV8_LIBS)
 
 AS_IF([test "x$with_pugixml" != "xno"],
       [[LPUGIXML_LIBS="-lpugixml"] AC_DEFINE_UNQUOTED(HAVE_PUGIXML, 1, [Define to 1 if you have the `pugixml' library (-lpugixml).])],

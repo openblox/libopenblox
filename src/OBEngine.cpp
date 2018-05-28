@@ -196,7 +196,7 @@ namespace OB{
 
 		globalState = OB::Lua::initGlobal(this);
 
-		#ifdef HAVE_V8
+		#if HAVE_V8
 		OB::JS::init();
 		#endif
 

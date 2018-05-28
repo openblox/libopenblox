@@ -28,11 +28,36 @@
 #include <libplatform/libplatform.h>
 
 namespace OB{
+	class OBEngine;
+
     namespace JS{
-        static void init();
+		struct _OBJState{
+			v8::Isolate* isolate;
+			v8::Isolate::CreateParams create_params;
+		};
+        /*
+         * Initializes V8.
+         */
+        void init();
+
+		/**
+		 * Returns the OBEngine* associated with this V8 context.
+		 *
+		 * @returns OBEngine* engine
+		 * @author John M. Harris, Jr.
+		 */
+		OBEngine* getEngine(v8::Local<v8::Context> ctx);
+
+	    v8::Local<v8::Context> newContext();
+
+		void runScript(v8::Local<v8::Context> ctx, char* src);
     }
 }
 
 #endif
 
 #endif
+
+// Local Variables:
+// mode: c++
+// End:
