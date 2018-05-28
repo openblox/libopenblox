@@ -43,6 +43,11 @@
 /src/lua/.libs/
 /src/lua/*.lo
 /src/lua/*.o
+/src/js/.deps/
+/src/js/.dirstamp
+/src/js/.libs/
+/src/js/*.lo
+/src/js/*.o
 /src/type/.deps/
 /src/type/.dirstamp
 /src/type/.libs/
