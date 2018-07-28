@@ -95,7 +95,7 @@ namespace OB{
 				return containsPoint(p);
 			}
 
-			GuiBase2d::handleClick(p);
+			return GuiBase2d::handleClick(p);
 		}
 
 		shared_ptr<Type::Vector2> GuiObject::getAbsolutePosition(){
