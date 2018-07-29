@@ -55,13 +55,13 @@ namespace OB{
 	}
 
 	shared_ptr<Instance::Instance> OBSerializer::LoadModelFromMemory(char* buf, size_t size){
-
+		return NULL; // STUB
 	}
 
 	shared_ptr<Instance::Instance> OBSerializer::LoadModel(std::string resURI){
 		std::string loadURI = _ob_obserializer_load_uri_to_std(resURI);
 
-		return NULL;
+		return NULL; // STUB
 	}
 
 	bool OBSerializer::LoadFromMemory(char* buf, size_t size){
