@@ -20,7 +20,6 @@ OBEngine.cpp \
 lua/OBLua.cpp \
 lua/OBLua_OBBase.cpp \
 lua/OBLua_OBOS.cpp \
-js/OBJS.cpp \
 type/Type.cpp \
 type/LuaEnum.cpp \
 type/LuaEnumItem.cpp \
@@ -43,6 +42,7 @@ instance/PVInstance.cpp \
 instance/Model.cpp \
 instance/BindableEvent.cpp \
 instance/ServiceProvider.cpp \
+instance/Sky.cpp \
 instance/Lighting.cpp \
 instance/ContentProvider.cpp \
 instance/UserInputService.cpp \

@@ -20,7 +20,6 @@ TaskScheduler.h \
 lua/OBLua.h \
 lua/OBLua_OBBase.h \
 lua/OBLua_OBOS.h \
-js/OBJS.h \
 instance/BasePart.h \
 instance/BasePlayerGui.h \
 instance/BaseScript.h \

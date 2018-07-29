@@ -27,7 +27,6 @@ AC_ARG_WITH(bullet, AS_HELP_STRING([--without-bullet], [Compile without Bullet s
 AC_ARG_WITH(curl, AS_HELP_STRING([--without-curl], [Compile without curl support.]))
 AC_ARG_WITH(enet, AS_HELP_STRING([--without-enet], [Compile without enet support.]))
 AC_ARG_WITH(lua, AS_HELP_STRING([--with-lua=LUA_VER], [Compile with a specific system Lua.]), [syslua="$withval"])
-AC_ARG_WITH(v8, AS_HELP_STRING([--with-v8], [Compile with JavaScript support.]))
 
 #Dependency checks
 AC_DEFINE_UNQUOTED(OPENBLOX_VERSION, [0.1.1], [Current OpenBlox version, for use without PACKAGE_ definitions])
@@ -49,16 +48,6 @@ AS_IF([test "x$have_irrlicht" = "xyes"],
       [LIRRLICHT_LIBS=""])
 
 AC_SUBST(LIRRLICHT_LIBS)
-
-AS_IF([test "x$with_v8" = "xyes"],
-      [AC_CHECK_LIB(v8, _init, [have_v8=yes], AC_MSG_ERROR([_init was not found in libv8 (v8 not installed?)]))],
-      [have_v8=no])
-
-AS_IF([test "x$have_v8" = "xyes"],
-            [[LV8_LIBS="-lv8_libbase -lv8_libplatform -lv8"] AC_DEFINE_UNQUOTED(HAVE_V8, 1, [Define to 1 if you have the `v8' library (-lv8).])],
-            [LV8_LIBS=""])
-
-AC_SUBST(LV8_LIBS)
 
 AS_IF([test "x$with_pugixml" != "xno"],
       [[LPUGIXML_LIBS="-lpugixml"] AC_DEFINE_UNQUOTED(HAVE_PUGIXML, 1, [Define to 1 if you have the `pugixml' library (-lpugixml).])],

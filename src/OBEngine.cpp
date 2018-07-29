@@ -29,8 +29,6 @@
 
 #include "lua/OBLua.h"
 
-#include "js/OBJS.h"
-
 #include <string>
 
 #include "instance/Lighting.h"
@@ -195,10 +193,6 @@ namespace OB{
 		pluginManager = make_shared<PluginManager>(this);
 
 		globalState = OB::Lua::initGlobal(this);
-
-		#if HAVE_V8
-		OB::JS::init();
-		#endif
 
 		dm = make_shared<Instance::DataModel>(this);
 		dm->initServices();
