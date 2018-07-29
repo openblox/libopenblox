@@ -171,6 +171,7 @@ namespace OB{
 			if(return_path){
 				size_t size = GetFullPathNameA(path, PATH_MAX, return_path, 0);
 
+<<<<<<< HEAD
 				if(size > PATH_MAX){
 					if(return_path != resolved_path){
 						size_t new_size;
@@ -286,5 +287,7 @@ int gettimeofday(struct timeval* tp, void* tzp){
 	}
 
 #endif
+=======
+>>>>>>> ''
 #endif
 }
