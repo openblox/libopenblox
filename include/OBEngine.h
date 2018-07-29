@@ -272,6 +272,24 @@ namespace OB{
 			void setUseVsync(bool useVsync);
 
 			/**
+			* Returns true if the OpenBlox engine window
+			* will be resizable.
+			*
+			* @returns true if OpenBlox is supposed to be resizable
+			* @author Tochigi
+			*/
+			bool getResizable();
+
+			/**
+			* Sets wether or not the OpenBlox engine window
+			* will be resizable.
+			*
+			* @param Resizable true if the Openblox window is supposed to be resizable, otherwise false
+			* @author Tochigi
+			*/
+			void setResizable(bool Resizable);
+
+			/**
 			 * Gets the current underlying window ID. With X
 			 * this is a Window handle (A.K.A. XID A.K.A.
 			 * unsigned long int), on Windows this is an
@@ -382,6 +400,7 @@ namespace OB{
 			int startHeight;
 			bool vsync;
 			void* windowId;
+			bool resizable;
 
 			lua_State* globalState;
 
