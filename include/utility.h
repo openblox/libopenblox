@@ -35,6 +35,8 @@
 #include <sstream>
 #include <vector>
 #include <string>
+#include <functional>
+#include <cctype>
 
 #ifdef _WIN32
 #include <winsock2.h>

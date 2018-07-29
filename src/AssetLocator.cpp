@@ -416,7 +416,13 @@ namespace OB{
         shared_ptr<TaskScheduler> taskS = eng->getSecondaryTaskScheduler();
 
         struct _ob_assetLocatorMetad* metad = new struct _ob_assetLocatorMetad;
-        metad->url = strdup(url.c_str());
+
+		// Because Windows is fucking annoying
+#ifdef _MSC_VER
+		metad->url = _strdup(url.c_str());
+#else
+		metad->url = strdup(url.c_str());
+#endif
         metad->eng = eng;
 
         pthread_mutex_lock(&mmutex);
