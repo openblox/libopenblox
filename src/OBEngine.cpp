@@ -65,6 +65,7 @@ namespace OB{
 		startWidth = 640;
 		startHeight = 480;
 		vsync = false;
+		resizable = false;
 
 		globalState = NULL;
 
@@ -148,6 +149,7 @@ namespace OB{
 			}
 
 			irrDev->setWindowCaption(L"OpenBlox");
+			irrDev->setResizable(resizable);
 
 			irrDriv = irrDev->getVideoDriver();
 			irrSceneMgr = irrDev->getSceneManager();
@@ -359,6 +361,19 @@ namespace OB{
 			throw new OBException("You can't call setUsesVsync after init is called.");
 		}
 		vsync = useVsync;
+	}
+
+	bool OBEngine::getResizable()
+	{
+		return resizable;
+	}
+
+	void OBEngine::setResizable(bool Resizable)
+	{
+		if (initialized) {
+			throw new OBException("You can't call setResizable after init is called.");
+		}
+		resizable = Resizable;
 	}
 
 	void* OBEngine::getWindowId(){
