@@ -6,6 +6,6 @@ includedir=@includedir@
 Name: @PACKAGE_NAME@
 Description: The OpenBlox game engine
 Version: @PACKAGE_VERSION@
-Libs: -L${libdir} -lopenblox @LIRRLICHT_LIBS@ @LV8_LIBS@
+Libs: -L${libdir} -lopenblox @LIRRLICHT_LIBS@
 Cflags: -I${includedir}/libopenblox
 Requires: @AX_PACKAGE_REQUIRES@
