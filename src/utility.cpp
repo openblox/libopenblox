@@ -33,14 +33,21 @@
 #include <errno.h>
 #include <sys/stat.h>
 #include <direct.h>
+#ifdef _MSC_VER
+#include <ctime>
+#endif
 #endif
 
 namespace OB{
 	ob_int64 currentTimeMillis(){
+#ifndef _MSC_VER
 		struct timeval tp;
 		gettimeofday(&tp, NULL);
 
-		return (ob_int64)(tp.tv_sec * 1000 + tp.tv_usec / 1000);
+		return (ob_int64)(tp.tv_sec * 1000 +tp.tv_usec / 1000);
+#else
+		return (ob_int64)(std::time(nullptr) * 1000);
+#endif
 	}
 
 	bool ob_str_startsWith(std::string str, std::string prefix){
@@ -141,7 +148,7 @@ namespace OB{
 		return _getcwd(path, FILENAME_MAX);
 	}
 
-	void usleep(__int64 usec){
+	void usleep(ob_int64 usec){
 		HANDLE timer;
 		LARGE_INTEGER ft;
 
@@ -153,7 +160,7 @@ namespace OB{
 		CloseHandle(timer);
 	}
 
-#ifdef _MSC_VER
+/*#ifdef _MSC_VER
 	int gettimeofday(struct timeval* tp, void* tzp){
 		// Note: some broken versions only have 8 trailing zero's, the correct epoch has 9 trailing zero's
 		// This magic number is the number of 100 nanosecond intervals since January 1, 1601 (UTC)
@@ -173,6 +180,6 @@ namespace OB{
 		tp->tv_usec = (long) (system_time.wMilliseconds * 1000);
 		return 0;
 	}
-#endif
+#endif*/
 #endif
 }
