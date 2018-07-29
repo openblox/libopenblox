@@ -17,38 +17,42 @@
  * along with OpenBlox. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "instance/Instance.h"
+#include "instance/Sky.h"
 
-#ifndef OB_INST_SKY
-#define OB_INST_SKY
+#ifndef OB_INST_SKYBOX
+#define OB_INST_SKYBOX
 
 namespace OB{
 	namespace Instance{
-		class Sky: public Instance{
+		class SkyBox: public Sky{
 			public:
-				Sky(OBEngine* eng);
-				virtual ~Sky();
+				SkyBox(OBEngine* eng);
+				virtual ~SkyBox();
+				
 
-				virtual void activateSky();
-				virtual void deactivateSky();
-
+#if HAVE_ENET
 				/**
-				 * This is provided for the convenience of sky implementations.
+				 * Replicates properties of this Instance.
 				 *
-				 * If this is true, the sky is active. Useful in hooks from
-				 * AssetLocator, where we'll want to wait for assets to load
-				 * before applying the sky node.
-				 *
+				 * @param peer Peer
 				 * @author John M. Harris, Jr.
 				 */
-				bool skyActive;
+				virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
+#endif
 
-				DECLARE_CLASS(Sky);
+				virtual std::map<std::string, _PropertyInfo> getProperties();
+				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
+				virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
+
+				static void register_lua_property_getters(lua_State* L);
+				static void register_lua_property_setters(lua_State* L);
+
+				DECLARE_CLASS(SkyBox);
 		};
 	}
 }
 
-#endif // OB_INST_SKY
+#endif // OB_INST_SKYBOX
 
 
 // Local Variables:

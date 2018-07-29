@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 John M. Harris, Jr. <johnmh@openblox.org>
+ * Copyright (C) 2018 John M. Harris, Jr. <johnmh@openblox.org>
  *
  * This file is part of OpenBlox.
  *
@@ -19,9 +19,6 @@
 
 #include "instance/Sky.h"
 
-#include "instance/NetworkReplicator.h"
-#include "instance/NetworkServer.h"
-
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS_ABS_WCLONE(Sky, Instance){
@@ -32,45 +29,18 @@ namespace OB{
 			Name = ClassName;
 
 			Archivable = false;
+
+			skyActive = false;
 		}
 
 	    Sky::~Sky(){}
 
-#if HAVE_ENET
-		void Sky::replicateProperties(shared_ptr<NetworkReplicator> peer){
-			Instance::replicateProperties(peer);
-		}
-#endif
-
-		std::map<std::string, _PropertyInfo> Sky::getProperties(){
-			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
-			return propMap;
+		void Sky::activateSky(){
+			skyActive = true;
 		}
 
-		void Sky::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
-			Instance::setProperty(prop, val);
-		}
-
-		shared_ptr<Type::VarWrapper> Sky::getProperty(std::string prop){
-			return Instance::getProperty(prop);
-		}
-
-		void Sky::register_lua_property_setters(lua_State* L){
-			Instance::register_lua_property_setters(L);
-
-			luaL_Reg properties[] = {
-				{NULL, NULL}
-			};
-			luaL_setfuncs(L, properties, 0);
-		}
-
-		void Sky::register_lua_property_getters(lua_State* L){
-			Instance::register_lua_property_getters(L);
-
-			luaL_Reg properties[] = {
-				{NULL, NULL}
-			};
-			luaL_setfuncs(L, properties, 0);
+		void Sky::deactivateSky(){
+			skyActive = false;
 		}
 	}
 }
