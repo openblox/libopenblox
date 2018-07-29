@@ -24,11 +24,11 @@
 
 namespace OB{
 	namespace Instance{
-		DEFINE_CLASS(SkyBox, true, false, Instance){
+		DEFINE_CLASS(SkyBox, true, false, Sky){
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-		SkyBox::SkyBox(OBEngine* eng) : Instance(eng){
+		SkyBox::SkyBox(OBEngine* eng) : Sky(eng){
 			Name = ClassName;
 
 			Archivable = false;
