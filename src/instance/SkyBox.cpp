@@ -38,6 +38,32 @@ namespace OB{
 
 	    SkyBox::~SkyBox(){}
 
+		shared_ptr<Instance> SkyBox::cloneImpl(){
+			return NULL; // TODO: STUB
+		}
+
+		void SkyBox::activateSky(){
+			Sky::activateSky();
+
+			updateSkyBox();
+		}
+
+		void SkyBox::deactivateSky(){
+			Sky::deactivateSky();
+
+			updateSkyBox();
+		}
+
+		void SkyBox::updateSkyBox(){
+			if(skyActive){
+				if(irrNode){
+					irrNode->remove();
+				}
+
+				//TODO: Load new SkyBox
+			}
+		}
+
 #if HAVE_ENET
 		void SkyBox::replicateProperties(shared_ptr<NetworkReplicator> peer){
 			Instance::replicateProperties(peer);

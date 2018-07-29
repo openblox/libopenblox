@@ -28,7 +28,9 @@ namespace OB{
 			public:
 				SkyBox(OBEngine* eng);
 				virtual ~SkyBox();
-				
+
+				virtual void activateSky();
+				virtual void deactivateSky();
 
 #if HAVE_ENET
 				/**
@@ -48,6 +50,14 @@ namespace OB{
 				static void register_lua_property_setters(lua_State* L);
 
 				DECLARE_CLASS(SkyBox);
+
+				void updateSkyBox();
+				
+#if HAVE_IRRLICHT
+
+				irr::scene::ISceneNode* irrNode;
+
+#endif
 		};
 	}
 }
