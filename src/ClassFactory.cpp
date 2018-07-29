@@ -33,6 +33,7 @@
 #include "instance/Model.h"
 #include "instance/BindableEvent.h"
 #include "instance/ServiceProvider.h"
+#include "instance/Sky.h"
 #include "instance/Lighting.h"
 #include "instance/ContentProvider.h"
 #include "instance/BasePlayerGui.h"
@@ -206,6 +207,7 @@ namespace OB{
 		Instance::UserInputService::registerClass();
 		Instance::Players::registerClass();
 		Instance::Player::registerClass();
+		Instance::Sky::registerClass();
 
 #if HAVE_ENET
 		Instance::NetworkReplicator::registerClass();
