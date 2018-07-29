@@ -57,7 +57,7 @@ namespace OB{
 				class HeldInstance{
 					public:
 						shared_ptr<Instance> inst;
-						ob_int64 holdEnd;
+						ob_uint64 holdEnd;
 				};
 				std::queue<HeldInstance> heldInstances;
 

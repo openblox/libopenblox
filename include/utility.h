@@ -52,7 +52,7 @@ namespace OB{
 	 * @returns Current time in millis
 	 * @author John M. Harris, Jr.
 	 */
-	ob_int64 currentTimeMillis();
+	ob_uint64 currentTimeMillis();
 
 	/**
 	 * Returns true if str starts with prefix.

@@ -55,7 +55,7 @@ namespace OB{
 	 * a response code 1, except the TaskScheduler should stop
 	 * processing tasks for this tick.
 	 */
-	typedef int (*ob_task_fnc)(void* metad, ob_int64 startTime);
+	typedef int (*ob_task_fnc)(void* metad, ob_uint64 startTime);
 
 	/**
 	 * This struct holds the internal data of a waiting task. This
@@ -68,8 +68,8 @@ namespace OB{
 	 */
 	struct _ob_waiting_task{
 		public:
-			ob_int64 at;
-			ob_int64 start;
+			ob_uint64 at;
+			ob_uint64 start;
 			void* metad;
 			ob_task_fnc task_fnc;
 			bool getsPaused;
@@ -161,7 +161,7 @@ namespace OB{
 			 *
 			 * @author John M. Harris, Jr.
 			 */
-			void enqueue(ob_task_fnc fnc, void* metad, ob_int64 at, bool getsPaused, bool dmBound);
+			void enqueue(ob_task_fnc fnc, void* metad, ob_uint64 at, bool getsPaused, bool dmBound);
 		private:
 			std::vector<_ob_waiting_task> tasks;
 

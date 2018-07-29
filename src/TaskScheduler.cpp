@@ -73,7 +73,7 @@ namespace OB{
 
 			std::vector<_ob_waiting_task> runThisTick;
 
-			ob_int64 curTime = currentTimeMillis();
+			ob_uint64 curTime = currentTimeMillis();
 			while(!tasks.empty()){
 				_ob_waiting_task t = tasks.back();
 
@@ -156,8 +156,8 @@ namespace OB{
 		tasks = tmpPopped;
 	}
 
-	void TaskScheduler::enqueue(ob_task_fnc fnc, void* metad, ob_int64 at, bool getsPaused, bool dmBound){
-		ob_int64 curTime = currentTimeMillis();
+	void TaskScheduler::enqueue(ob_task_fnc fnc, void* metad, ob_uint64 at, bool getsPaused, bool dmBound){
+		ob_uint64 curTime = currentTimeMillis();
 
 		_ob_waiting_task t;
 		t.start = curTime;

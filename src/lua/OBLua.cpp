@@ -383,12 +383,12 @@ namespace OB{
 		}
 
 		// Wakes up a Lua coroutine after a wait
-		int _ob_lua_wake_wait(void* metad, ob_int64 start){
-			ob_int64 curTime = currentTimeMillis();
+		int _ob_lua_wake_wait(void* metad, ob_uint64 start){
+			ob_uint64 curTime = currentTimeMillis();
 
 			lua_State* L = (lua_State*)metad;
 			lua_pushnumber(L, (curTime - start) / 1000.0);
-			lua_pushnumber(L, (curTime - 0) / 1000.0);
+			lua_pushnumber(L, curTime / 1000.0);
 
 			int ret = lua_resume(L, NULL, 2);
 
@@ -419,8 +419,8 @@ namespace OB{
 			OBEngine* eng = LState->eng;
 			shared_ptr<TaskScheduler> tasks = eng->getTaskScheduler();
 
-			ob_int64 curTime = currentTimeMillis();
-			ob_int64 at = curTime + (int)(waitTime * 1000);
+			ob_uint64 curTime = currentTimeMillis();
+			ob_uint64 at = curTime + (ob_uint64)(waitTime * 1000);
 
 			tasks->enqueue(_ob_lua_wake_wait, L, at, LState->getsPaused, LState->dmBound);
 
@@ -428,9 +428,7 @@ namespace OB{
 		}
 
 		// Wakes up a Lua coroutine after a delay
-		int _ob_lua_wake_delay(void* metad, ob_int64 start){
-			ob_int64 curTime = currentTimeMillis();
-
+		int _ob_lua_wake_delay(void* metad, ob_uint64 start){
 			lua_State* L = (lua_State*)metad;
 			int ret = lua_resume(L, NULL, 0);
 
@@ -465,8 +463,8 @@ namespace OB{
 			OBEngine* eng = LState->eng;
 			shared_ptr<TaskScheduler> tasks = eng->getTaskScheduler();
 
-			ob_int64 curTime = currentTimeMillis();
-			ob_int64 at = curTime + (int)(secs * 1000);
+			ob_uint64 curTime = currentTimeMillis();
+			ob_uint64 at = curTime + (ob_uint64)(secs * 1000);
 
 			tasks->enqueue(_ob_lua_wake_delay, cL, at, LState->getsPaused, LState->dmBound);
 

@@ -315,7 +315,7 @@ namespace OB{
 		return globalState;
 	}
 
-	ob_int64 OBEngine::getStartTime(){
+	ob_uint64 OBEngine::getStartTime(){
 		return startTime;
 	}
 

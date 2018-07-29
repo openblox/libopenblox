@@ -386,7 +386,7 @@ namespace OB{
         OBEngine* eng;
     };
 
-    int AssetLocator::loadAssetAsyncTask(void* metad, ob_int64 startTime){
+    int AssetLocator::loadAssetAsyncTask(void* metad, ob_uint64 startTime){
         if(metad == NULL){
             return 0;
         }

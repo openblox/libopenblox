@@ -36,11 +36,17 @@
 #endif
 
 namespace OB{
-	ob_int64 currentTimeMillis(){
+	ob_uint64 currentTimeMillis(){
 		struct timeval tp;
 		gettimeofday(&tp, NULL);
 
-		return (ob_int64)(tp.tv_sec * 1000 + tp.tv_usec / 1000);
+		ob_uint64 secsToMillis = tp.tv_sec * 1000;
+		ob_uint64 usecToMillis = tp.tv_usec / 1000;
+		printf("usecToMillis: %u\n", usecToMillis);
+
+	    ob_uint64 retVal = secsToMillis + usecToMillis;
+		printf("retVal: %u\n", retVal);
+		return retVal;
 	}
 
 	bool ob_str_startsWith(std::string str, std::string prefix){
