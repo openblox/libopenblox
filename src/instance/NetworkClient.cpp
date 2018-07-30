@@ -56,7 +56,7 @@ namespace OB{
 			}
 
 			if(!heldInstances.empty()){
-				ob_int64 curTime = currentTimeMillis();
+				ob_uint64 curTime = currentTimeMillis();
 
 				while(!heldInstances.empty()){
 					HeldInstance hi = heldInstances.front();
@@ -131,7 +131,7 @@ namespace OB{
 								createdInst->setNetworkID(netId);
 
 								HeldInstance hi;
-								// We hold instances for up to 10 seconds
+								// We hold instances for up to 10 seconds (the value is left as 10 * 1000 for ease of editing and readability, should be optimized out anyway)
 								hi.holdEnd = currentTimeMillis() + (10 * 1000);
 								hi.inst = createdInst;
 

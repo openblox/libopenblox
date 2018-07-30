@@ -28,8 +28,6 @@
 #include "OBException.h"
 #include "utility.h"
 
-#include <ctime>
-
 namespace OB{
 	TaskScheduler::TaskScheduler(OBEngine* eng){
 		this->eng = eng;
@@ -75,8 +73,7 @@ namespace OB{
 
 			std::vector<_ob_waiting_task> runThisTick;
 
-			ob_int64 curTime = currentTimeMillis();
-
+			ob_uint64 curTime = currentTimeMillis();
 			while(!tasks.empty()){
 				_ob_waiting_task t = tasks.back();
 
@@ -104,9 +101,7 @@ namespace OB{
 					}
 				}
 
-				puts("run\n");
 				int retCode = t.task_fnc(t.metad, t.start);
-				puts("run\n");
 
 				switch(retCode){
 					case 1: {
@@ -161,8 +156,8 @@ namespace OB{
 		tasks = tmpPopped;
 	}
 
-	void TaskScheduler::enqueue(ob_task_fnc fnc, void* metad, ob_int64 at, bool getsPaused, bool dmBound){
-		ob_int64 curTime = currentTimeMillis();
+	void TaskScheduler::enqueue(ob_task_fnc fnc, void* metad, ob_uint64 at, bool getsPaused, bool dmBound){
+		ob_uint64 curTime = currentTimeMillis();
 
 		_ob_waiting_task t;
 		t.start = curTime;

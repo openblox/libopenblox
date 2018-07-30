@@ -88,7 +88,7 @@ namespace OB{
 			std::vector<shared_ptr<VarWrapper>> args;
 		};
 
-		int evt_do_fire_connection(void* vconn, ob_int64 startTime){
+		int evt_do_fire_connection(void* vconn, ob_uint64 startTime){
 			struct evt_vconn_t* conn = (struct evt_vconn_t*)vconn;
 
 			conn->evtCon->fire(conn->args);

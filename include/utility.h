@@ -52,7 +52,7 @@ namespace OB{
 	 * @returns Current time in millis
 	 * @author John M. Harris, Jr.
 	 */
-	__int64 currentTimeMillis();
+	ob_uint64 currentTimeMillis();
 
 	/**
 	 * Returns true if str starts with prefix.
@@ -99,6 +99,9 @@ namespace OB{
 
 	void usleep(ob_int64 usec);
 
+#ifdef _MSC_VER
+	int gettimeofday(struct timeval* tp, void* tzp);
+#endif
 #endif
 }
 

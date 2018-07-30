@@ -75,10 +75,10 @@ namespace OB{
 		}
 
 		double Workspace::getDistributedGameTime(){
-			ob_int64 startTime = eng->getStartTime();
-			ob_int64 curTime = currentTimeMillis();
+			ob_uint64 startTime = eng->getStartTime();
+			ob_uint64 curTime = currentTimeMillis();
 
-			double runTime = (double)(curTime - startTime) / 1000;
+			double runTime = (double)((curTime - startTime) / 1000.0);
 			return runTime;
 		}
 

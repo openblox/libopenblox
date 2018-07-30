@@ -64,8 +64,6 @@ namespace OB{
 				return;
 			}
 
-			ob_int64 timestamp = currentTimeMillis();
-
 			shared_ptr<Type::LuaEnumItem> val;
 			switch(messageType){
 				case Enum::MessageType::MessageOutput: {

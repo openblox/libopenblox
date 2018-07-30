@@ -199,7 +199,7 @@ namespace OB{
 			 * @returns Start time started in milliseconds
 			 * @author John M. Harris, Jr.
 			 */
-			ob_int64 getStartTime();
+			ob_uint64 getStartTime();
 
 			/**
 			 * Returns true if OBEngine is meant to handle
@@ -389,7 +389,7 @@ namespace OB{
 		private:
 			// State helpers
 			bool initialized;
-			ob_int64 startTime;
+			ob_uint64 startTime;
 			bool _isRunning;
 			int exitCode;
 			pthread_t secondaryTaskThread;
