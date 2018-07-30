@@ -54,6 +54,7 @@
 /src/type/*.lo
 /src/type/*.o
 .\#*
+\#*\#
 /libopenblox.pc
 /m4/
 /libopenblox-devel.pc
