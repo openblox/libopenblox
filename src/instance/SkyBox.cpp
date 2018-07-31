@@ -402,14 +402,14 @@ namespace OB{
 					if(videoDriver){
 						if(!top_tex){
 							if(!Top.empty()){
-								puts("Top");
 								shared_ptr<AssetResponse> resp = assetLoc->getAsset(Top);
 								if(resp){
-								    puts("resp");
 									irr::io::IReadFile* irf = resp->toIReadFile();
 									if(irf){
-										printf("irf: %s\n", irf->getFileName().c_str());
 										top_tex = videoDriver->getTexture(irf);
+										if(top_tex){
+											top_tex->grab();
+										}
 									}
 								}
 							}
@@ -422,6 +422,9 @@ namespace OB{
 									irr::io::IReadFile* irf = resp->toIReadFile();
 									if(irf){
 									    bottom_tex = videoDriver->getTexture(irf);
+										if(bottom_tex){
+											bottom_tex->grab();
+										}
 									}
 								}
 							}
@@ -434,6 +437,9 @@ namespace OB{
 									irr::io::IReadFile* irf = resp->toIReadFile();
 									if(irf){
 									    left_tex = videoDriver->getTexture(irf);
+										if(left_tex){
+										    left_tex->grab();
+										}
 									}
 								}
 							}
@@ -446,6 +452,9 @@ namespace OB{
 									irr::io::IReadFile* irf = resp->toIReadFile();
 									if(irf){
 									    right_tex = videoDriver->getTexture(irf);
+										if(right_tex){
+											right_tex->grab();
+										}
 									}
 								}
 							}
@@ -458,6 +467,9 @@ namespace OB{
 									irr::io::IReadFile* irf = resp->toIReadFile();
 									if(irf){
 									    front_tex = videoDriver->getTexture(irf);
+										if(front_tex){
+											front_tex->grab();
+										}
 									}
 								}
 							}
@@ -470,6 +482,9 @@ namespace OB{
 									irr::io::IReadFile* irf = resp->toIReadFile();
 									if(irf){
 									    back_tex = videoDriver->getTexture(irf);
+										if(back_tex){
+											back_tex->grab();
+										}
 									}
 								}
 							}
