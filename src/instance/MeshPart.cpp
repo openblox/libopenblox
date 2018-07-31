@@ -154,6 +154,11 @@ namespace OB{
 		}
 
 		bool MeshPart::assetLoaded(std::string res){
+			if(Mesh.empty()){
+				// It's entirely possible that the Mesh property has
+				// been set to "" since we started waiting.
+				return true;
+			}
 			if(res == Mesh){
 				updateMesh();
 				shared_ptr<Instance> parInst = Parent;
