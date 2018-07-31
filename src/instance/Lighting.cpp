@@ -22,6 +22,8 @@
 #include "instance/NetworkReplicator.h"
 #include "instance/NetworkServer.h"
 
+#include "instance/Sky.h"
+
 #if HAVE_IRRLICHT
 #include <irrlicht/irrlicht.h>
 #endif
@@ -36,6 +38,7 @@ namespace OB{
 			Name = ClassName;
 			netId = OB_NETID_LIGHTING;
 
+		    Sky = NULL;
 			SkyTransparent = false;
 
 			FogEnabled = false;
@@ -56,6 +59,54 @@ namespace OB{
 
 		shared_ptr<Instance> Lighting::cloneImpl(){
 			return NULL;
+		}
+
+		void Lighting::removeChild(shared_ptr<Instance> kid){
+			Instance::removeChild(kid);
+
+			if(kid){
+				if(kid == Sky){
+					setSky(NULL);
+				}
+			}
+		}
+
+		shared_ptr<Instance> Lighting::getSky(){
+			return Sky;
+		}
+
+		void Lighting::setSky(shared_ptr<Instance> sky){
+			shared_ptr<OB::Instance::Sky> newSky;
+
+			if(sky){
+				if(shared_ptr<OB::Instance::Sky> sI = dynamic_pointer_cast<OB::Instance::Sky>(sky)){
+					newSky = sI;
+				}else{
+					throw new OBException("The property Sky must be an instance of the Sky class.");
+				}
+
+				shared_ptr<Instance> skyPar = sky->getParent();
+				if(!skyPar || skyPar->GetNetworkID() != OB_NETID_LIGHTING){
+					throw new OBException("The property Sky must be a direct descendant of Lighting.");
+				}
+			}
+
+			if(Sky != sky){
+				if(Sky){
+					if(shared_ptr<OB::Instance::Sky> sI = dynamic_pointer_cast<OB::Instance::Sky>(Sky)){
+						sI->deactivateSky();
+					}
+				}
+
+			    Sky = sky;
+
+				if(Sky){
+				    newSky->activateSky();
+				}
+
+				REPLICATE_PROPERTY_CHANGE(Sky);
+				propertyChanged("Sky");
+			}
 		}
 
 		shared_ptr<Type::Color3> Lighting::getSkyColor(){
@@ -196,6 +247,7 @@ namespace OB{
 		void Lighting::replicateProperties(shared_ptr<NetworkReplicator> peer){
 			Instance::replicateProperties(peer);
 
+			peer->sendSetPropertyPacket(netId, "Sky", make_shared<Type::VarWrapper>(Sky));
 			peer->sendSetPropertyPacket(netId, "SkyColor", make_shared<Type::VarWrapper>(SkyColor));
 			peer->sendSetPropertyPacket(netId, "SkyTransparent", make_shared<Type::VarWrapper>(SkyTransparent));
 			peer->sendSetPropertyPacket(netId, "FogEnabled", make_shared<Type::VarWrapper>(FogEnabled));
@@ -207,6 +259,7 @@ namespace OB{
 
 		std::map<std::string, _PropertyInfo> Lighting::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
+			propMap["Sky"] = {"Instance", false, true, true};
 			propMap["SkyColor"] = {"Color3", false, true, true};
 			propMap["SkyTransparent"] = {"bool", false, true, true};
 			propMap["FogEnabled"] = {"bool", false, true, true};
@@ -218,6 +271,15 @@ namespace OB{
 		}
 
 		void Lighting::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
+			if(prop == "Sky"){
+				shared_ptr<Instance> skyInst = val->asInstance();
+				if(!skyInst){
+					setSky(NULL);
+				}else{
+				    setSky(skyInst);
+				}
+				return;
+			}
 			if(prop == "SkyTransparent"){
 				setSkyTransparent(val->asBool());
 				return;
@@ -247,6 +309,9 @@ namespace OB{
 		}
 
 		shared_ptr<Type::VarWrapper> Lighting::getProperty(std::string prop){
+			if(prop == "Sky"){
+				return make_shared<Type::VarWrapper>(getSky());
+			}
 			if(prop == "SkyColor"){
 				return make_shared<Type::VarWrapper>(getSkyColor());
 			}
@@ -267,6 +332,49 @@ namespace OB{
 			}
 
 			return Instance::getProperty(prop);
+		}
+
+		int Lighting::lua_getSky(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
+			if(inst){
+				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
+				if(instL){
+					shared_ptr<Instance> sky = instL->getSky();
+					if(sky){
+						return sky->wrap_lua(L);
+					}else{
+						lua_pushnil(L);
+						return 1;
+					}
+				}
+			}
+
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int Lighting::lua_setSky(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
+			if(inst){
+				shared_ptr<Lighting> instL = dynamic_pointer_cast<Lighting>(inst);
+				if(instL){
+					shared_ptr<Instance> skyInst = checkInstance(L, 2, false);
+
+					if(skyInst == NULL){
+						instL->setSky(NULL);
+					}else{
+						try{
+							instL->setSky(skyInst);
+						}catch(OBException& ex){
+							return luaL_error(L, ex.getMessage().c_str());
+						}
+					}
+				}
+			}
+
+			return 0;
 		}
 
 		int Lighting::lua_getSkyColor(lua_State* L){
@@ -457,6 +565,7 @@ namespace OB{
 			Instance::register_lua_property_setters(L);
 
 			luaL_Reg properties[] = {
+			    {"Sky", lua_setSky},
 				{"SkyColor", lua_setSkyColor},
 				{"SkyTransparent", lua_setSkyTransparent},
 				{"FogEnabled", lua_setFogEnabled},
@@ -472,6 +581,7 @@ namespace OB{
 			Instance::register_lua_property_getters(L);
 
 			luaL_Reg properties[] = {
+				{"Sky", lua_getSky},
 				{"SkyColor", lua_getSkyColor},
 				{"SkyTransparent", lua_getSkyTransparent},
 				{"FogEnabled", lua_getFogEnabled},

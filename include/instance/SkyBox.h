@@ -29,6 +29,24 @@ namespace OB{
 				SkyBox(OBEngine* eng);
 				virtual ~SkyBox();
 
+				virtual void setTop(std::string top);
+				std::string getTop();
+
+				virtual void setBottom(std::string bottom);
+				std::string getBottom();
+
+				virtual void setLeft(std::string top);
+				std::string getLeft();
+
+				virtual void setRight(std::string top);
+				std::string getRight();
+
+				virtual void setFront(std::string top);
+				std::string getFront();
+
+				virtual void setBack(std::string top);
+				std::string getBack();
+
 				virtual void activateSky();
 				virtual void deactivateSky();
 
@@ -46,14 +64,56 @@ namespace OB{
 				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
 				virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
 
+				DECLARE_LUA_METHOD(setTop);
+				DECLARE_LUA_METHOD(getTop);
+
+				DECLARE_LUA_METHOD(setBottom);
+				DECLARE_LUA_METHOD(getBottom);
+
+				DECLARE_LUA_METHOD(setLeft);
+				DECLARE_LUA_METHOD(getLeft);
+
+				DECLARE_LUA_METHOD(setRight);
+				DECLARE_LUA_METHOD(getRight);
+
+				DECLARE_LUA_METHOD(setFront);
+				DECLARE_LUA_METHOD(getFront);
+
+				DECLARE_LUA_METHOD(setBack);
+				DECLARE_LUA_METHOD(getBack);
+
 				static void register_lua_property_getters(lua_State* L);
 				static void register_lua_property_setters(lua_State* L);
 
 				DECLARE_CLASS(SkyBox);
 
+				std::string Top;
+				std::string Bottom;
+				std::string Left;
+				std::string Right;
+				std::string Front;
+				std::string Back;
+
+				void updateSkyBoxTextures();
 				void updateSkyBox();
-				
+
+				virtual bool assetLoaded(std::string res);
+
 #if HAVE_IRRLICHT
+
+				irr::video::ITexture* top_tex;
+				irr::video::ITexture* bottom_tex;
+				irr::video::ITexture* left_tex;
+				irr::video::ITexture* right_tex;
+				irr::video::ITexture* front_tex;
+				irr::video::ITexture* back_tex;
+
+				bool top_loading;
+				bool bottom_loading;
+				bool left_loading;
+				bool right_loading;
+				bool front_loading;
+				bool back_loading;
 
 				irr::scene::ISceneNode* irrNode;
 

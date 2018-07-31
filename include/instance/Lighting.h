@@ -41,6 +41,9 @@ namespace OB{
 				virtual std::string serializedID();
 #endif
 
+				shared_ptr<Instance> getSky();
+				void setSky(shared_ptr<Instance> sky);
+
 				shared_ptr<Type::Color3> getSkyColor();
 				void setSkyColor(shared_ptr<Type::Color3> skyColor);
 
@@ -59,6 +62,8 @@ namespace OB{
 				float getFogEnd();
 				void setFogEnd(float fogEnd);
 
+				virtual void removeChild(shared_ptr<Instance> kid);
+
 #if HAVE_ENET
 				/**
 				 * Replicates properties of this Instance.
@@ -73,6 +78,8 @@ namespace OB{
 				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);
 				virtual void setProperty(std::string prop, shared_ptr<Type::VarWrapper> val);
 
+				DECLARE_LUA_METHOD(getSky);
+				DECLARE_LUA_METHOD(setSky);
 				DECLARE_LUA_METHOD(getSkyColor);
 				DECLARE_LUA_METHOD(setSkyColor);
 				DECLARE_LUA_METHOD(getSkyTransparent);
@@ -93,6 +100,7 @@ namespace OB{
 
 				void updateFog();
 
+				shared_ptr<Instance> Sky;
 				shared_ptr<Type::Color3> SkyColor;
 				bool SkyTransparent;
 
