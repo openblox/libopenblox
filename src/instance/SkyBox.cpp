@@ -91,6 +91,12 @@ namespace OB{
 							updateSkyBoxTextures();
 							updateSkyBox();
 						}else{
+							if(top_tex){
+								top_tex->drop();
+							}
+							top_tex = NULL;
+							updateSkyBox();
+
 							top_loading = true;
 
 							shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
@@ -136,6 +142,12 @@ namespace OB{
 							updateSkyBoxTextures();
 							updateSkyBox();
 						}else{
+							if(bottom_tex){
+							    bottom_tex->drop();
+							}
+						    bottom_tex = NULL;
+							updateSkyBox();
+
 							bottom_loading = true;
 
 							shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
@@ -181,6 +193,12 @@ namespace OB{
 							updateSkyBoxTextures();
 							updateSkyBox();
 						}else{
+							if(left_tex){
+							    left_tex->drop();
+							}
+							left_tex = NULL;
+							updateSkyBox();
+
 							left_loading = true;
 
 							shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
@@ -226,6 +244,12 @@ namespace OB{
 							updateSkyBoxTextures();
 							updateSkyBox();
 						}else{
+							if(right_tex){
+								right_tex->drop();
+							}
+							right_tex = NULL;
+							updateSkyBox();
+
 							right_loading = true;
 
 							shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
@@ -271,6 +295,12 @@ namespace OB{
 							updateSkyBoxTextures();
 							updateSkyBox();
 						}else{
+							if(front_tex){
+								front_tex->drop();
+							}
+							front_tex = NULL;
+							updateSkyBox();
+
 							front_loading = true;
 
 							shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
@@ -316,6 +346,12 @@ namespace OB{
 							updateSkyBoxTextures();
 							updateSkyBox();
 						}else{
+							if(back_tex){
+							    back_tex->drop();
+							}
+							back_tex = NULL;
+							updateSkyBox();
+
 							back_loading = true;
 
 							shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
@@ -366,10 +402,13 @@ namespace OB{
 					if(videoDriver){
 						if(!top_tex){
 							if(!Top.empty()){
+								puts("Top");
 								shared_ptr<AssetResponse> resp = assetLoc->getAsset(Top);
 								if(resp){
+								    puts("resp");
 									irr::io::IReadFile* irf = resp->toIReadFile();
 									if(irf){
+										printf("irf: %s\n", irf->getFileName().c_str());
 										top_tex = videoDriver->getTexture(irf);
 									}
 								}
