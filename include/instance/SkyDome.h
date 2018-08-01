@@ -55,20 +55,22 @@ namespace OB{
 				static void register_lua_property_getters(lua_State* L);
 				static void register_lua_property_setters(lua_State* L);
 
+				virtual void preRender();
+
 				DECLARE_CLASS(SkyDome);
 
 				std::string Dome;
+
+#if HAVE_IRRLICHT
+				bool skydome_needs_updating;
 
 				void updateSkyDome();
 
 				virtual bool assetLoaded(std::string res);
 
-#if HAVE_IRRLICHT
-
 				irr::video::ITexture* dome_tex;
 
 				irr::scene::ISceneNode* irrNode;
-
 #endif
 		};
 	}

@@ -322,11 +322,13 @@ namespace OB{
 		void DataModel::preRender(){
 			workspace->preRender();
 			coreGui->preRender();
+			lighting->preRender();
 		}
 
 		void DataModel::render(){
 			workspace->render();
 			coreGui->render();
+			lighting->render();
 		}
 
 		int DataModel::lua_Shutdown(lua_State* L){

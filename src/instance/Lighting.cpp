@@ -71,6 +71,18 @@ namespace OB{
 			}
 		}
 
+	    void Lighting::preRender(){
+			if(Sky){
+				Sky->preRender();
+			}
+		}
+
+		void Lighting::render(){
+			if(Sky){
+				Sky->render();
+			}
+		}
+
 		shared_ptr<Instance> Lighting::getSky(){
 			return Sky;
 		}

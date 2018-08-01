@@ -41,13 +41,13 @@ namespace OB{
 
 		    Dome = "";
 
-			#if HAVE_IRRLICHT
+#if HAVE_IRRLICHT
+			skydome_needs_updating = false;
 
 			irrNode = NULL;
 
 		    dome_tex = NULL;
-
-			#endif
+#endif
 		}
 
 	    SkyDome::~SkyDome(){}
@@ -60,7 +60,7 @@ namespace OB{
 			if(dome != Dome){
 			    Dome = dome;
 
-				#if HAVE_IRRLICHT
+#if HAVE_IRRLICHT
 
 				if(!Dome.empty()){
 					shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
@@ -68,11 +68,9 @@ namespace OB{
 						if(assetLoc->hasAsset(Dome)){
 						    dome_tex = NULL;
 
-							updateSkyDome();
+						    skydome_needs_updating = true;
 						}else{
 							dome_tex = NULL;
-
-							updateSkyDome();
 
 							shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
 							assetLoc->addWaitingInstance(sharedThis);
@@ -82,10 +80,10 @@ namespace OB{
 				}else{
 				    dome_tex = NULL;
 
-					updateSkyDome();
+				    updateSkyDome();
 				}
 
-				#endif
+#endif
 
 				REPLICATE_PROPERTY_CHANGE(Dome);
 				propertyChanged("Dome");
@@ -99,23 +97,23 @@ namespace OB{
 		void SkyDome::activateSky(){
 			Sky::activateSky();
 
-
+#if HAVE_IRRLICHT
 			updateSkyDome();
+#endif
 		}
 
 		void SkyDome::deactivateSky(){
 			Sky::deactivateSky();
 
+#if HAVE_IRRLICHT
 			updateSkyDome();
+#endif
 		}
 
-		void SkyDome::updateSkyDome(){
+		void SkyDome::preRender(){
 #if HAVE_IRRLICHT
-			if(skyActive){
-				if(irrNode){
-					irrNode->remove();
-					irrNode = NULL;
-				}
+			if(skydome_needs_updating){
+				skydome_needs_updating = false;
 
 				shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
 				if(assetLoc){
@@ -129,16 +127,32 @@ namespace OB{
 									irr::io::IReadFile* irf = resp->toIReadFile();
 									if(irf){
 										dome_tex = videoDriver->getTexture(irf);
+
+										updateSkyDome();
 									}
 								}
 							}
+						}
+					}
+				}
+			}
+#endif
+		}
 
-							if(dome_tex){
-								irr::scene::ISceneManager* smgr = irrDev->getSceneManager();
-								if(smgr){
-									irrNode = smgr->addSkyDomeSceneNode(dome_tex);
-								}
-							}
+#if HAVE_IRRLICHT
+		void SkyDome::updateSkyDome(){
+			if(skyActive){
+				if(irrNode){
+					irrNode->remove();
+					irrNode = NULL;
+				}
+
+			    irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
+				if(irrDev){
+					if(dome_tex){
+						irr::scene::ISceneManager* smgr = irrDev->getSceneManager();
+						if(smgr){
+							irrNode = smgr->addSkyDomeSceneNode(dome_tex);
 						}
 					}
 				}
@@ -148,27 +162,23 @@ namespace OB{
 					irrNode = NULL;
 				}
 			}
-#endif
 		}
 
 		bool SkyDome::assetLoaded(std::string res){
-#if HAVE_IRRLICHT
 			if(Dome.empty()){
 				return true;
 			}
-			
+
 
 			if(res == Dome){
 				dome_tex = NULL;
 
-				updateSkyDome();
+			    skydome_needs_updating = true;
 
 			    return true;
 			}
-#else
-			return false;
-#endif
 		}
+#endif
 
 #if HAVE_ENET
 		void SkyDome::replicateProperties(shared_ptr<NetworkReplicator> peer){
@@ -190,7 +200,7 @@ namespace OB{
 				setDome(val->asString());
 				return;
 			}
-			
+
 			Instance::setProperty(prop, val);
 		}
 
@@ -230,7 +240,7 @@ namespace OB{
 			lua_pushnil(L);
 			return 1;
 		}
-		
+
 		void SkyDome::register_lua_property_setters(lua_State* L){
 			Instance::register_lua_property_setters(L);
 

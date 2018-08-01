@@ -46,7 +46,8 @@ namespace OB{
 			Front = "";
 			Back = "";
 
-			#if HAVE_IRRLICHT
+#if HAVE_IRRLICHT
+			skybox_needs_updating = false;
 
 			irrNode = NULL;
 
@@ -63,8 +64,7 @@ namespace OB{
 			right_loading = false;
 			front_loading = false;
 			back_loading = false;
-
-			#endif
+#endif
 		}
 
 	    SkyBox::~SkyBox(){}
@@ -77,8 +77,7 @@ namespace OB{
 			if(top != Top){
 				Top = top;
 
-				#if HAVE_IRRLICHT
-
+#if HAVE_IRRLICHT
 				if(!Top.empty()){
 					shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
 					if(assetLoc){
@@ -86,12 +85,10 @@ namespace OB{
 							top_tex = NULL;
 							top_loading = false;
 
-							updateSkyBoxTextures();
+						    skybox_needs_updating = true;
 							updateSkyBox();
 						}else{
 							top_tex = NULL;
-
-							updateSkyBox();
 
 							top_loading = true;
 
@@ -105,8 +102,7 @@ namespace OB{
 
 					updateSkyBox();
 				}
-
-				#endif
+#endif
 
 				REPLICATE_PROPERTY_CHANGE(Top);
 				propertyChanged("Top");
@@ -121,8 +117,7 @@ namespace OB{
 			if(bottom != Bottom){
 				Bottom = bottom;
 
-				#if HAVE_IRRLICHT
-
+#if HAVE_IRRLICHT
 				if(!Bottom.empty()){
 					shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
 					if(assetLoc){
@@ -130,12 +125,10 @@ namespace OB{
 						    bottom_tex = NULL;
 							bottom_loading = false;
 
-							updateSkyBoxTextures();
+						    skybox_needs_updating = true;
 							updateSkyBox();
 						}else{
 						    bottom_tex = NULL;
-
-							updateSkyBox();
 
 							bottom_loading = true;
 
@@ -149,8 +142,7 @@ namespace OB{
 
 					updateSkyBox();
 				}
-
-				#endif
+#endif
 
 				REPLICATE_PROPERTY_CHANGE(Bottom);
 				propertyChanged("Bottom");
@@ -165,8 +157,7 @@ namespace OB{
 			if(left != Left){
 				Left = left;
 
-				#if HAVE_IRRLICHT
-
+#if HAVE_IRRLICHT
 				if(!Left.empty()){
 					shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
 					if(assetLoc){
@@ -174,12 +165,10 @@ namespace OB{
 						    left_tex = NULL;
 							left_loading = false;
 
-							updateSkyBoxTextures();
+						    skybox_needs_updating = true;
 							updateSkyBox();
 						}else{
 							left_tex = NULL;
-
-							updateSkyBox();
 
 							left_loading = true;
 
@@ -193,8 +182,7 @@ namespace OB{
 
 					updateSkyBox();
 				}
-
-				#endif
+#endif
 
 				REPLICATE_PROPERTY_CHANGE(Left);
 				propertyChanged("Left");
@@ -209,8 +197,7 @@ namespace OB{
 			if(right != Right){
 				Right = right;
 
-				#if HAVE_IRRLICHT
-
+#if HAVE_IRRLICHT
 				if(!Right.empty()){
 					shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
 					if(assetLoc){
@@ -218,12 +205,10 @@ namespace OB{
 						    right_tex = NULL;
 							right_loading = false;
 
-							updateSkyBoxTextures();
+						    skybox_needs_updating = true;
 							updateSkyBox();
 						}else{
 							right_tex = NULL;
-
-							updateSkyBox();
 
 							right_loading = true;
 
@@ -237,8 +222,7 @@ namespace OB{
 
 					updateSkyBox();
 				}
-
-				#endif
+#endif
 
 				REPLICATE_PROPERTY_CHANGE(Right);
 				propertyChanged("Right");
@@ -253,8 +237,7 @@ namespace OB{
 			if(front != Front){
 				Front = front;
 
-				#if HAVE_IRRLICHT
-
+#if HAVE_IRRLICHT
 				if(!Front.empty()){
 					shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
 					if(assetLoc){
@@ -262,12 +245,10 @@ namespace OB{
 						    front_tex = NULL;
 							front_loading = false;
 
-							updateSkyBoxTextures();
+						    skybox_needs_updating = true;
 							updateSkyBox();
 						}else{
 							front_tex = NULL;
-
-							updateSkyBox();
 
 							front_loading = true;
 
@@ -281,8 +262,7 @@ namespace OB{
 
 					updateSkyBox();
 				}
-
-				#endif
+#endif
 
 				REPLICATE_PROPERTY_CHANGE(Front);
 				propertyChanged("Front");
@@ -297,8 +277,7 @@ namespace OB{
 			if(back != Back){
 			    Back = back;
 
-				#if HAVE_IRRLICHT
-
+#if HAVE_IRRLICHT
 				if(!Back.empty()){
 					shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
 					if(assetLoc){
@@ -306,12 +285,10 @@ namespace OB{
 						    back_tex = NULL;
 							back_loading = false;
 
-							updateSkyBoxTextures();
+						    skybox_needs_updating = true;
 							updateSkyBox();
 						}else{
 							back_tex = NULL;
-
-							updateSkyBox();
 
 							back_loading = true;
 
@@ -325,8 +302,7 @@ namespace OB{
 
 					updateSkyBox();
 				}
-
-				#endif
+#endif
 
 				REPLICATE_PROPERTY_CHANGE(Back);
 				propertyChanged("Back");
@@ -340,103 +316,122 @@ namespace OB{
 		void SkyBox::activateSky(){
 			Sky::activateSky();
 
-
+#if HAVE_IRRLICHT
 			updateSkyBox();
+#endif
 		}
 
 		void SkyBox::deactivateSky(){
 			Sky::deactivateSky();
 
+#if HAVE_IRRLICHT
 			updateSkyBox();
+#endif
 		}
 
-		void SkyBox::updateSkyBoxTextures(){
+		void SkyBox::preRender(){
 #if HAVE_IRRLICHT
-			shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
-			if(assetLoc){
-				irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
-				if(irrDev){
-					irr::video::IVideoDriver* videoDriver = irrDev->getVideoDriver();
-					if(videoDriver){
-						if(!top_tex){
-							if(!Top.empty()){
-								shared_ptr<AssetResponse> resp = assetLoc->getAsset(Top);
-								if(resp){
-									irr::io::IReadFile* irf = resp->toIReadFile();
-									if(irf){
-										top_tex = videoDriver->getTexture(irf);
+			if(skybox_needs_updating){
+				skybox_needs_updating = false;
+
+				bool didLoadTexture = false;
+
+				shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
+				if(assetLoc){
+					irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
+					if(irrDev){
+						irr::video::IVideoDriver* videoDriver = irrDev->getVideoDriver();
+						if(videoDriver){
+							if(!top_tex){
+								if(!Top.empty()){
+									shared_ptr<AssetResponse> resp = assetLoc->getAsset(Top);
+									if(resp){
+										irr::io::IReadFile* irf = resp->toIReadFile();
+										if(irf){
+											top_tex = videoDriver->getTexture(irf);
+											didLoadTexture = true;
+										}
 									}
 								}
 							}
-						}
 
-						if(!bottom_tex){
-							if(!Bottom.empty()){
-								shared_ptr<AssetResponse> resp = assetLoc->getAsset(Bottom);
-								if(resp){
-									irr::io::IReadFile* irf = resp->toIReadFile();
-									if(irf){
-									    bottom_tex = videoDriver->getTexture(irf);
+							if(!bottom_tex){
+								if(!Bottom.empty()){
+									shared_ptr<AssetResponse> resp = assetLoc->getAsset(Bottom);
+									if(resp){
+										irr::io::IReadFile* irf = resp->toIReadFile();
+										if(irf){
+											bottom_tex = videoDriver->getTexture(irf);
+											didLoadTexture = true;
+										}
 									}
 								}
 							}
-						}
 
-						if(!left_tex){
-							if(!Left.empty()){
-								shared_ptr<AssetResponse> resp = assetLoc->getAsset(Left);
-								if(resp){
-									irr::io::IReadFile* irf = resp->toIReadFile();
-									if(irf){
-									    left_tex = videoDriver->getTexture(irf);
+							if(!left_tex){
+								if(!Left.empty()){
+									shared_ptr<AssetResponse> resp = assetLoc->getAsset(Left);
+									if(resp){
+										irr::io::IReadFile* irf = resp->toIReadFile();
+										if(irf){
+											left_tex = videoDriver->getTexture(irf);
+											didLoadTexture = true;
+										}
 									}
 								}
 							}
-						}
 
-						if(!right_tex){
-							if(!Right.empty()){
-								shared_ptr<AssetResponse> resp = assetLoc->getAsset(Right);
-								if(resp){
-									irr::io::IReadFile* irf = resp->toIReadFile();
-									if(irf){
-									    right_tex = videoDriver->getTexture(irf);
+							if(!right_tex){
+								if(!Right.empty()){
+									shared_ptr<AssetResponse> resp = assetLoc->getAsset(Right);
+									if(resp){
+										irr::io::IReadFile* irf = resp->toIReadFile();
+										if(irf){
+											right_tex = videoDriver->getTexture(irf);
+											didLoadTexture = true;
+										}
 									}
 								}
 							}
-						}
 
-						if(!front_tex){
-							if(!Front.empty()){
-								shared_ptr<AssetResponse> resp = assetLoc->getAsset(Front);
-								if(resp){
-									irr::io::IReadFile* irf = resp->toIReadFile();
-									if(irf){
-									    front_tex = videoDriver->getTexture(irf);
+							if(!front_tex){
+								if(!Front.empty()){
+									shared_ptr<AssetResponse> resp = assetLoc->getAsset(Front);
+									if(resp){
+										irr::io::IReadFile* irf = resp->toIReadFile();
+										if(irf){
+											front_tex = videoDriver->getTexture(irf);
+											didLoadTexture = true;
+										}
 									}
 								}
 							}
-						}
 
-						if(!back_tex){
-							if(!Back.empty()){
-								shared_ptr<AssetResponse> resp = assetLoc->getAsset(Back);
-								if(resp){
-									irr::io::IReadFile* irf = resp->toIReadFile();
-									if(irf){
-									    back_tex = videoDriver->getTexture(irf);
+							if(!back_tex){
+								if(!Back.empty()){
+									shared_ptr<AssetResponse> resp = assetLoc->getAsset(Back);
+									if(resp){
+										irr::io::IReadFile* irf = resp->toIReadFile();
+										if(irf){
+											back_tex = videoDriver->getTexture(irf);
+											didLoadTexture = true;
+										}
 									}
 								}
 							}
 						}
 					}
 				}
+
+				if(didLoadTexture){
+					updateSkyBox();
+				}
 			}
-#endif
+			#endif
 		}
 
-		void SkyBox::updateSkyBox(){
 #if HAVE_IRRLICHT
+		void SkyBox::updateSkyBox(){
 			if(skyActive){
 				if(irrNode){
 					irrNode->remove();
@@ -456,11 +451,9 @@ namespace OB{
 					irrNode = NULL;
 				}
 			}
-#endif
 		}
 
 		bool SkyBox::assetLoaded(std::string res){
-			#if HAVE_IRRLICHT
 			bool assetsChanged = false;
 
 			if(top_loading && res == Top){
@@ -502,15 +495,13 @@ namespace OB{
 
 
 			if(assetsChanged){
-				updateSkyBoxTextures();
+			    skybox_needs_updating = true;
 				updateSkyBox();
 			}
 
 			return (!top_loading && !bottom_loading && !left_loading && !right_loading && !front_loading && !back_loading);
-#else
-			return true;
-#endif
 		}
+#endif
 
 #if HAVE_ENET
 		void SkyBox::replicateProperties(shared_ptr<NetworkReplicator> peer){

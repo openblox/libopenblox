@@ -41,6 +41,9 @@ namespace OB{
 				virtual std::string serializedID();
 #endif
 
+				virtual void preRender();
+				virtual void render();
+
 				shared_ptr<Instance> getSky();
 				void setSky(shared_ptr<Instance> sky);
 

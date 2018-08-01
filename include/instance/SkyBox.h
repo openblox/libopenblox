@@ -85,6 +85,8 @@ namespace OB{
 				static void register_lua_property_getters(lua_State* L);
 				static void register_lua_property_setters(lua_State* L);
 
+				virtual void preRender();
+
 				DECLARE_CLASS(SkyBox);
 
 				std::string Top;
@@ -94,12 +96,12 @@ namespace OB{
 				std::string Front;
 				std::string Back;
 
-				void updateSkyBoxTextures();
+#if HAVE_IRRLICHT
 				void updateSkyBox();
 
 				virtual bool assetLoaded(std::string res);
 
-#if HAVE_IRRLICHT
+				bool skybox_needs_updating;
 
 				irr::video::ITexture* top_tex;
 				irr::video::ITexture* bottom_tex;
@@ -116,7 +118,6 @@ namespace OB{
 				bool back_loading;
 
 				irr::scene::ISceneNode* irrNode;
-
 #endif
 		};
 	}
