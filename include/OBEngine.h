@@ -61,7 +61,8 @@ namespace OB{
 #endif
 
 #if HAVE_IRRLICHT
-	typedef void (*post_render_func_t)(irr::video::IVideoDriver*);
+	//typedef void (*post_render_func_t)(irr::video::IVideoDriver*);
+	typedef std::function<void(irr::video::IVideoDriver*)> post_render_func_t;
 #endif
 
 	/**
