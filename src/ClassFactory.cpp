@@ -154,7 +154,9 @@ namespace OB{
 
 	void ClassFactory::initClasses(OBEngine* eng){
 		for(std::map<std::string, ClassMetadata*>::iterator it = metadataTable.begin(); it != metadataTable.end(); ++it){
-			it->second->getInitFunc()(eng);
+			if(it->second){
+				it->second->getInitFunc()(eng);
+			}
 		}
 	}
 
