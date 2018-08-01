@@ -83,18 +83,14 @@ namespace OB{
 					shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
 					if(assetLoc){
 						if(assetLoc->hasAsset(Top)){
-						    if(top_tex){
-								top_tex->drop();
-							}
 							top_tex = NULL;
 							top_loading = false;
+
 							updateSkyBoxTextures();
 							updateSkyBox();
 						}else{
-							if(top_tex){
-								top_tex->drop();
-							}
 							top_tex = NULL;
+
 							updateSkyBox();
 
 							top_loading = true;
@@ -105,11 +101,8 @@ namespace OB{
 						}
 					}
 				}else{
-					if(top_tex){
-						top_tex->drop();
-					}
 					top_tex = NULL;
-					updateSkyBoxTextures();
+
 					updateSkyBox();
 				}
 
@@ -134,18 +127,14 @@ namespace OB{
 					shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
 					if(assetLoc){
 						if(assetLoc->hasAsset(Bottom)){
-						    if(bottom_tex){
-								bottom_tex->drop();
-							}
 						    bottom_tex = NULL;
 							bottom_loading = false;
+
 							updateSkyBoxTextures();
 							updateSkyBox();
 						}else{
-							if(bottom_tex){
-							    bottom_tex->drop();
-							}
 						    bottom_tex = NULL;
+
 							updateSkyBox();
 
 							bottom_loading = true;
@@ -156,11 +145,8 @@ namespace OB{
 						}
 					}
 				}else{
-					if(bottom_tex){
-					    bottom_tex->drop();
-					}
 				    bottom_tex = NULL;
-					updateSkyBoxTextures();
+
 					updateSkyBox();
 				}
 
@@ -185,18 +171,14 @@ namespace OB{
 					shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
 					if(assetLoc){
 						if(assetLoc->hasAsset(Left)){
-						    if(left_tex){
-								left_tex->drop();
-							}
 						    left_tex = NULL;
 							left_loading = false;
+
 							updateSkyBoxTextures();
 							updateSkyBox();
 						}else{
-							if(left_tex){
-							    left_tex->drop();
-							}
 							left_tex = NULL;
+
 							updateSkyBox();
 
 							left_loading = true;
@@ -207,11 +189,8 @@ namespace OB{
 						}
 					}
 				}else{
-					if(left_tex){
-					    left_tex->drop();
-					}
 				    left_tex = NULL;
-					updateSkyBoxTextures();
+
 					updateSkyBox();
 				}
 
@@ -236,18 +215,14 @@ namespace OB{
 					shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
 					if(assetLoc){
 						if(assetLoc->hasAsset(Right)){
-						    if(right_tex){
-								right_tex->drop();
-							}
 						    right_tex = NULL;
 							right_loading = false;
+
 							updateSkyBoxTextures();
 							updateSkyBox();
 						}else{
-							if(right_tex){
-								right_tex->drop();
-							}
 							right_tex = NULL;
+
 							updateSkyBox();
 
 							right_loading = true;
@@ -258,11 +233,8 @@ namespace OB{
 						}
 					}
 				}else{
-					if(right_tex){
-					    right_tex->drop();
-					}
 				    right_tex = NULL;
-					updateSkyBoxTextures();
+
 					updateSkyBox();
 				}
 
@@ -287,18 +259,14 @@ namespace OB{
 					shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
 					if(assetLoc){
 						if(assetLoc->hasAsset(Front)){
-						    if(front_tex){
-								front_tex->drop();
-							}
 						    front_tex = NULL;
 							front_loading = false;
+
 							updateSkyBoxTextures();
 							updateSkyBox();
 						}else{
-							if(front_tex){
-								front_tex->drop();
-							}
 							front_tex = NULL;
+
 							updateSkyBox();
 
 							front_loading = true;
@@ -309,11 +277,8 @@ namespace OB{
 						}
 					}
 				}else{
-					if(front_tex){
-					    front_tex->drop();
-					}
 				    front_tex = NULL;
-					updateSkyBoxTextures();
+
 					updateSkyBox();
 				}
 
@@ -338,18 +303,14 @@ namespace OB{
 					shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
 					if(assetLoc){
 						if(assetLoc->hasAsset(Back)){
-						    if(back_tex){
-								back_tex->drop();
-							}
 						    back_tex = NULL;
 							back_loading = false;
+
 							updateSkyBoxTextures();
 							updateSkyBox();
 						}else{
-							if(back_tex){
-							    back_tex->drop();
-							}
 							back_tex = NULL;
+
 							updateSkyBox();
 
 							back_loading = true;
@@ -360,11 +321,8 @@ namespace OB{
 						}
 					}
 				}else{
-					if(back_tex){
-					    back_tex->drop();
-					}
 				    back_tex = NULL;
-					updateSkyBoxTextures();
+
 					updateSkyBox();
 				}
 
@@ -407,9 +365,6 @@ namespace OB{
 									irr::io::IReadFile* irf = resp->toIReadFile();
 									if(irf){
 										top_tex = videoDriver->getTexture(irf);
-										if(top_tex){
-											top_tex->grab();
-										}
 									}
 								}
 							}
@@ -422,9 +377,6 @@ namespace OB{
 									irr::io::IReadFile* irf = resp->toIReadFile();
 									if(irf){
 									    bottom_tex = videoDriver->getTexture(irf);
-										if(bottom_tex){
-											bottom_tex->grab();
-										}
 									}
 								}
 							}
@@ -437,9 +389,6 @@ namespace OB{
 									irr::io::IReadFile* irf = resp->toIReadFile();
 									if(irf){
 									    left_tex = videoDriver->getTexture(irf);
-										if(left_tex){
-										    left_tex->grab();
-										}
 									}
 								}
 							}
@@ -452,9 +401,6 @@ namespace OB{
 									irr::io::IReadFile* irf = resp->toIReadFile();
 									if(irf){
 									    right_tex = videoDriver->getTexture(irf);
-										if(right_tex){
-											right_tex->grab();
-										}
 									}
 								}
 							}
@@ -467,9 +413,6 @@ namespace OB{
 									irr::io::IReadFile* irf = resp->toIReadFile();
 									if(irf){
 									    front_tex = videoDriver->getTexture(irf);
-										if(front_tex){
-											front_tex->grab();
-										}
 									}
 								}
 							}
@@ -482,9 +425,6 @@ namespace OB{
 									irr::io::IReadFile* irf = resp->toIReadFile();
 									if(irf){
 									    back_tex = videoDriver->getTexture(irf);
-										if(back_tex){
-											back_tex->grab();
-										}
 									}
 								}
 							}
@@ -524,54 +464,36 @@ namespace OB{
 			bool assetsChanged = false;
 
 			if(top_loading && res == Top){
-				if(top_tex){
-					top_tex->drop();
-				}
 				top_tex = NULL;
 				top_loading = false;
 
 				assetsChanged = true;
 			}
 			if(bottom_loading && res == Bottom){
-				if(bottom_tex){
-					bottom_tex->drop();
-				}
 			    bottom_tex = NULL;
 			    bottom_loading = false;
 
 				assetsChanged = true;
 			}
 			if(left_loading && res == Left){
-			    if(left_tex){
-					left_tex->drop();
-				}
 			    left_tex = NULL;
 			    left_loading = false;
 
 				assetsChanged = true;
 			}
 			if(right_loading && res == Right){
-				if(right_tex){
-					right_tex->drop();
-				}
 			    right_tex = NULL;
 			    right_loading = false;
 
 				assetsChanged = true;
 			}
 			if(front_loading && res == Front){
-			    if(front_tex){
-					front_tex->drop();
-				}
 			    front_tex = NULL;
 				front_loading = false;
 
 				assetsChanged = true;
 			}
 			if(back_loading && res == Back){
-			    if(back_tex){
-				    back_tex->drop();
-				}
 				back_tex = NULL;
 			    back_loading = false;
 
