@@ -671,12 +671,12 @@ namespace OB{
 			}
 			if(ParentLocked){
 				std::string errMsg = "The Parent property of " + Name + " is locked.";
-				throw OBException(errMsg);
+				throw new OBException(errMsg);
 				return;
 			}
 			if(parent == shared_from_this()){
 				std::string errMsg = "Attempt to set " + GetFullName() + " as its own parent";
-				throw OBException(errMsg);
+				throw new OBException(errMsg);
 				return;
 			}
 
@@ -1104,8 +1104,8 @@ namespace OB{
 
 				try{
 					inst->setParent(otherInst, true);
-				}catch(OBException& ex){
-					return luaL_error(L, ex.getMessage().c_str());
+				}catch(OBException* ex){
+					return luaL_error(L, ex->getMessage().c_str());
 				}
 			}
 

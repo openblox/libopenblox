@@ -269,8 +269,8 @@ namespace OB{
 					}else{
 						nc->Connect(servAddr, servPort);
 					}
-				}catch(OBException& ex){
-					return luaL_error(L, ex.getMessage().c_str());
+				}catch(OBException* ex){
+					return luaL_error(L, ex->getMessage().c_str());
 				}
 
 				return 0;
@@ -289,8 +289,8 @@ namespace OB{
 					}else{
 						nc->Disconnect();
 					}
-				}catch(OBException& ex){
-					return luaL_error(L, ex.getMessage().c_str());
+				}catch(OBException* ex){
+					return luaL_error(L, ex->getMessage().c_str());
 				}
 
 				return 0;

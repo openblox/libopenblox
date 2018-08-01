@@ -367,8 +367,8 @@ namespace OB{
 					}else{
 						try{
 							instL->setSky(skyInst);
-						}catch(OBException& ex){
-							return luaL_error(L, ex.getMessage().c_str());
+						}catch(OBException* ex){
+							return luaL_error(L, ex->getMessage().c_str());
 						}
 					}
 				}
