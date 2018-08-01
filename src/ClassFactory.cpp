@@ -35,6 +35,7 @@
 #include "instance/ServiceProvider.h"
 #include "instance/Sky.h"
 #include "instance/SkyBox.h"
+#include "instance/SkyDome.h"
 #include "instance/Lighting.h"
 #include "instance/ContentProvider.h"
 #include "instance/BasePlayerGui.h"
@@ -210,6 +211,7 @@ namespace OB{
 		Instance::Player::registerClass();
 		Instance::Sky::registerClass();
 		Instance::SkyBox::registerClass();
+		Instance::SkyDome::registerClass();
 
 #if HAVE_ENET
 		Instance::NetworkReplicator::registerClass();

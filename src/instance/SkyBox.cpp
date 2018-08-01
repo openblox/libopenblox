@@ -460,7 +460,7 @@ namespace OB{
 		}
 
 		bool SkyBox::assetLoaded(std::string res){
-			#if HAVE_ENET
+			#if HAVE_IRRLICHT
 			bool assetsChanged = false;
 
 			if(top_loading && res == Top){

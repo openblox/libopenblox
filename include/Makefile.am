@@ -44,6 +44,9 @@ instance/Instance.h \
 instance/IntConstrainedValue.h \
 instance/IntValue.h \
 instance/LayerCollector.h \
+instance/Sky.h \
+instance/SkyBox.h \
+instance/SkyDome.h \
 instance/Lighting.h \
 instance/LogService.h \
 instance/LuaSourceContainer.h \

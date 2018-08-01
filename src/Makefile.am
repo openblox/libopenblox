@@ -43,6 +43,7 @@ instance/Model.cpp \
 instance/BindableEvent.cpp \
 instance/ServiceProvider.cpp \
 instance/Sky.cpp \
+instance/SkyDome.cpp \
 instance/SkyBox.cpp \
 instance/Lighting.cpp \
 instance/ContentProvider.cpp \
