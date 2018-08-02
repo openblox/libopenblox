@@ -70,7 +70,21 @@ namespace OB{
 	    SkyBox::~SkyBox(){}
 
 		shared_ptr<Instance> SkyBox::cloneImpl(){
-			return NULL; // TODO: STUB
+		    shared_ptr<SkyBox> sb = make_shared<SkyBox>(eng);
+			sb->Archivable = Archivable;
+			sb->Name = Name;
+			sb->ParentLocked = ParentLocked;
+
+			sb->Top = Top;
+			sb->Bottom = Bottom;
+			sb->Left = Left;
+			sb->Right = Right;
+			sb->Front = Front;
+			sb->Back = Back;
+
+			sb->skybox_needs_updating = true;
+
+			return sb;
 		}
 
 		void SkyBox::setTop(std::string top){

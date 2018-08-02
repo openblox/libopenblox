@@ -53,7 +53,16 @@ namespace OB{
 	    SkyDome::~SkyDome(){}
 
 		shared_ptr<Instance> SkyDome::cloneImpl(){
-			return NULL; // TODO: STUB
+		    shared_ptr<SkyDome> sd = make_shared<SkyDome>(eng);
+			sd->Archivable = Archivable;
+			sd->Name = Name;
+			sd->ParentLocked = ParentLocked;
+
+			sd->Dome = Dome;
+
+			sd->skydome_needs_updating = true;
+
+			return sd;
 		}
 
 		void SkyDome::setDome(std::string dome){
