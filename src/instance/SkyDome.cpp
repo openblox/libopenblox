@@ -35,8 +35,6 @@ namespace OB{
 		SkyDome::SkyDome(OBEngine* eng) : Sky(eng){
 			Name = ClassName;
 
-			Archivable = false;
-
 			skyActive = false;
 
 		    Dome = "";

@@ -35,8 +35,6 @@ namespace OB{
 		SkyBox::SkyBox(OBEngine* eng) : Sky(eng){
 			Name = ClassName;
 
-			Archivable = false;
-
 			skyActive = false;
 
 			Top = "";
