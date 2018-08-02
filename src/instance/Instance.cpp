@@ -452,6 +452,7 @@ namespace OB{
 
 		void Instance::deserialize(pugi::xml_node thisNode){
 			deserializeCreate(thisNode);
+
 			deserializeProperties(thisNode);
 		}
 
@@ -503,6 +504,7 @@ namespace OB{
 							if(serializer){
 								std::string iid = propVal.as_string();
 								shared_ptr<Instance> iinst = serializer->GetByID(iid);
+								setProperty(name, make_shared<Type::VarWrapper>(iinst));
 							}
 						}
 					}
