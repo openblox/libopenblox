@@ -299,8 +299,9 @@ namespace OB{
 
 			peer->Send(OB_NET_CHAN_REPLICATION, bsOut);
 
-			replicateProperties(peer);
 			replicateChildren(peer);
+
+			replicateProperties(peer);
 		}
 
 		void Instance::replicateProperties(shared_ptr<NetworkReplicator> peer){
