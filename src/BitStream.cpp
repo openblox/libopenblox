@@ -434,8 +434,12 @@ namespace OB{
 					writeSizeT(var_type);
 
 					shared_ptr<Instance::Instance> inst = *static_cast<shared_ptr<Instance::Instance>*>(var->wrapped);
-					ob_uint64 netId = inst->GetNetworkID();
-					writeUInt64(netId);
+					if(inst){
+						ob_uint64 netId = inst->GetNetworkID();
+						writeUInt64(netId);
+					}else{
+						writeUInt64(OB_NETID_NULL);
+					}
 
 					break;
 				}
