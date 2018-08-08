@@ -25,6 +25,7 @@
 #include "type/Color3.h"
 #include "type/Vector3.h"
 #include "type/Vector2.h"
+#include "type/CFrame.h"
 #include "type/UDim.h"
 #include "type/UDim2.h"
 
@@ -41,6 +42,7 @@ namespace OB{
 			Color3::_ob_init(eng);
 			Vector3::_ob_init(eng);
 			Vector2::_ob_init(eng);
+			CFrame::_ob_init(eng);
 			UDim::_ob_init(eng);
 			UDim2::_ob_init(eng);
 
