@@ -18,6 +18,7 @@
  */
 
 #include "instance/Instance.h"
+#include "type/CFrame.h"
 
 #ifndef OB_INST_CAMERA
 #define OB_INST_CAMERA
@@ -30,6 +31,18 @@ namespace OB{
 				virtual ~Camera();
 
 				bool SaveScreenshot(std::string file);
+
+				void updateCFrame();
+
+				void setCFrame(shared_ptr<Type::CFrame> newcframe);
+
+				shared_ptr<Type::CFrame> getCFrame();
+
+				void updateFieldOfView();
+
+				void setFieldOfView(float newFieldOfView);
+
+				float getFieldOfView();
 
 #if HAVE_ENET
 				/**
@@ -47,11 +60,22 @@ namespace OB{
 
 				DECLARE_LUA_METHOD(SaveScreenshot);
 
+				DECLARE_LUA_METHOD(setCFrame);
+				DECLARE_LUA_METHOD(getCFrame);
+				DECLARE_LUA_METHOD(setFieldOfView);
+				DECLARE_LUA_METHOD(getFieldOfView);
+
 				static void register_lua_methods(lua_State* L);
 				static void register_lua_property_getters(lua_State* L);
 				static void register_lua_property_setters(lua_State* L);
 
 				DECLARE_CLASS(Camera);
+
+#if HAVE_IRRLICHT
+				irr::scene::ICameraSceneNode* camera;
+#endif
+				shared_ptr<Type::CFrame> CFrame;
+				float fov;
 		};
 	}
 }

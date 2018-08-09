@@ -28,6 +28,8 @@
 #include <irrlicht/irrlicht.h>
 #endif
 
+#include <cfloat>
+
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(Lighting, false, isDataModel, Instance){
@@ -44,6 +46,17 @@ namespace OB{
 			FogEnabled = false;
 			FogStart = 0;
 			FogEnd = 0;
+
+			//set the fogend to a very large value to prevent the fog from showing
+#if HAVE_IRRLICHT
+			irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
+			if (irrDev){
+				irr::video::IVideoDriver* driver = irrDev->getVideoDriver();
+				if (driver){
+					driver->setFog(irr::video::SColor(255, 0, 0, 0), irr::video::EFT_FOG_LINEAR, 0, 0xFFFFFFFF, 0, true, false);
+				}
+			}
+#endif
 		}
 
 		Lighting::~Lighting(){}
@@ -178,7 +191,7 @@ namespace OB{
 
 				driver->setFog(irrFogCol, irr::video::EFT_FOG_LINEAR, FogStart, FogEnd, 0, true, false);
 			}else{
-				driver->setFog();
+				driver->setFog(irr::video::SColor(255, 0, 0, 0), irr::video::EFT_FOG_LINEAR, 0, 0xFFFFFFFF, 0, true, false);
 			}
 #endif
 		}

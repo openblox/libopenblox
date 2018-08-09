@@ -406,13 +406,11 @@ namespace OB{
 			lua_State* globalState;
 
 #if HAVE_IRRLICHT
-
 			post_render_func_t custPostRender;
 
 			irr::IrrlichtDevice* irrDev;
 			irr::video::IVideoDriver* irrDriv;
 			irr::scene::ISceneManager* irrSceneMgr;
-
 #endif
 
 			shared_ptr<TaskScheduler> taskSched;
