@@ -352,6 +352,8 @@ namespace OB{
 			 * @author John M. Harris, Jr.
 			 */
 			void setPostRenderFunc(post_render_func_t prf);
+
+			irr::scene::ICameraSceneNode* getCamera();
 #endif
 
 			/**
@@ -413,6 +415,7 @@ namespace OB{
 			irr::video::IVideoDriver* irrDriv;
 			irr::scene::ISceneManager* irrSceneMgr;
 
+			irr::scene::ICameraSceneNode* camera;
 #endif
 
 			shared_ptr<TaskScheduler> taskSched;

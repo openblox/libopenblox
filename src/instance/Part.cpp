@@ -21,6 +21,7 @@
 
 #include "instance/NetworkReplicator.h"
 #include "instance/NetworkServer.h"
+#include "instance/Lighting.h"
 
 namespace OB{
 	namespace Instance{
@@ -129,6 +130,14 @@ namespace OB{
 					if(irrNode){
 						irr::scene::IMeshSceneNode* mirrNode = (irr::scene::IMeshSceneNode*)irrNode;
 						mirrNode->setMaterialFlag(irr::video::EMF_LIGHTING, true);
+
+						shared_ptr<DataModel> dm = eng->getDataModel();
+						if (dm) {
+							shared_ptr<Lighting>lighting = dm->getLighting();
+							if (lighting) {
+								mirrNode->setMaterialFlag(irr::video::EMF_FOG_ENABLE, lighting->isFogEnabled());
+							}
+						}
 
 						updateColor();
 						updatePosition();

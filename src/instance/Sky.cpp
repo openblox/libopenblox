@@ -28,7 +28,7 @@ namespace OB{
 		Sky::Sky(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 
-			Archivable = false;
+			Archivable = true;
 
 			skyActive = false;
 		}

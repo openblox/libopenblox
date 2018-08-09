@@ -181,7 +181,8 @@ namespace OB{
 			logger->log(renderShadingLangVer);
 
 			irrSceneMgr->addLightSceneNode();
-			irrSceneMgr->addCameraSceneNode(0, irr::core::vector3df(0,30,-40), irr::core::vector3df(0,5,0));
+			camera = irrSceneMgr->addCameraSceneNode(0, irr::core::vector3df(0,30,-40), irr::core::vector3df(0,5,0));
+			camera->setFOV(irr::core::degToRad(70.00f));
 		}
 #endif
 
@@ -407,6 +408,15 @@ namespace OB{
 
 	void OBEngine::setPostRenderFunc(post_render_func_t prf){
 		custPostRender = prf;
+	}
+
+	irr::scene::ICameraSceneNode* OBEngine::getCamera()
+	{
+		if (doRendering) {
+			if (camera) {
+				return camera;
+			}
+		}
 	}
 
 #endif

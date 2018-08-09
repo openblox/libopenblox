@@ -145,6 +145,7 @@ namespace OB{
 			lua_newtable(L);
 			luaL_Reg color3lib[] = {
 				{"new", lua_newColor3},
+				{"fromRGB", lua_Color3FromRGB},
 				{NULL, NULL}
 			};
 			luaL_setfuncs(L, color3lib, 0);
@@ -518,6 +519,21 @@ namespace OB{
 			}
 
 			shared_ptr<Type::Color3> newGuy = make_shared<Type::Color3>(r, g, b);
+			return newGuy->wrap_lua(L);
+		}
+
+		int lua_Color3FromRGB(lua_State* L) {
+			double r = 0;
+			double g = 0;
+			double b = 0;
+
+			if (!lua_isnone(L, 1) && !lua_isnone(L, 2) && !lua_isnone(L, 3)) {
+				r = luaL_checknumber(L, 1);
+				g = luaL_checknumber(L, 2);
+				b = luaL_checknumber(L, 3);
+			}
+
+			shared_ptr<Type::Color3> newGuy = make_shared<Type::Color3>(r / 255, g / 255, b / 255);
 			return newGuy->wrap_lua(L);
 		}
 

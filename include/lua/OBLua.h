@@ -234,6 +234,14 @@ namespace OB{
 		int lua_newColor3(lua_State* L);
 
 		/**
+		* Used to create a Color3 using RGB integer values from Lua.
+		* @param L Lua state
+		* @returns int 1
+		* @author Tochigi
+		*/
+		int lua_Color3FromRGB(lua_State* L);
+
+		/**
 		 * Used to create a Vector3 from Lua.
 		 *
 		 * @param L Lua state
