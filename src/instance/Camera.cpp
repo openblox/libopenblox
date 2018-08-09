@@ -26,45 +26,47 @@
 
 namespace OB{
 	namespace Instance {
-		DEFINE_CLASS(Camera, true, false, Instance) {
+		DEFINE_CLASS(Camera, true, false, Instance){
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
 
-		Camera::Camera(OBEngine* eng) : Instance(eng) {
+		Camera::Camera(OBEngine* eng) : Instance(eng){
 			Name = ClassName;
 
 			Archivable = false;
 
-#if HAVE_IRRLICHT
 			fov = 70.0f;
 
-			camera_cframe = make_shared<Type::CFrame>(make_shared<Type::Vector3>(0, 0, 0), make_shared<Type::Vector3>(0, 0, 0));
+			CFrame = make_shared<Type::CFrame>(make_shared<Type::Vector3>(0, 0, 0), make_shared<Type::Vector3>(0, 0, 0));
+#if HAVE_IRRLICHT
 			camera = eng->getCamera();
 #endif
 		}
 
-		Camera::~Camera() {}
+		Camera::~Camera(){}
 
-		bool Camera::SaveScreenshot(std::string file) {
+		bool Camera::SaveScreenshot(std::string file){
 			return getEngine()->saveScreenshot(file);
 		}
 
-#if HAVE_IRRLICHT
 		void Camera::updateCFrame(){
 			//shared_ptr<Type::Vector3> pos = camera_cframe->getPosition();
 			//camera->setPosition(pos->toIrrlichtVector3df());
 			//camera->setRotation(irr::core::vector3d<irr::f32>(camera_cframe->getX(), camera_cframe->getY(), camera_cframe->getZ()));
 		}
 
-		void Camera::setCFrame(shared_ptr<Type::CFrame> newcframe){
-			if (!newcframe->equals(camera_cframe)) {
-				camera_cframe = newcframe;
+		void Camera::setCFrame(shared_ptr<Type::CFrame> newCFrame){
+			if (!newCFrame->equals(CFrame)) {
+				CFrame = newCFrame;
 				updateCFrame();
+
+				REPLICATE_PROPERTY_CHANGE(CFrame);
+				propertyChanged("CFrame");
 			}
 		}
 
-		shared_ptr<Type::CFrame> Camera::getCFrame() {
-			return camera_cframe;
+		shared_ptr<Type::CFrame> Camera::getCFrame(){
+			return CFrame;
 		}
 
 		void Camera::updateFieldOfView(){
@@ -77,9 +79,11 @@ namespace OB{
 				fov = 120.00f;
 			}
 
+#if HAVE_IRRLICHT
 			float fovInRadians = irr::core::degToRad(fov);
 
 			camera->setFOV(fovInRadians);
+#endif
 		}
 
 		void Camera::setFieldOfView(float newFieldOfView){
@@ -88,6 +92,7 @@ namespace OB{
 
 				updateFieldOfView();
 
+				REPLICATE_PROPERTY_CHANGE(fov);
 				propertyChanged("FieldOfView");
 			}
 		}
@@ -95,7 +100,6 @@ namespace OB{
 		float Camera::getFieldOfView(){
 			return fov;
 		}
-#endif
 
 		shared_ptr<Instance> Camera::cloneImpl() {
 			return NULL;
@@ -104,33 +108,30 @@ namespace OB{
 #if HAVE_ENET
 		void Camera::replicateProperties(shared_ptr<NetworkReplicator> peer){
 			Instance::replicateProperties(peer);
+
+			peer->sendSetPropertyPacket(netId, "FieldOfView", make_shared<Type::VarWrapper>(fov));
+			peer->sendSetPropertyPacket(netId, "CFrame", make_shared<Type::VarWrapper>(CFrame));
 		}
 #endif
 
 		std::map<std::string, _PropertyInfo> Camera::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();
-#if HAVE_IRRLICHT
 			propMap["FieldOfView"] = { "float", false, true, true };
-#endif
 			return propMap;
 		}
 
 		void Camera::setProperty(std::string prop, shared_ptr<Type::VarWrapper> val){
-#if HAVE_IRRLICHT
-			if (prop == "FieldOfView") {
+			if (prop == "FieldOfView"){
 				setFieldOfView(val->asFloat());
 				return;
 			}
-#endif
 			Instance::setProperty(prop, val);
 		}
 
 		shared_ptr<Type::VarWrapper> Camera::getProperty(std::string prop){
-#if HAVE_IRRLICHT
-			if (prop == "FieldOfView") {
+			if (prop == "FieldOfView"){
 				return make_shared<Type::VarWrapper>(getFieldOfView());
 			}
-#endif
 			return Instance::getProperty(prop);
 		}
 
@@ -149,12 +150,11 @@ namespace OB{
 			return 0;
 		}
 
-#if HAVE_IRRLICHT
 		int Camera::lua_setCFrame(lua_State* L){
 			shared_ptr<Instance>inst = checkInstance(L, 1, false);
-			if (inst) {
+			if (inst){
 				shared_ptr<Camera> instC = dynamic_pointer_cast<Camera>(inst);
-				if (instC) {
+				if (instC){
 					shared_ptr<Type::CFrame> desired = Type::checkCFrame(L, 2, true, true);
 					instC->setCFrame(desired);
 				}
@@ -164,14 +164,14 @@ namespace OB{
 
 		int Camera::lua_getCFrame(lua_State* L){
 			shared_ptr<Instance>inst = checkInstance(L, 1, false);
-			if (inst) {
+			if (inst){
 				shared_ptr<Camera> instC = dynamic_pointer_cast<Camera>(inst);
-				if (instC) {
+				if (instC){
 					shared_ptr<Type::CFrame> instCF = instC->getCFrame();
-					if (instCF) {
+					if (instCF){
 						return instCF->wrap_lua(L);
 					}
-					else {
+					else{
 						lua_pushnil(L);
 						return 1;
 					}
@@ -183,9 +183,9 @@ namespace OB{
 
 		int Camera::lua_setFieldOfView(lua_State* L){
 			shared_ptr<Instance>inst = checkInstance(L, 1, false);
-			if (inst) {
+			if (inst){
 				shared_ptr<Camera> instC = dynamic_pointer_cast<Camera>(inst);
-				if (instC) {
+				if (instC){
 					double newVal = luaL_checknumber(L, 2);
 					instC->setFieldOfView(newVal);
 				}
@@ -195,9 +195,9 @@ namespace OB{
 
 		int Camera::lua_getFieldOfView(lua_State* L){
 			shared_ptr<Instance>inst = checkInstance(L, 1, false);
-			if (inst) {
+			if (inst){
 				shared_ptr<Camera> instC = dynamic_pointer_cast<Camera>(inst);
-				if (instC) {
+				if (instC){
 					double fov = instC->getFieldOfView();
 					lua_pushnumber(L, fov);
 					return 1;
@@ -206,7 +206,6 @@ namespace OB{
 			lua_pushnil(L);
 			return 1;
 		}
-#endif
 
 		void Camera::register_lua_methods(lua_State* L){
 			Instance::register_lua_methods(L);
@@ -222,10 +221,8 @@ namespace OB{
 			Instance::register_lua_property_setters(L);
 
 			luaL_Reg properties[] = {
-#if HAVE_IRRLICHT
 				{"CFrame", lua_setCFrame},
 				{"FieldOfView", lua_setFieldOfView},
-#endif
 				{NULL, NULL}
 			};
 			luaL_setfuncs(L, properties, 0);
@@ -235,10 +232,8 @@ namespace OB{
 			Instance::register_lua_property_getters(L);
 
 			luaL_Reg properties[] = {
-#if HAVE_IRRLICHT
 				{"CFrame", lua_getCFrame},
 				{"FieldOfView", lua_getFieldOfView},
-#endif
 				{NULL, NULL}
 			};
 			luaL_setfuncs(L, properties, 0);
