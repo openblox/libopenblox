@@ -22,7 +22,6 @@
 #include "instance/NetworkReplicator.h"
 #include "instance/NetworkServer.h"
 #include "type/Vector3.h"
-#include <math.h>
 
 namespace OB{
 	namespace Instance{
