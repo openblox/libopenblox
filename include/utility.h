@@ -45,7 +45,7 @@
 #ifndef OB_UTILITY
 #define OB_UTILITY
 
-namespace OB{
+namespace OB {
 	/**
 	* Returns the current time in milliseconds.
 	*
@@ -61,15 +61,15 @@ namespace OB{
 	*/
 	bool ob_str_startsWith(std::string str, std::string prefix);
 
-	enum empties_t{
+	enum empties_t {
 		empties_ok,
 		no_empties
 	};
 
-	static inline std::vector<std::string> split(std::string str){
+	static inline std::vector<std::string> split(std::string str) {
 		std::vector<std::string> results;
 		std::stringstream ss(str);
-		while (ss.good()){
+		while (ss.good()) {
 			std::string substr;
 			getline(ss, substr, ',');
 			results.push_back(substr);
@@ -77,17 +77,17 @@ namespace OB{
 		return results;
 	}
 
-	static inline std::string &ltrim(std::string &s){
+	static inline std::string &ltrim(std::string &s) {
 		s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
 		return s;
 	}
 
-	static inline std::string &rtrim(std::string &s){
+	static inline std::string &rtrim(std::string &s) {
 		s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
 		return s;
 	}
 
-	static inline std::string &trim(std::string &s){
+	static inline std::string &trim(std::string &s) {
 		return ltrim(rtrim(s));
 	}
 
