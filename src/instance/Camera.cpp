@@ -25,7 +25,7 @@
 #include <math.h>
 
 namespace OB{
-	namespace Instance {
+	namespace Instance{
 		DEFINE_CLASS(Camera, true, false, Instance){
 			registerLuaClass(eng, LuaClassName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters, register_lua_events);
 		}
@@ -39,11 +39,22 @@ namespace OB{
 
 			CFrame = make_shared<Type::CFrame>(make_shared<Type::Vector3>(0, 0, 0), make_shared<Type::Vector3>(0, 0, 0));
 #if HAVE_IRRLICHT
-			camera = eng->getCamera();
+			irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
+			if (irrDev){
+				irr::scene::ISceneManager* irrSceneMgr = irrDev->getSceneManager();
+				if (irrSceneMgr){
+					camera = irrSceneMgr->addCameraSceneNode(0, irr::core::vector3df(0, 30, -40), irr::core::vector3df(0, 5, 0));
+					camera->setFOV(irr::core::degToRad(fov));
+				}
+			}
 #endif
 		}
 
-		Camera::~Camera(){}
+		Camera::~Camera(){
+#if HAVE_IRRLICHT
+			camera->remove();
+#endif
+		}
 
 		bool Camera::SaveScreenshot(std::string file){
 			return getEngine()->saveScreenshot(file);
@@ -56,7 +67,7 @@ namespace OB{
 		}
 
 		void Camera::setCFrame(shared_ptr<Type::CFrame> newCFrame){
-			if (!newCFrame->equals(CFrame)) {
+			if (!newCFrame->equals(CFrame)){
 				CFrame = newCFrame;
 				updateCFrame();
 
@@ -70,24 +81,23 @@ namespace OB{
 		}
 
 		void Camera::updateFieldOfView(){
-			if (fov < 1.00f) {
+			if (fov < 1.00f){
 				eng->getLogger()->log("FieldOfView set out of range, should be between 1.00 and 120.00; setting to 1.00", OB::OLL_Warning);
 				fov = 1.00f;
 			}
-			if (fov > 120.00f) {
+			if (fov > 120.00f){
 				eng->getLogger()->log("FieldOfView set out of range, should be between 1.00 and 120.00; setting to 120.00", OB::OLL_Warning);
 				fov = 120.00f;
 			}
 
 #if HAVE_IRRLICHT
 			float fovInRadians = irr::core::degToRad(fov);
-
 			camera->setFOV(fovInRadians);
 #endif
 		}
 
 		void Camera::setFieldOfView(float newFieldOfView){
-			if (newFieldOfView != fov) {
+			if (newFieldOfView != fov){
 				fov = newFieldOfView;
 
 				updateFieldOfView();
@@ -101,7 +111,7 @@ namespace OB{
 			return fov;
 		}
 
-		shared_ptr<Instance> Camera::cloneImpl() {
+		shared_ptr<Instance> Camera::cloneImpl(){
 			return NULL;
 		}
 
