@@ -74,11 +74,9 @@ namespace OB{
 		custPostRender = NULL;
 
 #if HAVE_IRRLICHT
-
 		irrDev = NULL;
 		irrDriv = NULL;
 		irrSceneMgr = NULL;
-
 #endif
 
 #if HAVE_ENET
@@ -131,7 +129,6 @@ namespace OB{
 		logger->log(verString);
 
 #if HAVE_IRRLICHT
-
 		if(doRendering){
 			irr::SIrrlichtCreationParameters p;
 			p.DriverType = irr::video::EDT_OPENGL;
@@ -226,7 +223,6 @@ namespace OB{
 
 	void OBEngine::tick(){
 #if HAVE_IRRLICHT
-
 		if(doRendering){
 			if(!irrDev->run()){
 				_isRunning = false;
@@ -238,7 +234,6 @@ namespace OB{
 				return;// Early return, we're not running anymore!
 			}
 		}
-
 #endif
 
 		taskSched->tick();
@@ -252,7 +247,6 @@ namespace OB{
 
 	void OBEngine::render(){
 #if HAVE_IRRLICHT
-
 		if(doRendering){
 			if(!dm){
 				// Prevents segfault when render() is called before init()
@@ -286,7 +280,6 @@ namespace OB{
 
 			irrDriv->endScene();
 		}
-
 #endif
 	}
 
@@ -395,7 +388,6 @@ namespace OB{
 	}
 
 #if HAVE_IRRLICHT
-
 	irr::IrrlichtDevice* OBEngine::getIrrlichtDevice(){
 		return irrDev;
 	}
@@ -407,7 +399,6 @@ namespace OB{
 	void OBEngine::setPostRenderFunc(post_render_func_t prf){
 		custPostRender = prf;
 	}
-
 #endif
 
 	shared_ptr<Instance::DataModel> OBEngine::getDataModel(){
