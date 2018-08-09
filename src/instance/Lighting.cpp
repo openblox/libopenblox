@@ -50,9 +50,9 @@ namespace OB{
 			//set the fogend to a very large value to prevent the fog from showing
 #if HAVE_IRRLICHT
 			irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
-			if (irrDev) {
+			if (irrDev){
 				irr::video::IVideoDriver* driver = irrDev->getVideoDriver();
-				if (driver) {
+				if (driver){
 					driver->setFog(irr::video::SColor(255, 0, 0, 0), irr::video::EFT_FOG_LINEAR, 0, 0xFFFFFFFF, 0, true, false);
 				}
 			}

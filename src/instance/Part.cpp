@@ -132,9 +132,9 @@ namespace OB{
 						mirrNode->setMaterialFlag(irr::video::EMF_LIGHTING, true);
 
 						shared_ptr<DataModel> dm = eng->getDataModel();
-						if (dm) {
+						if (dm){
 							shared_ptr<Lighting>lighting = dm->getLighting();
-							if (lighting) {
+							if (lighting){
 								mirrNode->setMaterialFlag(irr::video::EMF_FOG_ENABLE, lighting->isFogEnabled());
 							}
 						}
