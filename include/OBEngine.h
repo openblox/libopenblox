@@ -353,7 +353,6 @@ namespace OB{
 			 */
 			void setPostRenderFunc(post_render_func_t prf);
 
-			//irr::scene::ICameraSceneNode* getCamera();
 #endif
 
 			/**
