@@ -522,12 +522,12 @@ namespace OB{
 			return newGuy->wrap_lua(L);
 		}
 
-		int lua_Color3FromRGB(lua_State* L) {
+		int lua_Color3FromRGB(lua_State* L){
 			double r = 0;
 			double g = 0;
 			double b = 0;
 
-			if (!lua_isnone(L, 1) && !lua_isnone(L, 2) && !lua_isnone(L, 3)) {
+			if (!lua_isnone(L, 1) && !lua_isnone(L, 2) && !lua_isnone(L, 3)){
 				r = luaL_checknumber(L, 1);
 				g = luaL_checknumber(L, 2);
 				b = luaL_checknumber(L, 3);
