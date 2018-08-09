@@ -35,8 +35,8 @@
 #include <direct.h>
 #endif
 
-namespace OB {
-	ob_uint64 currentTimeMillis() {
+namespace OB{
+	ob_uint64 currentTimeMillis(){
 		struct timeval tp;
 		gettimeofday(&tp, NULL);
 
@@ -47,87 +47,87 @@ namespace OB {
 		return retVal;
 	}
 
-	bool ob_str_startsWith(std::string str, std::string prefix) {
+	bool ob_str_startsWith(std::string str, std::string prefix){
 		return std::equal(prefix.begin(), prefix.end(), str.begin());
 	}
 
 	// Windows compat
 #ifdef _WIN32
-	char* realpath(const char* path, char resolved_path[PATH_MAX]) {
+	char* realpath(const char* path, char resolved_path[PATH_MAX]){
 		char* return_path = 0;
 
-		if (path) {
-			if (resolved_path) {
+		if (path){
+			if (resolved_path){
 				return_path = resolved_path;
 			}
-			else {
+			else{
 				return_path = (char*)malloc(PATH_MAX);
 			}
-			if (return_path) {
+			if (return_path){
 				size_t size = GetFullPathNameA(path, PATH_MAX, return_path, 0);
 
-				if (size > PATH_MAX) {
-					if (return_path != resolved_path) {
+				if (size > PATH_MAX){
+					if (return_path != resolved_path){
 						size_t new_size;
 
 						free(return_path);
 						return_path = (char*)malloc(size);
 
-						if (return_path) {
+						if (return_path){
 							new_size = GetFullPathNameA(path, size, return_path, 0);
 
-							if (new_size > size) {
+							if (new_size > size){
 								free(return_path);
 								return_path = 0;
 								errno = ENAMETOOLONG;
 							}
-							else {
+							else{
 								size = new_size;
 							}
 						}
-						else {
+						else{
 							errno = EINVAL;
 						}
 					}
-					else {
+					else{
 						return_path = 0;
 						errno = ENAMETOOLONG;
 					}
 				}
 
-				if (!size) {
-					if (return_path != resolved_path) {
+				if (!size){
+					if (return_path != resolved_path){
 						free(return_path);
 					}
 
 					return_path = 0;
 
-					switch (GetLastError()) {
-					case ERROR_FILE_NOT_FOUND: {
+					switch (GetLastError()){
+					case ERROR_FILE_NOT_FOUND:{
 						errno = ENOENT;
 						break;
 					}
 					case ERROR_PATH_NOT_FOUND:
-					case ERROR_INVALID_DRIVE: {
+					case ERROR_INVALID_DRIVE:{
 						errno = ENOTDIR;
 						break;
 					}
-					case ERROR_ACCESS_DENIED: {
+					case ERROR_ACCESS_DENIED:{
 						errno = EACCES;
 						break;
 					}
-					default: {
+					default:{
 						errno = EIO;
 						break;
 					}
 					}
 				}
 
-				if (return_path) {
+				if (return_path){
 					struct stat stat_buffer;
 
-					if (stat(return_path, &stat_buffer)) {
-						if (return_path != resolved_path) {
+					if (stat(return_path, &stat_buffer)){
+						if (return_path != resolved_path){
 							free(return_path);
 						}
 
@@ -135,23 +135,23 @@ namespace OB {
 					}
 				}
 			}
-			else {
+			else{
 				errno = EINVAL;
 			}
 		}
-		else {
+		else{
 			errno = EINVAL;
 		}
 
 		return return_path;
 	}
 
-	char* get_current_dir_name() {
+	char* get_current_dir_name(){
 		char* path = (char*)malloc(FILENAME_MAX);
 		return _getcwd(path, FILENAME_MAX);
 	}
 
-	void usleep(__int64 usec) {
+	void usleep(__int64 usec){
 		HANDLE timer;
 		LARGE_INTEGER ft;
 
@@ -164,7 +164,7 @@ namespace OB {
 	}
 
 #ifdef _MSC_VER
-	int gettimeofday(struct timeval* tp, void* tzp) {
+	int gettimeofday(struct timeval* tp, void* tzp){
 		// Note: some broken versions only have 8 trailing zero's, the correct epoch has 9 trailing zero's
 		// This magic number is the number of 100 nanosecond intervals since January 1, 1601 (UTC)
 		// until 00:00:00 January 1, 1970
