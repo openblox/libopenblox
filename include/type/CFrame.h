@@ -157,6 +157,73 @@ namespace OB{
 
 				static int lua_lerp(lua_State* L);
 
+				/**
+				 * Returns (on the %Lua stack) the Euler angles in x-y-z order, or nil.
+				 *
+				 * Throws a %Lua error if not invoked as a member.
+				 *
+				 * @param L The %Lua state
+				 * @returns 1
+				 * @sa toEulerAnglesXYZ
+				 * @author Mark Otaris
+				*/
+				static int lua_toEulerAnglesXYZ(lua_State* L);
+				/**
+				 * Returns (on the %Lua stack) the Euler angles in x-z-y order, or nil.
+				 *
+				 * Throws a %Lua error if not invoked as a member.
+				 *
+				 * @param L The %Lua state
+				 * @returns 1
+				 * @sa toEulerAnglesXZY
+				 * @author Mark Otaris
+				*/
+				static int lua_toEulerAnglesXZY(lua_State* L);
+				/**
+				 * Returns (on the %Lua stack) the Euler angles in y-x-z order, or nil.
+				 *
+				 * Throws a %Lua error if not invoked as a member.
+				 *
+				 * @param L The %Lua state
+				 * @returns 1
+				 * @sa toEulerAnglesYXZ
+				 * @author Mark Otaris
+				*/
+				static int lua_toEulerAnglesYXZ(lua_State* L);
+				/**
+				 * Returns (on the %Lua stack) the Euler angles in y-z-x order, or nil.
+				 *
+				 * Throws a %Lua error if not invoked as a member.
+				 *
+				 * @param L The %Lua state
+				 * @returns 1
+				 * @sa toEulerAnglesYZX
+				 * @author Mark Otaris
+				*/
+				static int lua_toEulerAnglesYZX(lua_State* L);
+				/**
+				 * Returns (on the %Lua stack) the Euler angles in z-x-y order, or nil.
+				 *
+				 * Throws a %Lua error if not invoked as a member.
+				 *
+				 * @param L The %Lua state
+				 * @returns 1
+				 * @sa toEulerAnglesZXY
+				 * @author Mark Otaris
+				*/
+				static int lua_toEulerAnglesZXY(lua_State* L);
+				/**
+				 * Returns (on the %Lua stack) the Euler angles in z-y-x order, or nil.
+				 *
+				 * Throws a %Lua error if not invoked as a member.
+				 *
+				 * @param L The %Lua state
+				 * @returns 1
+				 * @sa toEulerAnglesZYX
+				 * @author Mark Otaris
+				*/
+				static int lua_toEulerAnglesZYX(lua_State* L);
+
 				static int lua_eq(lua_State* L);
 				static int lua_add(lua_State* L);
 				static int lua_sub(lua_State* L);
