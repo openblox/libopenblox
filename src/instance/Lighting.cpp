@@ -23,6 +23,7 @@
 #include "instance/NetworkServer.h"
 
 #include "instance/Sky.h"
+#include "instance/Workspace.h"
 
 #if HAVE_IRRLICHT
 #include <irrlicht/irrlicht.h>
@@ -206,6 +207,26 @@ namespace OB{
 
 				REPLICATE_PROPERTY_CHANGE(FogEnabled);
 				propertyChanged("FogEnabled");
+
+#if HAVE_IRRLICHT
+				if (shared_ptr<DataModel>dm = eng->getDataModel()){
+					if (shared_ptr<Workspace>ws = dm->getWorkspace()){
+						std::vector<shared_ptr<Instance>> kids = ws->GetChildren();
+						for (std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
+							shared_ptr<Instance> kid = kids[i];
+							if (kid){
+								if (shared_ptr<PVInstance> inst = dynamic_pointer_cast<PVInstance>(kid)){
+									irr::scene::ISceneNode* irrNode = inst->getIrrNode();
+									if (irrNode){
+										irr::scene::IMeshSceneNode* mirrNode = (irr::scene::IMeshSceneNode*)irrNode;
+										mirrNode->setMaterialFlag(irr::video::EMF_FOG_ENABLE, FogEnabled);
+									}
+								}
+							}
+						}
+					}
+				}
+#endif
 
 				updateFog();
 			}
