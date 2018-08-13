@@ -104,11 +104,47 @@ namespace OB{
 
 				shared_ptr<CFrame> lerp(shared_ptr<CFrame> goal, double alpha);
 
+				/**
+				 * Returns the Tait-Bryan Euler angles for the CFrame's orientation in x-y-z order.
+				 *
+				 * @returns Vector of (x, y, z) angles in radians
+				 * @author Mark Otaris
+				 */
 				shared_ptr<Vector3> toEulerAnglesXYZ() const;
+				/**
+				 * Returns the Tait-Bryan Euler angles for the CFrame's orientation in x-z-y order.
+				 *
+				 * @returns Vector of (x, z, y) angles in radians
+				 * @author Mark Otaris
+				 */
 				shared_ptr<Vector3> toEulerAnglesXZY() const;
+				/**
+				 * Returns the Tait-Bryan Euler angles for the CFrame's orientation in y-x-z order.
+				 *
+				 * @returns Vector of (y, x, z) angles in radians
+				 * @author Mark Otaris
+				 */
 				shared_ptr<Vector3> toEulerAnglesYXZ() const;
+				/**
+				 * Returns the Tait-Bryan Euler angles for the CFrame's orientation in y-z-x order.
+				 *
+				 * @returns Vector of (y, z, x) angles in radians
+				 * @author Mark Otaris
+				 */
 				shared_ptr<Vector3> toEulerAnglesYZX() const;
+				/**
+				 * Returns the Tait-Bryan Euler angles for the CFrame's orientation in z-x-y order.
+				 *
+				 * @returns Vector of (z, x, y) angles in radians
+				 * @author Mark Otaris
+				 */
 				shared_ptr<Vector3> toEulerAnglesZXY() const;
+				/**
+				 * Returns the Tait-Bryan Euler angles for the CFrame's orientation in z-y-x order.
+				 *
+				 * @returns Vector of (z, y, x) angles in radians
+				 * @author Mark Otaris
+				 */
 				shared_ptr<Vector3> toEulerAnglesZYX() const;
 
 				virtual std::string toString();
