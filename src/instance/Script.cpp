@@ -63,6 +63,7 @@ namespace OB{
 					aL->loadAssetSync(LinkedSource);
 				}
 				shared_ptr<AssetResponse> aR = aL->getAsset(LinkedSource);
+				return std::string(aR->getData());
 			}else{
 				return Source;
 			}
