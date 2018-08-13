@@ -104,6 +104,13 @@ namespace OB{
 
 				shared_ptr<CFrame> lerp(shared_ptr<CFrame> goal, double alpha);
 
+				shared_ptr<Vector3> toEulerAnglesXYZ() const;
+				shared_ptr<Vector3> toEulerAnglesXZY() const;
+				shared_ptr<Vector3> toEulerAnglesYXZ() const;
+				shared_ptr<Vector3> toEulerAnglesYZX() const;
+				shared_ptr<Vector3> toEulerAnglesZXY() const;
+				shared_ptr<Vector3> toEulerAnglesZYX() const;
+
 				virtual std::string toString();
 
 				static int lua_getPosition(lua_State* L);

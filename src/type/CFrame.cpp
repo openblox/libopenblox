@@ -22,10 +22,14 @@
 
 #include "instance/Instance.h"
 
-#include <math.h>
+#include <cmath>
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
+#endif
+
+#ifndef M_PI_2
+#define M_PI_2 1.57079632679489661923
 #endif
 
 namespace OB{
@@ -595,6 +599,150 @@ namespace OB{
 			}else{
 				// TODO:
 				return NULL;
+			}
+		}
+
+		shared_ptr<Vector3> CFrame::toEulerAnglesXYZ() const{
+			if(m[0][2] < 1.0){
+				if(m[0][2] > -1.0){
+					return make_shared<Vector3>(
+						std::atan2(-m[1][2], m[2][2]),
+						std::asin(m[0][2]),
+						std::atan2(-m[0][1], m[0][0])
+					);
+				}else{
+					return make_shared<Vector3>(
+						-std::atan2(m[1][0], m[1][1]),
+						-M_PI_2,
+						0.0
+					);
+				}
+			}else{
+				return make_shared<Vector3>(
+					std::atan2(m[1][0], m[1][1]),
+					M_PI_2,
+					0.0
+				);
+			}
+		}
+
+		shared_ptr<Vector3> CFrame::toEulerAnglesXZY() const{
+			if(m[0][1] < 1.0){
+				if(m[0][1] > -1.0){
+					return make_shared<Vector3>(
+						std::atan2(m[2][1], m[1][1]),
+						std::asin(-m[0][1]),
+						std::atan2(m[0][2], m[0][0])
+					);
+				}else{
+					return make_shared<Vector3>(
+						std::atan2(m[2][0], m[2][2]),
+						M_PI_2,
+						0.0
+					);
+				}
+			}else{
+				return make_shared<Vector3>(
+					std::atan2(-m[2][0], m[2][2]),
+					-M_PI_2,
+					0.0
+				);
+			}
+		}
+
+		shared_ptr<Vector3> CFrame::toEulerAnglesYXZ() const{
+			if(m[1][2] < 1.0){
+				if(m[1][2] > -1.0){
+					return make_shared<Vector3>(
+						std::atan2(m[0][2], m[2][2]),
+						std::asin(-m[1][2]),
+						std::atan2(m[1][0], m[1][1])
+					);
+				}else{
+					return make_shared<Vector3>(
+						std::atan2(m[0][1], m[0][0]),
+						M_PI_2,
+						0.0
+					);
+				}
+			}else{
+				return make_shared<Vector3>(
+					std::atan2(-m[0][1], m[0][0]),
+					-M_PI_2,
+					0.0
+				);
+			}
+		}
+
+		shared_ptr<Vector3> CFrame::toEulerAnglesYZX() const{
+			if(m[1][0] < 1.0){
+				if(m[1][0] > -1.0){
+					return make_shared<Vector3>(
+						std::atan2(-m[2][0], m[0][0]),
+						std::asin(m[1][0]),
+						std::atan2(-m[1][2], m[1][1])
+					);
+				}else{
+					return make_shared<Vector3>(
+						-std::atan2(m[2][1], m[2][2]),
+						-M_PI_2,
+						0.0
+					);
+				}
+			}else{
+				return make_shared<Vector3>(
+					std::atan2(m[2][1], m[2][2]),
+					M_PI_2,
+					0.0
+				);
+			}
+		}
+
+		shared_ptr<Vector3> CFrame::toEulerAnglesZXY() const{
+			if(m[2][1] < 1.0){
+				if(m[2][1] > -1.0){
+					return make_shared<Vector3>(
+						std::atan2(-m[0][1], m[1][1]),
+						std::asin(m[2][1]),
+						std::atan2(-m[2][0], m[2][2])
+					);
+				}else{
+					return make_shared<Vector3>(
+						-std::atan2(m[0][2], m[0][0]),
+						-M_PI_2,
+						0.0
+					);
+				}
+			}else{
+				return make_shared<Vector3>(
+					std::atan2(m[0][2], m[0][0]),
+					M_PI_2,
+					0.0
+				);
+			}
+		}
+
+		shared_ptr<Vector3> CFrame::toEulerAnglesZYX() const{
+			if(m[2][0] < 1.0){
+				if(m[2][0] > -1.0){
+					return make_shared<Vector3>(
+						std::atan2(m[1][0], m[0][0]),
+						std::asin(-m[2][1]),
+						std::atan2(m[2][1], m[2][2])
+					);
+				}else{
+					return make_shared<Vector3>(
+						-std::atan2(m[0][1], m[0][2]),
+						M_PI_2,
+						0.0
+					);
+				}
+			}else{
+				return make_shared<Vector3>(
+					std::atan2(-m[0][1], -m[0][2]),
+					-M_PI_2,
+					0.0
+				);
 			}
 		}
 
