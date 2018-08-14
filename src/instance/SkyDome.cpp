@@ -37,21 +37,21 @@ namespace OB{
 
 			skyActive = false;
 
-		    Dome = "";
+			Dome = "";
 
 #if HAVE_IRRLICHT
 			skydome_needs_updating = false;
 
 			irrNode = NULL;
 
-		    dome_tex = NULL;
+			dome_tex = NULL;
 #endif
 		}
 
-	    SkyDome::~SkyDome(){}
+		SkyDome::~SkyDome(){}
 
 		shared_ptr<Instance> SkyDome::cloneImpl(){
-		    shared_ptr<SkyDome> sd = make_shared<SkyDome>(eng);
+			shared_ptr<SkyDome> sd = make_shared<SkyDome>(eng);
 			sd->Archivable = Archivable;
 			sd->Name = Name;
 			sd->ParentLocked = ParentLocked;
@@ -65,7 +65,7 @@ namespace OB{
 
 		void SkyDome::setDome(std::string dome){
 			if(dome != Dome){
-			    Dome = dome;
+				Dome = dome;
 
 #if HAVE_IRRLICHT
 
@@ -73,9 +73,9 @@ namespace OB{
 					shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
 					if(assetLoc){
 						if(assetLoc->hasAsset(Dome)){
-						    dome_tex = NULL;
+							dome_tex = NULL;
 
-						    skydome_needs_updating = true;
+							skydome_needs_updating = true;
 						}else{
 							dome_tex = NULL;
 
@@ -85,9 +85,9 @@ namespace OB{
 						}
 					}
 				}else{
-				    dome_tex = NULL;
+					dome_tex = NULL;
 
-				    updateSkyDome();
+					updateSkyDome();
 				}
 
 #endif
@@ -154,7 +154,7 @@ namespace OB{
 					irrNode = NULL;
 				}
 
-			    irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
+				irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
 				if(irrDev){
 					if(dome_tex){
 						irr::scene::ISceneManager* smgr = irrDev->getSceneManager();
@@ -176,14 +176,15 @@ namespace OB{
 				return true;
 			}
 
-
 			if(res == Dome){
 				dome_tex = NULL;
 
-			    skydome_needs_updating = true;
+				skydome_needs_updating = true;
 
-			    return true;
+				return true;
 			}
+
+			return false;
 		}
 #endif
 
@@ -252,7 +253,7 @@ namespace OB{
 			Instance::register_lua_property_setters(L);
 
 			luaL_Reg properties[] = {
-                {"Dome", lua_setDome},
+				{"Dome", lua_setDome},
 				{NULL, NULL}
 			};
 			luaL_setfuncs(L, properties, 0);
@@ -262,7 +263,7 @@ namespace OB{
 			Instance::register_lua_property_getters(L);
 
 			luaL_Reg properties[] = {
-                {"Dome", lua_getDome},
+				{"Dome", lua_getDome},
 				{NULL, NULL}
 			};
 			luaL_setfuncs(L, properties, 0);
