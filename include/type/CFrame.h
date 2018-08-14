@@ -36,6 +36,27 @@ namespace OB{
 	namespace Type{
 		class Vector3;
 
+		/**
+		 * A CFrame object is an abstraction of a 4×4 matrix that represents a position and a rotation.
+		 *
+		 * The position is represented by the
+		 * \f$
+		 * 	\begin{bmatrix}
+		 * 		x \\
+		 * 		y \\
+		 * 		z
+		 * 	\end{bmatrix}
+		 * \f$
+		 * column vector and the rotation is represented by the upper 3×3 submatrix of the CFrame:
+		 * \f[
+		 * 	\begin{bmatrix}
+		 * 		R_{00} & R_{01} & R_{02} & x \\
+		 * 		R_{10} & R_{11} & R_{12} & y \\
+		 * 		R_{20} & R_{21} & R_{22} & z \\
+		 * 		0 & 0 & 0 & 1
+		 * 	\end{bmatrix}.
+		 * \f]
+		 */
 		class CFrame: public Type{
 			public:
 				/**
