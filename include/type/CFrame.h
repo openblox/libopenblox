@@ -104,6 +104,49 @@ namespace OB{
 
 				shared_ptr<CFrame> lerp(shared_ptr<CFrame> goal, double alpha);
 
+				/**
+				 * Returns the Tait-Bryan Euler angles for the CFrame's orientation in x-y-z order.
+				 *
+				 * @returns Vector of (x, y, z) angles in radians
+				 * @author Mark Otaris
+				 */
+				shared_ptr<Vector3> toEulerAnglesXYZ();
+				/**
+				 * Returns the Tait-Bryan Euler angles for the CFrame's orientation in x-z-y order.
+				 *
+				 * @returns Vector of (x, z, y) angles in radians
+				 * @author Mark Otaris
+				 */
+				shared_ptr<Vector3> toEulerAnglesXZY();
+				/**
+				 * Returns the Tait-Bryan Euler angles for the CFrame's orientation in y-x-z order.
+				 *
+				 * @returns Vector of (y, x, z) angles in radians
+				 * @author Mark Otaris
+				 */
+				shared_ptr<Vector3> toEulerAnglesYXZ();
+				/**
+				 * Returns the Tait-Bryan Euler angles for the CFrame's orientation in y-z-x order.
+				 *
+				 * @returns Vector of (y, z, x) angles in radians
+				 * @author Mark Otaris
+				 */
+				shared_ptr<Vector3> toEulerAnglesYZX();
+				/**
+				 * Returns the Tait-Bryan Euler angles for the CFrame's orientation in z-x-y order.
+				 *
+				 * @returns Vector of (z, x, y) angles in radians
+				 * @author Mark Otaris
+				 */
+				shared_ptr<Vector3> toEulerAnglesZXY();
+				/**
+				 * Returns the Tait-Bryan Euler angles for the CFrame's orientation in z-y-x order.
+				 *
+				 * @returns Vector of (z, y, x) angles in radians
+				 * @author Mark Otaris
+				 */
+				shared_ptr<Vector3> toEulerAnglesZYX();
+
 				virtual std::string toString();
 
 				static int lua_getPosition(lua_State* L);
@@ -113,6 +156,73 @@ namespace OB{
 				static int lua_getP(lua_State* L);
 
 				static int lua_lerp(lua_State* L);
+
+				/**
+				 * Returns (on the %Lua stack) the Euler angles in x-y-z order, or nil.
+				 *
+				 * Throws a %Lua error if not invoked as a member.
+				 *
+				 * @param L The %Lua state
+				 * @returns 1
+				 * @sa toEulerAnglesXYZ
+				 * @author Mark Otaris
+				*/
+				static int lua_toEulerAnglesXYZ(lua_State* L);
+				/**
+				 * Returns (on the %Lua stack) the Euler angles in x-z-y order, or nil.
+				 *
+				 * Throws a %Lua error if not invoked as a member.
+				 *
+				 * @param L The %Lua state
+				 * @returns 1
+				 * @sa toEulerAnglesXZY
+				 * @author Mark Otaris
+				*/
+				static int lua_toEulerAnglesXZY(lua_State* L);
+				/**
+				 * Returns (on the %Lua stack) the Euler angles in y-x-z order, or nil.
+				 *
+				 * Throws a %Lua error if not invoked as a member.
+				 *
+				 * @param L The %Lua state
+				 * @returns 1
+				 * @sa toEulerAnglesYXZ
+				 * @author Mark Otaris
+				*/
+				static int lua_toEulerAnglesYXZ(lua_State* L);
+				/**
+				 * Returns (on the %Lua stack) the Euler angles in y-z-x order, or nil.
+				 *
+				 * Throws a %Lua error if not invoked as a member.
+				 *
+				 * @param L The %Lua state
+				 * @returns 1
+				 * @sa toEulerAnglesYZX
+				 * @author Mark Otaris
+				*/
+				static int lua_toEulerAnglesYZX(lua_State* L);
+				/**
+				 * Returns (on the %Lua stack) the Euler angles in z-x-y order, or nil.
+				 *
+				 * Throws a %Lua error if not invoked as a member.
+				 *
+				 * @param L The %Lua state
+				 * @returns 1
+				 * @sa toEulerAnglesZXY
+				 * @author Mark Otaris
+				*/
+				static int lua_toEulerAnglesZXY(lua_State* L);
+				/**
+				 * Returns (on the %Lua stack) the Euler angles in z-y-x order, or nil.
+				 *
+				 * Throws a %Lua error if not invoked as a member.
+				 *
+				 * @param L The %Lua state
+				 * @returns 1
+				 * @sa toEulerAnglesZYX
+				 * @author Mark Otaris
+				*/
+				static int lua_toEulerAnglesZYX(lua_State* L);
 
 				static int lua_eq(lua_State* L);
 				static int lua_add(lua_State* L);

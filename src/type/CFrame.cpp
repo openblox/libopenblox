@@ -22,10 +22,14 @@
 
 #include "instance/Instance.h"
 
-#include <math.h>
+#include <cmath>
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
+#endif
+
+#ifndef M_PI_2
+#define M_PI_2 1.57079632679489661923
 #endif
 
 namespace OB{
@@ -598,6 +602,150 @@ namespace OB{
 			}
 		}
 
+		shared_ptr<Vector3> CFrame::toEulerAnglesXYZ(){
+			if(m[0][2] < 1.0){
+				if(m[0][2] > -1.0){
+					return make_shared<Vector3>(
+						std::atan2(-m[1][2], m[2][2]),
+						std::asin(m[0][2]),
+						std::atan2(-m[0][1], m[0][0])
+					);
+				}else{
+					return make_shared<Vector3>(
+						-std::atan2(m[1][0], m[1][1]),
+						-M_PI_2,
+						0.0
+					);
+				}
+			}else{
+				return make_shared<Vector3>(
+					std::atan2(m[1][0], m[1][1]),
+					M_PI_2,
+					0.0
+				);
+			}
+		}
+
+		shared_ptr<Vector3> CFrame::toEulerAnglesXZY(){
+			if(m[0][1] < 1.0){
+				if(m[0][1] > -1.0){
+					return make_shared<Vector3>(
+						std::atan2(m[2][1], m[1][1]),
+						std::asin(-m[0][1]),
+						std::atan2(m[0][2], m[0][0])
+					);
+				}else{
+					return make_shared<Vector3>(
+						std::atan2(m[2][0], m[2][2]),
+						M_PI_2,
+						0.0
+					);
+				}
+			}else{
+				return make_shared<Vector3>(
+					std::atan2(-m[2][0], m[2][2]),
+					-M_PI_2,
+					0.0
+				);
+			}
+		}
+
+		shared_ptr<Vector3> CFrame::toEulerAnglesYXZ(){
+			if(m[1][2] < 1.0){
+				if(m[1][2] > -1.0){
+					return make_shared<Vector3>(
+						std::atan2(m[0][2], m[2][2]),
+						std::asin(-m[1][2]),
+						std::atan2(m[1][0], m[1][1])
+					);
+				}else{
+					return make_shared<Vector3>(
+						std::atan2(m[0][1], m[0][0]),
+						M_PI_2,
+						0.0
+					);
+				}
+			}else{
+				return make_shared<Vector3>(
+					std::atan2(-m[0][1], m[0][0]),
+					-M_PI_2,
+					0.0
+				);
+			}
+		}
+
+		shared_ptr<Vector3> CFrame::toEulerAnglesYZX(){
+			if(m[1][0] < 1.0){
+				if(m[1][0] > -1.0){
+					return make_shared<Vector3>(
+						std::atan2(-m[2][0], m[0][0]),
+						std::asin(m[1][0]),
+						std::atan2(-m[1][2], m[1][1])
+					);
+				}else{
+					return make_shared<Vector3>(
+						-std::atan2(m[2][1], m[2][2]),
+						-M_PI_2,
+						0.0
+					);
+				}
+			}else{
+				return make_shared<Vector3>(
+					std::atan2(m[2][1], m[2][2]),
+					M_PI_2,
+					0.0
+				);
+			}
+		}
+
+		shared_ptr<Vector3> CFrame::toEulerAnglesZXY(){
+			if(m[2][1] < 1.0){
+				if(m[2][1] > -1.0){
+					return make_shared<Vector3>(
+						std::atan2(-m[0][1], m[1][1]),
+						std::asin(m[2][1]),
+						std::atan2(-m[2][0], m[2][2])
+					);
+				}else{
+					return make_shared<Vector3>(
+						-std::atan2(m[0][2], m[0][0]),
+						-M_PI_2,
+						0.0
+					);
+				}
+			}else{
+				return make_shared<Vector3>(
+					std::atan2(m[0][2], m[0][0]),
+					M_PI_2,
+					0.0
+				);
+			}
+		}
+
+		shared_ptr<Vector3> CFrame::toEulerAnglesZYX(){
+			if(m[2][0] < 1.0){
+				if(m[2][0] > -1.0){
+					return make_shared<Vector3>(
+						std::atan2(m[1][0], m[0][0]),
+						std::asin(-m[2][1]),
+						std::atan2(m[2][1], m[2][2])
+					);
+				}else{
+					return make_shared<Vector3>(
+						-std::atan2(m[0][1], m[0][2]),
+						M_PI_2,
+						0.0
+					);
+				}
+			}else{
+				return make_shared<Vector3>(
+					std::atan2(-m[0][1], -m[0][2]),
+					-M_PI_2,
+					0.0
+				);
+			}
+		}
+
 		std::string CFrame::toString(){
 			return "CFrame";
 		}
@@ -657,6 +805,96 @@ namespace OB{
 			double alpha = luaL_checknumber(L, 3);
 
 			return LuaCFrame->lerp(cfr, alpha)->wrap_lua(L);
+		}
+
+		int CFrame::lua_toEulerAnglesXYZ(lua_State* L){
+			shared_ptr<CFrame> LuaCFrame = checkCFrame(L, 1, false);
+			if(!LuaCFrame){
+				return luaL_error(L, COLONERR, "ToEulerAnglesXYZ");
+			}
+
+			shared_ptr<Vector3> angles = LuaCFrame->toEulerAnglesXYZ();
+			if(angles){
+				angles->wrap_lua(L);
+			}else{
+				lua_pushnil(L);
+			}
+			return 1;
+		}
+
+		int CFrame::lua_toEulerAnglesXZY(lua_State* L){
+			shared_ptr<CFrame> LuaCFrame = checkCFrame(L, 1, false);
+			if(!LuaCFrame){
+				return luaL_error(L, COLONERR, "ToEulerAnglesXZY");
+			}
+
+			shared_ptr<Vector3> angles = LuaCFrame->toEulerAnglesXZY();
+			if(angles){
+				angles->wrap_lua(L);
+			}else{
+				lua_pushnil(L);
+			}
+			return 1;
+		}
+
+		int CFrame::lua_toEulerAnglesYXZ(lua_State* L){
+			shared_ptr<CFrame> LuaCFrame = checkCFrame(L, 1, false);
+			if(!LuaCFrame){
+				return luaL_error(L, COLONERR, "ToEulerAnglesYXZ");
+			}
+
+			shared_ptr<Vector3> angles = LuaCFrame->toEulerAnglesYXZ();
+			if(angles){
+				angles->wrap_lua(L);
+			}else{
+				lua_pushnil(L);
+			}
+			return 1;
+		}
+
+		int CFrame::lua_toEulerAnglesYZX(lua_State* L){
+			shared_ptr<CFrame> LuaCFrame = checkCFrame(L, 1, false);
+			if(!LuaCFrame){
+				return luaL_error(L, COLONERR, "ToEulerAnglesYZX");
+			}
+
+			shared_ptr<Vector3> angles = LuaCFrame->toEulerAnglesYZX();
+			if(angles){
+				angles->wrap_lua(L);
+			}else{
+				lua_pushnil(L);
+			}
+			return 1;
+		}
+
+		int CFrame::lua_toEulerAnglesZXY(lua_State* L){
+			shared_ptr<CFrame> LuaCFrame = checkCFrame(L, 1, false);
+			if(!LuaCFrame){
+				return luaL_error(L, COLONERR, "ToEulerAnglesZXY");
+			}
+
+			shared_ptr<Vector3> angles = LuaCFrame->toEulerAnglesZXY();
+			if(angles){
+				angles->wrap_lua(L);
+			}else{
+				lua_pushnil(L);
+			}
+			return 1;
+		}
+
+		int CFrame::lua_toEulerAnglesZYX(lua_State* L){
+			shared_ptr<CFrame> LuaCFrame = checkCFrame(L, 1, false);
+			if(!LuaCFrame){
+				return luaL_error(L, COLONERR, "ToEulerAnglesZYX");
+			}
+
+			shared_ptr<Vector3> angles = LuaCFrame->toEulerAnglesZYX();
+			if(angles){
+				angles->wrap_lua(L);
+			}else{
+				lua_pushnil(L);
+			}
+			return 1;
 		}
 
 		int CFrame::lua_eq(lua_State* L){
@@ -729,6 +967,12 @@ namespace OB{
 		void CFrame::register_lua_methods(lua_State* L){
 			luaL_Reg methods[] = {
 				{"Lerp", lua_lerp},
+				{"ToEulerAnglesXYZ", lua_toEulerAnglesXYZ},
+				{"ToEulerAnglesXZY", lua_toEulerAnglesXZY},
+				{"ToEulerAnglesYXZ", lua_toEulerAnglesYXZ},
+				{"ToEulerAnglesYZX", lua_toEulerAnglesYZX},
+				{"ToEulerAnglesZXY", lua_toEulerAnglesZXY},
+				{"ToEulerAnglesZYX", lua_toEulerAnglesZYX},
 				{NULL, NULL}
 			};
 			luaL_setfuncs(L, methods, 0);
