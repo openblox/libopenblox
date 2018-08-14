@@ -602,7 +602,7 @@ namespace OB{
 			}
 		}
 
-		shared_ptr<Vector3> CFrame::toEulerAnglesXYZ() const{
+		shared_ptr<Vector3> CFrame::toEulerAnglesXYZ(){
 			if(m[0][2] < 1.0){
 				if(m[0][2] > -1.0){
 					return make_shared<Vector3>(
@@ -626,7 +626,7 @@ namespace OB{
 			}
 		}
 
-		shared_ptr<Vector3> CFrame::toEulerAnglesXZY() const{
+		shared_ptr<Vector3> CFrame::toEulerAnglesXZY(){
 			if(m[0][1] < 1.0){
 				if(m[0][1] > -1.0){
 					return make_shared<Vector3>(
@@ -650,7 +650,7 @@ namespace OB{
 			}
 		}
 
-		shared_ptr<Vector3> CFrame::toEulerAnglesYXZ() const{
+		shared_ptr<Vector3> CFrame::toEulerAnglesYXZ(){
 			if(m[1][2] < 1.0){
 				if(m[1][2] > -1.0){
 					return make_shared<Vector3>(
@@ -674,7 +674,7 @@ namespace OB{
 			}
 		}
 
-		shared_ptr<Vector3> CFrame::toEulerAnglesYZX() const{
+		shared_ptr<Vector3> CFrame::toEulerAnglesYZX(){
 			if(m[1][0] < 1.0){
 				if(m[1][0] > -1.0){
 					return make_shared<Vector3>(
@@ -698,7 +698,7 @@ namespace OB{
 			}
 		}
 
-		shared_ptr<Vector3> CFrame::toEulerAnglesZXY() const{
+		shared_ptr<Vector3> CFrame::toEulerAnglesZXY(){
 			if(m[2][1] < 1.0){
 				if(m[2][1] > -1.0){
 					return make_shared<Vector3>(
@@ -722,7 +722,7 @@ namespace OB{
 			}
 		}
 
-		shared_ptr<Vector3> CFrame::toEulerAnglesZYX() const{
+		shared_ptr<Vector3> CFrame::toEulerAnglesZYX(){
 			if(m[2][0] < 1.0){
 				if(m[2][0] > -1.0){
 					return make_shared<Vector3>(
@@ -808,12 +808,12 @@ namespace OB{
 		}
 
 		int CFrame::lua_toEulerAnglesXYZ(lua_State* L){
-			const shared_ptr<const CFrame> LuaCFrame = checkCFrame(L, 1, false);
+			shared_ptr<CFrame> LuaCFrame = checkCFrame(L, 1, false);
 			if(!LuaCFrame){
 				return luaL_error(L, COLONERR, "ToEulerAnglesXYZ");
 			}
 
-			const shared_ptr<Vector3> angles = LuaCFrame->toEulerAnglesXYZ();
+			shared_ptr<Vector3> angles = LuaCFrame->toEulerAnglesXYZ();
 			if(angles){
 				angles->wrap_lua(L);
 			}else{
@@ -823,12 +823,12 @@ namespace OB{
 		}
 
 		int CFrame::lua_toEulerAnglesXZY(lua_State* L){
-			const shared_ptr<const CFrame> LuaCFrame = checkCFrame(L, 1, false);
+			shared_ptr<CFrame> LuaCFrame = checkCFrame(L, 1, false);
 			if(!LuaCFrame){
 				return luaL_error(L, COLONERR, "ToEulerAnglesXZY");
 			}
 
-			const shared_ptr<Vector3> angles = LuaCFrame->toEulerAnglesXZY();
+			shared_ptr<Vector3> angles = LuaCFrame->toEulerAnglesXZY();
 			if(angles){
 				angles->wrap_lua(L);
 			}else{
@@ -838,12 +838,12 @@ namespace OB{
 		}
 
 		int CFrame::lua_toEulerAnglesYXZ(lua_State* L){
-			const shared_ptr<const CFrame> LuaCFrame = checkCFrame(L, 1, false);
+			shared_ptr<CFrame> LuaCFrame = checkCFrame(L, 1, false);
 			if(!LuaCFrame){
 				return luaL_error(L, COLONERR, "ToEulerAnglesYXZ");
 			}
 
-			const shared_ptr<Vector3> angles = LuaCFrame->toEulerAnglesYXZ();
+			shared_ptr<Vector3> angles = LuaCFrame->toEulerAnglesYXZ();
 			if(angles){
 				angles->wrap_lua(L);
 			}else{
@@ -853,12 +853,12 @@ namespace OB{
 		}
 
 		int CFrame::lua_toEulerAnglesYZX(lua_State* L){
-			const shared_ptr<const CFrame> LuaCFrame = checkCFrame(L, 1, false);
+			shared_ptr<CFrame> LuaCFrame = checkCFrame(L, 1, false);
 			if(!LuaCFrame){
 				return luaL_error(L, COLONERR, "ToEulerAnglesYZX");
 			}
 
-			const shared_ptr<Vector3> angles = LuaCFrame->toEulerAnglesYZX();
+			shared_ptr<Vector3> angles = LuaCFrame->toEulerAnglesYZX();
 			if(angles){
 				angles->wrap_lua(L);
 			}else{
@@ -868,12 +868,12 @@ namespace OB{
 		}
 
 		int CFrame::lua_toEulerAnglesZXY(lua_State* L){
-			const shared_ptr<const CFrame> LuaCFrame = checkCFrame(L, 1, false);
+			shared_ptr<CFrame> LuaCFrame = checkCFrame(L, 1, false);
 			if(!LuaCFrame){
 				return luaL_error(L, COLONERR, "ToEulerAnglesZXY");
 			}
 
-			const shared_ptr<Vector3> angles = LuaCFrame->toEulerAnglesZXY();
+			shared_ptr<Vector3> angles = LuaCFrame->toEulerAnglesZXY();
 			if(angles){
 				angles->wrap_lua(L);
 			}else{
@@ -883,12 +883,12 @@ namespace OB{
 		}
 
 		int CFrame::lua_toEulerAnglesZYX(lua_State* L){
-			const shared_ptr<const CFrame> LuaCFrame = checkCFrame(L, 1, false);
+			shared_ptr<CFrame> LuaCFrame = checkCFrame(L, 1, false);
 			if(!LuaCFrame){
 				return luaL_error(L, COLONERR, "ToEulerAnglesZYX");
 			}
 
-			const shared_ptr<Vector3> angles = LuaCFrame->toEulerAnglesZYX();
+			shared_ptr<Vector3> angles = LuaCFrame->toEulerAnglesZYX();
 			if(angles){
 				angles->wrap_lua(L);
 			}else{
