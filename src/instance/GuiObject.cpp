@@ -211,6 +211,8 @@ namespace OB{
 					}
 				}
 			}
+
+			getEngine()->end2DMode();
 #endif
 		}
 

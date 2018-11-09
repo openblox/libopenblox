@@ -69,6 +69,8 @@ namespace OB{
 						//Border Bottom
 						glRectd(pos->getX() - borderSize, siz->getY(), siz->getX() + borderSize, siz->getY() + borderSize);
 
+						getEngine()->end2DMode();
+
 						GuiObject::render();
 					}
 				}

@@ -70,6 +70,9 @@ namespace OB{
 				if(yOffsetStr.length() > 0){
 					yOffset = atof(yOffsetStr.c_str());
 				}
+
+				x = make_shared<UDim>(xScale, xOffset);
+				y = make_shared<UDim>(yScale, yOffset);
 			}else{
 				x = make_shared<UDim>();
 				y = make_shared<UDim>();

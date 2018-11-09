@@ -382,6 +382,22 @@ namespace OB{
 					if(stype == "float"){
 						propNode.text().set(getProperty(name)->asFloat());
 					}
+					if(stype == "UDim2"){
+						shared_ptr<Type::UDim2> vval = getProperty(name)->asUDim2();
+						if(vval){
+							propNode.text().set(vval->toString().c_str());
+						}else{
+							propNode.text().set("0, 0, 0, 0");
+						}
+					}
+					if(stype == "UDim"){
+						shared_ptr<Type::UDim> vval = getProperty(name)->asUDim();
+						if(vval){
+							propNode.text().set(vval->toString().c_str());
+						}else{
+							propNode.text().set("0, 0");
+						}
+					}
 					if(stype == "Color3"){
 						shared_ptr<Type::Color3> vval = getProperty(name)->asColor3();
 						if(vval){

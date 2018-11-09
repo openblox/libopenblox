@@ -74,6 +74,8 @@ namespace OB{
 		custPostRender = NULL;
 
 #if HAVE_IRRLICHT
+		cached2DMode = false;
+
 		irrDev = NULL;
 		irrDriv = NULL;
 		irrSceneMgr = NULL;
@@ -297,10 +299,19 @@ namespace OB{
 
 	void OBEngine::prepare2DMode(){
 #if HAVE_IRRLICHT
-		if(doRendering && irrDriv){
+		if(!cached2DMode && doRendering && irrDriv){
+			cached2DMode = true;
+
+			// Dirty hack
 			irrDriv->drawPixel(0, 0, irr::video::SColor(0, 255, 255, 255));
 		}
 #endif
+	}
+
+	void OBEngine::end2DMode(){
+		#if HAVE_IRRLICHT
+	    cached2DMode = false;
+		#endif
 	}
 
 	lua_State* OBEngine::getGlobalLuaState(){

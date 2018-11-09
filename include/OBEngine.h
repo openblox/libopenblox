@@ -177,6 +177,13 @@ namespace OB{
 			void prepare2DMode();
 
 			/**
+			 * Ends a 2D context
+			 *
+			 * @author John M. Harris, Jr.
+			 */
+			void end2DMode();
+
+			/**
 			 * Save an image of the last frame to a file.
 			 *
 			 * @param file File to write to
@@ -406,6 +413,8 @@ namespace OB{
 			lua_State* globalState;
 
 #if HAVE_IRRLICHT
+			bool cached2DMode;
+
 			post_render_func_t custPostRender;
 
 			irr::IrrlichtDevice* irrDev;
