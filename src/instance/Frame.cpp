@@ -59,7 +59,7 @@ namespace OB{
 
 						glRectd(pos->getX(), pos->getY(), siz->getX(), siz->getY());
 
-						glColor4d(borderColor->getR(), borderColor->getB(), borderColor->getB(), 1 - bgTrans);
+						glColor4d(borderColor->getR(), borderColor->getG(), borderColor->getB(), 1 - bgTrans);
 						//Border Top
 						glRectd(pos->getX() - borderSize, pos->getY() - borderSize, siz->getX() + borderSize, pos->getY());
 						//Border Left

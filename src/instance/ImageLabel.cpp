@@ -38,7 +38,7 @@ namespace OB{
 			Name = ClassName;
 
 			Image = "";
-			ImageColor3 = make_shared<Type::Color3>(1, 1, 1);
+			ImageColor3 = make_shared<Type::Color3>(255, 255, 255);
 			ImageTransparency = 1;
 
 			img_needs_updating = false;
@@ -162,24 +162,22 @@ namespace OB{
 						shared_ptr<Type::Vector2> pos = getAbsolutePosition();
 						shared_ptr<Type::Vector2> siz = getAbsoluteSize()->add(pos);
 
+						shared_ptr<Type::Color3> imgColor = ImageColor3;
+
 						glColor4d(bgColor->getR(), bgColor->getG(), bgColor->getB(), 1 - bgTrans);
 
 						glRectd(pos->getX(), pos->getY(), siz->getX(), siz->getY());
 
 						if(img){
-							irr::core::rect<irr::s32> clipRect;
-
-							if(ClipsDescendants){
-								struct _ob_rect clipArea = getAbsoluteClippingArea();
-
-								clipRect = irr::core::rect<irr::s32>(clipArea.x1, clipArea.y1, clipArea.x2, clipArea.y2);
-							}
+							int imgTrans = (1 - ImageTransparency) * 255;
+							if(imgTrans > 255){ imgTrans = 255; }
+							if(imgTrans < 0){ imgTrans = 0; }
 
 							irr::video::SColor colorPtr[4];
-							colorPtr[0] = irr::video::SColor(255, 255, 255, 255);
-							colorPtr[1] = irr::video::SColor(255, 255, 255, 255);
-							colorPtr[2] = irr::video::SColor(255, 255, 255, 255);
-							colorPtr[3] = irr::video::SColor(255, 255, 255, 255);
+							colorPtr[0] = irr::video::SColor(imgTrans, imgColor->getRi(), imgColor->getGi(), imgColor->getBi());
+							colorPtr[1] = irr::video::SColor(imgTrans, imgColor->getRi(), imgColor->getGi(), imgColor->getBi());
+							colorPtr[2] = irr::video::SColor(imgTrans, imgColor->getRi(), imgColor->getGi(), imgColor->getBi());
+							colorPtr[3] = irr::video::SColor(imgTrans, imgColor->getRi(), imgColor->getGi(), imgColor->getBi());
 
 							irr::core::rect<irr::s32> imgPos = irr::core::rect<irr::s32>(pos->getX(), pos->getY(), siz->getX(), siz->getY());
 
@@ -187,14 +185,10 @@ namespace OB{
 							irr::core::dimension2d<irr::u32> imgSize = img->getSize();
 							irr::core::rect<irr::s32> imgSiz = irr::core::rect<irr::s32>(0, 0, imgSize.Width, imgSize.Height);
 
-							if(ClipsDescendants){
-								irrDriv->draw2DImage(img, imgPos, imgSiz, &clipRect, colorPtr, img->hasAlpha());
-							}else{
-								irrDriv->draw2DImage(img, imgPos, imgSiz, 0, colorPtr, img->hasAlpha());
-							}
+							irrDriv->draw2DImage(img, imgPos, imgSiz, 0, colorPtr, img->hasAlpha());
 						}
 
-						glColor4d(borderColor->getR(), borderColor->getB(), borderColor->getB(), 1 - bgTrans);
+						glColor4d(borderColor->getR(), borderColor->getG(), borderColor->getB(), 1 - bgTrans);
 						// Border Top
 						glRectd(pos->getX() - borderSize, pos->getY() - borderSize, siz->getX() + borderSize, pos->getY());
 						// Border Left
@@ -255,10 +249,10 @@ namespace OB{
 				return make_shared<Type::VarWrapper>(getImage());
 			}
 			if(prop == "ImageColor3"){
-				return make_shared<Type::VarWrapper>(getImage());
+				return make_shared<Type::VarWrapper>(getImageColor3());
 			}
 			if(prop == "ImageTransparency"){
-				return make_shared<Type::VarWrapper>(getImage());
+				return make_shared<Type::VarWrapper>(getImageTransparency());
 			}
 
 			return GuiObject::getProperty(prop);
