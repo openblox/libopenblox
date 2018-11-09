@@ -41,6 +41,8 @@ namespace OB{
 			ImageColor3 = make_shared<Type::Color3>(1, 1, 1);
 			ImageTransparency = 1;
 
+			img_needs_updating = false;
+
 #if HAVE_IRRLICHT
 			img = NULL;
 #endif
@@ -81,7 +83,7 @@ namespace OB{
 					shared_ptr<AssetLocator> assetLoc = eng->getAssetLocator();
 					if(assetLoc){
 						if(assetLoc->hasAsset(Image)){
-							updateImage();
+						    img_needs_updating = true;
 						}else{
 							shared_ptr<Instance> sharedThis = std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
 							assetLoc->addWaitingInstance(sharedThis);
@@ -135,7 +137,7 @@ namespace OB{
 
 		bool ImageLabel::assetLoaded(std::string res){
 			if(res == Image){
-				updateImage();
+			    img_needs_updating = true;
 				return true;
 			}
 
@@ -144,6 +146,10 @@ namespace OB{
 
 		void ImageLabel::render(){
 #if HAVE_IRRLICHT
+			if(img_needs_updating){
+				updateImage();
+			}
+
 			if(Visible){
 				if(irr::IrrlichtDevice* irrDev = getEngine()->getIrrlichtDevice()){
 					if(irr::video::IVideoDriver* irrDriv = irrDev->getVideoDriver()){

@@ -74,6 +74,8 @@ namespace OB{
 				DECLARE_CLASS(ImageLabel);
 
 #if HAVE_IRRLICHT
+				bool img_needs_updating;
+
 				irr::video::ITexture* img;
 #endif
 
