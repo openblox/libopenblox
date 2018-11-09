@@ -160,6 +160,34 @@ namespace OB{
 
 						glRectd(pos->getX(), pos->getY(), siz->getX(), siz->getY());
 
+						if(img){
+							irr::core::rect<irr::s32> clipRect;
+
+							if(ClipsDescendants){
+								struct _ob_rect clipArea = getAbsoluteClippingArea();
+
+								clipRect = irr::core::rect<irr::s32>(clipArea.x1, clipArea.y1, clipArea.x2, clipArea.y2);
+							}
+
+							irr::video::SColor colorPtr[4];
+							colorPtr[0] = irr::video::SColor(255, 255, 255, 255);
+							colorPtr[1] = irr::video::SColor(255, 255, 255, 255);
+							colorPtr[2] = irr::video::SColor(255, 255, 255, 255);
+							colorPtr[3] = irr::video::SColor(255, 255, 255, 255);
+
+							irr::core::rect<irr::s32> imgPos = irr::core::rect<irr::s32>(pos->getX(), pos->getY(), siz->getX(), siz->getY());
+
+							//TODO: Implement ImageSize, ImagePosition
+							irr::core::dimension2d<irr::u32> imgSize = img->getSize();
+							irr::core::rect<irr::s32> imgSiz = irr::core::rect<irr::s32>(0, 0, imgSize.Width, imgSize.Height);
+
+							if(ClipsDescendants){
+								irrDriv->draw2DImage(img, imgPos, imgSiz, &clipRect, colorPtr, img->hasAlpha());
+							}else{
+								irrDriv->draw2DImage(img, imgPos, imgSiz, 0, colorPtr, img->hasAlpha());
+							}
+						}
+
 						glColor4d(borderColor->getR(), borderColor->getB(), borderColor->getB(), 1 - bgTrans);
 						// Border Top
 						glRectd(pos->getX() - borderSize, pos->getY() - borderSize, siz->getX() + borderSize, pos->getY());
@@ -169,6 +197,8 @@ namespace OB{
 						glRectd(siz->getX(), pos->getY() - borderSize, siz->getX() + borderSize, siz->getY() + borderSize);
 						// Border Bottom
 						glRectd(pos->getX() - borderSize, siz->getY(), siz->getX() + borderSize, siz->getY() + borderSize);
+
+						getEngine()->end2DMode();
 
 						GuiObject::render();
 					}
