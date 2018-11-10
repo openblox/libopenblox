@@ -51,6 +51,14 @@ namespace OB{
 			return NULL;
 		}
 
+		/**
+		 * Creates a Player object for this ServerReplicator
+		 *
+		 * Make sure to call Player::setServerReplicator  on
+		 * the returned instance!
+		 *
+		 * @author John M. Harris, Jr.
+		 */
 		shared_ptr<Player> ServerReplicator::CreatePlayer(){
 			if(!plr){
 				shared_ptr<DataModel> dm = getEngine()->getDataModel();
@@ -77,6 +85,7 @@ namespace OB{
 			if(shared_ptr<ServerReplicator> sr = dynamic_pointer_cast<ServerReplicator>(inst)){
 				shared_ptr<Player> plr = sr->CreatePlayer();
 				if(plr){
+					plr->setServerReplicator(sr);
 					return plr->wrap_lua(L);
 				}else{
 					lua_pushnil(L);

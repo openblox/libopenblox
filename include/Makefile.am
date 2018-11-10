@@ -53,6 +53,7 @@ instance/LuaSourceContainer.h \
 instance/MeshPart.h \
 instance/Model.h \
 instance/NetworkClient.h \
+instance/RemoteEvent.h \
 instance/NetworkPeer.h \
 instance/NetworkReplicator.h \
 instance/NetworkServer.h \

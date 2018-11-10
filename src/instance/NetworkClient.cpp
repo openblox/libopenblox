@@ -24,6 +24,7 @@
 #include "utility.h"
 
 #include "instance/ClientReplicator.h"
+#include "instance/RemoteEvent.h"
 
 #if HAVE_ENET
 namespace OB{
@@ -114,93 +115,146 @@ namespace OB{
 			}
 		}
 
+		void NetworkClient::send(enet_uint8 channel, BitStream &bs){
+			if(server_peer){
+				ENetPacket* pkt = enet_packet_create(bs.getData(), bs.getNumBytesUsed(), ENET_PACKET_FLAG_RELIABLE);
+				if(!pkt){
+					throw new OBException("Failed to create ENet packet.");
+				}
+
+				enet_peer_send(server_peer, channel, pkt);
+			}
+		}
+
 		void NetworkClient::processPacket(ENetEvent evt, BitStream &bs){
 			size_t pkt_type = bs.readSizeT();
 
-			switch(pkt_type){
-				case OB_NET_PKT_CREATE_INSTANCE: {
-					ob_uint64 netId = bs.readUInt64();
-					std::string className = bs.readString();
+		    if(evt.channelID == OB_NET_CHAN_PROTOCOL){
+				switch(pkt_type){
+					case OB_NET_PKT_FIRE_REMOTE_EVENT: {
+						ob_uint64 netId = bs.readUInt64();
 
-					shared_ptr<DataModel> dm = eng->getDataModel();
-					if(dm){
-						weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
-						if(lookedUpInst.expired()){
-							shared_ptr<Instance> createdInst = ClassFactory::createReplicate(className, eng);
-							if(createdInst){
-								createdInst->setNetworkID(netId);
+						shared_ptr<DataModel> dm = eng->getDataModel();
+						if(dm){
+							weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
+							if(lookedUpInst.expired()){
+								return;
+							}
 
-								HeldInstance hi;
-								// We hold instances for up to 10 seconds (the value is left as 10 * 1000 for ease of editing and readability, should be optimized out anyway)
-								hi.holdEnd = currentTimeMillis() + (10 * 1000);
-								hi.inst = createdInst;
+							if(shared_ptr<Instance> ki = lookedUpInst.lock()){
+								if(shared_ptr<RemoteEvent> re = dynamic_pointer_cast<RemoteEvent>(ki)){
+									size_t numArgs = bs.readSizeT();
 
-								heldInstances.push(hi);
+									std::vector<shared_ptr<Type::VarWrapper>> argList;
+
+									for(size_t i = 0; i < numArgs; i++){
+										shared_ptr<Type::VarWrapper> nVal = bs.readVar(eng);
+										if(nVal){
+											argList.push_back(nVal);
+										}else{
+											argList.push_back(NULL);
+										}
+									}
+
+									re->getClientEvent()->Fire(eng, argList);
+								}
 							}
 						}
+
+						break;
 					}
-					break;
+					default: {
+						printf("Unknown packet type: %i\n", pkt_type);
+					}
 				}
-				case OB_NET_PKT_SET_PARENT: {
-					ob_uint64 netId = bs.readUInt64();
-					ob_uint64 parentNetId = bs.readUInt64();
+			}else if(evt.channelID == OB_NET_CHAN_REPLICATION){
+			    switch(pkt_type){
+					case OB_NET_PKT_CREATE_INSTANCE: {
+						ob_uint64 netId = bs.readUInt64();
+						std::string className = bs.readString();
 
-					shared_ptr<DataModel> dm = eng->getDataModel();
-					if(dm){
-						weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
+						shared_ptr<DataModel> dm = eng->getDataModel();
+						if(dm){
+							weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
+							if(lookedUpInst.expired()){
+								shared_ptr<Instance> createdInst = ClassFactory::createReplicate(className, eng);
+								if(createdInst){
+									createdInst->setNetworkID(netId);
 
-						if(lookedUpInst.expired()){
-							return;
+									HeldInstance hi;
+									// We hold instances for up to 10 seconds (the value is left as 10 * 1000 for ease of editing and readability, should be optimized out anyway)
+									hi.holdEnd = currentTimeMillis() + (10 * 1000);
+									hi.inst = createdInst;
+
+									heldInstances.push(hi);
+								}
+							}
 						}
+						break;
+					}
+					case OB_NET_PKT_SET_PARENT: {
+						ob_uint64 netId = bs.readUInt64();
+						ob_uint64 parentNetId = bs.readUInt64();
 
-						if(shared_ptr<Instance> kid = lookedUpInst.lock()){
-							bool wasParentLocked = false;
-							if(kid->ParentLocked){
-								wasParentLocked = true;
-								kid->ParentLocked = false;
+						shared_ptr<DataModel> dm = eng->getDataModel();
+						if(dm){
+							weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
+
+							if(lookedUpInst.expired()){
+								return;
 							}
 
-							if(parentNetId > OB_NETID_NULL){
-								weak_ptr<Instance> lookedUpParent = dm->lookupInstance(parentNetId);
-								if(lookedUpParent.expired()){
-									return;
+							if(shared_ptr<Instance> kid = lookedUpInst.lock()){
+								bool wasParentLocked = false;
+								if(kid->ParentLocked){
+									wasParentLocked = true;
+									kid->ParentLocked = false;
 								}
 
-								if(shared_ptr<Instance> par = lookedUpParent.lock()){
-									kid->setParent(par, true);
+								if(parentNetId > OB_NETID_NULL){
+									weak_ptr<Instance> lookedUpParent = dm->lookupInstance(parentNetId);
+									if(lookedUpParent.expired()){
+										return;
+									}
+
+									if(shared_ptr<Instance> par = lookedUpParent.lock()){
+										kid->setParent(par, true);
+									}
+								}else{
+									kid->setParent(NULL, true);
 								}
-							}else{
-								kid->setParent(NULL, true);
-							}
 
-							if(wasParentLocked){
-								kid->ParentLocked = true;
+								if(wasParentLocked){
+									kid->ParentLocked = true;
+								}
 							}
 						}
+						break;
 					}
-					break;
-				}
-				case OB_NET_PKT_SET_PROPERTY: {
-					ob_uint64 netId = bs.readUInt64();
-					std::string prop = bs.readString();
-					shared_ptr<Type::VarWrapper> val = bs.readVar(eng);
+					case OB_NET_PKT_SET_PROPERTY: {
+						ob_uint64 netId = bs.readUInt64();
+						std::string prop = bs.readString();
+						shared_ptr<Type::VarWrapper> val = bs.readVar(eng);
 
-					shared_ptr<DataModel> dm = eng->getDataModel();
-					if(dm){
-						weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
-						if(lookedUpInst.expired()){
-							return;
-						}
+						shared_ptr<DataModel> dm = eng->getDataModel();
+						if(dm){
+							weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
+							if(lookedUpInst.expired()){
+								return;
+							}
 
-						if(shared_ptr<Instance> kid = lookedUpInst.lock()){
-							kid->setProperty(prop, val);
+							if(shared_ptr<Instance> kid = lookedUpInst.lock()){
+								kid->setProperty(prop, val);
+							}
 						}
+						break;
 					}
-					break;
+					default: {
+						printf("Unknown packet type: %i\n", pkt_type);
+					}
 				}
-				default: {
-					printf("Unknown packet type: %i\n", pkt_type);
-				}
+			}else{
+				printf("Unknown network channel: %i\n", evt.channelID);
 			}
 		}
 

@@ -51,6 +51,7 @@ namespace OB{
 				DECLARE_LUA_METHOD(Start);
 				DECLARE_LUA_METHOD(Stop);
 
+				void processPacket(ENetEvent evt, BitStream &bs);
 				void processEvent(ENetEvent evt);
 
 				static void register_lua_methods(lua_State* L);

@@ -80,6 +80,7 @@ instance/ServerReplicator.cpp \
 instance/NetworkPeer.cpp \
 instance/NetworkServer.cpp \
 instance/NetworkClient.cpp \
+instance/RemoteEvent.cpp \
 instance/GuiBase.cpp \
 instance/GuiBase2d.cpp \
 instance/GuiObject.cpp \

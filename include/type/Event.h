@@ -45,7 +45,6 @@ namespace OB{
 				bool isConnected(shared_ptr<EventConnection> conn);
 				bool doesBlockLogService();
 
-				void FireLater(std::vector<shared_ptr<VarWrapper>> argList);
 				void Fire(OBEngine* eng, std::vector<shared_ptr<VarWrapper>> argList);
 				void Fire(OBEngine* eng);
 

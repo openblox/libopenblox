@@ -67,6 +67,7 @@
 #include "instance/NetworkPeer.h"
 #include "instance/NetworkServer.h"
 #include "instance/NetworkClient.h"
+#include "instance/RemoteEvent.h"
 #include "instance/GuiBase.h"
 #include "instance/GuiBase2d.h"
 #include "instance/LayerCollector.h"
@@ -222,6 +223,7 @@ namespace OB{
 		Instance::NetworkPeer::registerClass();
 		Instance::NetworkServer::registerClass();
 		Instance::NetworkClient::registerClass();
+		Instance::RemoteEvent::registerClass();
 #endif
 	}
 }

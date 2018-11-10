@@ -32,6 +32,10 @@ namespace OB{
 			netId = OB_NETID_PLAYERS;
 
 			Archivable = false;
+
+			#if HAVE_ENET
+			serverReplicator = NULL;
+			#endif
 		}
 
 		Player::~Player(){}
@@ -39,5 +43,15 @@ namespace OB{
 		shared_ptr<Instance> Player::cloneImpl(){
 			return NULL;
 		}
+
+#if HAVE_ENET
+		void Player::setServerReplicator(shared_ptr<ServerReplicator> sR){
+			serverReplicator = sR;
+		}
+
+		shared_ptr<ServerReplicator> Player::getServerReplicator(){
+			return serverReplicator;
+		}
+#endif
 	}
 }

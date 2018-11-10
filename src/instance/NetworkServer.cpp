@@ -22,6 +22,8 @@
 #include "OBException.h"
 
 #include "instance/ServerReplicator.h"
+#include "instance/RemoteEvent.h"
+#include "instance/Player.h"
 
 #if HAVE_ENET
 namespace OB{
@@ -128,6 +130,66 @@ namespace OB{
 		}
 #endif
 
+		void NetworkServer::processPacket(ENetEvent evt, BitStream &bs){
+			size_t pkt_type = bs.readSizeT();
+
+			if(evt.channelID == OB_NET_CHAN_PROTOCOL){
+				switch(pkt_type){
+					case OB_NET_PKT_FIRE_REMOTE_EVENT: {
+						ob_uint64 netId = bs.readUInt64();
+
+						shared_ptr<DataModel> dm = eng->getDataModel();
+						if(dm){
+							weak_ptr<Instance> lookedUpInst = dm->lookupInstance(netId);
+							if(lookedUpInst.expired()){
+								return;
+							}
+
+							if(shared_ptr<Instance> ki = lookedUpInst.lock()){
+								if(shared_ptr<RemoteEvent> re = dynamic_pointer_cast<RemoteEvent>(ki)){
+								    // First argument for ServerEvent events will always be the client
+									// If ServerReplicator->getPlayer() is non-NULL, we use the Player
+									shared_ptr<Instance> dataInst = (*static_cast<shared_ptr<Instance>*>(evt.peer->data));
+
+									if(shared_ptr<ServerReplicator> sr = dynamic_pointer_cast<ServerReplicator>(dataInst)){
+										shared_ptr<Instance> peerInst = sr;
+
+										if(shared_ptr<Player> plr = sr->GetPlayer()){
+											peerInst = plr;
+										}
+
+										std::vector<shared_ptr<Type::VarWrapper>> argList;
+
+										argList.push_back(make_shared<Type::VarWrapper>(peerInst));
+
+										size_t numArgs = bs.readSizeT();
+
+										for(size_t i = 0; i < numArgs; i++){
+											shared_ptr<Type::VarWrapper> nVal = bs.readVar(eng);
+											if(nVal){
+												argList.push_back(nVal);
+											}else{
+												argList.push_back(NULL);
+											}
+										}
+
+										re->getServerEvent()->Fire(eng, argList);
+									}
+								}
+							}
+						}
+
+						break;
+					}
+					default: {
+						printf("Unknown packet type: %i\n", pkt_type);
+					}
+				}
+			}else{
+				printf("Unknown network channel: %i\n", evt.channelID);
+			}
+		}
+
 		void NetworkServer::processEvent(ENetEvent evt){
 			switch(evt.type){
 				case ENET_EVENT_TYPE_CONNECT: {
@@ -145,6 +207,17 @@ namespace OB{
 					break;
 				}
 				case ENET_EVENT_TYPE_RECEIVE: {
+				    ENetPacket* pkt = evt.packet;
+
+					BitStream bs(pkt->data, pkt->dataLength, true);
+
+					try{
+						processPacket(evt, bs);
+					}catch(OBException* ex){
+						printf("Error reading packet: %s\n", ex->getMessage().c_str());
+					}
+
+					enet_packet_destroy(pkt);
 					break;
 				}
 				case ENET_EVENT_TYPE_DISCONNECT: {

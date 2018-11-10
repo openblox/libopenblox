@@ -24,12 +24,25 @@
 
 namespace OB{
 	namespace Instance{
+#if HAVE_ENET
+		class ServerReplicator;
+#endif
+
 		class Player: public Instance{
 			public:
 				Player(OBEngine* eng);
 				virtual ~Player();
 
+				#if HAVE_ENET
+				void setServerReplicator(shared_ptr<ServerReplicator> sR);
+				shared_ptr<ServerReplicator> getServerReplicator();
+				#endif
+
 				DECLARE_CLASS(Player);
+
+#if HAVE_ENET
+				shared_ptr<ServerReplicator> serverReplicator;
+#endif
 		};
 	}
 }

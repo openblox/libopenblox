@@ -154,13 +154,13 @@ namespace OB{
 							break;
 						}
 						case LUA_TUSERDATA: {
-							shared_ptr<Type> tl = checkType(L, i);
+							shared_ptr<Type> tl = checkType(L, i, false);
 							if(tl){
 								fireArgs.push_back(make_shared<VarWrapper>(tl));
 								break;
 							}
 
-							shared_ptr<Instance::Instance> ti = Instance::Instance::checkInstance(L, i);
+							shared_ptr<Instance::Instance> ti = Instance::Instance::checkInstance(L, i, false);
 							if(ti){
 								fireArgs.push_back(make_shared<VarWrapper>(ti));
 								break;

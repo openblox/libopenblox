@@ -42,6 +42,8 @@ namespace OB{
 				void Connect(std::string server, int serverPort, int clientPort = 0);
 				void Disconnect(int blockDuration = 1000);
 
+				void send(enet_uint8 channel, BitStream &bs);
+
 #if HAVE_PUGIXML
 				virtual std::string serializedID();
 #endif

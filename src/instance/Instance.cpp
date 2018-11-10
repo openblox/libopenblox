@@ -114,7 +114,7 @@ namespace OB{
 				if(newGuy == NULL){
 					return NULL;
 				}
-				for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != children.size(); i++){
+				for(size_t i = 0; i < children.size(); i++){
 					shared_ptr<Instance> kidClone = children[i];
 					if(kidClone){
 						kidClone->setParent(newGuy, true);
