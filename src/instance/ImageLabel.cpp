@@ -49,7 +49,30 @@ namespace OB{
 		ImageLabel::~ImageLabel(){}
 
 		shared_ptr<Instance> ImageLabel::cloneImpl(){
-			return NULL;
+			shared_ptr<ImageLabel> imgLbl = make_shared<ImageLabel>(eng);
+			imgLbl->Archivable = Archivable;
+			imgLbl->Name = Name;
+			imgLbl->ParentLocked = ParentLocked;
+
+			imgLbl->Active = Active;
+			imgLbl->BackgroundColor3 = BackgroundColor3;
+			imgLbl->BackgroundTransparency = BackgroundTransparency;
+			imgLbl->BorderColor3 = BorderColor3;
+			imgLbl->BorderSizePixel = BorderSizePixel;
+			imgLbl->ClipsDescendants = ClipsDescendants;
+			imgLbl->Position = Position;
+			imgLbl->Size = Size;
+			imgLbl->ZIndex = ZIndex;
+
+			imgLbl->Image = Image;
+			imgLbl->ImageColor3 = ImageColor3;
+			imgLbl->ImageTransparency = ImageTransparency;
+
+#if HAVE_IRRLICHT
+			imgLbl->img = img;
+#endif
+
+			return imgLbl;
 		}
 
 		void ImageLabel::updateImage(){
