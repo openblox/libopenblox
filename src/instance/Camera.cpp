@@ -60,9 +60,11 @@ namespace OB{
 		}
 
 		void Camera::updateCFrame(){
-			//shared_ptr<Type::Vector3> pos = camera_cframe->getPosition();
-			//camera->setPosition(pos->toIrrlichtVector3df());
-			//camera->setRotation(irr::core::vector3d<irr::f32>(camera_cframe->getX(), camera_cframe->getY(), camera_cframe->getZ()));
+			shared_ptr<Type::Vector3> pos = CFrame->getPosition();
+			shared_ptr<Type::Vector3> angle = CFrame->toEulerAnglesXYZ();
+			eng->getLogger()->log("POS X: " + std::to_string(pos->getX()) + " Y: " + std::to_string(pos->getY()) + " Z: " + std::to_string(pos->getZ()));
+			camera->setPosition(pos->toIrrlichtVector3df());
+			camera->setRotation(irr::core::vector3d<irr::f32>(irr::core::radToDeg(angle->getX()), irr::core::radToDeg(angle->getY()), irr::core::radToDeg(angle->getZ())));
 		}
 
 		void Camera::setCFrame(shared_ptr<Type::CFrame> newCFrame){
