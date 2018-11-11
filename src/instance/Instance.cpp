@@ -120,6 +120,8 @@ namespace OB{
 						kidClone->setParent(newGuy, true);
 					}
 				}
+
+				return newGuy;
 			}
 			return NULL;
 		}
