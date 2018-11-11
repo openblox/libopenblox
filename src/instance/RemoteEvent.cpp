@@ -309,7 +309,8 @@ namespace OB{
 			luaL_Reg methods[] = {
                 {"FireClient", lua_FireClient},
 			    {"FireAllClients", lua_FireAllClients},
-				{"FireServer", lua_FireServer}
+				{"FireServer", lua_FireServer},
+				{NULL, NULL}
 			};
 			luaL_setfuncs(L, methods, 0);
 		}
