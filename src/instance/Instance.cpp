@@ -115,9 +115,12 @@ namespace OB{
 					return NULL;
 				}
 				for(size_t i = 0; i < children.size(); i++){
-					shared_ptr<Instance> kidClone = children[i];
-					if(kidClone){
-						kidClone->setParent(newGuy, true);
+					shared_ptr<Instance> kid = children[i];
+					if(kid){
+						shared_ptr<Instance> kidClone = kid->Clone();
+						if(kidClone){
+							kidClone->setParent(newGuy, true);
+						}
 					}
 				}
 
