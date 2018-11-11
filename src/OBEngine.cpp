@@ -370,14 +370,12 @@ namespace OB{
 		vsync = useVsync;
 	}
 
-	bool OBEngine::getResizable()
-	{
+	bool OBEngine::getResizable(){
 		return resizable;
 	}
 
-	void OBEngine::setResizable(bool Resizable)
-	{
-		if (initialized){
+	void OBEngine::setResizable(bool Resizable){
+		if(initialized){
 			throw new OBException("You can't call setResizable after init is called.");
 		}
 		resizable = Resizable;
