@@ -304,6 +304,8 @@ namespace OB{
 		}
 
 		void RemoteEvent::register_lua_methods(lua_State* L){
+			Instance::register_lua_methods(L);
+
 			luaL_Reg methods[] = {
                 {"FireClient", lua_FireClient},
 			    {"FireAllClients", lua_FireAllClients},
