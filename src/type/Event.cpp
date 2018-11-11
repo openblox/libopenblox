@@ -128,6 +128,10 @@ namespace OB{
 				return luaL_error(L, COLONERR, "Fire");
 			}
 
+			if(!evt->canFireFromLua){
+			    return luaL_error(L, "This event cannot be fired from Lua.");
+			}
+
 			std::vector<shared_ptr<VarWrapper>> fireArgs;
 
 			int nargs = lua_gettop(L);
