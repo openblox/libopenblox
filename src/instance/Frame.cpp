@@ -38,7 +38,22 @@ namespace OB{
 		Frame::~Frame(){}
 
 		shared_ptr<Instance> Frame::cloneImpl(){
-			return NULL;
+			shared_ptr<Frame> clone = make_shared<Frame>(eng);
+			clone->Archivable = Archivable;
+			clone->Name = Name;
+			clone->ParentLocked = ParentLocked;
+
+			clone->Active = Active;
+			clone->BackgroundColor3 = BackgroundColor3;
+			clone->BackgroundTransparency = BackgroundTransparency;
+			clone->BorderColor3 = BorderColor3;
+			clone->BorderSizePixel = BorderSizePixel;
+			clone->ClipsDescendants = ClipsDescendants;
+			clone->Position = Position;
+			clone->Size = Size;
+			clone->ZIndex = ZIndex;
+			
+			return clone;
 		}
 
 		void Frame::render(){
