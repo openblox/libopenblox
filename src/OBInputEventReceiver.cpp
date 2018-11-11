@@ -32,111 +32,59 @@ namespace OB{
 
 	OBInputEventReceiver::~OBInputEventReceiver(){}
 
-	void ob_inputrecv_passInputEvent(OBEngine* eng, shared_ptr<Type::InputEvent> evt){
+	bool OBInputEventReceiver::OnEvent(const irr::SEvent& evt){
 		shared_ptr<Instance::DataModel> dm = eng->getDataModel();
 		if(dm){
 			shared_ptr<Instance::UserInputService> uis = dm->getUserInputService();
 			if(uis){
-				std::vector<shared_ptr<Type::VarWrapper>> argList = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(evt)});
-
-				uis->getInputChanged()->Fire(eng, argList);
-			}
-		}
-	}
-
-	bool OBInputEventReceiver::OnEvent(const irr::SEvent& evt){
-	    switch(evt.EventType){
-			case irr::EET_MOUSE_INPUT_EVENT: {
-				shared_ptr<Type::InputEvent> ie = make_shared<Type::InputEvent>();
-
-			    switch(evt.MouseInput.Event){
-					case irr::EMIE_LMOUSE_PRESSED_DOWN: {
-						shared_ptr<Type::InputMouseButtonEvent> imbe = make_shared<Type::InputMouseButtonEvent>();
-						imbe->setButton(Enum::MouseButton::Left);
-						imbe->setState(true);
-
-						ie->setMouseButton(imbe);
-						ie->setEventType(Enum::UserInputType::MouseButton);
-
-						ob_inputrecv_passInputEvent(eng, ie);
+				switch(evt.EventType){
+					case irr::EET_MOUSE_INPUT_EVENT: {
+					    switch(evt.MouseInput.Event){
+							case irr::EMIE_LMOUSE_PRESSED_DOWN: {
+							    uis->input_mouseButton(Enum::MouseButton::Left, true);
+								break;
+							}
+							case irr::EMIE_RMOUSE_PRESSED_DOWN: {
+								uis->input_mouseButton(Enum::MouseButton::Right, true);
+								break;
+							}
+							case irr::EMIE_MMOUSE_PRESSED_DOWN: {
+								uis->input_mouseButton(Enum::MouseButton::Middle, true);
+								break;
+							}
+							case irr::EMIE_LMOUSE_LEFT_UP: {
+								uis->input_mouseButton(Enum::MouseButton::Left, false);
+								break;
+							}
+							case irr::EMIE_RMOUSE_LEFT_UP: {
+								uis->input_mouseButton(Enum::MouseButton::Right, false);
+								break;
+							}
+							case irr::EMIE_MMOUSE_LEFT_UP: {
+								uis->input_mouseButton(Enum::MouseButton::Middle, false);
+								break;
+							}
+							case irr::EMIE_MOUSE_WHEEL: {
+								uis->input_mouseWheel(evt.MouseInput.Wheel);
+								break;
+							}
+							case irr::EMIE_MOUSE_MOVED: {
+								uis->input_mouseMoved(evt.MouseInput.X, evt.MouseInput.Y);
+								break;
+							}
+						}
+				
+						return true;
 						break;
 					}
-					case irr::EMIE_RMOUSE_PRESSED_DOWN: {
-						shared_ptr<Type::InputMouseButtonEvent> imbe = make_shared<Type::InputMouseButtonEvent>();
-						imbe->setButton(Enum::MouseButton::Right);
-						imbe->setState(true);
-
-						ie->setMouseButton(imbe);
-						ie->setEventType(Enum::UserInputType::MouseButton);
-
-					    ob_inputrecv_passInputEvent(eng, ie);
+					case irr::EET_KEY_INPUT_EVENT: {
+						return true;
 						break;
 					}
-					case irr::EMIE_MMOUSE_PRESSED_DOWN: {
-						shared_ptr<Type::InputMouseButtonEvent> imbe = make_shared<Type::InputMouseButtonEvent>();
-						imbe->setButton(Enum::MouseButton::Middle);
-						imbe->setState(true);
-
-						ie->setMouseButton(imbe);
-						ie->setEventType(Enum::UserInputType::MouseButton);
-
-					    ob_inputrecv_passInputEvent(eng, ie);
-						break;
-					}
-					case irr::EMIE_LMOUSE_LEFT_UP: {
-						shared_ptr<Type::InputMouseButtonEvent> imbe = make_shared<Type::InputMouseButtonEvent>();
-						imbe->setButton(Enum::MouseButton::Left);
-						imbe->setState(false);
-
-						ie->setMouseButton(imbe);
-						ie->setEventType(Enum::UserInputType::MouseButton);
-
-						ob_inputrecv_passInputEvent(eng, ie);
-						break;
-					}
-					case irr::EMIE_RMOUSE_LEFT_UP: {
-						shared_ptr<Type::InputMouseButtonEvent> imbe = make_shared<Type::InputMouseButtonEvent>();
-						imbe->setButton(Enum::MouseButton::Right);
-						imbe->setState(false);
-
-						ie->setMouseButton(imbe);
-						ie->setEventType(Enum::UserInputType::MouseButton);
-
-						ob_inputrecv_passInputEvent(eng, ie);
-						break;
-					}
-					case irr::EMIE_MMOUSE_LEFT_UP: {
-						shared_ptr<Type::InputMouseButtonEvent> imbe = make_shared<Type::InputMouseButtonEvent>();
-						imbe->setButton(Enum::MouseButton::Middle);
-						imbe->setState(false);
-
-						ie->setMouseButton(imbe);
-						ie->setEventType(Enum::UserInputType::MouseButton);
-
-						ob_inputrecv_passInputEvent(eng, ie);
-						break;
-					}
-					case irr::EMIE_MOUSE_WHEEL: {
-						shared_ptr<Type::InputMouseWheelEvent> imwe = make_shared<Type::InputMouseWheelEvent>();
-						imwe->setDelta(evt.MouseInput.Wheel);
-
-						ie->setMouseWheel(imwe);
-						ie->setEventType(Enum::UserInputType::MouseWheel);
-
-						ob_inputrecv_passInputEvent(eng, ie);
+					case irr::EET_JOYSTICK_INPUT_EVENT: {
 						break;
 					}
 				}
-				
-				return true;
-				break;
-			}
-			case irr::EET_KEY_INPUT_EVENT: {
-				return true;
-				break;
-			}
-			case irr::EET_JOYSTICK_INPUT_EVENT: {
-				break;
 			}
 		}
 

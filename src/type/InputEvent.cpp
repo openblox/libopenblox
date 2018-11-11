@@ -21,6 +21,8 @@
 
 #include "instance/Instance.h"
 
+#include "type/Vector2.h"
+
 namespace OB{
 	namespace Type{
 		DEFINE_TYPE(InputMouseButtonEvent){
@@ -263,6 +265,148 @@ namespace OB{
 			return NULL;
 		}
 
+		// BEGIN INPUTMOUSEMOVEMENTEVENT
+
+		DEFINE_TYPE(InputMouseMovementEvent){
+			registerLuaType(eng, LuaTypeName, TypeName, register_lua_metamethods, register_lua_methods, register_lua_property_getters, register_lua_property_setters);
+		}
+
+		InputMouseMovementEvent::InputMouseMovementEvent(){
+			Position = NULL;
+		    Delta = NULL;
+		}
+
+		InputMouseMovementEvent::~InputMouseMovementEvent(){}
+
+		bool InputMouseMovementEvent::equals(shared_ptr<Type> other){
+			shared_ptr<InputMouseMovementEvent> imme = dynamic_pointer_cast<InputMouseMovementEvent>(other);
+			if(!imme){
+				return false;
+			}
+
+			// InputMouseMovementEvents can't be copied or replicated
+			// Compare addresses
+			return imme.get() == this;
+		}
+
+		std::string InputMouseMovementEvent::toString(){
+			return "Input Event";
+		}
+
+		shared_ptr<Vector2> InputMouseMovementEvent::getPosition(){
+			return Position;
+		}
+
+		void InputMouseMovementEvent::setPosition(shared_ptr<Vector2> pos){
+			Position = pos;
+		}
+
+		shared_ptr<Vector2> InputMouseMovementEvent::getDelta(){
+			return Delta;
+		}
+
+		void InputMouseMovementEvent::setDelta(shared_ptr<Vector2> delta){
+			Delta = delta;
+		}
+
+		int InputMouseMovementEvent::lua_getPosition(lua_State* L){
+			shared_ptr<InputMouseMovementEvent> LuaInputMouseMovementEvent = checkInputMouseMovementEvent(L, 1, false);
+			if(!LuaInputMouseMovementEvent){
+				return 0;
+			}
+
+		    shared_ptr<Vector2> pos = LuaInputMouseMovementEvent->getPosition();
+			if(pos){
+				return pos->wrap_lua(L);
+			}
+
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int InputMouseMovementEvent::lua_getDelta(lua_State* L){
+			shared_ptr<InputMouseMovementEvent> LuaInputMouseMovementEvent = checkInputMouseMovementEvent(L, 1, false);
+			if(!LuaInputMouseMovementEvent){
+				return 0;
+			}
+
+		    shared_ptr<Vector2> delta = LuaInputMouseMovementEvent->getDelta();
+			if(delta){
+				return delta->wrap_lua(L);
+			}
+
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int InputMouseMovementEvent::lua_eq(lua_State* L){
+			shared_ptr<InputMouseMovementEvent> LuaInputMouseMovementEvent = checkInputMouseMovementEvent(L, 1, false, false);
+			if(LuaInputMouseMovementEvent){
+				if(lua_isuserdata(L, 2)){
+					shared_ptr<InputMouseMovementEvent> OtherInputMouseMovementEvent = checkInputMouseMovementEvent(L, 2, false);
+					lua_pushboolean(L, LuaInputMouseMovementEvent->equals(OtherInputMouseMovementEvent));
+					return 1;
+				}
+			}
+
+			lua_pushboolean(L, false);
+			return 1;
+		}
+
+		void InputMouseMovementEvent::register_lua_metamethods(lua_State* L){
+			luaL_Reg metamethods[] = {
+				{"__tostring", Type::lua_toString},
+				{"__eq", lua_eq},
+				{"__gc", Type::lua_gc},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, metamethods, 0);
+		}
+
+		void InputMouseMovementEvent::register_lua_property_getters(lua_State* L){
+			luaL_Reg properties[] = {
+				{"Position", lua_getPosition},
+				{"Delta", lua_getDelta},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, properties, 0);
+		}
+
+		void InputMouseMovementEvent::register_lua_property_setters(lua_State* L){
+			luaL_Reg properties[] = {
+				{"Position", Instance::Instance::lua_readOnlyProperty},
+				{"Delta", Instance::Instance::lua_readOnlyProperty},
+				{NULL, NULL}
+			};
+			luaL_setfuncs(L, properties, 0);
+		}
+
+		shared_ptr<InputMouseMovementEvent> checkInputMouseMovementEvent(lua_State* L, int index, bool errIfNot, bool allowNil){
+			if(allowNil){
+				if(lua_isnoneornil(L, index)){
+					return NULL;
+				}
+			}
+
+			if(lua_isuserdata(L, index)){
+				void* udata = lua_touserdata(L, index);
+				int meta = lua_getmetatable(L, index);
+				if(meta != 0){
+					luaL_getmetatable(L, "luaL_Type_InputMouseMovementEvent");
+					if(lua_rawequal(L, -1, -2)){
+						lua_pop(L, 2);
+						return dynamic_pointer_cast<InputMouseMovementEvent>(*static_cast<shared_ptr<Type>*>(udata));
+					}
+					lua_pop(L, 1);
+				}
+			}
+
+			if(errIfNot){
+				luaO_typeerror(L, index, "InputMouseMovementEvent");
+			}
+			return NULL;
+		}
+
 		// BEGIN INPUTKEYEVENT
 		
 		DEFINE_TYPE(InputKeyEvent){
@@ -385,6 +529,7 @@ namespace OB{
 
 			MouseButton = NULL;
 			MouseWheel = NULL;
+			MouseMovement = NULL;
 			Key = NULL;
 		}
 
@@ -429,6 +574,14 @@ namespace OB{
 			MouseWheel = mouseWheel;
 		}
 
+		shared_ptr<InputMouseMovementEvent> InputEvent::getMouseMovement(){
+			return MouseMovement;
+		}
+		
+		void InputEvent::setMouseMovement(shared_ptr<InputMouseMovementEvent> mouseMovement){
+			MouseMovement = mouseMovement;
+		}
+
 		shared_ptr<InputKeyEvent> InputEvent::getKey(){
 			return Key;
 		}
@@ -462,6 +615,22 @@ namespace OB{
 			shared_ptr<InputMouseWheelEvent> mwe = LuaInputEvent->getMouseWheel();
 			if(mwe){
 				return mwe->wrap_lua(L);
+			}else{
+				lua_pushnil(L);
+			}
+
+			return 1;
+		}
+
+		int InputEvent::lua_getMouseMovement(lua_State* L){
+			shared_ptr<InputEvent> LuaInputEvent = checkInputEvent(L, 1, false);
+			if(!LuaInputEvent){
+				return 0;
+			}
+
+			shared_ptr<InputMouseMovementEvent> mme = LuaInputEvent->getMouseMovement();
+			if(mme){
+				return mme->wrap_lua(L);
 			}else{
 				lua_pushnil(L);
 			}
@@ -523,6 +692,7 @@ namespace OB{
 			luaL_Reg properties[] = {
 				{"MouseButton", Instance::Instance::lua_readOnlyProperty},
 				{"MouseWheel", Instance::Instance::lua_readOnlyProperty},
+				{"MouseMovement", Instance::Instance::lua_readOnlyProperty},
 				{"Key", Instance::Instance::lua_readOnlyProperty},
 				{"EventType", Instance::Instance::lua_readOnlyProperty},
 				{NULL, NULL}
@@ -534,6 +704,7 @@ namespace OB{
 			luaL_Reg properties[] = {
 				{"MouseButton", lua_getMouseButton},
 				{"MouseWheel", lua_getMouseWheel},
+				{"MouseMovement", lua_getMouseMovement},
 				{"Key", lua_getKey},
 				{"EventType", lua_getEventType},
 				{NULL, NULL}

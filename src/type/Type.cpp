@@ -50,6 +50,7 @@ namespace OB{
 			InputEvent::_ob_init(eng);
 			InputMouseButtonEvent::_ob_init(eng);
 			InputMouseWheelEvent::_ob_init(eng);
+			InputMouseMovementEvent::_ob_init(eng);
 			InputKeyEvent::_ob_init(eng);
 
 			Event::_ob_init(eng);

@@ -21,6 +21,9 @@
 
 #include "utility.h"
 
+#include "type/Vector2.h"
+#include "type/InputEvent.h"
+
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(UserInputService, false, isDataModel, Instance){
@@ -42,6 +45,9 @@ namespace OB{
 
 		    WindowFocusReleased = make_shared<Type::Event>("WindowFocusReleased");
 		    WindowFocused = make_shared<Type::Event>("WindowFocused");
+
+			mouseX = 0;
+			mouseY = 0;
 		}
 
 		UserInputService::~UserInputService(){}
@@ -101,6 +107,62 @@ namespace OB{
 				{NULL, NULL}
 			};
 			luaL_setfuncs(L, events, 0);
+		}
+
+		void UserInputService::input_mouseButton(Enum::MouseButton btn, bool state){
+			shared_ptr<Type::InputEvent> ie = make_shared<Type::InputEvent>();
+
+			shared_ptr<Type::InputMouseButtonEvent> imbe = make_shared<Type::InputMouseButtonEvent>();
+			imbe->setButton(btn);
+			imbe->setState(state);
+
+			ie->setMouseButton(imbe);
+			ie->setEventType(Enum::UserInputType::MouseButton);
+
+			std::vector<shared_ptr<Type::VarWrapper>> argList = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(ie)});
+
+			if(state){
+				InputBegan->Fire(eng, argList);
+			}else{
+				InputEnded->Fire(eng, argList);
+			}
+			InputChanged->Fire(eng, argList);
+		}
+
+		void UserInputService::input_mouseWheel(double delta){
+			shared_ptr<Type::InputEvent> ie = make_shared<Type::InputEvent>();
+
+			shared_ptr<Type::InputMouseWheelEvent> imwe = make_shared<Type::InputMouseWheelEvent>();
+			imwe->setDelta(delta);
+
+			ie->setMouseWheel(imwe);
+			ie->setEventType(Enum::UserInputType::MouseWheel);
+
+			std::vector<shared_ptr<Type::VarWrapper>> argList = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(ie)});
+
+			InputChanged->Fire(eng, argList);
+		}
+
+		void UserInputService::input_mouseMoved(int x, int y){
+			shared_ptr<Type::InputEvent> ie = make_shared<Type::InputEvent>();
+
+			shared_ptr<Type::InputMouseMovementEvent> imme = make_shared<Type::InputMouseMovementEvent>();
+		    imme->setPosition(make_shared<Type::Vector2>(x, y));
+
+			int deltaX = x - mouseX;
+			int deltaY = y - mouseY;
+
+			imme->setDelta(make_shared<Type::Vector2>(deltaX, deltaY));
+
+			mouseX = x;
+			mouseY = y;
+
+			ie->setMouseMovement(imme);
+			ie->setEventType(Enum::UserInputType::MouseMovement);
+
+			std::vector<shared_ptr<Type::VarWrapper>> argList = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(ie)});
+
+			InputChanged->Fire(eng, argList);
 		}
 	}
 }

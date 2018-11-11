@@ -52,7 +52,14 @@ namespace OB{
 
 				static void register_lua_events(lua_State* L);
 
+				void input_mouseButton(Enum::MouseButton btn, bool state);
+				void input_mouseWheel(double delta);
+				void input_mouseMoved(int x, int y);
+
 				DECLARE_CLASS(UserInputService);
+
+			    int mouseX;
+			    int mouseY;
 
 				shared_ptr<Type::Event> GamepadConnected;
 				shared_ptr<Type::Event> GamepadDisconnected;

@@ -26,6 +26,10 @@
 
 namespace OB{
 	namespace Type{
+		#ifndef OB_TYPE_VECTOR2
+		class Vector2;
+		#endif
+
 		class InputMouseButtonEvent: public Type{
 			public:
 			    InputMouseButtonEvent();
@@ -85,6 +89,38 @@ namespace OB{
 
 		shared_ptr<InputMouseWheelEvent> checkInputMouseWheelEvent(lua_State* L, int n, bool errIfNot = true, bool allowNil = true);
 
+		class InputMouseMovementEvent: public Type{
+			public:
+			    InputMouseMovementEvent();
+				virtual ~InputMouseMovementEvent();
+
+				virtual bool equals(shared_ptr<Type> other);
+
+				virtual std::string toString();
+
+				shared_ptr<Vector2> getPosition();
+				void setPosition(shared_ptr<Vector2> position);
+
+			    shared_ptr<Vector2> getDelta();
+				void setDelta(shared_ptr<Vector2> delta);
+
+				static int lua_getPosition(lua_State* L);
+				static int lua_getDelta(lua_State* L);
+
+				static int lua_eq(lua_State* L);
+
+				static void register_lua_metamethods(lua_State* L);
+				static void register_lua_property_setters(lua_State* L);
+				static void register_lua_property_getters(lua_State* L);
+
+				DECLARE_TYPE();
+
+				shared_ptr<Vector2> Position;
+			    shared_ptr<Vector2> Delta;
+		};
+
+		shared_ptr<InputMouseMovementEvent> checkInputMouseMovementEvent(lua_State* L, int n, bool errIfNot = true, bool allowNil = true);
+
 		class InputKeyEvent: public Type{
 			public:
 			    InputKeyEvent();
@@ -130,11 +166,15 @@ namespace OB{
 				shared_ptr<InputMouseWheelEvent> getMouseWheel();
 				void setMouseWheel(shared_ptr<InputMouseWheelEvent> mouseWheel);
 
+				shared_ptr<InputMouseMovementEvent> getMouseMovement();
+				void setMouseMovement(shared_ptr<InputMouseMovementEvent> mouseMovement);
+
 				shared_ptr<InputKeyEvent> getKey();
 				void setKey(shared_ptr<InputKeyEvent> key);
 
 				static int lua_getMouseButton(lua_State* L);
 				static int lua_getMouseWheel(lua_State* L);
+				static int lua_getMouseMovement(lua_State* L);
 				static int lua_getKey(lua_State* L);
 
 				static int lua_getEventType(lua_State* L);
@@ -151,6 +191,7 @@ namespace OB{
 
 				shared_ptr<InputMouseButtonEvent> MouseButton;
 				shared_ptr<InputMouseWheelEvent> MouseWheel;
+				shared_ptr<InputMouseMovementEvent> MouseMovement;
 				shared_ptr<InputKeyEvent> Key;
 		};
 
