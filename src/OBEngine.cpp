@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 John M. Harris, Jr. <johnmh@openblox.org>
+ * Copyright (C) 2016-2018 John M. Harris, Jr. <johnmh@openblox.org>
  *
  * This file is part of OpenBlox.
  *
@@ -79,6 +79,8 @@ namespace OB{
 		irrDev = NULL;
 		irrDriv = NULL;
 		irrSceneMgr = NULL;
+
+		eventReceiver = new OBInputEventReceiver(this);
 #endif
 
 #if HAVE_ENET
@@ -149,6 +151,8 @@ namespace OB{
 
 			irrDev->setWindowCaption(L"OpenBlox");
 			irrDev->setResizable(resizable);
+
+			irrDev->setEventReceiver(eventReceiver);
 
 			irrDriv = irrDev->getVideoDriver();
 			irrSceneMgr = irrDev->getSceneManager();
@@ -426,5 +430,9 @@ namespace OB{
 
 	shared_ptr<OBLogger> OBEngine::getLogger(){
 		return logger;
+	}
+
+	OBInputEventReceiver* OBEngine::getInputEventReceiver(){
+		return eventReceiver;
 	}
 }

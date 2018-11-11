@@ -56,6 +56,12 @@ namespace OB{
 			  TextInput,
 			  Unknown);
 
+		LENUM(MouseButton,
+			  Left,
+			  Middle,
+			  Right,
+			  Unknown);
+
 		LENUM(ScriptLanguage,
 			  Lua,
 			  JavaScript);

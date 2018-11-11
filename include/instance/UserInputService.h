@@ -41,6 +41,14 @@ namespace OB{
 #endif
 
 				shared_ptr<Type::Event> getGamepadConnected();
+				shared_ptr<Type::Event> getGamepadDisconnected();
+
+				shared_ptr<Type::Event> getInputBegan();
+				shared_ptr<Type::Event> getInputChanged();
+				shared_ptr<Type::Event> getInputEnded();
+
+				shared_ptr<Type::Event> getWindowFocusReleased();
+				shared_ptr<Type::Event> getWindowFocused();
 
 				static void register_lua_events(lua_State* L);
 
@@ -48,6 +56,13 @@ namespace OB{
 
 				shared_ptr<Type::Event> GamepadConnected;
 				shared_ptr<Type::Event> GamepadDisconnected;
+
+				shared_ptr<Type::Event> InputBegan;
+				shared_ptr<Type::Event> InputChanged;
+				shared_ptr<Type::Event> InputEnded;
+
+				shared_ptr<Type::Event> WindowFocusReleased;
+				shared_ptr<Type::Event> WindowFocused;
 		};
 	}
 }

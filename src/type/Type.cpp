@@ -28,6 +28,7 @@
 #include "type/CFrame.h"
 #include "type/UDim.h"
 #include "type/UDim2.h"
+#include "type/InputEvent.h"
 
 #include "type/Event.h"
 #include "type/EventConnection.h"
@@ -45,6 +46,11 @@ namespace OB{
 			CFrame::_ob_init(eng);
 			UDim::_ob_init(eng);
 			UDim2::_ob_init(eng);
+
+			InputEvent::_ob_init(eng);
+			InputMouseButtonEvent::_ob_init(eng);
+			InputMouseWheelEvent::_ob_init(eng);
+			InputKeyEvent::_ob_init(eng);
 
 			Event::_ob_init(eng);
 			EventConnection::_ob_init(eng);

@@ -5,6 +5,7 @@ obtype.h \
 utility.h \
 OBException.h \
 OBEngine.h \
+OBInputEventReceiver.h \
 config.h \
 oblibconfig.h \
 mem.h \
@@ -87,4 +88,5 @@ type/UDim2.h \
 type/UDim.h \
 type/VarWrapper.h \
 type/Vector2.h \
-type/Vector3.h
+type/Vector3.h \
+type/InputEvent.h

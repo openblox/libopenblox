@@ -17,6 +17,7 @@ TaskScheduler.cpp \
 AssetLocator.cpp \
 PluginManager.cpp \
 OBEngine.cpp \
+OBInputEventReceiver.cpp \
 lua/OBLua.cpp \
 lua/OBLua_OBBase.cpp \
 lua/OBLua_OBOS.cpp \
@@ -33,6 +34,7 @@ type/Vector2.cpp \
 type/UDim.cpp \
 type/UDim2.cpp \
 type/CFrame.cpp \
+type/InputEvent.cpp \
 instance/Instance.cpp \
 instance/LuaSourceContainer.cpp \
 instance/BaseScript.cpp \

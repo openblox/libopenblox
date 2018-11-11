@@ -47,6 +47,7 @@
 
 #if HAVE_IRRLICHT
 #include <irrlicht/irrlicht.h>
+#include "OBInputEventReceiver.h"
 #endif
 
 namespace OB{
@@ -394,6 +395,14 @@ namespace OB{
 			 */
 			shared_ptr<OBLogger> getLogger();
 
+			/**
+			 * Returns the input event receiver.
+			 *
+			 * @returns OBInputEventReceiver
+			 * @author John M. Harris, Jr.
+			 */
+			OBInputEventReceiver* getInputEventReceiver();
+
 		private:
 			// State helpers
 			bool initialized;
@@ -420,6 +429,8 @@ namespace OB{
 			irr::IrrlichtDevice* irrDev;
 			irr::video::IVideoDriver* irrDriv;
 			irr::scene::ISceneManager* irrSceneMgr;
+
+			OBInputEventReceiver* eventReceiver;
 #endif
 
 			shared_ptr<TaskScheduler> taskSched;

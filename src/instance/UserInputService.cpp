@@ -35,6 +35,13 @@ namespace OB{
 
 			GamepadConnected = make_shared<Type::Event>("GamepadConnected");
 			GamepadDisconnected = make_shared<Type::Event>("GamepadDisconnected");
+
+		    InputBegan = make_shared<Type::Event>("InputBegan");
+		    InputChanged = make_shared<Type::Event>("InputChanged");
+		    InputEnded = make_shared<Type::Event>("InputEnded");
+
+		    WindowFocusReleased = make_shared<Type::Event>("WindowFocusReleased");
+		    WindowFocused = make_shared<Type::Event>("WindowFocused");
 		}
 
 		UserInputService::~UserInputService(){}
@@ -52,12 +59,45 @@ namespace OB{
 			return NULL;
 		}
 
+		shared_ptr<Type::Event> UserInputService::getGamepadConnected(){
+			return GamepadConnected;
+		}
+
+		shared_ptr<Type::Event> UserInputService::getGamepadDisconnected(){
+			return GamepadDisconnected;
+		}
+
+		shared_ptr<Type::Event> UserInputService::getInputBegan(){
+			return InputBegan;
+		}
+
+		shared_ptr<Type::Event> UserInputService::getInputChanged(){
+			return InputChanged;
+		}
+
+		shared_ptr<Type::Event> UserInputService::getInputEnded(){
+			return InputEnded;
+		}
+
+		shared_ptr<Type::Event> UserInputService::getWindowFocusReleased(){
+			return WindowFocusReleased;
+		}
+
+		shared_ptr<Type::Event> UserInputService::getWindowFocused(){
+			return WindowFocused;
+		}
+
 		void UserInputService::register_lua_events(lua_State* L){
 			Instance::register_lua_events(L);
 
 			luaL_Reg events[] = {
 				{"GamepadConnected", WRAP_EVT(UserInputService, GamepadConnected)},
 				{"GamepadDisconnected", WRAP_EVT(UserInputService, GamepadDisconnected)},
+				{"InputBegan", WRAP_EVT(UserInputService, InputBegan)},
+				{"InputChanged", WRAP_EVT(UserInputService, InputChanged)},
+				{"InputEnded", WRAP_EVT(UserInputService, InputEnded)},
+				{"WindowFocusReleased", WRAP_EVT(UserInputService, WindowFocusReleased)},
+				{"WindowFocused", WRAP_EVT(UserInputService, WindowFocused)},
 				{NULL, NULL}
 			};
 			luaL_setfuncs(L, events, 0);

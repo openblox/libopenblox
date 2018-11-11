@@ -38,6 +38,12 @@ namespace OB{
 			  "TextInput",
 			  "Unknown");
 
+		DENUM(MouseButton,
+			  "Left",
+			  "Middle",
+			  "Right",
+			  "Unknown")
+
 		DENUM(ScriptLanguage,
 			  "Lua",
 			  "JavaScript");
