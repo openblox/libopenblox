@@ -260,7 +260,7 @@ namespace OB{
 				return Enum::KeyCode::NumpadMultiply;
 			}
 			case irr::KEY_ADD: {
-				return Enum::KeyCode::Plus;
+				return Enum::KeyCode::NumpadPlus;
 			}
 			case irr::KEY_SEPARATOR: {
 				puts("SEPARATOR");
@@ -409,8 +409,20 @@ namespace OB{
 			case irr::KEY_PERIOD: {
 				return Enum::KeyCode::Period;
 			}
+			case 0xAD: {
+				return Enum::KeyCode::MediaPrevious;
+			}
+			case 0xAC: {
+				return Enum::KeyCode::MediaPlayPause;
+			}
+			case 0xAB: {
+				return Enum::KeyCode::MediaNext;
+			}
+			case 0xAE: {
+				return Enum::KeyCode::MediaStop;
+			}
 			default: {
-				printf("[INPUTRECIEVER] UNKNOWN KEY: %i", irrKey);
+				printf("[INPUTRECEIVER] UNKNOWN KEY: %i", irrKey);
 			}
 		}
 		

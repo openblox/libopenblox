@@ -17,8 +17,8 @@
  * along with OpenBlox. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef OB_OBINPUTEVENTRECIVER
-#define OB_OBINPUTEVENTRECIVER
+#ifndef OB_OBINPUTEVENTRECEIVER
+#define OB_OBINPUTEVENTRECEIVER
 
 #include "oblibconfig.h"
 
@@ -57,7 +57,7 @@ namespace OB{
 	};
 }
 
-#endif // OB_OBINPUTEVENTRECIVER
+#endif // OB_OBINPUTEVENTRECEIVER
 
 // Local Variables:
 // mode: c++
