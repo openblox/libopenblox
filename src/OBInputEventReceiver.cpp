@@ -409,9 +409,6 @@ namespace OB{
 			case irr::KEY_PERIOD: {
 				return Enum::KeyCode::Period;
 			}
-			case irr::KEY_CLEAR: {
-				return Enum::KeyCode::Clear;
-			}
 			default: {
 				printf("[INPUTRECIEVER] UNKNOWN KEY: %i", irrKey);
 			}
