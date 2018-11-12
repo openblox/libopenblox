@@ -130,9 +130,13 @@ namespace OB{
 
 				virtual std::string toString();
 
+				Enum::KeyCode getKeyCode();
+				void setKeyCode(Enum::KeyCode keyCode);
+
 			    bool getState();
 			    void setState(bool state);
 
+				static int lua_getKeyCode(lua_State* L);
 				static int lua_getState(lua_State* L);
 
 				static int lua_eq(lua_State* L);
@@ -143,6 +147,7 @@ namespace OB{
 
 				DECLARE_TYPE();
 
+				Enum::KeyCode KeyCode;
 			    bool State;
 		};
 

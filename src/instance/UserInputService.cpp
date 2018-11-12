@@ -164,5 +164,25 @@ namespace OB{
 
 			InputChanged->Fire(eng, argList);
 		}
+
+		void UserInputService::input_keyEvent(Enum::KeyCode keyCode, bool state){
+			shared_ptr<Type::InputEvent> ie = make_shared<Type::InputEvent>();
+
+			shared_ptr<Type::InputKeyEvent> ike = make_shared<Type::InputKeyEvent>();
+			ike->setKeyCode(keyCode);
+			ike->setState(state);
+
+			ie->setKey(ike);
+			ie->setEventType(Enum::UserInputType::Keyboard);
+
+			std::vector<shared_ptr<Type::VarWrapper>> argList = std::vector<shared_ptr<Type::VarWrapper>>({make_shared<Type::VarWrapper>(ie)});
+
+			if(state){
+				InputBegan->Fire(eng, argList);
+			}else{
+				InputEnded->Fire(eng, argList);
+			}
+			InputChanged->Fire(eng, argList);
+		}
 	}
 }

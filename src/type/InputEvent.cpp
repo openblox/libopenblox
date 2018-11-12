@@ -414,6 +414,7 @@ namespace OB{
 		}
 
 		InputKeyEvent::InputKeyEvent(){
+			KeyCode = Enum::KeyCode::Unknown;
 		    State = false;
 		}
 
@@ -434,12 +435,30 @@ namespace OB{
 			return "Input Event";
 		}
 
+		Enum::KeyCode InputKeyEvent::getKeyCode(){
+			return KeyCode;
+		}
+
+		void InputKeyEvent::setKeyCode(Enum::KeyCode keyCode){
+			KeyCode = keyCode;
+		}
+
 		bool InputKeyEvent::getState(){
 			return State;
 		}
 
 		void InputKeyEvent::setState(bool state){
 			State = state;
+		}
+
+		int InputKeyEvent::lua_getKeyCode(lua_State* L){
+			shared_ptr<InputKeyEvent> LuaInputKeyEvent = checkInputKeyEvent(L, 1, false);
+			if(!LuaInputKeyEvent){
+				return 0;
+			}
+
+		    return Enum::LuaKeyCode->getEnumItem((int)LuaInputKeyEvent->getKeyCode())->wrap_lua(L);
+			return 1;
 		}
 
 		int InputKeyEvent::lua_getState(lua_State* L){
@@ -478,6 +497,7 @@ namespace OB{
 
 		void InputKeyEvent::register_lua_property_getters(lua_State* L){
 			luaL_Reg properties[] = {
+				{"KeyCode", lua_getKeyCode},
 				{"State", lua_getState},
 				{NULL, NULL}
 			};
@@ -486,6 +506,7 @@ namespace OB{
 
 		void InputKeyEvent::register_lua_property_setters(lua_State* L){
 			luaL_Reg properties[] = {
+				{"KeyCode", Instance::Instance::lua_readOnlyProperty},
 				{"State", Instance::Instance::lua_readOnlyProperty},
 				{NULL, NULL}
 			};

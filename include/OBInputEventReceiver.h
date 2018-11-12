@@ -24,6 +24,9 @@
 
 #if HAVE_IRRLICHT
 #include <irrlicht/irrlicht.h>
+#endif
+
+#include "type/Enum.h"
 
 namespace OB{
 #ifndef OB_OBENGINE
@@ -41,7 +44,11 @@ namespace OB{
 			OBInputEventReceiver(OBEngine* eng);
 			virtual ~OBInputEventReceiver();
 
+			#if HAVE_IRRLICHT
+			static Enum::KeyCode irrlictKeyToOB(irr::EKEY_CODE irrKey);
+
 			virtual bool OnEvent(const irr::SEvent& evt);
+			#endif
 
 			OBEngine* getEngine();
 
@@ -49,7 +56,6 @@ namespace OB{
 			OBEngine* eng;
 	};
 }
-#endif
 
 #endif // OB_OBINPUTEVENTRECIVER
 

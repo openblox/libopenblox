@@ -55,6 +55,7 @@ namespace OB{
 				void input_mouseButton(Enum::MouseButton btn, bool state);
 				void input_mouseWheel(double delta);
 				void input_mouseMoved(int x, int y);
+				void input_keyEvent(Enum::KeyCode keyCode, bool state);
 
 				DECLARE_CLASS(UserInputService);
 
