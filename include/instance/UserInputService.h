@@ -23,6 +23,7 @@
 #define OB_INST_USERINPUTSERVICE
 
 #include "type/Enum.h"
+#include "type/Vector2.h"
 
 namespace OB{
 	namespace Instance{
@@ -53,8 +54,8 @@ namespace OB{
 				static void register_lua_events(lua_State* L);
 
 				void input_mouseButton(Enum::MouseButton btn, bool state);
-				void input_mouseWheel(double delta);
-				void input_mouseMoved(int x, int y);
+				void input_mouseWheel(shared_ptr<Type::Vector2> delta);
+				void input_mouseMoved(shared_ptr<Type::Vector2> pos, shared_ptr<Type::Vector2> delta);
 				void input_keyEvent(Enum::KeyCode keyCode, bool state);
 
 				DECLARE_CLASS(UserInputService);

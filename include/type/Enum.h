@@ -60,7 +60,9 @@ namespace OB{
 			  Unknown,
 			  Left,
 			  Middle,
-			  Right);
+			  Right,
+			  X1,
+			  X2);
 
 		LENUM(KeyCode,
 			  Unknown,
@@ -68,6 +70,7 @@ namespace OB{
 			  Tab,
 			  Clear,
 			  Return,
+			  Return2,
 			  Pause,
 			  Escape,
 			  Space,

@@ -462,11 +462,11 @@ namespace OB{
 								break;
 							}
 							case irr::EMIE_MOUSE_WHEEL: {
-								uis->input_mouseWheel(evt.MouseInput.Wheel);
+								uis->input_mouseWheel(make_shared<Type::Vector2>(0, evt.MouseInput.Wheel));
 								break;
 							}
 							case irr::EMIE_MOUSE_MOVED: {
-								uis->input_mouseMoved(evt.MouseInput.X, evt.MouseInput.Y);
+								uis->input_mouseMoved(make_shared<Type::Vector2>(evt.MouseInput.X, evt.MouseInput.Y), NULL);
 								break;
 							}
 						}
@@ -480,9 +480,6 @@ namespace OB{
 						return true;
 						break;
 					}
-					case irr::EET_JOYSTICK_INPUT_EVENT: {
-						break;
-					}
 				}
 			}
 		}
@@ -490,6 +487,141 @@ namespace OB{
 		return false;
 	}
 #endif
+
+#if HAVE_SDL2
+    Enum::KeyCode OBInputEventReceiver::sdl2KeyToOB(SDL_Keysym& ksym){
+		switch(ksym.sym){
+			case SDLK_BACKSPACE: {
+				return Enum::KeyCode::Backspace;
+			}
+			case SDLK_TAB: {
+				return Enum::KeyCode::Tab;
+			}
+			case SDLK_CLEAR: {
+				return Enum::KeyCode::Clear;
+			}
+			case SDLK_RETURN: {
+				return Enum::KeyCode::Return;
+			}
+			case SDLK_RETURN2: {
+				return Enum::KeyCode::Return2;
+			}
+			case SDLK_PAUSE: {
+				return Enum::KeyCode::Pause;
+			}
+			case SDLK_ESCAPE: {
+				return Enum::KeyCode::Escape;
+			}
+		}
+		return Enum::KeyCode::Unknown;
+	}
+
+    void OBInputEventReceiver::processSDL2Event(SDL_Event& evt){
+		shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+		if(dm){
+			shared_ptr<Instance::UserInputService> uis = dm->getUserInputService();
+			if(uis){
+				switch(evt.type){
+					case SDL_KEYDOWN: {
+						// For now, throw out repeat events
+						if(!evt.key.repeat){
+							Enum::KeyCode keyCode = sdl2KeyToOB(evt.key.keysym);
+							uis->input_keyEvent(keyCode, true);
+						}
+						break;
+					}
+					case SDL_KEYUP: {
+					    // For now, throw out repeat events
+						if(!evt.key.repeat){
+							Enum::KeyCode keyCode = sdl2KeyToOB(evt.key.keysym);
+							uis->input_keyEvent(keyCode, false);
+						}
+						break;
+					}
+					case SDL_MOUSEMOTION: {
+						uis->input_mouseMoved(make_shared<Type::Vector2>(evt.motion.x, evt.motion.y), make_shared<Type::Vector2>(evt.motion.xrel, evt.motion.yrel));
+						break;
+					}
+					case SDL_MOUSEBUTTONDOWN: {
+						Enum::MouseButton mbtn = Enum::MouseButton::Unknown;
+
+						switch(evt.button.button){
+							case SDL_BUTTON_LEFT: {
+								mbtn = Enum::MouseButton::Left;
+								break;
+							}
+							case SDL_BUTTON_MIDDLE: {
+								mbtn = Enum::MouseButton::Middle;
+								break;
+							}
+							case SDL_BUTTON_RIGHT: {
+								mbtn = Enum::MouseButton::Right;
+							}
+							case SDL_BUTTON_X1: {
+								mbtn = Enum::MouseButton::X1;
+							}
+							case SDL_BUTTON_X2: {
+								mbtn = Enum::MouseButton::X2;
+							}
+						}
+
+						uis->input_mouseButton(mbtn, true);
+						break;
+					}
+					case SDL_MOUSEBUTTONUP: {
+						Enum::MouseButton mbtn = Enum::MouseButton::Unknown;
+
+						switch(evt.button.button){
+							case SDL_BUTTON_LEFT: {
+								mbtn = Enum::MouseButton::Left;
+								break;
+							}
+							case SDL_BUTTON_MIDDLE: {
+								mbtn = Enum::MouseButton::Middle;
+								break;
+							}
+							case SDL_BUTTON_RIGHT: {
+								mbtn = Enum::MouseButton::Right;
+							}
+							case SDL_BUTTON_X1: {
+								mbtn = Enum::MouseButton::X1;
+							}
+							case SDL_BUTTON_X2: {
+								mbtn = Enum::MouseButton::X2;
+							}
+						}
+
+						uis->input_mouseButton(mbtn, false);
+					}
+					case SDL_MOUSEWHEEL: {
+						uis->input_mouseWheel(make_shared<Type::Vector2>(evt.wheel.x, evt.wheel.y));
+						break;
+					}
+				}
+			}
+		}
+	}
+#endif
+
+	void OBInputEventReceiver::focus(){
+	    shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+		if(dm){
+			shared_ptr<Instance::UserInputService> uis = dm->getUserInputService();
+			if(uis){
+				uis->getWindowFocused()->Fire(eng, std::vector<shared_ptr<Type::VarWrapper>>());
+			}
+		}
+	}
+
+	void OBInputEventReceiver::unfocus(){
+		shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+		if(dm){
+			shared_ptr<Instance::UserInputService> uis = dm->getUserInputService();
+			if(uis){
+				uis->getWindowFocusReleased()->Fire(eng, std::vector<shared_ptr<Type::VarWrapper>>());
+			}
+		}
+	}
 
 	OBEngine* OBInputEventReceiver::getEngine(){
 		return eng;

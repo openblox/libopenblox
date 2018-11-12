@@ -28,6 +28,11 @@
 
 #include "type/Enum.h"
 
+#if HAVE_SDL2
+#define SDL_MAIN_HANDLED
+#include <SDL.h>
+#endif
+
 namespace OB{
 #ifndef OB_OBENGINE
 	class OBEngine;
@@ -39,7 +44,11 @@ namespace OB{
 	 * @author John M. Harris, Jr.
 	 * @date November 2018
 	 */
+#if HAVE_IRRLICHT
 	class OBInputEventReceiver: public irr::IEventReceiver{
+#else
+	class OBInputEventReceiver{
+#endif
 		public:
 			OBInputEventReceiver(OBEngine* eng);
 			virtual ~OBInputEventReceiver();
@@ -49,6 +58,14 @@ namespace OB{
 
 			virtual bool OnEvent(const irr::SEvent& evt);
 			#endif
+
+			#if HAVE_SDL2
+			static Enum::KeyCode sdl2KeyToOB(SDL_Keysym& ksym);
+		    void processSDL2Event(SDL_Event& evt);
+			#endif
+
+			void focus();
+			void unfocus();
 
 			OBEngine* getEngine();
 

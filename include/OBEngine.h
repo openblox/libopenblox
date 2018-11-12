@@ -39,6 +39,8 @@
 #include "OBSerializer.h"
 #include "PluginManager.h"
 
+#include "OBInputEventReceiver.h"
+
 #include <lua/OBLua.h>
 
 #include <instance/DataModel.h>
@@ -47,7 +49,11 @@
 
 #if HAVE_IRRLICHT
 #include <irrlicht/irrlicht.h>
-#include "OBInputEventReceiver.h"
+#endif
+
+#if HAVE_SDL2
+#define SDL_MAIN_HANDLED
+#include <SDL.h>
 #endif
 
 namespace OB{
@@ -420,6 +426,10 @@ namespace OB{
 			bool resizable;
 
 			lua_State* globalState;
+
+#if HAVE_SDL2
+			SDL_Window* sdl_window;
+#endif
 
 #if HAVE_IRRLICHT
 			bool cached2DMode;

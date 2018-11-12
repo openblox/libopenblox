@@ -71,8 +71,8 @@ namespace OB{
 
 				virtual std::string toString();
 
-			    double getDelta();
-				void setDelta(double delta);
+			    shared_ptr<Vector2> getDelta();
+				void setDelta(shared_ptr<Vector2> delta);
 
 				static int lua_getDelta(lua_State* L);
 
@@ -84,7 +84,7 @@ namespace OB{
 
 				DECLARE_TYPE();
 
-			    double Delta;
+			    shared_ptr<Vector2> Delta;
 		};
 
 		shared_ptr<InputMouseWheelEvent> checkInputMouseWheelEvent(lua_State* L, int n, bool errIfNot = true, bool allowNil = true);

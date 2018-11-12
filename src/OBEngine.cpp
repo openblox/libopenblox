@@ -46,6 +46,10 @@
 #include <enet/enet.h>
 #endif
 
+#if HAVE_SDL2
+#include <SDL_syswm.h>
+#endif
+
 namespace OB{
 	OBEngine::OBEngine(){
 #if HAVE_PUGIXML
@@ -93,6 +97,12 @@ namespace OB{
 #if HAVE_ENET
 		enet_deinitialize();
 #endif
+
+#if HAVE_SDL2
+		if(sdl_window){
+			SDL_DestroyWindow(sdl_window);
+		}
+#endif
 	}
 
 	shared_ptr<TaskScheduler> OBEngine::getTaskScheduler(){
@@ -132,6 +142,97 @@ namespace OB{
 
 		logger->log(verString);
 
+#if HAVE_SDL2
+		if(!windowId){
+			SDL_SetMainReady();
+			SDL_Init(SDL_INIT_VIDEO);
+
+		    Uint32 sdlWinFlags = SDL_WINDOW_OPENGL;
+
+			if(resizable){
+				sdlWinFlags = SDL_WINDOW_RESIZABLE;
+			}
+
+			sdl_window = SDL_CreateWindow("OpenBlox", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, startWidth, startHeight, sdlWinFlags);
+			if(sdl_window == NULL){
+				throw new OBException("Failed to create window");
+			}
+
+			SDL_SysWMinfo wwmInfo;
+			SDL_VERSION(&wwmInfo.version);
+
+			if(SDL_GetWindowWMInfo(sdl_window, &wwmInfo)){
+				switch(wwmInfo.subsystem){
+#if defined(SDL_VIDEO_DRIVER_X11)
+					case SDL_SYSWM_X11: {
+						windowId = (void*)wwmInfo.info.x11.window;
+						break;
+					}
+#endif
+#if defined(SDL_VIDEO_DRIVER_WINDOWS)
+					case SDL_SYSWM_WINDOWS: {
+						windowId = (void*)wwmInfo.info.win.window;
+						break;
+					}
+#endif
+#if defined(SDL_VIDEO_DRIVER_WINRT)
+					case SDL_SYSWM_WINRT: {
+						windowId = (void*)wwmInfo.info.winrt.window;
+						break;
+					}
+#endif
+#if defined(SDL_VIDEO_DRIVER_DIRECTFB)
+					case SDL_SYSWM_DIRECTFB: {
+						windowId = (void*)wwmInfo.info.dfb.window;
+						break;
+					}
+#endif
+#if defined(SDL_VIDEO_DRIVER_COCOA)
+					case SDL_SYSWM_COCOA: {
+						windowId = (void*)wwmInfo.info.cocoa.window;
+						break;
+					}
+#endif
+#if defined(SDL_VIDEO_DRIVER_UIKIT)
+					case SDL_SYSWM_UIKIT: {
+						windowId = (void*)wwmInfo.info.uikit.window;
+						break;
+					}
+#endif
+#if defined(SDL_VIDEO_DRIVER_WAYLAND)
+					case SDL_SYSWM_WAYLAND: {
+						windowId = (void*)wwmInfo.info.wl.surface;
+						break;
+					}
+#endif
+#if defined(SDL_VIDEO_DRIVER_MIR)
+					case SDL_SYSWM_MIR: {
+						windowId = (void*)wwmInfo.info.mir.surface;
+						break;
+					}
+#endif
+#if defined(SDL_VIDEO_DRIVER_ANDROID)
+					case SDL_SYSWM_ANDROID: {
+						windowId = (void*)wwmInfo.info.android.window;
+						break;
+					}
+#endif
+#if defined(SDL_VIDEO_DRIVER_VIVANTE)
+					case SDL_SYSWM_VIVANTE: {
+						windowId = (void*)wwmInfo.vivante.window;
+						break;
+					}
+#endif
+					default: {
+						throw new OBException("Unknown window subsystem");
+					}
+				}
+			}else{
+				throw new OBException("Failed to get window handle information");
+			}
+		}
+#endif
+
 #if HAVE_IRRLICHT
 		if(doRendering){
 			irr::SIrrlichtCreationParameters p;
@@ -149,10 +250,17 @@ namespace OB{
 				throw new OBException("Failed to create Irrlicht Device");
 			}
 
-			irrDev->setWindowCaption(L"OpenBlox");
+			if(!windowId){
+				irrDev->setWindowCaption(L"OpenBlox");
+			}
+
 			irrDev->setResizable(resizable);
 
-			irrDev->setEventReceiver(eventReceiver);
+#if HAVE_SDL2
+			if(!windowId && !sdl_window){
+				irrDev->setEventReceiver(eventReceiver);
+			}
+#endif
 
 			irrDriv = irrDev->getVideoDriver();
 			irrSceneMgr = irrDev->getSceneManager();
@@ -240,6 +348,46 @@ namespace OB{
 				return;// Early return, we're not running anymore!
 			}
 		}
+
+#if HAVE_SDL2
+		if(sdl_window){
+			SDL_Event evt;
+			while(SDL_PollEvent(&evt)){
+			    switch(evt.type){
+					case SDL_QUIT: {
+						_isRunning = false;
+
+						void* _stat;
+
+						pthread_join(secondaryTaskThread, &_stat);
+
+						return;// Early return, we're not running anymore!
+					}
+					case SDL_WINDOWEVENT: {
+					    // Sanity check
+						if(SDL_GetWindowID(sdl_window) == evt.window.windowID){
+							switch(evt.window.event){
+								case SDL_WINDOWEVENT_RESIZED: {
+									resized(evt.window.data1, evt.window.data2);
+									break;
+								}
+								case SDL_WINDOWEVENT_FOCUS_GAINED: {
+									eventReceiver->focus();
+								}
+								case SDL_WINDOWEVENT_FOCUS_LOST: {
+									eventReceiver->unfocus();
+								}
+							}
+						}
+						break;
+					}
+					default: {
+						eventReceiver->processSDL2Event(evt);
+					}
+				}
+			}
+		}
+#endif
 #endif
 
 		taskSched->tick();
@@ -376,6 +524,14 @@ namespace OB{
 
 	void OBEngine::setResizable(bool Resizable){
 		if(initialized){
+			#if HAVE_SDL2
+			if(sdl_window){
+				resizable = Resizable;
+
+				SDL_SetWindowResizable(sdl_window, resizable ? SDL_TRUE : SDL_FALSE);
+				return;
+			}
+			#endif
 			throw new OBException("You can't call setResizable after init is called.");
 		}
 		resizable = Resizable;

@@ -161,7 +161,7 @@ namespace OB{
 		}
 
 		InputMouseWheelEvent::InputMouseWheelEvent(){
-		    Delta = 0;
+		    Delta = NULL;
 		}
 
 		InputMouseWheelEvent::~InputMouseWheelEvent(){}
@@ -181,11 +181,11 @@ namespace OB{
 			return "Input Event";
 		}
 
-		double InputMouseWheelEvent::getDelta(){
+	    shared_ptr<Vector2> InputMouseWheelEvent::getDelta(){
 			return Delta;
 		}
 
-		void InputMouseWheelEvent::setDelta(double delta){
+		void InputMouseWheelEvent::setDelta(shared_ptr<Vector2>  delta){
 			Delta = delta;
 		}
 
@@ -195,7 +195,12 @@ namespace OB{
 				return 0;
 			}
 
-			lua_pushnumber(L, LuaInputMouseWheelEvent->getDelta());
+			shared_ptr<Vector2> delta = LuaInputMouseWheelEvent->getDelta();
+			if(delta){
+				return delta->wrap_lua(L);
+			}
+
+			lua_pushnil(L);
 			return 1;
 		}
 

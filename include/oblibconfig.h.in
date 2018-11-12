@@ -12,8 +12,8 @@
 /* Define to 1 if you have the `Irrlicht' library (-lIrrlicht). */
 #undef HAVE_IRRLICHT
 
+/* Define to 1 if you have the `SDL2' library (-SDL2). */
+#undef HAVE_SDL2
+
 /* Define to 1 if you have the `pugixml' library (-lpugixml). */
 #undef HAVE_PUGIXML
-
-/* Define to 1 if you have the `v8' library (-lv8). */
-#undef HAVE_V8

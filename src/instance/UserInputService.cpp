@@ -21,7 +21,6 @@
 
 #include "utility.h"
 
-#include "type/Vector2.h"
 #include "type/InputEvent.h"
 
 namespace OB{
@@ -129,7 +128,7 @@ namespace OB{
 			InputChanged->Fire(eng, argList);
 		}
 
-		void UserInputService::input_mouseWheel(double delta){
+		void UserInputService::input_mouseWheel(shared_ptr<Type::Vector2> delta){
 			shared_ptr<Type::InputEvent> ie = make_shared<Type::InputEvent>();
 
 			shared_ptr<Type::InputMouseWheelEvent> imwe = make_shared<Type::InputMouseWheelEvent>();
@@ -143,17 +142,23 @@ namespace OB{
 			InputChanged->Fire(eng, argList);
 		}
 
-		void UserInputService::input_mouseMoved(int x, int y){
+		void UserInputService::input_mouseMoved(shared_ptr<Type::Vector2> pos, shared_ptr<Type::Vector2> delta){
 			shared_ptr<Type::InputEvent> ie = make_shared<Type::InputEvent>();
 
 			shared_ptr<Type::InputMouseMovementEvent> imme = make_shared<Type::InputMouseMovementEvent>();
-		    imme->setPosition(make_shared<Type::Vector2>(x, y));
+		    imme->setPosition(pos);
 
-			int deltaX = x - mouseX;
-			int deltaY = y - mouseY;
+			int x = pos->getX();
+			int y = pos->getY();
 
-			imme->setDelta(make_shared<Type::Vector2>(deltaX, deltaY));
+			if(delta){
+				imme->setDelta(delta);
+			}else{
+				int deltaX = x - mouseX;
+				int deltaY = y - mouseY;
 
+				imme->setDelta(make_shared<Type::Vector2>(deltaX, deltaY));
+			}
 			mouseX = x;
 			mouseY = y;
 
