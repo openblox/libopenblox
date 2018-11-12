@@ -422,7 +422,7 @@ namespace OB{
 				return Enum::KeyCode::MediaStop;
 			}
 			default: {
-				printf("[INPUTRECEIVER] UNKNOWN KEY: %i", irrKey);
+				printf("[INPUTRECEIVER] [IRRLICHT] UNKNOWN KEY: %i\n", irrKey);
 			}
 		}
 		
@@ -511,6 +511,441 @@ namespace OB{
 			}
 			case SDLK_ESCAPE: {
 				return Enum::KeyCode::Escape;
+			}
+			case SDLK_SPACE: {
+				return Enum::KeyCode::Space;
+			}
+			case SDLK_QUOTEDBL: {
+				return Enum::KeyCode::DoubleQuote;
+			}
+			case SDLK_HASH: {
+				return Enum::KeyCode::Hash;
+			}
+			case SDLK_DOLLAR: {
+				return Enum::KeyCode::Dollar;
+			}
+			case SDLK_PERCENT: {
+				return Enum::KeyCode::Percent;
+			}
+			case SDLK_AMPERSAND: {
+				return Enum::KeyCode::Ampersand;
+			}
+			case SDLK_QUOTE: {
+				return Enum::KeyCode::Quote;
+			}
+			case SDLK_LEFTPAREN: {
+				return Enum::KeyCode::LeftParenthesis;
+			}
+			case SDLK_RIGHTPAREN: {
+				return Enum::KeyCode::RightParenthesis;
+			}
+			case SDLK_ASTERISK: {
+				return Enum::KeyCode::Asterisk;
+			}
+			case SDLK_PLUS: {
+				return Enum::KeyCode::Plus;
+			}
+			case SDLK_COMMA: {
+				return Enum::KeyCode::Comma;
+			}
+			case SDLK_MINUS: {
+				return Enum::KeyCode::Minus;
+			}
+			case SDLK_PERIOD: {
+				return Enum::KeyCode::Period;
+			}
+			case SDLK_SLASH: {
+				return Enum::KeyCode::Hash;
+			}
+			case SDLK_0: {
+				return Enum::KeyCode::Zero;
+			}
+			case SDLK_1: {
+				return Enum::KeyCode::One;
+			}
+			case SDLK_2: {
+				return Enum::KeyCode::Two;
+			}
+			case SDLK_3: {
+				return Enum::KeyCode::Three;
+			}
+			case SDLK_4: {
+				return Enum::KeyCode::Four;
+			}
+			case SDLK_5: {
+				return Enum::KeyCode::Five;
+			}
+			case SDLK_6: {
+				return Enum::KeyCode::Six;
+			}
+			case SDLK_7: {
+				return Enum::KeyCode::Seven;
+			}
+			case SDLK_8: {
+				return Enum::KeyCode::Eight;
+			}
+			case SDLK_9: {
+				return Enum::KeyCode::Nine;
+			}
+			case SDLK_COLON: {
+				return Enum::KeyCode::Colon;
+			}
+			case SDLK_SEMICOLON: {
+				return Enum::KeyCode::Semicolon;
+			}
+			case SDLK_GREATER: {
+				return Enum::KeyCode::GreaterThan;
+			}
+			case SDLK_LESS: {
+				return Enum::KeyCode::LessThan;
+			}
+			case SDLK_EQUALS: {
+				return Enum::KeyCode::Equals;
+			}
+			case SDLK_QUESTION: {
+				return Enum::KeyCode::Question;
+			}
+			case SDLK_EXCLAIM: {
+				return Enum::KeyCode::Exclamation;
+			}
+			case SDLK_AT: {
+				return Enum::KeyCode::At;
+			}
+			case SDLK_LEFTBRACKET: {
+				return Enum::KeyCode::LeftBracket;
+			}
+			case SDLK_RIGHTBRACKET: {
+				return Enum::KeyCode::RightBracket;
+			}
+			case SDLK_BACKSLASH: {
+				return Enum::KeyCode::Backslash;
+			}
+			case SDLK_CARET: {
+				return Enum::KeyCode::Caret;
+			}
+			case SDLK_UNDERSCORE: {
+				return Enum::KeyCode::Underscore;
+			}
+			case SDLK_BACKQUOTE: {
+				return Enum::KeyCode::Backquote;
+			}
+			case SDLK_a: {
+				return Enum::KeyCode::A;
+			}
+			case SDLK_b: {
+				return Enum::KeyCode::B;
+			}
+			case SDLK_c: {
+				return Enum::KeyCode::C;
+			}
+			case SDLK_d: {
+				return Enum::KeyCode::D;
+			}
+			case SDLK_e: {
+				return Enum::KeyCode::E;
+			}
+			case SDLK_f: {
+				return Enum::KeyCode::F;
+			}
+			case SDLK_g: {
+				return Enum::KeyCode::G;
+			}
+			case SDLK_h: {
+				return Enum::KeyCode::H;
+			}
+			case SDLK_i: {
+				return Enum::KeyCode::I;
+			}
+			case SDLK_j: {
+				return Enum::KeyCode::J;
+			}
+			case SDLK_k: {
+				return Enum::KeyCode::K;
+			}
+			case SDLK_l: {
+				return Enum::KeyCode::L;
+			}
+			case SDLK_m: {
+				return Enum::KeyCode::M;
+			}
+			case SDLK_n: {
+				return Enum::KeyCode::N;
+			}
+			case SDLK_o: {
+				return Enum::KeyCode::O;
+			}
+			case SDLK_p: {
+				return Enum::KeyCode::P;
+			}
+			case SDLK_q: {
+				return Enum::KeyCode::Q;
+			}
+			case SDLK_r: {
+				return Enum::KeyCode::R;
+			}
+			case SDLK_s: {
+				return Enum::KeyCode::S;
+			}
+			case SDLK_t: {
+				return Enum::KeyCode::T;
+			}
+			case SDLK_u: {
+				return Enum::KeyCode::U;
+			}
+			case SDLK_v: {
+				return Enum::KeyCode::V;
+			}
+			case SDLK_w: {
+				return Enum::KeyCode::W;
+			}
+			case SDLK_x: {
+				return Enum::KeyCode::X;
+			}
+			case SDLK_y: {
+				return Enum::KeyCode::Y;
+			}
+			case SDLK_z: {
+				return Enum::KeyCode::Z;
+			}
+			case SDLK_DELETE: {
+				return Enum::KeyCode::Delete;
+			}
+			case SDLK_KP_0: {
+				return Enum::KeyCode::NumpadZero;
+			}
+			case SDLK_KP_1: {
+				return Enum::KeyCode::NumpadOne;
+			}
+			case SDLK_KP_2: {
+				return Enum::KeyCode::NumpadTwo;
+			}
+			case SDLK_KP_3: {
+				return Enum::KeyCode::NumpadThree;
+			}
+			case SDLK_KP_4: {
+				return Enum::KeyCode::NumpadFour;
+			}
+			case SDLK_KP_5: {
+				return Enum::KeyCode::NumpadFive;
+			}
+			case SDLK_KP_6: {
+				return Enum::KeyCode::NumpadSix;
+			}
+			case SDLK_KP_7: {
+				return Enum::KeyCode::NumpadSeven;
+			}
+			case SDLK_KP_8: {
+				return Enum::KeyCode::NumpadEight;
+			}
+			case SDLK_KP_9: {
+				return Enum::KeyCode::NumpadNine;
+			}
+			case SDLK_KP_PERIOD: {
+				return Enum::KeyCode::NumpadPeriod;
+			}
+			case SDLK_KP_DIVIDE: {
+				return Enum::KeyCode::NumpadDivide;
+			}
+			case SDLK_KP_MULTIPLY: {
+				return Enum::KeyCode::NumpadMultiply;
+			}
+			case SDLK_KP_MINUS: {
+				return Enum::KeyCode::NumpadMinus;
+			}
+			case SDLK_KP_PLUS: {
+				return Enum::KeyCode::NumpadPlus;
+			}
+			case SDLK_KP_ENTER: {
+				return Enum::KeyCode::NumpadEnter;
+			}
+			case SDLK_KP_EQUALS: {
+				return Enum::KeyCode::NumpadEquals;
+			}
+			case SDLK_UP: {
+				return Enum::KeyCode::Up;
+			}
+			case SDLK_DOWN: {
+				return Enum::KeyCode::Down;
+			}
+			case SDLK_LEFT: {
+				return Enum::KeyCode::Left;
+			}
+			case SDLK_RIGHT: {
+				return Enum::KeyCode::Right;
+			}
+			case SDLK_INSERT: {
+				return Enum::KeyCode::Insert;
+			}
+			case SDLK_HOME: {
+				return Enum::KeyCode::Home;
+			}
+			case SDLK_END: {
+				return Enum::KeyCode::End;
+			}
+			case SDLK_PAGEUP: {
+				return Enum::KeyCode::PageUp;
+			}
+			case SDLK_PAGEDOWN: {
+				return Enum::KeyCode::PageDown;
+			}
+			case SDLK_LSHIFT: {
+				return Enum::KeyCode::LeftShift;
+			}
+			case SDLK_RSHIFT: {
+				return Enum::KeyCode::RightShift;
+			}
+			case SDLK_LGUI: {
+				return Enum::KeyCode::LeftSuper;
+			}
+			case SDLK_RGUI: {
+				return Enum::KeyCode::RightSuper;
+			}
+			case SDLK_LALT: {
+				return Enum::KeyCode::LeftAlt;
+			}
+			case SDLK_RALT: {
+				return Enum::KeyCode::RightAlt;
+			}
+			case SDLK_LCTRL: {
+				return Enum::KeyCode::LeftControl;
+			}
+			case SDLK_RCTRL: {
+				return Enum::KeyCode::RightControl;
+			}
+			case SDLK_CAPSLOCK: {
+				return Enum::KeyCode::CapsLock;
+			}
+			case SDLK_NUMLOCKCLEAR: {
+				return Enum::KeyCode::NumLock;
+			}
+			case SDLK_SCROLLLOCK: {
+				return Enum::KeyCode::ScrollLock;
+			}
+			case SDLK_MODE: {
+				return Enum::KeyCode::Mode;
+			}
+			case SDLK_APPLICATION: {
+				return Enum::KeyCode::Compose;
+			}
+			case SDLK_HELP: {
+				return Enum::KeyCode::Help;
+			}
+			case SDLK_PRINTSCREEN: {
+				return Enum::KeyCode::PrintSc;
+			}
+			case SDLK_SYSREQ: {
+				return Enum::KeyCode::SysRq;
+			}
+			case SDLK_MENU: {
+				return Enum::KeyCode::Menu;
+			}
+			case SDLK_POWER: {
+			    return Enum::KeyCode::Power;
+			}
+			case SDLK_UNDO: {
+				return Enum::KeyCode::Undo;
+			}
+			case SDLK_AGAIN: {
+				return Enum::KeyCode::Redo;
+			}
+			case SDLK_CUT: {
+				return Enum::KeyCode::Cut;
+			}
+			case SDLK_COPY: {
+				return Enum::KeyCode::Copy;
+			}
+			case SDLK_PASTE: {
+				return Enum::KeyCode::Paste;
+			}
+			case SDLK_F1: {
+				return Enum::KeyCode::F1;
+			}
+			case SDLK_F2: {
+				return Enum::KeyCode::F2;
+			}
+			case SDLK_F3: {
+				return Enum::KeyCode::F3;
+			}
+			case SDLK_F4: {
+				return Enum::KeyCode::F4;
+			}
+			case SDLK_F5: {
+				return Enum::KeyCode::F5;
+			}
+			case SDLK_F6: {
+				return Enum::KeyCode::F6;
+			}
+			case SDLK_F7: {
+				return Enum::KeyCode::F7;
+			}
+			case SDLK_F8: {
+				return Enum::KeyCode::F8;
+			}
+			case SDLK_F9: {
+				return Enum::KeyCode::F9;
+			}
+			case SDLK_F10: {
+				return Enum::KeyCode::F10;
+			}
+			case SDLK_F11: {
+				return Enum::KeyCode::F11;
+			}
+			case SDLK_F12: {
+				return Enum::KeyCode::F12;
+			}
+			case SDLK_F13: {
+				return Enum::KeyCode::F13;
+			}
+			case SDLK_F14: {
+				return Enum::KeyCode::F14;
+			}
+			case SDLK_F15: {
+				return Enum::KeyCode::F15;
+			}
+			case SDLK_F16: {
+				return Enum::KeyCode::F16;
+			}
+			case SDLK_F17: {
+				return Enum::KeyCode::F17;
+			}
+			case SDLK_F18: {
+				return Enum::KeyCode::F18;
+			}
+			case SDLK_F19: {
+				return Enum::KeyCode::F19;
+			}
+			case SDLK_F20: {
+				return Enum::KeyCode::F20;
+			}
+			case SDLK_F21: {
+				return Enum::KeyCode::F21;
+			}
+			case SDLK_F22: {
+				return Enum::KeyCode::F22;
+			}
+			case SDLK_F23: {
+				return Enum::KeyCode::F23;
+			}
+			case SDLK_F24: {
+				return Enum::KeyCode::F24;
+			}
+			case SDLK_WWW: {
+				return Enum::KeyCode::WWW;
+			}
+			case SDLK_AUDIOPREV: {
+				return Enum::KeyCode::MediaPrevious;
+			}
+			case SDLK_AUDIONEXT: {
+				return Enum::KeyCode::MediaNext;
+			}
+			case SDLK_AUDIOPLAY: {
+				return Enum::KeyCode::MediaPlayPause;
+			}
+			case SDLK_AUDIOSTOP: {
+				return Enum::KeyCode::MediaStop;
+			}
+			default: {
+				printf("[INPUTRECEIVER] [SDL2] UNKNOWN KEY: %i\n", ksym.sym);
 			}
 		}
 		return Enum::KeyCode::Unknown;
