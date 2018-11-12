@@ -22,6 +22,7 @@ AC_SUBST(OPENBLOX_PWD)
 
 #Options
 AC_ARG_WITH(irrlicht, AS_HELP_STRING([--without-irrlicht], [Compile without Irrlicht support.]))
+AC_ARG_WITH(SDL2, AS_HELP_STRING([--without-SDL2], [Compile without SDL2 support.]))
 AC_ARG_WITH(pugixml, AS_HELP_STRING([--wihout-pugixml], [Compile without pugixml.]))
 AC_ARG_WITH(bullet, AS_HELP_STRING([--without-bullet], [Compile without Bullet support.]))
 AC_ARG_WITH(curl, AS_HELP_STRING([--without-curl], [Compile without curl support.]))
@@ -48,6 +49,10 @@ AS_IF([test "x$have_irrlicht" = "xyes"],
       [LIRRLICHT_LIBS=""])
 
 AC_SUBST(LIRRLICHT_LIBS)
+
+AS_IF([test "x$with_SDL2" != "xno"],
+      [AX_PKG_CHECK_MODULES([LSDL2], [sdl2], [], [AC_DEFINE_UNQUOTED(HAVE_SDL2, 1, [Define to 1 if you have the `SDL2' library (-lSDL2).])])],
+      [have_sdl2=no])
 
 AS_IF([test "x$with_pugixml" != "xno"],
       [[LPUGIXML_LIBS="-lpugixml"] AC_DEFINE_UNQUOTED(HAVE_PUGIXML, 1, [Define to 1 if you have the `pugixml' library (-lpugixml).])],
