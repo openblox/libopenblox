@@ -260,6 +260,8 @@ namespace OB{
 			if(!windowId && !sdl_window){
 				irrDev->setEventReceiver(eventReceiver);
 			}
+#else
+			irrDev->setEventReceiver(eventReceiver);
 #endif
 
 			irrDriv = irrDev->getVideoDriver();
