@@ -32,6 +32,15 @@
 #if HAVE_SDL2
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
+#ifdef vector
+#undef vector
+#endif
+#ifdef pixel
+#undef pixel
+#endif
+#ifdef bool
+#undef bool
+#endif
 #endif
 
 namespace OB{
