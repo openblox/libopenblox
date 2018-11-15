@@ -425,10 +425,10 @@ namespace OB{
 				printf("[INPUTRECEIVER] [IRRLICHT] UNKNOWN KEY: %i\n", irrKey);
 			}
 		}
-		
+
 	    return Enum::KeyCode::Unknown;
 	}
-	
+
 	bool OBInputEventReceiver::OnEvent(const irr::SEvent& evt){
 		shared_ptr<Instance::DataModel> dm = eng->getDataModel();
 		if(dm){
@@ -470,7 +470,7 @@ namespace OB{
 								break;
 							}
 						}
-				
+
 						return true;
 						break;
 					}
@@ -1038,7 +1038,7 @@ namespace OB{
 	}
 #endif
 
-	void OBInputEventReceiver::focus(){
+    void OBInputEventReceiver::focus(){
 	    shared_ptr<Instance::DataModel> dm = eng->getDataModel();
 		if(dm){
 			shared_ptr<Instance::UserInputService> uis = dm->getUserInputService();
@@ -1054,6 +1054,46 @@ namespace OB{
 			shared_ptr<Instance::UserInputService> uis = dm->getUserInputService();
 			if(uis){
 				uis->getWindowFocusReleased()->Fire(eng, std::vector<shared_ptr<Type::VarWrapper>>());
+			}
+		}
+	}
+
+	void OBInputEventReceiver::input_mouseButton(Enum::MouseButton btn, bool state){
+		shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+		if(dm){
+			shared_ptr<Instance::UserInputService> uis = dm->getUserInputService();
+			if(uis){
+				uis->input_mouseButton(btn, state);
+			}
+		}
+	}
+
+	void OBInputEventReceiver::input_mouseWheel(shared_ptr<Type::Vector2> delta){
+		shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+		if(dm){
+			shared_ptr<Instance::UserInputService> uis = dm->getUserInputService();
+			if(uis){
+				uis->input_mouseWheel(delta);
+			}
+		}
+	}
+
+	void OBInputEventReceiver::input_mouseMoved(shared_ptr<Type::Vector2> pos, shared_ptr<Type::Vector2> delta){
+		shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+		if(dm){
+			shared_ptr<Instance::UserInputService> uis = dm->getUserInputService();
+			if(uis){
+				uis->input_mouseMoved(pos, delta);
+			}
+		}
+	}
+
+	void OBInputEventReceiver::input_keyEvent(Enum::KeyCode keyCode, bool state){
+		shared_ptr<Instance::DataModel> dm = eng->getDataModel();
+		if(dm){
+			shared_ptr<Instance::UserInputService> uis = dm->getUserInputService();
+			if(uis){
+				uis->input_keyEvent(keyCode, state);
 			}
 		}
 	}

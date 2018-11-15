@@ -41,6 +41,11 @@ namespace OB{
 				virtual std::string serializedID();
 #endif
 
+				virtual void render();
+
+				shared_ptr<Type::Vector2> GetMouseDelta();
+				shared_ptr<Type::Vector2> GetMouseLocation();
+
 				shared_ptr<Type::Event> getGamepadConnected();
 				shared_ptr<Type::Event> getGamepadDisconnected();
 
@@ -62,6 +67,8 @@ namespace OB{
 
 			    int mouseX;
 			    int mouseY;
+				int mouseDeltaX;
+				int mouseDeltaY;
 
 				shared_ptr<Type::Event> GamepadConnected;
 				shared_ptr<Type::Event> GamepadDisconnected;

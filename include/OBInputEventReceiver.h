@@ -27,6 +27,7 @@
 #endif
 
 #include "type/Enum.h"
+#include "type/Vector2.h"
 
 #if HAVE_SDL2
 #define SDL_MAIN_HANDLED
@@ -54,18 +55,81 @@ namespace OB{
 			virtual ~OBInputEventReceiver();
 
 			#if HAVE_IRRLICHT
+			/**
+			 * Converts an Irrlicht key code to an OB KeyCode
+			 *
+			 * @author John M. Harris, Jr.
+			 */
 			static Enum::KeyCode irrlictKeyToOB(irr::EKEY_CODE irrKey);
 
+			/**
+			 * Process an Irrlicht event
+			 *
+			 * @author John M. Harris, Jr.
+			 */
 			virtual bool OnEvent(const irr::SEvent& evt);
 			#endif
 
 			#if HAVE_SDL2
 			static Enum::KeyCode sdl2KeyToOB(SDL_Keysym& ksym);
+
+			/**
+			 * Process an SDL input event
+			 *
+			 * Non-input events should be handled elsewhere
+			 *
+			 * @author John M. Harris, Jr.
+			 */
 		    void processSDL2Event(SDL_Event& evt);
 			#endif
 
+			/**
+			 * Convenience method that fires the WindowFocused event of
+			 * Instance::UserInputService
+			 *
+			 * @author John M. Harris, Jr.
+			 */
 			void focus();
+
+		    /**
+			 * Convenience method that fires the WindowFocusReleased
+			 * event of Instance::UserInputService
+			 *
+			 * @author John M. Harris, Jr.
+			 */
 			void unfocus();
+
+			/**
+			 * Convenience method that calls
+			 * Instance::UserInputService::input_mouseButton
+			 *
+			 * @author John M. Harris, Jr.
+			 */
+			void input_mouseButton(Enum::MouseButton btn, bool state);
+
+			/**
+			 * Convenience method that calls
+			 * Instance::UserInputService::input_mouseWheel
+			 *
+			 * @author John M. Harris, Jr.
+			 */
+			void input_mouseWheel(shared_ptr<Type::Vector2> delta);
+
+			/**
+			 * Convenience method that calls
+			 * Instance::UserInputService::input_mouseMoved
+			 *
+			 * @author John M. Harris, Jr.
+			 */
+			void input_mouseMoved(shared_ptr<Type::Vector2> pos, shared_ptr<Type::Vector2> delta);
+
+			/**
+			 * Convenience method that calls
+			 * Instance::UserInputService::input_keyEvent
+			 *
+			 * @author John M. Harris, Jr.
+			 */
+			void input_keyEvent(Enum::KeyCode keyCode, bool state);
 
 			OBEngine* getEngine();
 

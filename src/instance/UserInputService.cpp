@@ -47,6 +47,8 @@ namespace OB{
 
 			mouseX = 0;
 			mouseY = 0;
+			mouseDeltaX = 0;
+			mouseDeltaY = 0;
 		}
 
 		UserInputService::~UserInputService(){}
@@ -59,6 +61,19 @@ namespace OB{
 			return Instance::serializedID();
 		}
 #endif
+
+		void UserInputService::render(){
+			mouseDeltaX = 0;
+			mouseDeltaY = 0;
+		}
+
+		shared_ptr<Type::Vector2>  UserInputService::GetMouseDelta(){
+			return make_shared<Type::Vector2>(mouseDeltaX, mouseDeltaY);
+		}
+
+		shared_ptr<Type::Vector2>  UserInputService::GetMouseLocation(){
+			return make_shared<Type::Vector2>(mouseX, mouseY);
+		}
 
 		shared_ptr<Instance> UserInputService::cloneImpl(){
 			return NULL;
