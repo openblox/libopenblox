@@ -991,12 +991,15 @@ namespace OB{
 							}
 							case SDL_BUTTON_RIGHT: {
 								mbtn = Enum::MouseButton::Right;
+								break;
 							}
 							case SDL_BUTTON_X1: {
 								mbtn = Enum::MouseButton::X1;
+								break;
 							}
 							case SDL_BUTTON_X2: {
 								mbtn = Enum::MouseButton::X2;
+								break;
 							}
 						}
 
