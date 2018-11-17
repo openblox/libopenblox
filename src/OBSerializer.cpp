@@ -41,14 +41,12 @@ namespace OB{
 #if HAVE_PUGIXML
 	// Attempts to convert file paths to file:// URI
 	std::string _ob_obserializer_load_uri_to_std(std::string ouri){
-		if(ouri.at(0) == '/'){
-			char* canonPath = realpath(ouri.c_str(), NULL);
-			if(canonPath){
-				if(canonPath[0] == '/'){
-					std::string retStr = std::string(canonPath);
-					free(canonPath);
-					return "file://" + retStr;
-				}
+		char* canonPath = realpath(ouri.c_str(), NULL);
+		if(canonPath){
+			if(canonPath[0] == '/'){
+				std::string retStr = std::string(canonPath);
+				free(canonPath);
+				return "file://" + retStr;
 			}
 		}
 		return ouri;
