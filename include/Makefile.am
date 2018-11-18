@@ -1,5 +1,7 @@
 # These files will end up in the install include directory
 # For example, /usr/include
+pkgincludedir = $(includedir)/openblox
+
 nobase_pkginclude_HEADERS = openblox.h \
 obtype.h \
 utility.h \
