@@ -539,7 +539,6 @@ namespace OB{
 				shared_ptr<Instance> kid = kids[i];
 				if(kid){
 				    if(serializer->HasID(kid)){
-						printf("%s has id\n", kid->getName().c_str());
 						pugi::xml_node cinst = thisNode.find_child_by_attribute("instance", "id", kid->serializedID().c_str());
 						kid->deserializeProperties(cinst);
 					}
