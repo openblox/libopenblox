@@ -36,14 +36,15 @@ namespace OB{
 
 			fov = 70.0f;
 
-			CFrame = make_shared<Type::CFrame>(make_shared<Type::Vector3>(0, 0, 0), make_shared<Type::Vector3>(0, 0, 0));
+			CFrame = make_shared<Type::CFrame>(make_shared<Type::Vector3>(0, 30, -40), make_shared<Type::Vector3>(0, 5, 0));
 #if HAVE_IRRLICHT
 			irr::IrrlichtDevice* irrDev = eng->getIrrlichtDevice();
 			if (irrDev){
 				irr::scene::ISceneManager* irrSceneMgr = irrDev->getSceneManager();
 				if (irrSceneMgr){
-					camera = irrSceneMgr->addCameraSceneNode(0, irr::core::vector3df(0, 30, -40), irr::core::vector3df(0, 5, 0));
+					camera = irrSceneMgr->addCameraSceneNode();
 					camera->setFOV(irr::core::degToRad(fov));
+					camera->setViewMatrixAffector(CFrame->toIrrlichtMatrix4());
 				}
 			}
 #endif
@@ -60,11 +61,7 @@ namespace OB{
 		}
 
 		void Camera::updateCFrame(){
-			shared_ptr<Type::Vector3> pos = CFrame->getPosition();
-			shared_ptr<Type::Vector3> angle = CFrame->toEulerAnglesXYZ();
-			eng->getLogger()->log("POS X: " + std::to_string(pos->getX()) + " Y: " + std::to_string(pos->getY()) + " Z: " + std::to_string(pos->getZ()));
-			camera->setPosition(pos->toIrrlichtVector3df());
-			camera->setRotation(irr::core::vector3d<irr::f32>(irr::core::radToDeg(angle->getX()), irr::core::radToDeg(angle->getY()), irr::core::radToDeg(angle->getZ())));
+		    camera->setViewMatrixAffector(CFrame->toIrrlichtMatrix4());
 		}
 
 		void Camera::setCFrame(shared_ptr<Type::CFrame> newCFrame){

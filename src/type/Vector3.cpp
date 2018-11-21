@@ -24,7 +24,7 @@
 
 #include <sstream>
 
-#include <math.h>
+#include <cmath>
 
 namespace OB{
 	namespace Type{

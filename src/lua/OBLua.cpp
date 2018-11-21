@@ -570,8 +570,8 @@ namespace OB{
 			if(nargs == 0){
 				return make_shared<Type::CFrame>()->wrap_lua(L);
 			}else if(nargs == 2){
-				shared_ptr<Type::Vector3> pos = Type::checkVector3(L, 1, true, false);
-				shared_ptr<Type::Vector3> lA = Type::checkVector3(L, 1, true, false);
+				shared_ptr<Type::Vector3> pos = Type::checkVector3(L, 1, true, true);
+				shared_ptr<Type::Vector3> lA = Type::checkVector3(L, 1, true, true);
 				return make_shared<Type::CFrame>(pos, lA)->wrap_lua(L);
 			}else if(nargs == 3){
 				double x = luaL_checknumber(L, 1);
@@ -605,7 +605,10 @@ namespace OB{
 								 r10, r11, r12,
 								 r20, r21, r22)->wrap_lua(L);
 			}
-			return 0;
+
+			//TODO: Error?
+			lua_pushnil(L);
+			return 1;
 		}
 
 		int lua_newUDim(lua_State* L){

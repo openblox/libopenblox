@@ -22,6 +22,8 @@
 
 #include "instance/Instance.h"
 
+#include <sstream>
+
 #include <cmath>
 
 #ifndef M_PI
@@ -81,19 +83,19 @@ namespace OB{
 			m[0][0] = R00;
 			m[0][1] = R01;
 			m[0][2] = R02;
-			m[0][3] = x;
+			m[0][3] = 0;
 			m[1][0] = R10;
 			m[1][1] = R11;
 			m[1][2] = R12;
-			m[1][3] = y;
+			m[1][3] = 0;
 			m[2][0] = R20;
 			m[2][1] = R21;
 			m[2][2] = R22;
-			m[2][3] = z;
-			m[3][0] = 0;
-			m[3][1] = 0;
-			m[3][2] = 0;
-			m[3][3] = 1;
+			m[2][3] = 0;
+			m[3][0] = x;
+			m[3][1] = y;
+			m[3][2] = z;
+			m[3][3] = 0;
 
 			fB = CFPerfT::Unknown;
 		}
@@ -490,40 +492,57 @@ namespace OB{
 		}
 
 		void CFrame::lookAt(shared_ptr<Vector3> pos, shared_ptr<Vector3> at){
-			shared_ptr<Vector3> fwd = (at->sub(pos))->normalize();
-			shared_ptr<Vector3> side = fwd->cross(make_shared<Vector3>(0, 1, 0));
-			shared_ptr<Vector3> up = side->cross(fwd);
+			// Might make this an arg, possibly
+			shared_ptr<Vector3> upVector = make_shared<Vector3>(0, 1, 0);
 
-			shared_ptr<CFrame> mm = make_shared<CFrame>(0);
-			mm->m[0][0] = side->getX();
-			mm->m[1][0] = side->getY();
-			mm->m[2][0] = side->getZ();
-			mm->m[3][0] = 0;
-			mm->m[0][1] = up->getX();
-			mm->m[1][1] = up->getY();
-			mm->m[2][1] = up->getZ();
-			mm->m[3][1] = 0;
-			mm->m[0][2] = -fwd->getX();
-			mm->m[1][2] = -fwd->getY();
-			mm->m[2][2] = -fwd->getZ();
-			mm->m[3][2] = 0;
-			mm->m[0][3] = 0;
-			mm->m[1][3] = 0;
-			mm->m[2][3] = 0;
-			mm->m[3][3] = 1;
+			shared_ptr<Vector3> zaxis = (at->sub(pos))->normalize();
+			shared_ptr<Vector3> xaxis = upVector->cross(zaxis)->normalize();
+			shared_ptr<Vector3> yaxis = zaxis->cross(xaxis);
 
-			multiplyInternal(mm);
+		    m[0][0] = xaxis->getX();
+			m[0][1] = yaxis->getX();
+			m[0][2] = zaxis->getX();
+			m[0][3] = 0;
+			m[1][0] = xaxis->getY();
+			m[1][1] = yaxis->getY();
+			m[1][2] = zaxis->getY();
+			m[1][3] = 0;
+			m[2][0] = xaxis->getZ();
+			m[2][1] = yaxis->getZ();
+			m[2][2] = zaxis->getZ();
+			m[2][3] = 0;
+			m[3][0] = -xaxis->dot(pos);
+			m[3][1] = -yaxis->dot(pos);
+			m[3][2] = -zaxis->dot(pos);
+			m[3][3] = 1;
 
-			translate(-pos->getX(), -pos->getY(), -pos->getZ());
+			fB = CFPerfT::Unknown;
 		}
 
 #if HAVE_IRRLICHT
+		  irr::core::matrix4 CFrame::toIrrlichtMatrix4(){
+			  irr::core::matrix4 newMatrix = irr::core::matrix4();
+			  float* matrixVals = newMatrix.pointer();
+			  matrixVals[0] = (float)m[0][0];
+			  matrixVals[1] = (float)m[0][1];
+			  matrixVals[2] = (float)m[0][2];
+			  matrixVals[3] = (float)m[0][3];
+			  matrixVals[4] = (float)m[1][0];
+			  matrixVals[5] = (float)m[1][1];
+			  matrixVals[6] = (float)m[1][2];
+			  matrixVals[7] = (float)m[1][3];
+			  matrixVals[8] = (float)m[2][0];
+			  matrixVals[9] = (float)m[2][1];
+			  matrixVals[10] = (float)m[2][2];
+			  matrixVals[11] = (float)m[2][3];
+			  matrixVals[12] = (float)m[3][0];
+			  matrixVals[13] = (float)m[3][1];
+			  matrixVals[14] = (float)m[3][2];
+			  matrixVals[15] = (float)m[3][3];
+			  newMatrix.setDefinitelyIdentityMatrix(fB == CFPerfT::Identity);
 
-		/*
-		  irr::core::vector3d<double> Vector3::toIrrlichtVector3d(){
-		  return irr::core::vector3d<double>(x, y, z);
-		  }*/
-
+			  return newMatrix;
+		  }
 #endif
 
 #if HAVE_BULLET
@@ -747,7 +766,18 @@ namespace OB{
 		}
 
 		std::string CFrame::toString(){
-			return "CFrame";
+			return ((std::ostringstream&)(std::ostringstream() << std::dec << m[3][0])).str() + ", "
+				+ ((std::ostringstream&)(std::ostringstream() << std::dec << m[3][1])).str() + ", "
+				+ ((std::ostringstream&)(std::ostringstream() << std::dec << m[3][2])).str() + ", "
+				+ ((std::ostringstream&)(std::ostringstream() << std::dec << m[0][0])).str() + ", "
+				+ ((std::ostringstream&)(std::ostringstream() << std::dec << m[0][1])).str() + ", "
+				+ ((std::ostringstream&)(std::ostringstream() << std::dec << m[0][2])).str() + ", "
+				+ ((std::ostringstream&)(std::ostringstream() << std::dec << m[1][0])).str() + ", "
+				+ ((std::ostringstream&)(std::ostringstream() << std::dec << m[1][1])).str() + ", "
+				+ ((std::ostringstream&)(std::ostringstream() << std::dec << m[1][2])).str() + ", "
+				+ ((std::ostringstream&)(std::ostringstream() << std::dec << m[2][0])).str() + ", "
+				+ ((std::ostringstream&)(std::ostringstream() << std::dec << m[2][1])).str() + ", "
+				+ ((std::ostringstream&)(std::ostringstream() << std::dec << m[2][2])).str();
 		}
 
 		int CFrame::lua_getX(lua_State* L){
