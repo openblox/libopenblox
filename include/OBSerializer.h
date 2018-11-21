@@ -53,6 +53,7 @@ namespace OB{
 #endif
 
 			std::string GetID(shared_ptr<Instance::Instance> inst);
+			bool HasID(shared_ptr<Instance::Instance> inst);
 			shared_ptr<Instance::Instance> GetByID(std::string id);
 			void SetID(shared_ptr<Instance::Instance> inst, std::string newId);
 

@@ -478,6 +478,8 @@ namespace OB{
 		}
 
 		void Instance::deserializeProperties(pugi::xml_node thisNode){
+			shared_ptr<OBSerializer> serializer = eng->getSerializer();
+
 			std::map<std::string, _PropertyInfo> props = getProperties();
 			for(auto it = props.begin(); it != props.end(); ++it){
 				std::string name = it->first;
@@ -521,7 +523,6 @@ namespace OB{
 							setProperty(name, make_shared<Type::VarWrapper>(make_shared<Type::UDim2>(propVal.as_string())));
 						}
 						if(stype == "Instance"){
-							shared_ptr<OBSerializer> serializer = eng->getSerializer();
 							if(serializer){
 								std::string iid = propVal.as_string();
 								shared_ptr<Instance> iinst = serializer->GetByID(iid);
@@ -537,8 +538,11 @@ namespace OB{
 			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
 				shared_ptr<Instance> kid = kids[i];
 				if(kid){
-					pugi::xml_node cinst = thisNode.find_child_by_attribute("instance", "id", kid->serializedID().c_str());
-					kid->deserializeProperties(cinst);
+				    if(serializer->HasID(kid)){
+						printf("%s has id\n", kid->getName().c_str());
+						pugi::xml_node cinst = thisNode.find_child_by_attribute("instance", "id", kid->serializedID().c_str());
+						kid->deserializeProperties(cinst);
+					}
 				}
 			}
 		}
