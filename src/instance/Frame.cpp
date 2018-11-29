@@ -21,6 +21,8 @@
 
 #include "type/Color3.h"
 
+#include "OBRenderUtils.h"
+
 #if HAVE_IRRLICHT
 #include "GL/gl.h"
 #endif
@@ -52,7 +54,7 @@ namespace OB{
 			clone->Position = Position;
 			clone->Size = Size;
 			clone->ZIndex = ZIndex;
-			
+
 			return clone;
 		}
 
@@ -61,32 +63,35 @@ namespace OB{
 			if(Visible){
 				if(irr::IrrlichtDevice* irrDev = getEngine()->getIrrlichtDevice()){
 					if(irr::video::IVideoDriver* irrDriv = irrDev->getVideoDriver()){
-						getEngine()->prepare2DMode();
+						shared_ptr<OBRenderUtils> renderUtils = getEngine()->getRenderUtils();
+						if(renderUtils){
+							renderUtils->prepare2DMode();
 
-						shared_ptr<Type::Color3> bgColor = BackgroundColor3;
-						double bgTrans = BackgroundTransparency;
-						shared_ptr<Type::Color3> borderColor = BorderColor3;
-						int borderSize = BorderSizePixel;
-						shared_ptr<Type::Vector2> pos = getAbsolutePosition();
-						shared_ptr<Type::Vector2> siz = getAbsoluteSize()->add(pos);
+							shared_ptr<Type::Color3> bgColor = BackgroundColor3;
+							double bgTrans = BackgroundTransparency;
+							shared_ptr<Type::Color3> borderColor = BorderColor3;
+							int borderSize = BorderSizePixel;
+							shared_ptr<Type::Vector2> pos = getAbsolutePosition();
+							shared_ptr<Type::Vector2> siz = getAbsoluteSize()->add(pos);
 
-						glColor4d(bgColor->getR(), bgColor->getG(), bgColor->getB(), 1 - bgTrans);
+							glColor4d(bgColor->getR(), bgColor->getG(), bgColor->getB(), 1 - bgTrans);
 
-						glRectd(pos->getX(), pos->getY(), siz->getX(), siz->getY());
+							glRectd(pos->getX(), pos->getY(), siz->getX(), siz->getY());
 
-						glColor4d(borderColor->getR(), borderColor->getG(), borderColor->getB(), 1 - bgTrans);
-						//Border Top
-						glRectd(pos->getX() - borderSize, pos->getY() - borderSize, siz->getX() + borderSize, pos->getY());
-						//Border Left
-						glRectd(pos->getX() - borderSize, pos->getY() - borderSize, pos->getX(), siz->getY() + borderSize);
-						//Border Right
-						glRectd(siz->getX(), pos->getY() - borderSize, siz->getX() + borderSize, siz->getY() + borderSize);
-						//Border Bottom
-						glRectd(pos->getX() - borderSize, siz->getY(), siz->getX() + borderSize, siz->getY() + borderSize);
+							glColor4d(borderColor->getR(), borderColor->getG(), borderColor->getB(), 1 - bgTrans);
+							//Border Top
+							glRectd(pos->getX() - borderSize, pos->getY() - borderSize, siz->getX() + borderSize, pos->getY());
+							//Border Left
+							glRectd(pos->getX() - borderSize, pos->getY() - borderSize, pos->getX(), siz->getY() + borderSize);
+							//Border Right
+							glRectd(siz->getX(), pos->getY() - borderSize, siz->getX() + borderSize, siz->getY() + borderSize);
+							//Border Bottom
+							glRectd(pos->getX() - borderSize, siz->getY(), siz->getX() + borderSize, siz->getY() + borderSize);
 
-						getEngine()->end2DMode();
+						    renderUtils->end2DMode();
 
-						GuiObject::render();
+							GuiObject::render();
+						}
 					}
 				}
 			}

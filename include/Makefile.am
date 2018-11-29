@@ -7,6 +7,7 @@ obtype.h \
 utility.h \
 OBException.h \
 OBEngine.h \
+OBRenderUtils.h \
 OBInputEventReceiver.h \
 config.h \
 oblibconfig.h \

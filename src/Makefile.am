@@ -17,6 +17,7 @@ TaskScheduler.cpp \
 AssetLocator.cpp \
 PluginManager.cpp \
 OBEngine.cpp \
+OBRenderUtils.cpp \
 OBInputEventReceiver.cpp \
 lua/OBLua.cpp \
 lua/OBLua_OBBase.cpp \

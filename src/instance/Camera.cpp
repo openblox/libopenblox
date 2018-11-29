@@ -23,6 +23,8 @@
 #include "instance/NetworkServer.h"
 #include "type/Vector3.h"
 
+#include "OBRenderUtils.h"
+
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(Camera, true, false, Instance){
@@ -57,7 +59,11 @@ namespace OB{
 		}
 
 		bool Camera::SaveScreenshot(std::string file){
-			return getEngine()->saveScreenshot(file);
+			shared_ptr<OBRenderUtils> renderUtils = getEngine()->getRenderUtils();
+			if(renderUtils){
+				return renderUtils->saveScreenshot(file);
+			}
+			return false;
 		}
 
 		void Camera::updateCFrame(){

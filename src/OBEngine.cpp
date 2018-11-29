@@ -27,6 +27,8 @@
 #include "TaskScheduler.h"
 #include "ClassFactory.h"
 
+#include "OBRenderUtils.h"
+
 #include "lua/OBLua.h"
 
 #include <string>
@@ -78,14 +80,14 @@ namespace OB{
 		custPostRender = NULL;
 
 #if HAVE_IRRLICHT
-		cached2DMode = false;
-
 		irrDev = NULL;
 		irrDriv = NULL;
 		irrSceneMgr = NULL;
+#endif
 
 		eventReceiver = new OBInputEventReceiver(this);
-#endif
+
+		renderUtils = NULL;
 
 #if HAVE_ENET
 		enet_initialize();
@@ -267,6 +269,8 @@ namespace OB{
 			irrDriv = irrDev->getVideoDriver();
 			irrSceneMgr = irrDev->getSceneManager();
 
+			renderUtils = make_shared<OBRenderUtils>(this);
+
 			//Log at INFO level
 			std::string renderTag("[RENDERER] ");
 
@@ -439,35 +443,6 @@ namespace OB{
 #endif
 	}
 
-	bool OBEngine::saveScreenshot(std::string file){
-		if(doRendering){
-			if(irrDriv){
-				irr::video::IImage* img = irrDriv->createScreenShot();
-				if(img){
-					return irrDriv->writeImageToFile(img,  irr::io::path(file.c_str()));
-				}
-			}
-		}
-		return false;
-	}
-
-	void OBEngine::prepare2DMode(){
-#if HAVE_IRRLICHT
-		if(!cached2DMode && doRendering && irrDriv){
-			cached2DMode = true;
-
-			// Dirty hack
-			irrDriv->drawPixel(0, 0, irr::video::SColor(0, 255, 255, 255));
-		}
-#endif
-	}
-
-	void OBEngine::end2DMode(){
-		#if HAVE_IRRLICHT
-	    cached2DMode = false;
-		#endif
-	}
-
 	lua_State* OBEngine::getGlobalLuaState(){
 		return globalState;
 	}
@@ -569,6 +544,10 @@ namespace OB{
 
 	void OBEngine::setPostRenderFunc(post_render_func_t prf){
 		custPostRender = prf;
+	}
+
+	shared_ptr<OBRenderUtils> OBEngine::getRenderUtils(){
+		return renderUtils;
 	}
 #endif
 

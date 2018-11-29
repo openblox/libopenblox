@@ -456,12 +456,12 @@ namespace OB{
 					if(serializer){
 						shared_ptr<Instance> tInst = serializer->GetByID(sid);
 						if(!tInst){
+							printf("Created %s with id %s\n", stype.c_str(), sid.c_str());
 							tInst = ClassFactory::createReplicate(stype, eng);
+							serializer->SetID(tInst, sid);
 						}
 
 						if(tInst){
-							serializer->SetID(tInst, sid);
-
 							tInst->setParent(shared_from_this(), true);
 
 							tInst->deserializeCreate(cinst);
@@ -539,8 +539,11 @@ namespace OB{
 				shared_ptr<Instance> kid = kids[i];
 				if(kid){
 				    if(serializer->HasID(kid)){
+						printf("%s has id\n", kid->getName().c_str());
 						pugi::xml_node cinst = thisNode.find_child_by_attribute("instance", "id", kid->serializedID().c_str());
 						kid->deserializeProperties(cinst);
+					}else{
+						printf("%s does not have an id\n", kid->getName().c_str());
 					}
 				}
 			}

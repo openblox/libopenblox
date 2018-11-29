@@ -24,6 +24,8 @@
 
 #include "instance/ScreenGui.h"
 
+#include "OBRenderUtils.h"
+
 #include <algorithm>
 
 #if HAVE_IRRLICHT
@@ -212,7 +214,10 @@ namespace OB{
 				}
 			}
 
-			getEngine()->end2DMode();
+			shared_ptr<OBRenderUtils> renderUtils = getEngine()->getRenderUtils();
+			if(renderUtils){
+			    renderUtils->end2DMode();
+			}
 #endif
 		}
 

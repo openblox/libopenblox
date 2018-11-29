@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 John M. Harris, Jr. <johnmh@openblox.org>
+ * Copyright (C) 2016-2018 John M. Harris, Jr. <johnmh@openblox.org>
  *
  * This file is part of OpenBlox.
  *
@@ -38,6 +38,7 @@
 #include "AssetLocator.h"
 #include "OBSerializer.h"
 #include "PluginManager.h"
+#include "OBRenderUtils.h"
 
 #include "OBInputEventReceiver.h"
 
@@ -75,9 +76,11 @@ namespace OB{
 #ifndef OB_PLUGINMANAGER
 	class PluginManager;
 #endif
+#ifndef OB_OBRENDERUTILS
+	class OBRenderUtils;
+#endif
 
 #if HAVE_IRRLICHT
-	//typedef void (*post_render_func_t)(irr::video::IVideoDriver*);
 	typedef std::function<void(irr::video::IVideoDriver*)> post_render_func_t;
 #endif
 
@@ -184,28 +187,6 @@ namespace OB{
 			 * @author John M. Harris, Jr.
 			 */
 			void render();
-
-			/**
-			 * Prepares the rendering pipeline for 2D rendering.
-			 *
-			 * @author John M. Harris, Jr.
-			 */
-			void prepare2DMode();
-
-			/**
-			 * Ends a 2D context
-			 *
-			 * @author John M. Harris, Jr.
-			 */
-			void end2DMode();
-
-			/**
-			 * Save an image of the last frame to a file.
-			 *
-			 * @param file File to write to
-			 * @author John M. Harris, Jr.
-			 */
-			bool saveScreenshot(std::string file);
 
 			/**
 			 * Returns the global Lua state, which all states
@@ -375,6 +356,14 @@ namespace OB{
 			 * @author John M. Harris, Jr.
 			 */
 			void setPostRenderFunc(post_render_func_t prf);
+
+			/**
+			 * Returns the OBRenderUtils instance
+			 *
+			 * @returns OBRenderUtils
+			 * @author John M. Harris, Jr.
+			 */
+			shared_ptr<OBRenderUtils> getRenderUtils();
 #endif
 
 			/**
@@ -441,16 +430,16 @@ namespace OB{
 #endif
 
 #if HAVE_IRRLICHT
-			bool cached2DMode;
-
-			post_render_func_t custPostRender;
+		    post_render_func_t custPostRender;
 
 			irr::IrrlichtDevice* irrDev;
 			irr::video::IVideoDriver* irrDriv;
 			irr::scene::ISceneManager* irrSceneMgr;
 
-			OBInputEventReceiver* eventReceiver;
+			shared_ptr<OBRenderUtils> renderUtils;
 #endif
+
+			OBInputEventReceiver* eventReceiver;
 
 			shared_ptr<TaskScheduler> taskSched;
 			shared_ptr<TaskScheduler> secondaryTaskSched;
