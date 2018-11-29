@@ -289,6 +289,34 @@ namespace OB{
 				virtual void Remove();
 
 				/**
+				 * Finds the first ancestor with a given name.
+				 *
+				 * @param name Name of the Instance to search for
+				 *
+				 * @author John M. Harris, Jr.
+				 */
+				virtual shared_ptr<Instance> FindFirstAncestor(std::string name);
+
+				/**
+				 * Finds the first ancestor with a given class name.
+				 *
+				 * @param className Name of the class to search for
+				 *
+				 * @author John M. Harris, Jr.
+				 */
+				virtual shared_ptr<Instance> FindFirstAncestorOfClass(std::string className);
+
+				/**
+				 * Finds the first ancestor for which Instance::IsA
+				 * returns true.
+				 *
+				 * @param className Name of the class to search for
+				 *
+				 * @author John M. Harris, Jr.
+				 */
+				virtual shared_ptr<Instance> FindFirstAncestorWhichIsA(std::string className);
+
+				/**
 				 * Finds the first child with a given name. This has
 				 * an optional argument for searching recursively.
 				 *
@@ -628,6 +656,9 @@ namespace OB{
 				DECLARE_LUA_METHOD(Clone);
 				DECLARE_LUA_METHOD(Destroy);
 				DECLARE_LUA_METHOD(Remove);
+				DECLARE_LUA_METHOD(FindFirstAncestor);
+				DECLARE_LUA_METHOD(FindFirstAncestorOfClass);
+				DECLARE_LUA_METHOD(FindFirstAncestorWhichIsA);
 				DECLARE_LUA_METHOD(FindFirstChild);
 				DECLARE_LUA_METHOD(FindFirstChildOfClass);
 				DECLARE_LUA_METHOD(FindFirstChildWhichIsA);

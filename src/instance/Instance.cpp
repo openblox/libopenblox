@@ -159,6 +159,39 @@ namespace OB{
 			}
 		}
 
+		shared_ptr<Instance> Instance::FindFirstAncestor(std::string name){
+		    if(Parent){
+				if(Parent->Name == name){
+					return Parent;
+				}else{
+					return Parent->FindFirstAncestor(name);
+				}
+			}
+			return NULL;
+		}
+
+		shared_ptr<Instance> Instance::FindFirstAncestorOfClass(std::string className){
+		    if(Parent){
+				if(Parent->ClassName == className){
+					return Parent;
+				}else{
+					return Parent->FindFirstAncestorOfClass(className);
+				}
+			}
+			return NULL;
+		}
+
+		shared_ptr<Instance> Instance::FindFirstChildWhichIsA(std::string className){
+		    if(Parent){
+				if(Parent->IsA(className)){
+					return Parent;
+				}else{
+					return Parent->FindFirstAncestorWhichIsA(className);
+				}
+			}
+			return NULL;
+		}
+
 		shared_ptr<Instance> Instance::FindFirstChild(std::string name, bool recursive){
 			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != children.size(); i++){
 				shared_ptr<Instance> kid = children[i];
@@ -1257,6 +1290,54 @@ namespace OB{
 			}
 
 			return luaL_error(L, COLONERR, "Remove");
+		}
+
+		int Instance::lua_FindFirstAncestor(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
+			if(inst){
+				const char* ancestorName = luaL_checkstring(L, 2);
+				shared_ptr<Instance> foundStuff = inst->FindFirstAncestor(ancestorName);
+				if(foundStuff){
+					return foundStuff->wrap_lua(L);
+				}
+				lua_pushnil(L);
+				return 1;
+			}
+
+			return luaL_error(L, COLONERR, "FindFirstAncestor");
+		}
+
+		int Instance::lua_FindFirstAncestorOfClass(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
+			if(inst){
+				const char* className = luaL_checkstring(L, 2);
+				shared_ptr<Instance> foundStuff = inst->FindFirstAncestorOfClass(className);
+				if(foundStuff){
+					return foundStuff->wrap_lua(L);
+				}
+				lua_pushnil(L);
+				return 1;
+			}
+
+			return luaL_error(L, COLONERR, "FindFirstAncestorOfClass");
+		}
+
+		int Instance::lua_FindFirstAncestorWhichIsA(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
+			if(inst){
+				const char* className = luaL_checkstring(L, 2);
+				shared_ptr<Instance> foundStuff = inst->FindFirstAncestorWhichIsA(className);
+				if(foundStuff){
+					return foundStuff->wrap_lua(L);
+				}
+				lua_pushnil(L);
+				return 1;
+			}
+
+			return luaL_error(L, COLONERR, "FindFirstAncestorWhichIsA");
 		}
 
 		int Instance::lua_FindFirstChild(lua_State* L){
