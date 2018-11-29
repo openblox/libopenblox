@@ -1112,7 +1112,11 @@ namespace OB{
 
 			if(inst){
 				std::string desired = std::string(luaL_checkstring(L, 2));
-				inst->setName(desired);
+				try{
+					inst->setName(desired);
+				}catch(OBException* ex){
+					return luaL_error(L, ex->getMessage().c_str());
+			    }
 			}
 
 			return 0;
@@ -1171,7 +1175,11 @@ namespace OB{
 				}else if(!lua_isnoneornil(L, 2)){
 					newVal = true;
 				}
-				inst->setArchivable(newVal);
+				try{
+					inst->setArchivable(newVal);
+				}catch(OBException* ex){
+					return luaL_error(L, ex->getMessage().c_str());
+				}
 			}
 
 			return 0;
