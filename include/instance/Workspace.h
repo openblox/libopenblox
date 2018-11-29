@@ -68,7 +68,7 @@ namespace OB{
 #endif
 
 #if HAVE_PUGIXML
-				virtual std::string serializedID();
+				virtual std::string fixedSerializedID();
 #endif
 
 				virtual std::map<std::string, _PropertyInfo> getProperties();

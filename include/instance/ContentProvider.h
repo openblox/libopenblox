@@ -44,7 +44,7 @@ namespace OB{
 				char* GetAsset(std::string url);
 
 #if HAVE_PUGIXML
-				virtual std::string serializedID();
+				virtual std::string fixedSerializedID();
 #endif
 
 				DECLARE_LUA_METHOD(Preload);

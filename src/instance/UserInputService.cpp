@@ -54,11 +54,8 @@ namespace OB{
 		UserInputService::~UserInputService(){}
 
 #if HAVE_PUGIXML
-		std::string UserInputService::serializedID(){
-			shared_ptr<OBSerializer> serializer = eng->getSerializer();
-			serializer->SetID(shared_from_this(), getClassName());
-
-			return Instance::serializedID();
+		std::string UserInputService::fixedSerializedID(){
+		    return "UserInputService";
 		}
 #endif
 

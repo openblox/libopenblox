@@ -100,11 +100,8 @@ namespace OB{
 		}
 
 #if HAVE_PUGIXML
-		std::string RunService::serializedID(){
-			shared_ptr<OBSerializer> serializer = eng->getSerializer();
-			serializer->SetID(shared_from_this(), getClassName());
-
-			return Instance::serializedID();
+		std::string RunService::fixedSerializedID(){
+			return "RunService";
 		}
 #endif
 

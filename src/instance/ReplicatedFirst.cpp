@@ -34,11 +34,8 @@ namespace OB{
 		ReplicatedFirst::~ReplicatedFirst(){}
 
 #if HAVE_PUGIXML
-		std::string ReplicatedFirst::serializedID(){
-			shared_ptr<OBSerializer> serializer = eng->getSerializer();
-			serializer->SetID(shared_from_this(), getClassName());
-
-			return Instance::serializedID();
+		std::string ReplicatedFirst::fixedSerializedID(){
+			return "ReplicatedFirst";
 		}
 #endif
 

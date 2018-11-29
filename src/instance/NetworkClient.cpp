@@ -302,11 +302,8 @@ namespace OB{
 		}
 
 #if HAVE_PUGIXML
-		std::string NetworkClient::serializedID(){
-			shared_ptr<OBSerializer> serializer = eng->getSerializer();
-			serializer->SetID(shared_from_this(), "NetworkClient");
-
-			return Instance::serializedID();
+		std::string NetworkClient::fixedSerializedID(){
+		    return "NetworkClient";
 		}
 #endif
 

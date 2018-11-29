@@ -230,7 +230,15 @@ namespace OB{
 
 	bool OBSerializer::HasID(shared_ptr<Instance::Instance> inst){
 		auto it = instanceMap.find(inst);
-		return it == instanceMap.end();
+	    bool hasInMap = (it != instanceMap.end());
+		if(!hasInMap){
+			std::string fixedStr = inst->fixedSerializedID();
+			if(!fixedStr.empty()){
+				SetID(inst, fixedStr);
+				return true;
+			}
+		}
+		return hasInMap;
 	}
 
 	shared_ptr<Instance::Instance> OBSerializer::GetByID(std::string id){

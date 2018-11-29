@@ -189,7 +189,7 @@ namespace OB{
 
 #if HAVE_PUGIXML
 				virtual void deserialize(pugi::xml_node thisNode);
-				virtual std::string serializedID();
+			    virtual std::string fixedSerializedID();
 #endif
 
 				virtual std::map<std::string, _PropertyInfo> getProperties();

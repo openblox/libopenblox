@@ -287,11 +287,8 @@ namespace OB{
 			Instance::deserialize(thisNode);
 		}
 
-		std::string DataModel::serializedID(){
-			shared_ptr<OBSerializer> serializer = eng->getSerializer();
-			serializer->SetID(shared_from_this(), "game");
-
-			return Instance::serializedID();
+		std::string DataModel::fixedSerializedID(){
+		    return "game";
 		}
 #endif
 

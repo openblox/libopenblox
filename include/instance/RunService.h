@@ -50,7 +50,7 @@ namespace OB{
 				virtual void tick();
 
 #if HAVE_PUGIXML
-				virtual std::string serializedID();
+				virtual std::string fixedSerializedID();
 #endif
 
 				static void register_lua_events(lua_State* L);

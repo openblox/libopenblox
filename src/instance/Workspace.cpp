@@ -164,11 +164,8 @@ namespace OB{
 #endif
 
 #if HAVE_PUGIXML
-		std::string Workspace::serializedID(){
-			shared_ptr<OBSerializer> serializer = eng->getSerializer();
-			serializer->SetID(shared_from_this(), getClassName());
-
-			return Instance::serializedID();
+		std::string Workspace::fixedSerializedID(){
+		    return "Workspace";
 		}
 #endif
 

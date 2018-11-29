@@ -38,7 +38,7 @@ namespace OB{
 				virtual ~LogService();
 
 #if HAVE_PUGIXML
-				virtual std::string serializedID();
+				virtual std::string fixedSerializedID();
 #endif
 
 				void postLog(std::string message, Enum::MessageType messageType);

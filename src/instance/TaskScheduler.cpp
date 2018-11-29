@@ -57,11 +57,8 @@ namespace OB{
 		}
 
 #if HAVE_PUGIXML
-		std::string TaskScheduler::serializedID(){
-			shared_ptr<OBSerializer> serializer = eng->getSerializer();
-			serializer->SetID(shared_from_this(), getClassName());
-
-			return Instance::serializedID();
+		std::string TaskScheduler::fixedSerializedID(){
+			return "TaskScheduler";
 		}
 #endif
 

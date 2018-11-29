@@ -121,11 +121,8 @@ namespace OB{
 		}
 
 #if HAVE_PUGIXML
-		std::string CoreGui::serializedID(){
-			shared_ptr<OBSerializer> serializer = eng->getSerializer();
-			serializer->SetID(shared_from_this(), getClassName());
-
-			return Instance::serializedID();
+		std::string CoreGui::fixedSerializedID(){
+			return "CoreGui";
 		}
 #endif
 

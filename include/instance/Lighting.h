@@ -38,7 +38,7 @@ namespace OB{
 				virtual ~Lighting();
 
 #if HAVE_PUGIXML
-				virtual std::string serializedID();
+				virtual std::string fixedSerializedID();
 #endif
 
 				virtual void preRender();
