@@ -181,7 +181,7 @@ namespace OB{
 			return NULL;
 		}
 
-		shared_ptr<Instance> Instance::FindFirstChildWhichIsA(std::string className){
+		shared_ptr<Instance> Instance::FindFirstAncestorWhichIsA(std::string className){
 		    if(Parent){
 				if(Parent->IsA(className)){
 					return Parent;
