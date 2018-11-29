@@ -205,6 +205,29 @@ namespace OB{
 			return NULL;
 		}
 
+		shared_ptr<Instance> Instance::FindFirstChildWhichIsA(std::string className, bool recursive){
+			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != children.size(); i++){
+				shared_ptr<Instance> kid = children[i];
+				if(kid){
+					if(kid->IsA(className)){
+						return kid;
+					}
+				}
+			}
+			if(recursive){
+				for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != children.size(); i++){
+					shared_ptr<Instance> kid = children[i];
+					if(kid){
+						shared_ptr<Instance> myFind = kid->FindFirstChildWhichIsA(className, recursive);
+						if(myFind){
+							return myFind;
+						}
+					}
+				}
+			}
+			return NULL;
+		}
+
 		std::vector<shared_ptr<Instance>> Instance::GetChildren(){
 			return std::vector<shared_ptr<Instance>>(children);
 		}
@@ -855,6 +878,8 @@ namespace OB{
 				{"Destroy", lua_Destroy},
 				{"Remove", lua_Remove},
 				{"FindFirstChild", lua_FindFirstChild},
+				{"FindFirstChildOfClass", lua_FindFirstChildOfClass},
+				{"FindFirstChildWhichIsA", lua_FindFirstChildWhichIsA},
 				{"GetChildren", lua_GetChildren},
 				{"GetFullName", lua_GetFullName},
 				{"IsA", lua_IsA},
@@ -1256,6 +1281,54 @@ namespace OB{
 			}
 
 			return luaL_error(L, COLONERR, "FindFirstChild");
+		}
+
+		int Instance::lua_FindFirstChildOfClass(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
+			if(inst){
+				const char* kidName = luaL_checkstring(L, 2);
+				bool recursive = false;
+				if(!lua_isnoneornil(L, 3)){
+					if(lua_isboolean(L, 3)){
+						recursive = lua_toboolean(L, 3);
+					}else{
+						luaL_argerror(L, 3, "boolean expected");
+					}
+				}
+				shared_ptr<Instance> foundStuff = inst->FindFirstChildOfClass(kidName, recursive);
+				if(foundStuff){
+					return foundStuff->wrap_lua(L);
+				}
+				lua_pushnil(L);
+				return 1;
+			}
+
+			return luaL_error(L, COLONERR, "FindFirstChildOfClass");
+		}
+
+		int Instance::lua_FindFirstChildWhichIsA(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
+			if(inst){
+				const char* kidName = luaL_checkstring(L, 2);
+				bool recursive = false;
+				if(!lua_isnoneornil(L, 3)){
+					if(lua_isboolean(L, 3)){
+						recursive = lua_toboolean(L, 3);
+					}else{
+						luaL_argerror(L, 3, "boolean expected");
+					}
+				}
+				shared_ptr<Instance> foundStuff = inst->FindFirstChildWhichIsA(kidName, recursive);
+				if(foundStuff){
+					return foundStuff->wrap_lua(L);
+				}
+				lua_pushnil(L);
+				return 1;
+			}
+
+			return luaL_error(L, COLONERR, "FindFirstChildWhichIsA");
 		}
 
 		int Instance::lua_GetChildren(lua_State* L){

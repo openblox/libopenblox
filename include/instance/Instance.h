@@ -311,6 +311,18 @@ namespace OB{
 				virtual shared_ptr<Instance> FindFirstChildOfClass(std::string className, bool recursive = false);
 
 				/**
+				 * Finds the first child for which Instance::IsA
+				 * returns true. This has an optional argument for
+				 * searching recursively.
+				 *
+				 * @param className Name of the class to search for
+				 * @param recursive Whether or not to search recursively.
+				 *
+				 * @author John M. Harris, Jr.
+				 */
+				virtual shared_ptr<Instance> FindFirstChildWhichIsA(std::string className, bool recursive = false);
+
+				/**
 				 * Returns the children of an object.
 				 *
 				 * @returns Vector containing the children of this object.
@@ -617,6 +629,8 @@ namespace OB{
 				DECLARE_LUA_METHOD(Destroy);
 				DECLARE_LUA_METHOD(Remove);
 				DECLARE_LUA_METHOD(FindFirstChild);
+				DECLARE_LUA_METHOD(FindFirstChildOfClass);
+				DECLARE_LUA_METHOD(FindFirstChildWhichIsA);
 				DECLARE_LUA_METHOD(GetChildren);
 				DECLARE_LUA_METHOD(GetFullName);
 				DECLARE_LUA_METHOD(IsA);
