@@ -22,7 +22,9 @@ AC_SUBST(OPENBLOX_PWD)
 
 #Options
 AC_ARG_WITH(irrlicht, AS_HELP_STRING([--without-irrlicht], [Compile without Irrlicht support.]))
+AC_ARG_WITH(freetype, AS_HELP_STRING([--without-freetype], [Compile without freetype support.]))
 AC_ARG_WITH(SDL2, AS_HELP_STRING([--without-SDL2], [Compile without SDL2 support.]))
+AC_ARG_WITH(fontconfig, AS_HELP_STRING([--without-fontconfig], [Compile without fontconfig support.]))
 AC_ARG_WITH(pugixml, AS_HELP_STRING([--wihout-pugixml], [Compile without pugixml.]))
 AC_ARG_WITH(bullet, AS_HELP_STRING([--without-bullet], [Compile without Bullet support.]))
 AC_ARG_WITH(curl, AS_HELP_STRING([--without-curl], [Compile without curl support.]))
@@ -51,8 +53,16 @@ AS_IF([test "x$have_irrlicht" = "xyes"],
 AC_SUBST(LIRRLICHT_LIBS)
 
 AS_IF([test "x$with_SDL2" != "xno"],
-      [AX_PKG_CHECK_MODULES([LSDL2], [sdl2], [], [AC_DEFINE_UNQUOTED(HAVE_SDL2, 1, [Define to 1 if you have the `SDL2' library (-lSDL2).])])],
-      [have_sdl2=no])
+      [AX_PKG_CHECK_MODULES([LSDL2], [sdl2], [], [AC_DEFINE_UNQUOTED(HAVE_SDL2, 1, [Define to 1 if you have the `SDL2' library (-lSDL2).])]) LSDL2_IMAGE_LIBS="-lSDL2_image"],
+      [have_sdl2=no LSDL2_IMAGE_LIBS=""])
+
+AS_IF([test "x$with_freetype" != "xno"],
+      [AX_PKG_CHECK_MODULES([LFREETYPE], [freetype2], [], [AC_DEFINE_UNQUOTED(HAVE_FREETYPE, 1, [Define to 1 if you have the `freetype' library (-lfreetype).])])],
+      [have_freetype=no])
+
+AS_IF([test "x$with_fontconfig" != "xno"],
+      [AX_PKG_CHECK_MODULES([LFONTCONFIG], [fontconfig], [], [AC_DEFINE_UNQUOTED(HAVE_FONTCONFIG, 1, [Define to 1 if you have the `fontconfig' library (-lfontconfig).])])],
+      [have_fontconfig=no])
 
 AS_IF([test "x$with_pugixml" != "xno"],
       [[LPUGIXML_LIBS="-lpugixml"] AC_DEFINE_UNQUOTED(HAVE_PUGIXML, 1, [Define to 1 if you have the `pugixml' library (-lpugixml).])],
@@ -77,6 +87,7 @@ AS_IF([test "x$target_os" == "xmingw32"],
       [LGL_LIB="-lGL"])
 
 AC_SUBST(LGL_LIB)
+AC_SUBST(LSDL2_IMAGE_LIBS)
 
 LT_INIT([win32-dll])
 

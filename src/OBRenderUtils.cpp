@@ -23,6 +23,29 @@
 
 #if HAVE_IRRLICHT
 
+#if HAVE_SDL2
+#ifndef SDL_MAIN_HANDLED
+#define SDL_MAIN_HANDLED
+#endif
+
+#include <SDL2/SDL.h>
+
+#include <SDL2/SDL_image.h>
+
+#ifdef vector
+#undef vector
+#endif
+#ifdef pixel
+#undef pixel
+#endif
+#ifdef bool
+#undef bool
+#endif
+
+#include <SDL2/SDL_opengl.h>
+#include <GL/gl.h>
+#endif
+
 namespace OB{
 	OBRenderUtils::OBRenderUtils(OBEngine* eng){
 		this->eng = eng;
@@ -63,6 +86,30 @@ namespace OB{
 		}
 		return false;
 	}
+
+	// STATIC FUNCTIONS
+
+#if HAVE_SDL2
+	void OBRenderUtils::pushScreenCoordinateMatrix(){
+		glPushAttrib(GL_TRANSFORM_BIT);
+		GLint viewport[4];
+		glGetIntegerv(GL_VIEWPORT, viewport);
+		glMatrixMode(GL_PROJECTION);
+		glPushMatrix();
+		glLoadIdentity();
+
+		glOrtho(viewport[0], viewport[2], viewport[1], viewport[3], -1, 1);
+
+		glPopAttrib();
+	}
+
+	void OBRenderUtils::popProjectionMatrix(){
+		glPushAttrib(GL_TRANSFORM_BIT);
+		glMatrixMode(GL_PROJECTION);
+		glPopMatrix();
+		glPopAttrib();
+	}
+#endif
 }
 
 #endif

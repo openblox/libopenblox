@@ -79,6 +79,9 @@ namespace OB{
 #ifndef OB_OBRENDERUTILS
 	class OBRenderUtils;
 #endif
+#ifndef OB_FONTMANAGER
+	class FontManager;
+#endif
 
 #if HAVE_IRRLICHT
 	typedef std::function<void(irr::video::IVideoDriver*)> post_render_func_t;
@@ -425,11 +428,16 @@ namespace OB{
 
 			lua_State* globalState;
 
+#if HAVE_IRRLICHT
+
 #if HAVE_SDL2
 			SDL_Window* sdl_window;
+
+#if HAVE_FONTCONFIG
+			shared_ptr<FontManager> fontManager;
+#endif
 #endif
 
-#if HAVE_IRRLICHT
 		    post_render_func_t custPostRender;
 
 			irr::IrrlichtDevice* irrDev;

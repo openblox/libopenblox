@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 John M. Harris, Jr. <johnmh@openblox.org>
+ * Copyright (C) 2019 John M. Harris, Jr. <johnmh@openblox.org>
  *
  * This file is part of OpenBlox.
  *
@@ -17,32 +17,38 @@
  * along with OpenBlox. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef OB_OBRENDERUTILS
-#define OB_OBRENDERUTILS
+#ifndef OB_FONTMANAGER
+#define OB_FONTMANAGER
 
 #include "oblibconfig.h"
 
 #include "obtype.h"
 #include "mem.h"
 
-#if HAVE_IRRLICHT
+#if HAVE_IRRLICHT && HAVE_SDL2 && HAVE_FONTCONFIG
 #include <irrlicht/irrlicht.h>
+
+struct _FcConfig;
+typedef struct _FcConfig FcConfig;
 
 namespace OB{
 #ifndef OB_OBENGINE
 	class OBEngine;
 #endif
+#ifndef OB_FONT
+	class Font;
+#endif
 
 	/**
-	 * Rendering related utilities and complete hacks
+	 * Font management abstraction
 	 *
 	 * @author John M. Harris, Jr.
-	 * @date November 2018
+	 * @date July 2019
 	 */
-	class OBRenderUtils{
+	class FontManager{
 		public:
-			OBRenderUtils(OBEngine* eng);
-			virtual ~OBRenderUtils();
+			FontManager(OBEngine* eng);
+			virtual ~FontManager();
 
 			/**
 			 * Returns the OBEngine instance
@@ -53,57 +59,43 @@ namespace OB{
 		    OBEngine* getEngine();
 
 			/**
-			 * Prepares the rendering pipeline for 2D rendering.
+			 * Returns the path to a font file, or NULL.
+			 * Make sure to free() the result!
 			 *
+			 * @internal
+			 * @returns path to font file or NULL if this family is not found
 			 * @author John M. Harris, Jr.
 			 */
-			void prepare2DMode();
+			char* _getFontFile(std::string fontFamily);
 
 			/**
-			 * Ends a 2D context
+			 * Returns a font from a given font name.
 			 *
+			 * @returns Font or NULL if no font is found
 			 * @author John M. Harris, Jr.
 			 */
-			void end2DMode();
+			shared_ptr<Font> getFont(std::string fontName, unsigned int fontSize);
 
 			/**
-			 * Save an image of the last frame to a file.
+			 * Returns a "default font" (the system's
+			 * default monospace font) at size 16.
 			 *
-			 * @param file File to write to
+			 * @returns The default font, or NULL if not loadable
 			 * @author John M. Harris, Jr.
 			 */
-			bool saveScreenshot(std::string file);
-
-			/**
-			 * Returns the currently active Irrlicht device, if any.
-			 *
-			 * @returns Irrlicht device
-			 * @author John M. Harris, Jr.
-			 */
-			irr::IrrlichtDevice* getIrrlichtDevice();
-
-			// STATIC FUNCTIONS
-
-#if HAVE_SDL2
-			static void pushScreenCoordinateMatrix();
-
-			static void popProjectionMatrix();
-#endif
-
+			shared_ptr<Font> getDefaultFont();
 		private:
 			OBEngine* eng;
 
-			bool cached2DMode;
+			shared_ptr<Font> defaultFont;
 
-			irr::IrrlichtDevice* irrDev;
-			irr::video::IVideoDriver* irrDriv;
-			irr::scene::ISceneManager* irrSceneMgr;
+			FcConfig* fc_cfg;
 	};
 }
 
-#endif // HAVE_IRRLICHT
+#endif // HAVE_IRRLICHT && HAVE_SDL2 && HAVE_FONTCONFIG
 
-#endif // OB_OBRENDERUTILS
+#endif // OB_FONTMANAGER
 
 // Local Variables:
 // mode: c++

@@ -8,6 +8,8 @@ utility.h \
 OBException.h \
 OBEngine.h \
 OBRenderUtils.h \
+FontManager.h \
+Font.h \
 OBInputEventReceiver.h \
 config.h \
 oblibconfig.h \

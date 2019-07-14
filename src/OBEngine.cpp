@@ -28,6 +28,7 @@
 #include "ClassFactory.h"
 
 #include "OBRenderUtils.h"
+#include "FontManager.h"
 
 #include "lua/OBLua.h"
 
@@ -83,6 +84,14 @@ namespace OB{
 		irrDev = NULL;
 		irrDriv = NULL;
 		irrSceneMgr = NULL;
+
+#if HAVE_SDL2
+		sdl_window = NULL;
+
+#if HAVE_FONTCONFIG
+		fontManager = make_shared<FontManager>(this);
+#endif
+#endif
 #endif
 
 		eventReceiver = new OBInputEventReceiver(this);

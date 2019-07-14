@@ -18,6 +18,8 @@ AssetLocator.cpp \
 PluginManager.cpp \
 OBEngine.cpp \
 OBRenderUtils.cpp \
+FontManager.cpp \
+Font.cpp \
 OBInputEventReceiver.cpp \
 lua/OBLua.cpp \
 lua/OBLua_OBBase.cpp \
@@ -96,8 +98,8 @@ OBSerializer.cpp \
 utility.cpp
 
 # Linker options
-libopenblox_la_LDFLAGS = $(LIRRLICHT_LIBS) $(LSDL2_LIBS) $(LPUGIXML_LIBS) $(LBULLET_LIBS) $(LCURL_LIBS) $(LENET_LIBS) $(LLUA_LIBS)
+libopenblox_la_LDFLAGS = $(LIRRLICHT_LIBS) $(LSDL2_LIBS) $(LSDL2_IMAGE_LIBS) $(LFREETYPE_LIBS) $(LFONTCONFIG_LIBS) $(LPUGIXML_LIBS) $(LBULLET_LIBS) $(LCURL_LIBS) $(LENET_LIBS) $(LLUA_LIBS)
 
 # Compiler options. Here we are adding the include directory
 # to be searched for headers included in the source code.
-libopenblox_la_CPPFLAGS = -I$(top_srcdir)/include $(LSDL2_CFLAGS) $(LBULLET_CFLAGS) $(LCURL_CFLAGS) $(LENET_CFLAGS) $(LLUA_CFLAGS) -std=c++11 -pthread
+libopenblox_la_CPPFLAGS = -I$(top_srcdir)/include $(LSDL2_CFLAGS) $(LFREETYPE_CFLAGS) $(LFONTCONFIG_CFLAGS) $(LBULLET_CFLAGS) $(LCURL_CFLAGS) $(LENET_CFLAGS) $(LLUA_CFLAGS) -std=c++11 -pthread
