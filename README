@@ -16,8 +16,8 @@ we don't use often. Please report them using the issue tracker provided
 at <https://git.openblox.org/openblox/libopenblox/issues>.
 
 If nobody notices quickly, you may also find it useful to discuss the
-issue on one of the OpenBlox mailing lists, best suited to your
-issue. You can find a list of all OpenBlox mailing lists at
+issue on one of the OpenBlox mailing lists, whichever is best suited to
+your issue. You can find a list of all OpenBlox mailing lists at
 https://lists.openblox.org/cgi-bin/mailman/listinfo
 
 You may also get in contact using the Internet Relay Chat protocol.
@@ -44,5 +44,5 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public
-License along with OBus-GitLab. If not, see
+License along with OpenBlox. If not, see
 <https://www.gnu.org/licenses/>.

@@ -35,7 +35,7 @@ and discuss proposed changes on the devel mailing list. Frequent
 contributors may request write access on the same list.
 
 
-SUBMITTING YOUR CHANGES
+SUBMITTING YOUR CHANGES BY EMAIL
 
 To submit a potential change to OpenBlox, send a patch containing your
 changes to the devel mailing list. You will need to subscribe to the
@@ -48,6 +48,14 @@ commit, HEAD~2 for the one before that and so on. This packages the
 patch's commit messages and changes. To send a patch without
 additional remarks, you can use a command like
 `git send-email --to=devel@lists.openblox.org 0001-DESCRIPTION.patch`.
+
+
+SUBMITTING YOUR CHANGES USING GITLAB
+
+Some users may prefer to use a web interface to email. While we highly
+recommend submitting changes by email, we also accept merge requests
+on the GitLab instance we use. Feel free to open a merge request, and
+we will take a look at your request as we see it.
 
 
 COMMITTING CHANGES BY OTHERS
@@ -72,7 +80,7 @@ COMMIT MESSAGE GUIDELINES
   contain separate lines to mention the other authors, like the
   following:
 
-	Co-authored-by: John M. Harris, Jr. <johnmh@openblox.org>
+	Co-authored-by: John M. Harris, Jr. <johnmh@johnmh.me>
 
 - Commit messages should only contain printable UTF-8 characters.
 

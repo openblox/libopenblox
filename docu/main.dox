@@ -6,7 +6,7 @@
 Welcome to the OpenBlox game engine API documentation. Here you will
 find documentation for the C++ side of the OpenBlox engine. If
 you're looking for documentation for the Lua API, please consult
-our <a href="https://wiki.openblox.org/">wiki</a>.
+our <a href="https://docs.openblox.org/">Lua documentation</a>.
 
 The OpenBlox engine is meant to be an easy to use game engine, so
 having good documentation is important to us. If you have any
@@ -22,10 +22,8 @@ with the OpenBlox game engine.
 \code
 #include <openblox.h>
 
-using namespace OB;
-
 int main(){
-	OBEngine* engine = new OBEngine();
+	OB::OBEngine* engine = new OB::OBEngine();
 	engine->init();
 
 	while(engine->isRunning()){
@@ -49,6 +47,5 @@ types used by the Lua API are under the sub namespace 'OB::Type'.
 Normally, you won't be working with anything other than the OBEngine
 class, but some advanced programs have their own Instance classes
 or types, and will need to use those namespaces. Unless it is
-used very heavily, we do not suggest 'using' a namespace, as we have
-done in our short example.
+used very heavily, we do not suggest 'using' a namespace.
 */
