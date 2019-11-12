@@ -44,6 +44,8 @@ namespace OB{
 			OBRenderUtils(OBEngine* eng);
 			virtual ~OBRenderUtils();
 
+			static int stencilMaskDepth;
+
 			/**
 			 * Returns the OBEngine instance
 			 *

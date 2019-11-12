@@ -324,7 +324,15 @@ namespace OB{
 
 		void DataModel::render(){
 			workspace->render();
-			coreGui->render();
+
+			//GUIs
+			shared_ptr<OBRenderUtils> renderUtils = getEngine()->getRenderUtils();
+			if(renderUtils){
+				renderUtils->prepare2DMode();
+				coreGui->render();
+				renderUtils->end2DMode();
+			}
+
 			lighting->render();
 		}
 

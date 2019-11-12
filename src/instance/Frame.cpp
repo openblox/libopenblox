@@ -58,39 +58,61 @@ namespace OB{
 			return clone;
 		}
 
+		void Frame::renderInside(){
+			shared_ptr<Type::Vector2> pos = getAbsolutePosition();
+			shared_ptr<Type::Vector2> sz = getAbsoluteSize();
+			shared_ptr<Type::Vector2> siz = sz->add(pos);
+
+			glRectd(pos->getX(), pos->getY(), siz->getX(), siz->getY());
+		}
+
 		void Frame::render(){
 #if HAVE_IRRLICHT
 			if(Visible){
 				if(irr::IrrlichtDevice* irrDev = getEngine()->getIrrlichtDevice()){
 					if(irr::video::IVideoDriver* irrDriv = irrDev->getVideoDriver()){
-						shared_ptr<OBRenderUtils> renderUtils = getEngine()->getRenderUtils();
-						if(renderUtils){
-							renderUtils->prepare2DMode();
+						shared_ptr<Type::Color3> bgColor = BackgroundColor3;
+						double bgTrans = BackgroundTransparency;
+						shared_ptr<Type::Color3> borderColor = BorderColor3;
+						int borderSize = BorderSizePixel;
+						shared_ptr<Type::Vector2> pos = getAbsolutePosition();
+						shared_ptr<Type::Vector2> sz = getAbsoluteSize();
+						shared_ptr<Type::Vector2> siz = sz->add(pos);
+						double rot = Rotation;
 
-							shared_ptr<Type::Color3> bgColor = BackgroundColor3;
-							double bgTrans = BackgroundTransparency;
-							shared_ptr<Type::Color3> borderColor = BorderColor3;
-							int borderSize = BorderSizePixel;
-							shared_ptr<Type::Vector2> pos = getAbsolutePosition();
-							shared_ptr<Type::Vector2> siz = getAbsoluteSize()->add(pos);
+						double hX = pos->getX() + (sz->getX() / 2);
+						double hY = pos->getY() + (sz->getY() / 2);
 
-							glColor4d(bgColor->getR(), bgColor->getG(), bgColor->getB(), 1 - bgTrans);
+						if(rot != 0){
+							glTranslated(hX, hY, 0);
+							glRotated(rot, 0, 0, 1);
+							glTranslated(-hX, -hY, 0);
+						}
 
-							glRectd(pos->getX(), pos->getY(), siz->getX(), siz->getY());
+						glColor4d(bgColor->getR(), bgColor->getG(), bgColor->getB(), 1 - bgTrans);
 
-							glColor4d(borderColor->getR(), borderColor->getG(), borderColor->getB(), 1 - bgTrans);
-							//Border Top
-							glRectd(pos->getX() - borderSize, pos->getY() - borderSize, siz->getX() + borderSize, pos->getY());
-							//Border Left
-							glRectd(pos->getX() - borderSize, pos->getY() - borderSize, pos->getX(), siz->getY() + borderSize);
-							//Border Right
-							glRectd(siz->getX(), pos->getY() - borderSize, siz->getX() + borderSize, siz->getY() + borderSize);
-							//Border Bottom
-							glRectd(pos->getX() - borderSize, siz->getY(), siz->getX() + borderSize, siz->getY() + borderSize);
+						glRectd(pos->getX(), pos->getY(), siz->getX(), siz->getY());
 
-						    renderUtils->end2DMode();
+						glColor4d(borderColor->getR(), borderColor->getG(), borderColor->getB(), 1 - bgTrans);
+						//Border Top
+						glRectd(pos->getX() - borderSize, pos->getY() - borderSize, siz->getX() + borderSize, pos->getY());
+						//Border Left
+						glRectd(pos->getX() - borderSize, pos->getY() - borderSize, pos->getX(), siz->getY() + borderSize);
+						//Border Right
+						glRectd(siz->getX(), pos->getY() - borderSize, siz->getX() + borderSize, siz->getY() + borderSize);
+						//Border Bottom
+						glRectd(pos->getX() - borderSize, siz->getY(), siz->getX() + borderSize, siz->getY() + borderSize);
 
-							GuiObject::render();
+						setupClipping();
+
+						GuiObject::render();
+
+						undoClipping();
+
+						if(rot != 0){
+							glTranslated(hX, hY, 0);
+							glRotated(-rot, 0, 0, 1);
+							glTranslated(-hX, -hY, 0);
 						}
 					}
 				}

@@ -40,7 +40,13 @@ namespace OB{
 
 				virtual shared_ptr<Type::Vector2> getAbsolutePosition();
 				virtual shared_ptr<Type::Vector2> getAbsoluteSize();
+				virtual double getAbsoluteRotation();
 				virtual struct _ob_rect getAbsoluteClippingArea();
+
+				virtual void setupClipping();
+				virtual void undoClipping();
+
+				virtual void renderInside();
 				virtual void render();
 
 				virtual bool isActive();
@@ -63,6 +69,9 @@ namespace OB{
 				virtual void setVisible(bool visible);
 				virtual int getZIndex();
 				virtual void setZIndex(int zIndex);
+				virtual double getRotation();
+				virtual void setRotation(double rotation);
+
 
 #if HAVE_ENET
 				virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
@@ -74,6 +83,7 @@ namespace OB{
 
 				int calculateBackgroundAlpha();
 
+				DECLARE_LUA_METHOD(getAbsoluteRotation);
 				DECLARE_LUA_METHOD(getActive);
 				DECLARE_LUA_METHOD(setActive);
 				DECLARE_LUA_METHOD(getBackgroundColor3);
@@ -94,6 +104,8 @@ namespace OB{
 				DECLARE_LUA_METHOD(setVisible);
 				DECLARE_LUA_METHOD(getZIndex);
 				DECLARE_LUA_METHOD(setZIndex);
+				DECLARE_LUA_METHOD(getRotation);
+				DECLARE_LUA_METHOD(setRotation);
 
 				static void register_lua_property_getters(lua_State* L);
 				static void register_lua_property_setters(lua_State* L);
@@ -110,6 +122,7 @@ namespace OB{
 				shared_ptr<Type::UDim2> Size;
 				bool Visible;
 				int ZIndex;
+				double Rotation;
 		};
 	}
 }

@@ -68,6 +68,7 @@ namespace OB{
 			Size = Position;
 			Visible = true;
 			ZIndex = 1;
+			Rotation = 0;
 		}
 
 		GuiObject::~GuiObject(){}
@@ -81,8 +82,28 @@ namespace OB{
 		}
 
 		bool GuiObject::containsPoint(shared_ptr<Type::Vector2> p){
+			double rotAngle = Rotation;
+
 			double pX = p->getX();
 			double pY = p->getY();
+
+			if(rotAngle != 0){
+				shared_ptr<Type::Vector2> sz = getAbsoluteSize();
+				double offX = sz->getX();
+				double offY = sz->getY();
+
+			    float s = sin(rotAngle);
+				float c = cos(rotAngle);
+
+				pX = pX - offX;
+				pY = pY - offY;
+
+				pX = pX * c - pY * s;
+				pY = pX + s + pY * c;
+
+				pX = pX + offX;
+				pY = pY + offY;
+			}
 
 			shared_ptr<Type::Vector2> pos = getAbsolutePosition();
 			double posX = pos->getX();
@@ -133,12 +154,25 @@ namespace OB{
 			return seed;
 		}
 
+	    double GuiObject::getAbsoluteRotation(){
+			double myRot = Rotation;
+
+			if(Parent){// Sanity check, really.
+				if(shared_ptr<GuiObject> pgo = dynamic_pointer_cast<GuiObject>(Parent)){
+					myRot = myRot + pgo->getAbsoluteRotation();
+				}
+			}
+
+			return myRot;
+		}
+
 		struct _ob_rect GuiObject::getAbsoluteClippingArea(){
 			struct _ob_rect clipArea;
 
 #if HAVE_IRRLICHT
 			shared_ptr<Type::Vector2> pos = getAbsolutePosition();
-			shared_ptr<Type::Vector2> siz = getAbsoluteSize()->add(pos);
+			shared_ptr<Type::Vector2> sz = getAbsoluteSize();
+			shared_ptr<Type::Vector2> siz = sz->add(pos);
 
 			if(ClipsDescendants){
 				clipArea.x1 = pos->getX();
@@ -185,38 +219,77 @@ namespace OB{
 #endif
 		}
 
-		void GuiObject::render(){
+		void GuiObject::setupClipping(){
 #if HAVE_IRRLICHT
-			struct _ob_rect clipArea = getAbsoluteClippingArea();
 			bool doesClip = ClipsDescendants;
 
-			std::vector<shared_ptr<GuiBase2d>> renderableKids = getRenderableChildren();
+			if(doesClip){
+			    if(OBRenderUtils::stencilMaskDepth++ == 0){
+					glEnable(GL_STENCIL_TEST);
+					glStencilMask(0xFF);
+					glClear(GL_STENCIL_BUFFER_BIT);
+				}
+
+				glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+				glDepthMask(GL_FALSE);
+				glStencilFunc(GL_ALWAYS, OBRenderUtils::stencilMaskDepth, OBRenderUtils::stencilMaskDepth);
+				glStencilOp(GL_INCR, GL_INCR, GL_INCR);
+
+				renderInside();
+
+				glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+				glDepthMask(GL_TRUE);
+				glStencilFunc(GL_EQUAL, OBRenderUtils::stencilMaskDepth, OBRenderUtils::stencilMaskDepth);
+				glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+			}
+#endif
+		}
+
+		void GuiObject::undoClipping(){
+#if HAVE_IRRLICHT
+			bool doesClip = ClipsDescendants;
+
+			if(doesClip){
+				if(OBRenderUtils::stencilMaskDepth > 0){
+					OBRenderUtils::stencilMaskDepth--;
+					if(OBRenderUtils::stencilMaskDepth == 0){
+						glDisable(GL_STENCIL_TEST);
+					}else{
+						glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+						glDepthMask(GL_FALSE);
+						glStencilFunc(GL_ALWAYS, OBRenderUtils::stencilMaskDepth, OBRenderUtils::stencilMaskDepth);
+						glStencilOp(GL_DECR, GL_DECR, GL_DECR);
+
+						renderInside();
+
+						glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+						glDepthMask(GL_TRUE);
+						glStencilFunc(GL_EQUAL, OBRenderUtils::stencilMaskDepth, OBRenderUtils::stencilMaskDepth);
+						glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+					}
+				}
+			}
+#endif
+		}
+
+		void GuiObject::renderInside(){
+#if HAVE_IRRLICHT
+			shared_ptr<Type::Vector2> pos = getAbsolutePosition();
+			shared_ptr<Type::Vector2> siz = getAbsoluteSize()->add(pos);
+
+			glRectd(pos->getX(), pos->getY(), siz->getX(), siz->getY());
+#endif
+		}
+
+		void GuiObject::render(){
+#if HAVE_IRRLICHT
+		    std::vector<shared_ptr<GuiBase2d>> renderableKids = getRenderableChildren();
 
 			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != renderableKids.size(); i++){
 				shared_ptr<GuiBase2d> kid = renderableKids[i];
 				if(kid){
-					if(doesClip){
-						int x1 = clipArea.x1;
-						int y1 = clipArea.y1;
-						if(irr::IrrlichtDevice* irrDev = getEngine()->getIrrlichtDevice()){
-							if(irr::video::IVideoDriver* irrDriv = irrDev->getVideoDriver()){
-								int vpH = irrDriv->getViewPort().getHeight();
-								int y2 = clipArea.y2;
-								glEnable(GL_SCISSOR_TEST);
-								glScissor(x1, vpH - y2, clipArea.x2 - x1, y2 - y1);
-							}
-						}
-					}
 					kid->render();
-					if(doesClip){
-						glDisable(GL_SCISSOR_TEST);
-					}
 				}
-			}
-
-			shared_ptr<OBRenderUtils> renderUtils = getEngine()->getRenderUtils();
-			if(renderUtils){
-			    renderUtils->end2DMode();
 			}
 #endif
 		}
@@ -367,6 +440,19 @@ namespace OB{
 			}
 		}
 
+	    double GuiObject::getRotation(){
+			return Rotation;
+		}
+
+		void GuiObject::setRotation(double rot){
+			if(Rotation != rot){
+				Rotation = rot;
+
+				REPLICATE_PROPERTY_CHANGE(Rotation);
+				propertyChanged("Rotation");
+			}
+		}
+
 #if HAVE_ENET
 		void GuiObject::replicateProperties(shared_ptr<NetworkReplicator> peer){
 			Instance::replicateProperties(peer);
@@ -381,11 +467,13 @@ namespace OB{
 			peer->sendSetPropertyPacket(netId, "Size", make_shared<Type::VarWrapper>(Size));
 			peer->sendSetPropertyPacket(netId, "Visible", make_shared<Type::VarWrapper>(Visible));
 			peer->sendSetPropertyPacket(netId, "ZIndex", make_shared<Type::VarWrapper>(ZIndex));
+			peer->sendSetPropertyPacket(netId, "Rotation", make_shared<Type::VarWrapper>(Rotation));
 		}
 #endif
 
 		std::map<std::string, _PropertyInfo> GuiObject::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = GuiBase2d::getProperties();
+			propMap["AbsoluteRotation"] = {"double", true, true, false};
 			propMap["Active"] = {"bool", false, true, true};
 			propMap["BackgroundColor3"] = {"Color3", false, true, true};
 			propMap["BackgroundTransparency"] = {"double", false, true, true};
@@ -396,11 +484,15 @@ namespace OB{
 			propMap["Size"] = {"UDim2", false, true, true};
 			propMap["Visible"] = {"bool", false, true, true};
 			propMap["ZIndex"] = {"int", false, true, true};
+			propMap["Rotation"] = {"double", false, true, true};
 
 			return propMap;
 		}
 
 		shared_ptr<Type::VarWrapper> GuiObject::getProperty(std::string prop){
+			if(prop  == "AbsoluteRotation"){
+				return make_shared<Type::VarWrapper>(getAbsoluteRotation());
+			}
 			if(prop == "Active"){
 				return make_shared<Type::VarWrapper>(isActive());
 			}
@@ -430,6 +522,9 @@ namespace OB{
 			}
 			if(prop == "ZIndex"){
 				return make_shared<Type::VarWrapper>(getZIndex());
+			}
+			if(prop == "Rotation"){
+				return make_shared<Type::VarWrapper>(getRotation());
 			}
 
 			return GuiBase2d::getProperty(prop);
@@ -476,6 +571,10 @@ namespace OB{
 				setZIndex(val->asInt());
 				return;
 			}
+			if(prop == "Rotation"){
+				setRotation(val->asDouble());
+				return;
+			}
 
 			Instance::setProperty(prop, val);
 		}
@@ -488,6 +587,21 @@ namespace OB{
 			}else{
 				return (255 / BackgroundTransparency) - 255;
 			}
+		}
+
+		int GuiObject::lua_getAbsoluteRotation(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
+			if(inst){
+				shared_ptr<GuiObject> instGO = dynamic_pointer_cast<GuiObject>(inst);
+				if(instGO){
+					lua_pushnumber(L, instGO->getAbsoluteRotation());
+					return 1;
+				}
+			}
+
+			lua_pushnil(L);
+			return 1;
 		}
 
 		int GuiObject::lua_getActive(lua_State* L){
@@ -800,10 +914,40 @@ namespace OB{
 			return 0;
 		}
 
+		int GuiObject::lua_getRotation(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
+			if(inst){
+				shared_ptr<GuiObject> instGO = dynamic_pointer_cast<GuiObject>(inst);
+				if(instGO){
+					lua_pushnumber(L, instGO->getRotation());
+					return 1;
+				}
+			}
+
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int GuiObject::lua_setRotation(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
+			if(inst){
+				shared_ptr<GuiObject> instGO = dynamic_pointer_cast<GuiObject>(inst);
+				if(instGO){
+				    double newV = luaL_checknumber(L, 2);
+					instGO->setRotation(newV);
+				}
+			}
+
+			return 0;
+		}
+
 		void GuiObject::register_lua_property_setters(lua_State* L){
 			GuiBase2d::register_lua_property_setters(L);
 
 			luaL_Reg properties[] = {
+				{"AbsoluteRotation", lua_readOnlyProperty},
 				{"Active", lua_setActive},
 				{"BackgroundColor3", lua_setBackgroundColor3},
 				{"BackgroundTransparency", lua_setBackgroundTransparency},
@@ -814,6 +958,7 @@ namespace OB{
 				{"Size", lua_setSize},
 				{"Visible", lua_setVisible},
 				{"ZIndex", lua_setZIndex},
+				{"Rotation", lua_setRotation},
 				{NULL, NULL}
 			};
 			luaL_setfuncs(L, properties, 0);
@@ -823,6 +968,7 @@ namespace OB{
 			GuiBase2d::register_lua_property_getters(L);
 
 			luaL_Reg properties[] = {
+				{"AbsoluteRotation", lua_getAbsoluteRotation},
 				{"Active", lua_getActive},
 				{"BackgroundColor3", lua_getBackgroundColor3},
 				{"BackgroundTransparency", lua_getBackgroundTransparency},
@@ -832,7 +978,7 @@ namespace OB{
 				{"Position", lua_getPosition},
 				{"Size", lua_getSize},
 				{"Visible", lua_getVisible},
-				{"ZIndex", lua_getZIndex},
+				{"Rotation", lua_getRotation},
 				{NULL, NULL}
 			};
 			luaL_setfuncs(L, properties, 0);

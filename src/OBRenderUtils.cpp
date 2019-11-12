@@ -47,6 +47,8 @@
 #endif
 
 namespace OB{
+	int OBRenderUtils::stencilMaskDepth = 0;
+
 	OBRenderUtils::OBRenderUtils(OBEngine* eng){
 		this->eng = eng;
 		irrDev = eng->getIrrlichtDevice();
