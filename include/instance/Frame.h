@@ -29,7 +29,6 @@ namespace OB{
 				Frame(OBEngine* eng);
 				virtual ~Frame();
 
-				virtual void renderInside();
 				virtual void render();
 
 				DECLARE_CLASS(Frame);

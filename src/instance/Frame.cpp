@@ -58,14 +58,6 @@ namespace OB{
 			return clone;
 		}
 
-		void Frame::renderInside(){
-			shared_ptr<Type::Vector2> pos = getAbsolutePosition();
-			shared_ptr<Type::Vector2> sz = getAbsoluteSize();
-			shared_ptr<Type::Vector2> siz = sz->add(pos);
-
-			glRectd(pos->getX(), pos->getY(), siz->getX(), siz->getY());
-		}
-
 		void Frame::render(){
 #if HAVE_IRRLICHT
 			if(Visible){
