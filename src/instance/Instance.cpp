@@ -600,6 +600,40 @@ namespace OB{
 				}
 			}
 		}
+#endif
+
+		void Instance::serializeThis(BitStream* stream, shared_ptr<Instance> model_ptr){}
+
+		void Instance::serialize(BitStream* stream, shared_ptr<Instance> model){
+			if(Archivable){
+				serializeThis(stream, model);
+			}
+		}
+
+		void Instance::serializeChildren(BitStream* stream, shared_ptr<Instance> model){
+			std::vector<shared_ptr<Instance>> kids = children;
+
+			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != kids.size(); i++){
+				shared_ptr<Instance> kid = kids[i];
+				if(kid){
+					if(kid->Archivable){
+						kid->serialize(stream, model);
+					}
+				}
+			}
+		}
+
+		void Instance::serializeProperties(BitStream* stream, shared_ptr<Instance> model){}
+
+		void Instance::deserializeCreate(BitStream* stream){}
+
+		void Instance::deserialize(BitStream* stream){
+			deserializeCreate(stream);
+
+			deserializeProperties(stream);
+		}
+
+		void Instance::deserializeProperties(BitStream* stream){}
 
 		std::string Instance::fixedSerializedID(){
 			return "";
@@ -616,7 +650,6 @@ namespace OB{
 
 			return serializer->GetID(shared_from_this());
 		}
-#endif
 
 		std::map<std::string, _PropertyInfo> Instance::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap;

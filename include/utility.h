@@ -61,6 +61,13 @@ namespace OB{
 	 */
 	bool ob_str_startsWith(std::string str, std::string prefix);
 
+	/**
+	 * Returns true if str ends with suffix.
+	 *
+	 * @author John M. Harris, Jr.
+	 */
+	bool ob_str_endsWith(std::string str, std::string suffix);
+
 	enum empties_t{
 		empties_ok,
 		no_empties

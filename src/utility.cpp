@@ -48,7 +48,17 @@ namespace OB{
 	}
 
 	bool ob_str_startsWith(std::string str, std::string prefix){
+		if(prefix.size() > str.size()){
+			return false;
+		}
 		return std::equal(prefix.begin(), prefix.end(), str.begin());
+	}
+
+	bool ob_str_endsWith(std::string str, std::string suffix){
+		if(suffix.size() > str.size()){
+			return false;
+		}
+		return std::equal(suffix.rbegin(), suffix.rend(), str.rbegin());
 	}
 
 	// Windows compat

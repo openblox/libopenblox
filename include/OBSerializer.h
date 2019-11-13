@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 John M. Harris, Jr. <johnmh@openblox.org>
+ * Copyright (C) 2017-2019 John M. Harris, Jr. <johnmh@openblox.org>
  *
  * This file is part of OpenBlox.
  *
@@ -29,9 +29,16 @@
 
 // We're on version 1 of the XML format
 #define OB_SERIALIZER_XML_CURRENT_VERSION_ID 1
+// We're on version 1 of the binary format
+#define OB_SERIALIZER_BINARY_CURRENT_VERSION_ID 1
 
 namespace OB{
+#ifndef OB_OBENGINE
 	class OBEngine;
+#endif
+#ifndef OB_BITSTREAM
+	class BitStream;
+#endif
 
 	namespace Instance{
 		class Instance;
@@ -41,16 +48,34 @@ namespace OB{
 		public:
 			OBSerializer(OBEngine* eng);
 
+			// XML Format
 #if HAVE_PUGIXML
+			shared_ptr<Instance::Instance> LoadModelFromMemory_XML(char* buf, size_t size);
+			shared_ptr<Instance::Instance> LoadModel_XML(std::string resURI);
+			bool LoadFromMemory_XML(char* buf, size_t size);
+			bool Load_XML(std::string resURI);
+			bool SaveModel_XML(shared_ptr<Instance::Instance> model, std::string file);
+			std::string SaveModelInMemory_XML(shared_ptr<Instance::Instance> model);
+			bool Save_XML(std::string file);
+			std::string SaveInMemory_XML();
+#endif
+
+			// Binary format
+			shared_ptr<Instance::Instance> LoadModelFromMemory_binary(char* buf, size_t size);
+			shared_ptr<Instance::Instance> LoadModel_binary(std::string resURI);
+			bool LoadFromMemory_binary(char* buf, size_t size);
+			bool Load_binary(std::string resURI);
+			bool SaveModel_binary(shared_ptr<Instance::Instance> model, std::string file);
+		    BitStream* SaveModelInMemory_binary(shared_ptr<Instance::Instance> model);
+			bool Save_binary(std::string file);
+			BitStream* SaveInMemory_binary();
+
+			bool IsBinaryFormat(char* buf, size_t size);
+
 			shared_ptr<Instance::Instance> LoadModelFromMemory(char* buf, size_t size);
 			shared_ptr<Instance::Instance> LoadModel(std::string resURI);
 			bool LoadFromMemory(char* buf, size_t size);
 			bool Load(std::string resURI);
-			bool SaveModel(shared_ptr<Instance::Instance> model, std::string file);
-			std::string SaveModelInMemory(shared_ptr<Instance::Instance> model);
-			bool Save(std::string file);
-			std::string SaveInMemory();
-#endif
 
 			std::string GetID(shared_ptr<Instance::Instance> inst);
 			bool HasID(shared_ptr<Instance::Instance> inst);

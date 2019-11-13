@@ -29,7 +29,9 @@
 #include <cstring>
 
 namespace OB{
+#ifndef OB_OBENGINE
 	class OBEngine;
+#endif
 
 	namespace Type{
 		class UDim;

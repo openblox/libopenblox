@@ -38,6 +38,10 @@
 #include "instance/ReplicatedFirst.h"
 #include "instance/UserInputService.h"
 
+#if HAVE_IRRLICHT
+#include "GL/gl.h"
+#endif
+
 namespace OB{
 	namespace Instance{
 		DEFINE_CLASS(DataModel, false, false, ServiceProvider){
@@ -323,17 +327,23 @@ namespace OB{
 		}
 
 		void DataModel::render(){
+#if HAVE_IRRLICHT
 			workspace->render();
 
 			//GUIs
 			shared_ptr<OBRenderUtils> renderUtils = getEngine()->getRenderUtils();
 			if(renderUtils){
 				renderUtils->prepare2DMode();
+
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 				coreGui->render();
 				renderUtils->end2DMode();
 			}
 
 			lighting->render();
+#endif
 		}
 
 		int DataModel::lua_Shutdown(lua_State* L){

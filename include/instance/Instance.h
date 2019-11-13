@@ -477,10 +477,17 @@ namespace OB{
 				virtual void deserializeCreate(pugi::xml_node thisNode);
 				virtual void deserialize(pugi::xml_node thisNode);
 				virtual void deserializeProperties(pugi::xml_node thisNode);
+#endif
+			    virtual void serializeThis(BitStream* stream, shared_ptr<Instance> model);
+				virtual void serialize(BitStream* stream, shared_ptr<Instance> model);
+				virtual void serializeChildren(BitStream* stream, shared_ptr<Instance> model);
+				virtual void serializeProperties(BitStream* stream, shared_ptr<Instance> model);
+				virtual void deserializeCreate(BitStream* stream);
+				virtual void deserialize(BitStream* stream);
+				virtual void deserializeProperties(BitStream* stream);
 
 				virtual std::string fixedSerializedID();
 				virtual std::string serializedID();
-#endif
 
 				virtual std::map<std::string, _PropertyInfo> getProperties();
 

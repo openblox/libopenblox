@@ -268,10 +268,15 @@ namespace OB{
 
             curl = curl_easy_init();
             if(curl){
+				long curl_protos = CURLPROTO_FTP | CURLPROTO_FTPS | CURLPROTO_GOPHER | CURLPROTO_HTTP | CURLPROTO_HTTPS | CURLPROTO_SCP | CURLPROTO_SFTP | CURLPROTO_SMB | CURLPROTO_SMBS | CURLPROTO_TFTP;
+				if(allowFile){
+					curl_protos = CURLPROTO_FILE | curl_protos;
+				}
+
                 curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
                 curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1);
                 curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
-                curl_easy_setopt(curl, CURLOPT_PROTOCOLS, CURLPROTO_FTP | CURLPROTO_FTPS | CURLPROTO_GOPHER | CURLPROTO_HTTP | CURLPROTO_HTTPS | CURLPROTO_SCP | CURLPROTO_SFTP | CURLPROTO_SMB | CURLPROTO_SMBS | CURLPROTO_TFTP);
+                curl_easy_setopt(curl, CURLOPT_PROTOCOLS, curl_protos);
 				curl_easy_setopt(curl, CURLOPT_DEFAULT_PROTOCOL, "https");
                 curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, _ob_assetlocator_write_data);
                 curl_easy_setopt(curl, CURLOPT_WRITEDATA, body);
