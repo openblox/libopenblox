@@ -35,9 +35,7 @@ namespace OB{
 				ReplicatedFirst(OBEngine* eng);
 				virtual ~ReplicatedFirst();
 
-#if HAVE_PUGIXML
 				virtual std::string fixedSerializedID();
-#endif
 
 				DECLARE_CLASS(ReplicatedFirst);
 		};

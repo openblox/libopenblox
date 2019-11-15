@@ -40,11 +40,9 @@ namespace OB{
 
 		Players::~Players(){}
 
-#if HAVE_PUGIXML
 		std::string Players::fixedSerializedID(){
 			return "Players";
 		}
-#endif
 
 		shared_ptr<Instance> Players::cloneImpl(){
 			return NULL;

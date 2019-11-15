@@ -37,9 +37,7 @@ namespace OB{
 				UserInputService(OBEngine* eng);
 				virtual ~UserInputService();
 
-#if HAVE_PUGIXML
 				virtual std::string fixedSerializedID();
-#endif
 
 				virtual void render();
 

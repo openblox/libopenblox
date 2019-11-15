@@ -62,11 +62,9 @@ namespace OB{
 
 		Lighting::~Lighting(){}
 
-#if HAVE_PUGIXML
 		std::string Lighting::fixedSerializedID(){
 			return "Lighting";
 		}
-#endif
 
 		shared_ptr<Instance> Lighting::cloneImpl(){
 			return NULL;

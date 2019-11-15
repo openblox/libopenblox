@@ -76,11 +76,9 @@ namespace OB{
 			return NULL;
 		}
 
-#if HAVE_PUGIXML
 		std::string ContentProvider::fixedSerializedID(){
 			return "ContentProvider";
 		}
-#endif
 
 		int ContentProvider::lua_Preload(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);

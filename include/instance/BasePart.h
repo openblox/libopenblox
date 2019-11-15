@@ -76,7 +76,7 @@ namespace OB{
 				 * @param peer Peer
 				 * @author John M. Harris, Jr.
 				 */
-			virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
+				virtual void replicateProperties(shared_ptr<NetworkReplicator> peer);
 #endif
 
 				virtual std::map<std::string, _PropertyInfo> getProperties();

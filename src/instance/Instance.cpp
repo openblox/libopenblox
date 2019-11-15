@@ -1155,6 +1155,8 @@ namespace OB{
 
 			if(inst){
 				lua_pushstring(L, inst->toString().c_str());
+			}else{
+				lua_pushnil(L);
 			}
 
 			return 1;

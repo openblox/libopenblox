@@ -37,9 +37,7 @@ namespace OB{
 				LogService(OBEngine* eng);
 				virtual ~LogService();
 
-#if HAVE_PUGIXML
 				virtual std::string fixedSerializedID();
-#endif
 
 				void postLog(std::string message, Enum::MessageType messageType);
 

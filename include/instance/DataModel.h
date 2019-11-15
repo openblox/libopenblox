@@ -189,8 +189,9 @@ namespace OB{
 
 #if HAVE_PUGIXML
 				virtual void deserialize(pugi::xml_node thisNode);
-			    virtual std::string fixedSerializedID();
 #endif
+
+			    virtual std::string fixedSerializedID();
 
 				virtual std::map<std::string, _PropertyInfo> getProperties();
 				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);

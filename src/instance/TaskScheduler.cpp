@@ -56,11 +56,9 @@ namespace OB{
 			return -1;
 		}
 
-#if HAVE_PUGIXML
 		std::string TaskScheduler::fixedSerializedID(){
 			return "TaskScheduler";
 		}
-#endif
 
 		std::map<std::string, _PropertyInfo> TaskScheduler::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();

@@ -37,11 +37,9 @@ namespace OB{
 
 		StarterGui::~StarterGui(){}
 
-#if HAVE_PUGIXML
 		std::string StarterGui::fixedSerializedID(){
 		    return "StarterGui";
 		}
-#endif
 
 		shared_ptr<Instance> StarterGui::cloneImpl(){
 			return NULL;

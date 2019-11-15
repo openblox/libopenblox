@@ -32,11 +32,9 @@ namespace OB{
 
 		ReplicatedStorage::~ReplicatedStorage(){}
 
-#if HAVE_PUGIXML
 		std::string ReplicatedStorage::fixedSerializedID(){
 		    return "ReplicatedStorage";
 		}
-#endif
 
 		shared_ptr<Instance> ReplicatedStorage::cloneImpl(){
 			return NULL;

@@ -53,11 +53,9 @@ namespace OB{
 
 		UserInputService::~UserInputService(){}
 
-#if HAVE_PUGIXML
 		std::string UserInputService::fixedSerializedID(){
 		    return "UserInputService";
 		}
-#endif
 
 		void UserInputService::render(){
 			mouseDeltaX = 0;

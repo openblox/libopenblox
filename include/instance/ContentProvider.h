@@ -43,9 +43,7 @@ namespace OB{
 				void Load(std::string url);
 				char* GetAsset(std::string url);
 
-#if HAVE_PUGIXML
 				virtual std::string fixedSerializedID();
-#endif
 
 				DECLARE_LUA_METHOD(Preload);
 				DECLARE_LUA_METHOD(Load);

@@ -44,9 +44,7 @@ namespace OB{
 
 				void broadcast(enet_uint8 channel, BitStream &bs);
 
-#if HAVE_PUGIXML
 				virtual std::string fixedSerializedID();
-#endif
 
 				DECLARE_LUA_METHOD(Start);
 				DECLARE_LUA_METHOD(Stop);

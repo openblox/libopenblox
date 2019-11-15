@@ -99,11 +99,9 @@ namespace OB{
 			tickChildren();
 		}
 
-#if HAVE_PUGIXML
 		std::string RunService::fixedSerializedID(){
 			return "RunService";
 		}
-#endif
 
 		void RunService::register_lua_events(lua_State* L){
 			Instance::register_lua_events(L);

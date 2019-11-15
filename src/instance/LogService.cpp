@@ -46,11 +46,9 @@ namespace OB{
 
 		LogService::~LogService(){}
 
-#if HAVE_PUGIXML
 		std::string LogService::fixedSerializedID(){
 			return "LogService";
 		}
-#endif
 
 		shared_ptr<Instance> LogService::cloneImpl(){
 			return NULL;

@@ -38,9 +38,7 @@ namespace OB{
 				int getNumSleepingJobs();
 				int getNumWaitingJobs();
 
-#if HAVE_PUGIXML
 				virtual std::string fixedSerializedID();
-#endif
 
 				virtual std::map<std::string, _PropertyInfo> getProperties();
 				virtual shared_ptr<Type::VarWrapper> getProperty(std::string prop);

@@ -163,11 +163,9 @@ namespace OB{
 		}
 #endif
 
-#if HAVE_PUGIXML
 		std::string Workspace::fixedSerializedID(){
 		    return "Workspace";
 		}
-#endif
 
 		std::map<std::string, _PropertyInfo> Workspace::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();

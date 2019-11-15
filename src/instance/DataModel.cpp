@@ -178,30 +178,30 @@ namespace OB{
 				}
 			}else{
 				switch(netId){
-				case OB_NETID_DATAMODEL: {
-					return std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
-				}
-				case OB_NETID_WORKSPACE: {
-					return workspace;
-				}
-				case OB_NETID_LIGHTING: {
-					return lighting;
-				}
-				case OB_NETID_REPLICATEDFIRST: {
-					return replicatedFirst;
-				}
-				case OB_NETID_REPLICATEDSTORAGE: {
-					return GetService("ReplicatedStorage");
-				}
-				case OB_NETID_STARTERGUI: {
-					return GetService("StarterGui");
-				}
-				case OB_NETID_COREGUI: {
-					return coreGui;
-				}
-				case OB_NETID_PLAYERS: {
-					return players;
-				}
+					case OB_NETID_DATAMODEL: {
+						return std::enable_shared_from_this<OB::Instance::Instance>::shared_from_this();
+					}
+					case OB_NETID_WORKSPACE: {
+						return workspace;
+					}
+					case OB_NETID_LIGHTING: {
+						return lighting;
+					}
+					case OB_NETID_REPLICATEDFIRST: {
+						return replicatedFirst;
+					}
+					case OB_NETID_REPLICATEDSTORAGE: {
+						return GetService("ReplicatedStorage");
+					}
+					case OB_NETID_STARTERGUI: {
+						return GetService("StarterGui");
+					}
+					case OB_NETID_COREGUI: {
+						return coreGui;
+					}
+					case OB_NETID_PLAYERS: {
+						return players;
+					}
 				}
 			}
 
@@ -255,7 +255,7 @@ namespace OB{
 			netIdNextIdx++;
 
 			if(netIdNextIdx >= ULONG_MAX){
-				netIdNextIdx = OB_NETID_UNASSIGNED;
+			    goto nextIsUnassigned;
 			}
 
 			return netIdNextIdx;
@@ -290,11 +290,11 @@ namespace OB{
 		void DataModel::deserialize(pugi::xml_node thisNode){
 			Instance::deserialize(thisNode);
 		}
+#endif
 
 		std::string DataModel::fixedSerializedID(){
 		    return "game";
 		}
-#endif
 
 		std::map<std::string, _PropertyInfo> DataModel::getProperties(){
 			std::map<std::string, _PropertyInfo> propMap = Instance::getProperties();

@@ -33,7 +33,7 @@ namespace OB{
 		 *
 		 * @author John M. Harris, Jr.
 		 */
-		class RemoteEvent: public Instance {
+		class RemoteEvent: public Instance{
 			public:
 			    RemoteEvent(OBEngine* eng);
 				virtual ~RemoteEvent();

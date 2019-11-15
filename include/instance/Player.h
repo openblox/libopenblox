@@ -33,10 +33,10 @@ namespace OB{
 				Player(OBEngine* eng);
 				virtual ~Player();
 
-				#if HAVE_ENET
+#if HAVE_ENET
 				void setServerReplicator(shared_ptr<ServerReplicator> sR);
 				shared_ptr<ServerReplicator> getServerReplicator();
-				#endif
+#endif
 
 				DECLARE_CLASS(Player);
 

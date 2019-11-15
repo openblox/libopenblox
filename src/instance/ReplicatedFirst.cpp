@@ -33,11 +33,9 @@ namespace OB{
 
 		ReplicatedFirst::~ReplicatedFirst(){}
 
-#if HAVE_PUGIXML
 		std::string ReplicatedFirst::fixedSerializedID(){
 			return "ReplicatedFirst";
 		}
-#endif
 
 		shared_ptr<Instance> ReplicatedFirst::cloneImpl(){
 			return NULL;

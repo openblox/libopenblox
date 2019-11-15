@@ -120,11 +120,9 @@ namespace OB{
 			return GuiBase2d::getProperty(prop);
 		}
 
-#if HAVE_PUGIXML
 		std::string CoreGui::fixedSerializedID(){
 			return "CoreGui";
 		}
-#endif
 
 		int CoreGui::lua_getEnabled(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);

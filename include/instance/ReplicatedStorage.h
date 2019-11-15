@@ -35,9 +35,7 @@ namespace OB{
 				ReplicatedStorage(OBEngine* eng);
 				virtual ~ReplicatedStorage();
 
-#if HAVE_PUGIXML
 				virtual std::string fixedSerializedID();
-#endif
 
 				DECLARE_CLASS(ReplicatedStorage);
 		};
