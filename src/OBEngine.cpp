@@ -251,7 +251,10 @@ namespace OB{
 
 			p.WindowSize = irr::core::dimension2d<irr::u32>(startWidth, startHeight);
 			p.Vsync = vsync;
-			p.WindowId = windowId;
+			if(windowId){
+				p.WindowId = windowId;
+				p.IgnoreInput = true;
+			}
 
 			p.LoggingLevel = irr::ELL_WARNING;
 
