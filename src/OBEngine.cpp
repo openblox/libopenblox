@@ -163,7 +163,7 @@ namespace OB{
 			amdgpu_workaround = true;
 		}
 
-		if(!windowId || amdgpu_workaround){
+		if(!windowId && !amdgpu_workaround){
 			SDL_SetMainReady();
 			SDL_Init(SDL_INIT_VIDEO);
 
