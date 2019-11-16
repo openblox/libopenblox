@@ -156,7 +156,7 @@ namespace OB{
 #if HAVE_SDL2
 		bool amdgpu_workaround = false;
 
-		FILE* fd = popen("lsmod | grep module_name", "r");
+		FILE* fd = popen("lsmod | grep amdgpu", "r");
 
 		char buf[16];
 		if(fread(buf, 1, sizeof(buf), fd) > 0){
