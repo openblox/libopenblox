@@ -154,7 +154,16 @@ namespace OB{
 		logger->log(verString);
 
 #if HAVE_SDL2
-		if(!windowId){
+		bool amdgpu_workaround = false;
+
+		FILE* fd = popen("lsmod | grep module_name", "r");
+
+		char buf[16];
+		if(fread(buf, 1, sizeof(buf), fd) > 0){
+			amdgpu_workaround = true;
+		}
+
+		if(!windowId || amdgpu_workaround){
 			SDL_SetMainReady();
 			SDL_Init(SDL_INIT_VIDEO);
 
@@ -250,11 +259,13 @@ namespace OB{
 			p.DriverType = irr::video::EDT_OPENGL;
 
 			p.WindowSize = irr::core::dimension2d<irr::u32>(startWidth, startHeight);
-			p.Vsync = vsync;
+			//p.Vsync = vsync;
 			if(windowId){
 				p.WindowId = windowId;
 				p.IgnoreInput = true;
 			}
+			p.Stencilbuffer = true;
+			p.WithAlphaChannel = true;
 
 			p.LoggingLevel = irr::ELL_WARNING;
 
