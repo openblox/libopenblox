@@ -8,7 +8,7 @@ build:
     - ./autoconf.sh
     - mkdir artifacts
     - ./configure --prefix=$(readlink -f artifacts)
-    - make
+    - make -j$(nproc)
     - make install
   
 pages:
