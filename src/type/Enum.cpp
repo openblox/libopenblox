@@ -239,6 +239,11 @@ namespace OB{
 			  "Lua",
 			  "JavaScript");
 
+		DENUM(BorderMode,
+			  "Outline",
+			  "Middle",
+			  "Inset");
+
 		void registerLuaEnums(lua_State* L){
 			lua_newtable(L);
 

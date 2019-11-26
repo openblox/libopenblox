@@ -63,6 +63,7 @@ namespace OB{
 			BackgroundTransparency = 0;
 			BorderColor3 = BackgroundColor3;
 			BorderSizePixel = 1;
+			BorderMode = Enum::BorderMode::Outline;
 			ClipsDescendants = true;
 			Position = make_shared<Type::UDim2>(0, 100, 0, 100);
 			Size = Position;
@@ -281,6 +282,12 @@ namespace OB{
 #endif
 		}
 
+		void GuiObject::renderBorder(){
+#if HAVE_IRRLICHT
+
+#endif
+		}
+
 		void GuiObject::render(){
 #if HAVE_IRRLICHT
 		    std::vector<shared_ptr<GuiBase2d>> renderableKids = getRenderableChildren();
@@ -364,6 +371,19 @@ namespace OB{
 
 				REPLICATE_PROPERTY_CHANGE(BorderSizePixel);
 				propertyChanged("BorderSizePixel");
+			}
+		}
+
+		Enum::BorderMode GuiObject::getBorderMode(){
+			return BorderMode;
+		}
+
+		void GuiObject::setBorderMode(Enum::BorderMode borderMode){
+			if(BorderMode != borderMode){
+				BorderMode = borderMode;
+
+				//REPLICATE_PROPERTY_CHANGE(BorderMode);
+				propertyChanged("BorderMode");
 			}
 		}
 
@@ -462,6 +482,7 @@ namespace OB{
 			peer->sendSetPropertyPacket(netId, "BackgroundTransparency", make_shared<Type::VarWrapper>(BackgroundTransparency));
 			peer->sendSetPropertyPacket(netId, "BorderColor3", make_shared<Type::VarWrapper>(BorderColor3));
 			peer->sendSetPropertyPacket(netId, "BorderSizePixel", make_shared<Type::VarWrapper>(BorderSizePixel));
+			peer->sendSetPropertyPacket(netId, "BorderMode", make_shared<Type::VarWrapper>((int)BorderMode));
 			peer->sendSetPropertyPacket(netId, "ClipsDescendants", make_shared<Type::VarWrapper>(ClipsDescendants));
 			peer->sendSetPropertyPacket(netId, "Position", make_shared<Type::VarWrapper>(Position));
 			peer->sendSetPropertyPacket(netId, "Size", make_shared<Type::VarWrapper>(Size));
@@ -479,6 +500,7 @@ namespace OB{
 			propMap["BackgroundTransparency"] = {"double", false, true, true};
 			propMap["BorderColor3"] = {"Color3", false, true, true};
 			propMap["BorderSizePixel"] = {"int", false, true, true};
+			propMap["BorderMode"] = {"Enum::BorderMode", false, true, true};
 			propMap["ClipsDescendants"] = {"bool", false, true, true};
 			propMap["Position"] = {"UDim2", false, true, true};
 			propMap["Size"] = {"UDim2", false, true, true};
@@ -507,6 +529,9 @@ namespace OB{
 			}
 			if(prop == "BorderSizePixel"){
 				return make_shared<Type::VarWrapper>(getBorderSizePixel());
+			}
+			if(prop == "BorderMode"){
+				return make_shared<Type::VarWrapper>((int)getBorderMode());
 			}
 			if(prop == "ClipsDescendants"){
 				return make_shared<Type::VarWrapper>(getClipsDescendants());
@@ -549,6 +574,10 @@ namespace OB{
 			}
 			if(prop == "BorderSizePixel"){
 				setBorderSizePixel(val->asInt());
+				return;
+			}
+			if(prop == "BorderMode"){
+				setBorderMode((Enum::BorderMode)val->asInt());
 				return;
 			}
 			if(prop == "ClipsDescendants"){
@@ -759,6 +788,35 @@ namespace OB{
 			return 0;
 		}
 
+		int GuiObject::lua_getBorderMode(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
+			if(inst){
+				shared_ptr<GuiObject> instGO = dynamic_pointer_cast<GuiObject>(inst);
+				if(instGO){
+					lua_pushinteger(L, instGO->getBorderSizePixel());
+					return 1;
+				}
+			}
+
+			lua_pushnil(L);
+			return 1;
+		}
+
+		int GuiObject::lua_setBorderMode(lua_State* L){
+			shared_ptr<Instance> inst = checkInstance(L, 1, false);
+
+			if(inst){
+				shared_ptr<GuiObject> instGO = dynamic_pointer_cast<GuiObject>(inst);
+				if(instGO){
+					int newV = luaL_checkinteger(L, 2);
+					instGO->setBorderSizePixel(newV);
+				}
+			}
+
+			return 0;
+		}
+
 		int GuiObject::lua_getClipsDescendants(lua_State* L){
 			shared_ptr<Instance> inst = checkInstance(L, 1, false);
 
@@ -953,6 +1011,7 @@ namespace OB{
 				{"BackgroundTransparency", lua_setBackgroundTransparency},
 				{"BorderColor3", lua_setBorderColor3},
 				{"BorderSizePixel", lua_setBorderSizePixel},
+				{"BorderMode", lua_setBorderMode},
 				{"ClipsDescendants", lua_setClipsDescendants},
 				{"Position", lua_setPosition},
 				{"Size", lua_setSize},
@@ -974,6 +1033,7 @@ namespace OB{
 				{"BackgroundTransparency", lua_getBackgroundTransparency},
 				{"BorderColor3", lua_getBorderColor3},
 				{"BorderSizePixel", lua_getBorderSizePixel},
+				{"BorderMode", lua_getBorderMode},
 				{"ClipsDescendants", lua_getClipsDescendants},
 				{"Position", lua_getPosition},
 				{"Size", lua_getSize},

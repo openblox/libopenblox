@@ -47,6 +47,7 @@ namespace OB{
 				virtual void undoClipping();
 
 				virtual void renderInside();
+				virtual void renderBorder();
 				virtual void render();
 
 				virtual bool isActive();
@@ -59,6 +60,8 @@ namespace OB{
 				virtual void setBorderColor3(shared_ptr<Type::Color3> borderColor3);
 				virtual int getBorderSizePixel();
 				virtual void setBorderSizePixel(int borderSizePixel);
+				virtual Enum::BorderMode getBorderMode();
+				virtual void setBorderMode(Enum::BorderMode borderMode);
 				virtual bool getClipsDescendants();
 				virtual void setClipsDescendants(bool clipsDescendants);
 				virtual shared_ptr<Type::UDim2> getPosition();
@@ -94,6 +97,8 @@ namespace OB{
 				DECLARE_LUA_METHOD(setBorderColor3);
 				DECLARE_LUA_METHOD(getBorderSizePixel);
 				DECLARE_LUA_METHOD(setBorderSizePixel);
+				DECLARE_LUA_METHOD(getBorderMode);
+				DECLARE_LUA_METHOD(setBorderMode);
 				DECLARE_LUA_METHOD(getClipsDescendants);
 				DECLARE_LUA_METHOD(setClipsDescendants);
 				DECLARE_LUA_METHOD(getPosition);
@@ -117,6 +122,7 @@ namespace OB{
 				double BackgroundTransparency;
 				shared_ptr<Type::Color3> BorderColor3;
 				int BorderSizePixel;
+				Enum::BorderMode BorderMode;
 				bool ClipsDescendants;
 				shared_ptr<Type::UDim2> Position;
 				shared_ptr<Type::UDim2> Size;

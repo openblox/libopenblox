@@ -256,6 +256,11 @@ namespace OB{
 		LENUM(ScriptLanguage,
 			  Lua,
 			  JavaScript);
+
+		LENUM(BorderMode,
+			  Outline,
+			  Middle,
+			  Inset);
 	}
 }
 
