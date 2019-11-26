@@ -70,6 +70,13 @@ namespace OB{
 
 			void tick();
 
+			/**
+			 * Used internally to process responses from cURL.
+			 * @internal
+			 * @author John M. Harris, Jr.
+			 */
+			static size_t _ob_assetlocator_write_data(void* ptr, size_t size, size_t nmemb, struct _ob_curl_body* data);
+
 			void loadAssetSync(std::string url, bool decCount = false, bool allowFile = false);
 			static int loadAssetAsyncTask(void* metad, ob_uint64 startTime);
 			void loadAsset(std::string url);

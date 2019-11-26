@@ -41,14 +41,16 @@
 namespace OB{
     AssetResponse::AssetResponse(size_t size, char* data, std::string resURI, OBEngine* eng){
         this->size = size;
-        this->data = data;
+        this->data = new char[size];
         this->resURI = resURI;
         this->eng = eng;
+
+		memcpy(this->data, data, size);
     }
 
     AssetResponse::~AssetResponse(){
-        if(size > 0 && data){
-            free(data);
+        if(data){
+			delete[] data;
         }
     }
 
@@ -100,7 +102,7 @@ namespace OB{
             size_t size;
     };
 
-    size_t _ob_assetlocator_write_data(void* ptr, size_t size, size_t nmemb, struct _ob_curl_body* data){
+    size_t AssetLocator::_ob_assetlocator_write_data(void* ptr, size_t size, size_t nmemb, struct _ob_curl_body* data){
         size_t index = data->size;
         size_t n = (size * nmemb);
         char* tmp;
@@ -301,6 +303,10 @@ namespace OB{
                         requestQueueSize--;
                     }
 
+					if(body->data){
+						delete[] body->data;
+					}
+
                     delete body;
 
                     pthread_mutex_unlock(&mmutex);
@@ -334,7 +340,7 @@ namespace OB{
 #endif
         }
 
-        if(body->data != NULL){
+        if(body->data){
             shared_ptr<Instance::DataModel> dm = eng->getDataModel();
             shared_ptr<Instance::ContentProvider> cp = dm->getContentProvider();
             shared_ptr<Type::Event> AssetLoaded = cp->GetAssetLoaded();
@@ -343,6 +349,8 @@ namespace OB{
             fireArgs.push_back(make_shared<Type::VarWrapper>(url));
 
             putAsset(url, body->size, body->data);
+
+			delete[] body->data;
 
             AssetLoaded->Fire(eng, fireArgs);
 
