@@ -96,12 +96,6 @@ namespace OB{
         pthread_mutex_destroy(&mmutex);
     }
 
-    struct _ob_curl_body{
-        public:
-            char* data;
-            size_t size;
-    };
-
     size_t AssetLocator::_ob_assetlocator_write_data(void* ptr, size_t size, size_t nmemb, struct _ob_curl_body* data){
         size_t index = data->size;
         size_t n = (size * nmemb);

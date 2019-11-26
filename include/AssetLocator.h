@@ -63,6 +63,12 @@ namespace OB{
 			OBEngine* eng;
 	};
 
+	struct _ob_curl_body{
+        public:
+            char* data;
+            size_t size;
+    };
+
 	class AssetLocator{
 		public:
 			AssetLocator(OBEngine* eng);

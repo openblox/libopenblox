@@ -44,6 +44,7 @@ instance/GuiBase2d.h \
 instance/GuiBase.h \
 instance/GuiLabel.h \
 instance/GuiObject.h \
+instance/HttpService.h \
 instance/Humanoid.h \
 instance/ImageLabel.h \
 instance/Instance.h \

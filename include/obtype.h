@@ -70,6 +70,7 @@ struct _ob_rect{
 #define OB_NETID_STARTERGUI 10
 #define OB_NETID_COREGUI 11
 #define OB_NETID_PLAYERS 12
+#define OB_NETID_HTTPSERVICE 13
 
 #define OB_NET_MAX_PEERS 300
 #define OB_NET_CHANNELS 3

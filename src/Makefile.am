@@ -66,6 +66,7 @@ instance/Player.cpp \
 instance/Players.cpp \
 instance/LogService.cpp \
 instance/DataModel.cpp \
+instance/HttpService.cpp \
 instance/Humanoid.cpp \
 instance/Folder.cpp \
 instance/BasePart.cpp \
