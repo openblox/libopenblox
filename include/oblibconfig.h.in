@@ -9,6 +9,9 @@
 /* Define to 1 if you have the `enet' library (-lenet). */
 #undef HAVE_ENET
 
+/* Define to 1 if you have the `uuid' library (-luuid). */
+#undef HAVE_UUID
+
 /* Define to 1 if you have the `Irrlicht' library (-lIrrlicht). */
 #undef HAVE_IRRLICHT
 

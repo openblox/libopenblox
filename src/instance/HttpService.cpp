@@ -23,6 +23,12 @@
 #include <curl/curl.h>
 #endif
 
+#ifdef _MSC_VER // Windows
+#include <objbase.h>
+#elif HAVE_UUID // Most Unix-like
+#include <uuid/uuid.h>
+#endif
+
 #include "AssetLocator.h"
 #include "OBException.h"
 
@@ -238,7 +244,39 @@ namespace OB{
 		}
 
 		std::string HttpService::GenerateGUID(bool wrapInCurlyBraces){
-			return "NOT_IMPLEMENTED";
+			std::string guidString;
+				
+#ifdef _MSC_VER
+			//Somebody that actually uses Windows is going to have to confirm this
+			GUID guid;
+			CoCreateGuid(&guid);
+
+		    char guidString[100];
+			snprintf(guidString, 100, "%08lX-%04hX-%04hX-%02hhX%02hhX-%02hhX%02hhX%02hhX%02hhX%02hhX%02hhX",
+					 guid.Data1, guid.Data2, guid.Data3,
+					 guid.Data4[0], guid.Data4[1], guid.Data4[2], guid.Data4[3],
+					 guid.Data4[4], guid.Data4[5], guid.Data4[6], guid.Data4[7]);
+
+			guidString = std::string(guidString);
+#elif HAVE_UUID // Most Unix-like
+			uuid_t guid;
+			uuid_generate_random(guid);
+
+			char guidString[36];
+			uuid_unparse_lower(guid, guidString);
+
+			guidString = std::string(guidString);
+#endif
+
+			if(guid.empty()){
+				throw new OBException("Failed to generate a GUID.");
+			}
+
+		    if(wrapInCurlyBraces){
+				return "{" + guidString + "}";
+			}else{
+				return guidString;
+			}
 		}
 	}
 }

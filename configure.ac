@@ -29,6 +29,7 @@ AC_ARG_WITH(pugixml, AS_HELP_STRING([--wihout-pugixml], [Compile without pugixml
 AC_ARG_WITH(bullet, AS_HELP_STRING([--without-bullet], [Compile without Bullet support.]))
 AC_ARG_WITH(curl, AS_HELP_STRING([--without-curl], [Compile without curl support.]))
 AC_ARG_WITH(enet, AS_HELP_STRING([--without-enet], [Compile without enet support.]))
+AC_ARG_WITH(uuid, AS_HELP_STRING([--without-libuuid], [Compile without libuuid support.]))
 AC_ARG_WITH(lua, AS_HELP_STRING([--with-lua=LUA_VER], [Compile with a specific system Lua.]), [syslua="$withval"])
 
 #Dependency checks
@@ -81,6 +82,10 @@ AS_IF([test "x$with_curl" != "xno"],
 AS_IF([test "x$with_enet" != "xno"],
       [AX_PKG_CHECK_MODULES([LENET], [libenet], [], [AC_DEFINE_UNQUOTED(HAVE_ENET, 1, [Define to 1 if you have the `enet' library (-lenet).])])],
       [have_enet=no])
+
+AS_IF([test "x$with_uuid" != "xno"],
+      [AX_PKG_CHECK_MODULES([LUUID], [uuid], [], [AC_DEFINE_UNQUOTED(HAVE_UUID, 1, [Define to 1 if you have the `uuid' library (-luuid).])])],
+      [have_uuid=no])
 
 AS_IF([test "x$target_os" == "xmingw32"],
       [LGL_LIB="-lopengl32"],
