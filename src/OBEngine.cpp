@@ -156,12 +156,14 @@ namespace OB{
 #if HAVE_SDL2
 		bool amdgpu_workaround = false;
 
+#if __linux__
 		FILE* fd = popen("lsmod | grep amdgpu", "r");
 
 		char buf[16];
 		if(fread(buf, 1, sizeof(buf), fd) > 0){
 			amdgpu_workaround = true;
 		}
+#endif
 
 		if(!windowId && !amdgpu_workaround){
 			SDL_SetMainReady();

@@ -251,24 +251,24 @@ namespace OB{
 			GUID guid;
 			CoCreateGuid(&guid);
 
-		    char guidString[100];
-			snprintf(guidString, 100, "%08lX-%04hX-%04hX-%02hhX%02hhX-%02hhX%02hhX%02hhX%02hhX%02hhX%02hhX",
+		    char guidData[100];
+			snprintf(guidData, 100, "%08lX-%04hX-%04hX-%02hhX%02hhX-%02hhX%02hhX%02hhX%02hhX%02hhX%02hhX",
 					 guid.Data1, guid.Data2, guid.Data3,
 					 guid.Data4[0], guid.Data4[1], guid.Data4[2], guid.Data4[3],
 					 guid.Data4[4], guid.Data4[5], guid.Data4[6], guid.Data4[7]);
 
-			guidString = std::string(guidString);
+			guidString = std::string(guidData);
 #elif HAVE_UUID // Most Unix-like
 			uuid_t guid;
 			uuid_generate_random(guid);
 
-			char guidString[36];
-			uuid_unparse_lower(guid, guidString);
+			char guidData[36];
+			uuid_unparse_lower(guid, guidData);
 
-			guidString = std::string(guidString);
+			guidString = std::string(guidData);
 #endif
 
-			if(guid.empty()){
+			if(guidString.empty()){
 				throw new OBException("Failed to generate a GUID.");
 			}
 

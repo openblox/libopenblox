@@ -425,7 +425,7 @@ namespace OB{
 
         struct _ob_assetLocatorMetad* metad = new struct _ob_assetLocatorMetad;
 
-		// Because Windows is fucking annoying
+		// Because Windows, without MinGW or similar, is fucking annoying
 #ifdef _MSC_VER
 		metad->url = _strdup(url.c_str());
 #else

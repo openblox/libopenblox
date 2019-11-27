@@ -167,6 +167,7 @@ namespace OB{
 		CloseHandle(timer);
 	}
 
+	// Really, Windows? There's probably some _gettimeofday or similar..
 #ifdef _MSC_VER
 	int gettimeofday(struct timeval* tp, void* tzp){
 		// Note: some broken versions only have 8 trailing zero's, the correct epoch has 9 trailing zero's
@@ -183,8 +184,8 @@ namespace OB{
 		time = ((uint64_t)file_time.dwLowDateTime);
 		time += ((uint64_t)file_time.dwHighDateTime) << 32;
 
-		tp->tv_sec = (long) ((time - EPOCH) / 10000000L);
-		tp->tv_usec = (long) (system_time.wMilliseconds * 1000);
+		tp->tv_sec = (long)((time - EPOCH) / 10000000L);
+		tp->tv_usec = (long)(system_time.wMilliseconds * 1000);
 		return 0;
 	}
 #endif
