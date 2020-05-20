@@ -219,7 +219,7 @@ namespace OB{
 			for(std::vector<shared_ptr<Instance>>::size_type i = 0; i != children.size(); i++){
 				shared_ptr<Instance> kid = children[i];
 				if(kid){
-					if(kid->ClassName == className){
+					if(kid->getClassName() == className){
 						return kid;
 					}
 				}
